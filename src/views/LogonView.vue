@@ -2,8 +2,8 @@
 </script>
 
 <template>
-    我是主页
+    我是注册页面
 </template>
-<style scoped>
 
+<style scoped>
 </style>

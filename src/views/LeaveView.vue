@@ -1,9 +1,7 @@
 <script setup lang="ts">
 </script>
-
 <template>
-    我是主页
+    我是请假页面
 </template>
 <style scoped>
-
 </style>
