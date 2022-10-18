@@ -1,33 +1,92 @@
-<script setup lang="ts">
+<script lang="ts" setup>
+import { reactive, ref } from 'vue'
+import type { FormInstance } from 'element-plus'
+
+const ruleFormRef = ref<FormInstance>()
+let reg=/^[a-zA-Z]{8,}$/;
+const validateNumber = (rule: any, value: any, callback: any) => {
+    if (value === '') {
+        callback(new Error('请输入您的用户名'))
+    } else {
+        if (ruleForm.accountNumber !== '') {
+            if (!ruleFormRef.value) return
+            ruleFormRef.value.validateField('accountNumber', () => null)
+        }
+        callback()
+    }
+}
+const validatePass2 = (rule: any, value: any, callback: any) => {
+    if (value === '') {
+        callback(new Error('请输入密码'))
+    } else if (value !== ruleForm.checkPass) {
+        callback(new Error("密码错误，请重试"))
+    } else {
+        callback()
+    }
+}
+
+const ruleForm = reactive({
+    accountNumber: '',
+    checkPass: '',
+})
+const rules = reactive({
+    accountNumber: [{ validator: validateNumber, trigger: 'blur' }],
+    checkPass: [{ validator: validatePass2, trigger: 'blur' }],
+})
+
+const submitForm = (formEl: FormInstance | undefined) => {
+    if (!formEl) return
+    formEl.validate((valid: any) => {
+        if (valid) {
+            console.log('提交成功!')
+        } else {
+            console.log('失败，请重新再试')
+            return false
+        }
+    })
+}
+
 </script>
 
 <template>
-    <div id="app">
+    <div class="login">
         <div class="login-bar">
-            <div class="login">
+            <div class="login-content">
                 <h1 class="title-login">Login</h1>
-                <input class="account input mt-12" type="text" placeholder="账号">
-                <input class="password input mt-14" type="password" placeholder="密码">
-                <div class="button mt-40">GO</div>
+                <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" class="demo-ruleForm">
+                    <el-form-item label="账号" prop="accountNumber">
+                        <el-input v-model="ruleForm.accountNumber" type="text" placeholder="请输入用户名"/>
+                    </el-form-item>
+                    <el-form-item label="密码" prop="checkPass">
+                        <el-input v-model="ruleForm.checkPass" type="password"  placeholder="请输入密码"/>
+                    </el-form-item>
+                    <div class="text">
+                        <span class="left">忘记密码</span>
+                        <span class="right">注册</span>
+                    </div>
+                    <el-form-item>
+                        <el-button type="danger" @click="submitForm(ruleFormRef)">GO</el-button>
+                    </el-form-item>
+                </el-form>
             </div>
         </div>
     </div>
 </template>
 
 <style scoped>
-#app {
+.login {
     height: 100vh;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     background-image: url('@/assets/images/bg-login.png');
     background-size: cover;
 }
 
-
 .login-bar {
-    width: 342px;
-    height: 250px;
+    width: 450px;
+    height: 300px;
     border-radius: 10px;
     padding: 34px 40px;
     box-sizing: border-box;
@@ -39,44 +98,38 @@
     box-shadow: 0 0 20px rgb(248, 247, 247);
 }
 
-.login {
-    width: 100%;
-    height: 100%;
+.login-content {
     display: flex;
     flex-direction: column;
     text-align: center;
-
 }
-
-
 
 .title-login {
     font-size: 26px;
     font-weight: 700;
     user-select: none;
-}
-
-
-
-.button {
-    width: 100%;
     padding: 10px 0;
-    font-size: 10px;
-    box-sizing: border-box;
-    background: linear-gradient(to right,
-            #a4a0fa, #ff8aab);
-    user-select: none;
-    color: white;
-
+}
+.text {
+    padding: 5px 0;
+    font-size:12px;
+    color: rgb(99, 99, 100);
+    display: flex;
+    justify-content: space-between;
 }
 
-.input {
-    padding: 8px 0;
-    font-size: 10px;
-    outline: none;
-    border: 0;
-    background-color: transparent;
-    border-bottom: solid 1px #999cdd;
+.text .left:hover {
+    color: rgb(101, 101, 236);
+    cursor: pointer;
+}
 
+.text .right:hover {
+    color: rgb(101, 101, 236);
+    cursor: pointer;
+}
+
+::v-deep .el-button {
+    width: 100%;
+    margin: 10px 0;
 }
 </style>
