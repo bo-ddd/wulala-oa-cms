@@ -9,6 +9,7 @@ interface User {
   department:string
   duration:string
   state:string
+  Audit:string
 }
 
 const handleEdit = (index: number, row: User) => {
@@ -26,7 +27,8 @@ const tableData: User[] = [
     start_time: '2016-05-03',
     end_time:'2016-05-04',
     duration:'2日',
-    state:'审核中'
+    state:'审核中',
+    Audit:'磊哥'
   },
   {
     id:2,
@@ -35,7 +37,8 @@ const tableData: User[] = [
     start_time: '2016-05-02',
     end_time:'2016-05-05',
     duration:'3日',
-    state:'未通过'
+    state:'未通过',
+    Audit:'马格烜'
   },
   {
     id:3,
@@ -44,7 +47,8 @@ const tableData: User[] = [
     start_time: '2016-05-04',
     end_time:'2016-05-06',
     duration:'2日',
-    state:'已通过'
+    state:'已通过',
+    Audit:'磊哥'
   },
   {
     id:4,
@@ -53,7 +57,8 @@ const tableData: User[] = [
     start_time: '2016-05-01',
     end_time:'2016-05-07',
     duration:'6日',
-    state:'未通过'
+    state:'未通过',
+    Audit:'马格烜'
   },
 ]
 </script>
@@ -69,7 +74,7 @@ const tableData: User[] = [
       </template>
     </el-table-column>
 
-    <el-table-column label="applicant" width="180">
+    <el-table-column label="申请人" width="100">
       <template #default="scope">
         <el-popover effect="light" trigger="hover" placement="top" width="auto">
           <template #default>
@@ -83,7 +88,7 @@ const tableData: User[] = [
       </template>
     </el-table-column>
 
-    <el-table-column label="部门" width="180">
+    <el-table-column label="部门" width="150">
       <template #default="scope">
         <div style="display: flex; align-items: center;justify-content: center;">
           <span style="margin-left: 10px">{{ scope.row.department }}</span>
@@ -91,7 +96,7 @@ const tableData: User[] = [
       </template>
     </el-table-column>
 
-    <el-table-column label="开始时间" width="180">
+    <el-table-column label="开始时间" width="150">
       <template #default="scope">
         <div style="display: flex; align-items: center;justify-content: center;">
           <el-icon><timer /></el-icon>
@@ -100,7 +105,7 @@ const tableData: User[] = [
       </template>
     </el-table-column>
 
-    <el-table-column label="结束时间" width="180">
+    <el-table-column label="结束时间" width="150">
       <template #default="scope">
         <div style="display: flex; align-items: center;justify-content: center;">
           <el-icon><timer /></el-icon>
@@ -109,7 +114,7 @@ const tableData: User[] = [
       </template>
     </el-table-column>
 
-    <el-table-column label="时长" width="180">
+    <el-table-column label="时长" width="100">
       <template #default="scope">
         <div style="display: flex; align-items: center;justify-content: center;">
           <el-icon><timer /></el-icon>
@@ -118,7 +123,7 @@ const tableData: User[] = [
       </template>
     </el-table-column>
 
-    <el-table-column label="状态" width="180">
+    <el-table-column label="状态" width="100">
       <template #default="scope">
         <div style="display: flex; align-items: center;justify-content: center;">
           <span style="margin-left: 10px">{{ scope.row.state }}</span>
@@ -126,25 +131,24 @@ const tableData: User[] = [
       </template>
     </el-table-column>
     
-    <el-table-column label="审核者" width="180">
+    <el-table-column label="审核者" width="100">
       <template #default="scope">
         <div style="display: flex; align-items: center;justify-content: center;">
-          <el-icon><timer /></el-icon>
-          <span style="margin-left: 10px">{{ scope.row.duration }}</span>
+          <span style="margin-left: 10px">{{ scope.row.Audit }}</span>
         </div>
       </template>
     </el-table-column>
 
-    <el-table-column label="Operations">
+    <el-table-column label="操作">
       <template #default="scope">
         <el-button size="small" @click="handleEdit(scope.$index, scope.row)"
-          >编辑</el-button
+          >通过</el-button
         >
         <el-button
           size="small"
           type="danger"
           @click="handleDelete(scope.$index, scope.row)"
-          >删除</el-button
+          >不通过</el-button
         >
       </template>
     </el-table-column>
