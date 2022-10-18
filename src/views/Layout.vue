@@ -1,5 +1,71 @@
 <script setup lang="ts">
-import { RouterView } from "vue-router";
+import { RouterView, useRouter, useRoute } from "vue-router";
+import { ArrowRight } from '@element-plus/icons-vue';
+import {//顶部导航栏下拉效果;
+    ArrowDown,
+    Check,
+    CircleCheck,
+    CirclePlus,
+    CirclePlusFilled,
+    Plus,
+} from '@element-plus/icons-vue';
+
+//路由跳转;
+let router = useRouter();
+function to(name: string) {
+    router.push(name)
+}
+
+let route = useRoute();
+console.log('----------------route----------------------')
+console.log(route.name)
+
+//侧边栏路由列表;
+const sidebarRouterList = [
+    {
+        id: 1,
+        path: '首页',
+
+    },
+    {
+        id: 2,
+        path: '员工管理',
+        childPath: [
+            {
+                id: 1,
+                path: '员工列表'
+            }
+        ]
+    },
+    {
+        id: 3,
+        path: '流程审批',
+        childPath: [
+            {
+                id: 1,
+                path: '请假'
+            }
+        ]
+    },
+    {
+        id: 4,
+        path: '审核管理'
+    },
+    {
+        id: 5,
+        path: '绩效管理'
+    },
+    {
+        id: 6,
+        path: '权限管理'
+    },
+    {
+        id: 7,
+        path: '设置'
+    },
+]
+
+
 
 //侧边栏下拉功能;
 const handleOpen = (key: string, keyPath: string[]) => {
@@ -8,6 +74,8 @@ const handleOpen = (key: string, keyPath: string[]) => {
 const handleClose = (key: string, keyPath: string[]) => {
     console.log(key, keyPath)
 }
+
+
 </script>
 
 <template>
@@ -22,56 +90,61 @@ const handleClose = (key: string, keyPath: string[]) => {
                 </div>
                 <el-row class="tac sidebar-list">
                     <el-col :span="1">
-                        <el-menu default-active="1" @open="handleOpen" @close="handleClose">
-                            <el-sub-menu index="1">
-                                <template #title>
-                                    <el-icon>
-                                        <HomeFilled />
-                                    </el-icon>
-                                    <span>首页</span>
-                                </template>
-                                <el-menu-item-group title="Group one">
-                                    <el-menu-item index="1-1">item one</el-menu-item>
-                                    <el-menu-item index="1-2">item two</el-menu-item>
-                                </el-menu-item-group>
-                                <el-menu-item-group title="Group Two">
-                                    <el-menu-item index="1-3">item three</el-menu-item>
-                                </el-menu-item-group>
-                                <el-sub-menu index="1-4">
-                                    <template #title>item four</template>
-                                    <el-menu-item index="1-4-1">item one</el-menu-item>
-                                </el-sub-menu>
-                            </el-sub-menu>
 
-                            <el-menu-item index="2">
+                        <el-menu default-active="1" @open="handleOpen" @close="handleClose">
+                            <el-menu-item index="1">
+                                <el-icon>
+                                    <HomeFilled />
+                                </el-icon>
+                                <span @click="to('home')">首页</span>
+                            </el-menu-item>
+                            <!-- <el-menu-item index="2">
                                 <el-icon>
                                     <Avatar />
                                 </el-icon>
                                 <span>员工管理</span>
-                            </el-menu-item>
+                            </el-menu-item> -->
+                            <el-sub-menu index="2">
+                                <template #title>
+                                    <el-icon>
+                                        <HomeFilled />
+                                    </el-icon>
+                                    <span>员工管理</span>
+                                </template>
+                                <el-menu-item index="1-4-1" @click="to('userlist')">员工列表</el-menu-item>
+                            </el-sub-menu>
 
-                            <el-menu-item index="3">
+                            <el-sub-menu index="3">
+                                <template #title>
+                                    <el-icon>
+                                        <HomeFilled />
+                                    </el-icon>
+                                    <span>流程审批</span>
+                                </template>
+                                <el-menu-item index="1-4-1" @click="to('leave')">请假</el-menu-item>
+                            </el-sub-menu>
+                            <el-menu-item index="4">
                                 <el-icon>
                                     <Stamp />
                                 </el-icon>
                                 <span>审核管理</span>
                             </el-menu-item>
 
-                            <el-menu-item index="4">
+                            <el-menu-item index="5">
                                 <el-icon>
                                     <TrendCharts />
                                 </el-icon>
                                 <span>绩效管理</span>
                             </el-menu-item>
 
-                            <el-menu-item index="5">
+                            <el-menu-item index="6">
                                 <el-icon>
-                                    <UserFilled />
+                                    <Key />
                                 </el-icon>
-                                <span>个人中心</span>
+                                <span>权限管理</span>
                             </el-menu-item>
 
-                            <el-menu-item index="6">
+                            <el-menu-item index="7">
                                 <el-icon>
                                     <Tools />
                                 </el-icon>
@@ -86,33 +159,38 @@ const handleClose = (key: string, keyPath: string[]) => {
             <el-container class="container">
                 <el-header>
                     <div class="nav">
-                        <!-- <div class="address">
-                            首页/员工列表
-                        </div> -->
-                        <el-page-header>
-                            <template #breadcrumb>
-                                <el-breadcrumb separator="/">
-                                    <el-breadcrumb-item :to="{ path: './page-header.html' }">
-                                        首页
-                                    </el-breadcrumb-item>
-                                    <el-breadcrumb-item><a href="./page-header.html">我的审批</a></el-breadcrumb-item>
-                                    <el-breadcrumb-item>巴拉巴拉</el-breadcrumb-item>
-                                </el-breadcrumb>
-                            </template>
-                            <template #content>
-                                <span class="text-large font-600"> Title </span>
-                            </template>
-                        </el-page-header>
+                        <el-breadcrumb :separator-icon="ArrowRight" v-for="item in sidebarRouterList">
+                            <el-breadcrumb-item :to="{ path: null }">{{item.path}}</el-breadcrumb-item>
+                            <el-breadcrumb-item v-if="item.childPath" v-for="key in item.childPath">
+                                {{key.path}}
+                            </el-breadcrumb-item>
+                        </el-breadcrumb>
 
                         <div class="mine">
                             <div class="avatar">
                                 <img class="icon-avatar" src="@/assets/images/icon-avatar.png" alt="">
                             </div>
-                            <div class="username">马格烜</div>
-                            <img class="icon-arrow" src="@/assets/images/icon-arrow_nav.png" alt="">
+                            <div class="no-shrink">马格烜</div>
+                            <el-col :span="8">
+                                <el-dropdown trigger="click">
+                                    <span class="el-dropdown-link">
+                                        <el-icon class="el-icon--right">
+                                            <arrow-down />
+                                        </el-icon>
+                                    </span>
+                                    <template #dropdown>
+                                        <el-dropdown-menu>
+                                            <el-dropdown-item>个人中心</el-dropdown-item>
+                                            <el-dropdown-item>
+                                                退出登录
+                                            </el-dropdown-item>
+
+                                        </el-dropdown-menu>
+                                    </template>
+                                </el-dropdown>
+                            </el-col>
                         </div>
                     </div>
-
                 </el-header>
 
                 <el-main class="el-main">
@@ -167,6 +245,24 @@ const handleClose = (key: string, keyPath: string[]) => {
 
 }
 
+::v-deep .el-col-8 {
+    /* 顶部导航栏下拉效果 */
+    flex: none;
+}
+
+::v-deep .el-dropdown {
+    /* 顶部导航栏下拉效果 */
+    vertical-align: center;
+}
+
+.block-col-2 .demonstration {
+    /* 顶部导航栏下拉效果 */
+    display: block;
+    color: var(--el-text-color-secondary);
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
 .header-sidebar {
     width: 100%;
     display: flex;
@@ -195,6 +291,7 @@ const handleClose = (key: string, keyPath: string[]) => {
 .sidebar-list {
     width: 120px;
     margin: 50px auto;
+    overflow: hidden;
 }
 
 .nav {
@@ -226,7 +323,7 @@ const handleClose = (key: string, keyPath: string[]) => {
 
 .el-main {
     border-radius: 15px;
-    background-color: #b3e1e9;
+    background-color: #e6f7f7;
 
 }
 

@@ -98,3 +98,7 @@ h6 {
     /* 有点胖 */
     padding: 10px;
 }
+
+.no-shrink {
+    flex-shrink: 0;
+}
