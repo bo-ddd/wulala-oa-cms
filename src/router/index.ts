@@ -34,6 +34,11 @@ const router = createRouter({
           path: "/userlist",
           name: "userlist",
           component: () => import("../views/UserListView.vue"),
+        },
+        {//个人中心页面;
+          path: "/mine",
+          name: "mine",
+          component: () => import("../views/MineView.vue"),
         }
       ]
     },
