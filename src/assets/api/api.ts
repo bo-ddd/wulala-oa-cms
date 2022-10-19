@@ -15,5 +15,10 @@ export default{
      * 请假申请接口**/
     leaveCreateApi(payload={}){
         return axios.post('/user/leave/create',payload)
+    },
+    /**
+     * 用户注册接口**/
+     userRegisterApi(payload={}){
+        return axios.post('/user/register',payload)
     }
 }

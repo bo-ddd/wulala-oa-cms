@@ -7,6 +7,10 @@ const ruleFormRef = ref<FormInstance>();
 let router=useRouter()
 
 
+const ruleForm = reactive({
+    accountNumber: 'xiaoming',
+    checkPass: '999999',
+})
 const validateNumber = (rule: any, value: any, callback: any) => {
     if (value === '') {
         callback(new Error('请输入您的用户名'))
@@ -14,8 +18,8 @@ const validateNumber = (rule: any, value: any, callback: any) => {
         callback(new Error("用户名的长度应该在6-20位之间!"))
     } else if (/\W/.test(value)) {
         callback(new Error("用户名和密码不符合规范"))
-    } else {
-        callback()
+    }else if(value!== ruleForm.accountNumber) {
+        callback(new Error("用户名或密码不正确"))
     }
 }
 const validatePass2 = (rule: any, value: any, callback: any) => {
@@ -23,34 +27,33 @@ const validatePass2 = (rule: any, value: any, callback: any) => {
         callback(new Error('请输入密码'))
     } else if (value !== ruleForm.checkPass) {
         callback(new Error("密码错误，请重试"))
-    } else {
-        callback()
     }
+    //  else {
+    //     callback()
+    // }
 }
-const ruleForm = reactive({
-    accountNumber: '',
-    checkPass: '',
-})
 const rules = reactive({
     accountNumber: [{ validator: validateNumber, trigger: 'blur' }],
     checkPass: [{ validator: validatePass2, trigger: 'blur' }],
 })
 
-// const to=function(name:string){
-//     router.push(name)
-// }
 const submitForm = (formEl: FormInstance | undefined) => {
     if (!formEl) return
     formEl.validate((valid: any) => {
         if (valid) {
             (async function () {
                 let login = await axios.loginApi({
-                    username: 'xiaoming',
-                    password: "999999"
-                })
+                    username: ruleForm.accountNumber,
+                    password: ruleForm.checkPass
+                }).then(res=>{
+                console.log('提交成功!')
+                console.log(res);
+                sessionStorage.setItem("token", res.data.token);
+                router.push('leave')
+            }).catch(res=>{
+
+            })
             })()
-            router.push('leave')
-            alert('提交成功!')
         } else {
             alert('失败，请重新再试')
             return false
