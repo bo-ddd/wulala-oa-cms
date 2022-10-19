@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { RouterView, useRouter, useRoute } from "vue-router";
-import { ArrowRight } from '@element-plus/icons-vue';
+import { ArrowRight, HomeFilled, UserFilled, Checked, Stamp, TrendCharts, Key, Tools } from '@element-plus/icons-vue';
+
 import {//顶部导航栏下拉效果;
     ArrowDown,
     Check,
@@ -21,47 +22,60 @@ console.log('----------------route----------------------')
 console.log(route.name)
 
 //侧边栏路由列表;
-const sidebarRouterList = [
+const sidebarList = [
     {
-        id: 1,
-        path: '首页',
-
+        id: '1',
+        icon: 'HomeFilled',
+        name: '首页',
+        targetPath: '/home'
     },
     {
-        id: 2,
-        path: '员工管理',
-        childPath: [
+        id: '2',
+        icon: 'UserFilled',
+        name: '员工管理',
+        childrenList: [
             {
                 id: 1,
-                path: '员工列表'
+                name: '员工列表',
+                targetPath: '/userlist'
             }
         ]
     },
     {
-        id: 3,
-        path: '流程审批',
-        childPath: [
+        id: '3',
+        icon: 'Checked',
+        name: '流程审批',
+        childrenList: [
             {
                 id: 1,
-                path: '请假'
+                name: '请假',
+                targetPath: '/leave'
             }
         ]
     },
     {
-        id: 4,
-        path: '审核管理'
+        id: '4',
+        icon: 'Stamp',
+        name: '审核管理',
+        targetPath: '/home'
     },
     {
-        id: 5,
-        path: '绩效管理'
+        id: '5',
+        icon: 'TrendCharts',
+        name: '绩效管理',
+        targetPath: '/home'
     },
     {
-        id: 6,
-        path: '权限管理'
+        id: '6',
+        icon: 'Key',
+        name: '权限管理',
+        targetPath: '/home'
     },
     {
-        id: 7,
-        path: '设置'
+        id: '7',
+        icon: 'Tools',
+        name: '设置',
+        targetPath: '/home'
     },
 ]
 
@@ -90,66 +104,26 @@ const handleClose = (key: string, keyPath: string[]) => {
                 </div>
                 <el-row class="tac sidebar-list">
                     <el-col :span="1">
-
                         <el-menu default-active="1" @open="handleOpen" @close="handleClose">
-                            <el-menu-item index="1">
-                                <el-icon>
-                                    <HomeFilled />
-                                </el-icon>
-                                <span @click="to('home')">首页</span>
-                            </el-menu-item>
-                            <!-- <el-menu-item index="2">
-                                <el-icon>
-                                    <Avatar />
-                                </el-icon>
-                                <span>员工管理</span>
-                            </el-menu-item> -->
-                            <el-sub-menu index="2">
-                                <template #title>
+                            <div v-for="item in sidebarList">
+                                <el-menu-item :index='item.id' v-if="!item.childrenList">
                                     <el-icon>
-                                        <HomeFilled />
+                                        <component :is="item.icon"></component>
                                     </el-icon>
-                                    <span>员工管理</span>
-                                </template>
-                                <el-menu-item index="1-4-1" @click="to('userlist')">员工列表</el-menu-item>
-                            </el-sub-menu>
-
-                            <el-sub-menu index="3">
-                                <template #title>
-                                    <el-icon>
-                                        <HomeFilled />
-                                    </el-icon>
-                                    <span>流程审批</span>
-                                </template>
-                                <el-menu-item index="1-4-1" @click="to('leave')">请假</el-menu-item>
-                            </el-sub-menu>
-                            <el-menu-item index="4">
-                                <el-icon>
-                                    <Stamp />
-                                </el-icon>
-                                <span>审核管理</span>
-                            </el-menu-item>
-
-                            <el-menu-item index="5">
-                                <el-icon>
-                                    <TrendCharts />
-                                </el-icon>
-                                <span>绩效管理</span>
-                            </el-menu-item>
-
-                            <el-menu-item index="6">
-                                <el-icon>
-                                    <Key />
-                                </el-icon>
-                                <span>权限管理</span>
-                            </el-menu-item>
-
-                            <el-menu-item index="7">
-                                <el-icon>
-                                    <Tools />
-                                </el-icon>
-                                <span>设置</span>
-                            </el-menu-item>
+                                    <span @click="to(item.targetPath)">{{item.name}}</span>
+                                </el-menu-item>
+                                <el-sub-menu :index="item.id" v-if="item.childrenList">
+                                    <template #title>
+                                        <el-icon>
+                                            <component :is="item.icon"></component>
+                                        </el-icon>
+                                        <span>{{item.name}}</span>
+                                    </template>
+                                    <el-menu-item v-for="key in item.childrenList" @click="to(key.targetPath)">
+                                        {{key.name}}
+                                    </el-menu-item>
+                                </el-sub-menu>
+                            </div>
                         </el-menu>
                     </el-col>
                 </el-row>
@@ -159,17 +133,17 @@ const handleClose = (key: string, keyPath: string[]) => {
             <el-container class="container">
                 <el-header>
                     <div class="nav">
-                        <el-breadcrumb :separator-icon="ArrowRight" v-for="item in sidebarRouterList">
-                            <el-breadcrumb-item :to="{ path: null }">{{item.path}}</el-breadcrumb-item>
-                            <el-breadcrumb-item v-if="item.childPath" v-for="key in item.childPath">
-                                {{key.path}}
+                        <el-breadcrumb :separator-icon="ArrowRight" v-show="item.id==3" v-for="item in sidebarList">
+                            <el-breadcrumb-item :to="{ path: null }">{{item.name}}</el-breadcrumb-item>
+                            <el-breadcrumb-item v-if="item.childrenList" v-for="key in item.childrenList">
+                                {{key.name}}
                             </el-breadcrumb-item>
                         </el-breadcrumb>
 
                         <div class="mine">
-                            <div class="avatar">
-                                <img class="icon-avatar" src="@/assets/images/icon-avatar.png" alt="">
-                            </div>
+
+                            <el-avatar src="/src/assets/images/icon-avatar.png" />
+
                             <div class="no-shrink">马格烜</div>
                             <el-col :span="8">
                                 <el-dropdown trigger="click">
@@ -184,7 +158,6 @@ const handleClose = (key: string, keyPath: string[]) => {
                                             <el-dropdown-item>
                                                 退出登录
                                             </el-dropdown-item>
-
                                         </el-dropdown-menu>
                                     </template>
                                 </el-dropdown>
@@ -263,6 +236,8 @@ const handleClose = (key: string, keyPath: string[]) => {
     margin-bottom: 20px;
 }
 
+
+
 .header-sidebar {
     width: 100%;
     display: flex;
@@ -305,20 +280,6 @@ const handleClose = (key: string, keyPath: string[]) => {
     display: flex;
     gap: 12px;
     align-items: center;
-}
-
-.avatar {
-    width: 32px;
-    height: 32px;
-    border-radius: 32px;
-}
-
-.icon-avatar {
-    width: 100%;
-}
-
-.icon-arrow {
-    width: 16px;
 }
 
 .el-main {
