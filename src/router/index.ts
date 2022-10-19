@@ -29,6 +29,11 @@ const router = createRouter({
           path: "/leave",
           name: "leave",
           component: () => import("../views/LeaveView.vue"),
+        },
+        {//员工列表页面;
+          path: "/userlist",
+          name: "userlist",
+          component: () => import("../views/UserListView.vue"),
         }
       ]
     },
