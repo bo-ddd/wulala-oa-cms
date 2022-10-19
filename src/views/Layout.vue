@@ -98,6 +98,11 @@ const handleClose = (key: string, keyPath: string[]) => {
     console.log(key, keyPath)
 }
 
+//点击退出登录按钮之后的回调;
+function quit(name: string) {
+    router.push(name)
+}
+
 
 </script>
 
@@ -167,9 +172,9 @@ const handleClose = (key: string, keyPath: string[]) => {
                                         </el-icon>
                                     </span>
                                     <template #dropdown>
-                                        <el-dropdown-menu>
-                                            <el-dropdown-item>个人中心</el-dropdown-item>
-                                            <el-dropdown-item>
+                                        <el-dropdown-menu split-button>
+                                            <el-dropdown-item @click="quit('/mine')">个人中心</el-dropdown-item>
+                                            <el-dropdown-item divided @click="quit('/')">
                                                 退出登录
                                             </el-dropdown-item>
                                         </el-dropdown-menu>
@@ -249,8 +254,6 @@ const handleClose = (key: string, keyPath: string[]) => {
     font-size: 14px;
     margin-bottom: 20px;
 }
-
-
 
 .header-sidebar {
     width: 100%;
