@@ -44,8 +44,8 @@ const submitForm = (formEl: FormInstance | undefined) => {
         if (valid) {
             (async function () {
                 await axios.loginApi({
-                    username: 'xiaoming',
-                    password: '999999'
+                    username: ruleForm.accountNumber,
+                    password: ruleForm.checkPass,
                 }).then(res=>{
                 console.log(res);
                 if(res.status==1){
@@ -79,7 +79,7 @@ const submitForm = (formEl: FormInstance | undefined) => {
                     </el-form-item>
                     <div class="text">
                         <span class="left">忘记密码</span>
-                        <span class="right">注册</span>
+                        <span class="right" @click="to('logon')">注册</span>
                     </div>
                     <el-form-item>
                         <el-button type="danger" @click="submitForm(ruleFormRef)">GO</el-button>
