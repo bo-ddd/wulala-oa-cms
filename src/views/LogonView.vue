@@ -107,9 +107,6 @@ const submitForm = (formEl: FormInstance | undefined) => {
                     <el-button class="submit" size="large" type="danger" @click="submitForm(ruleFormRef)">注册</el-button>
                     <el-button class="toLogon" size="large" type="danger">去登录</el-button>
                 </el-form-item>
-                <!-- <div class="btn">
-               
-            </div> -->
             </el-form>
 
         </div>
@@ -136,7 +133,6 @@ const submitForm = (formEl: FormInstance | undefined) => {
 .username,
 .password,
 .confirmPassword,
-.jobNumber,
 .phoneNumber {
     padding: 20px 30px;
 }
@@ -148,12 +144,12 @@ h3 {
 
 
 
-::v-deep .el-form-item {
+:deep(.el-form-item){
     margin: 0;
 }
 
 
-::v-deep .el-form-item__content{
+:deep(.el-form-item__content){
     text-align: center;
     padding: 10px;
     display: flex;
