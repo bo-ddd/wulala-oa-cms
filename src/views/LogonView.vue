@@ -1,12 +1,9 @@
 <script setup lang="ts">
-import type { FirmInstance } from 'element-plus'
 import { ref, reactive } from 'vue'
-const phoneNumber = ref('')
-const jobNumber = ref('')
-const name = ref('')
-const password = ref('')
-const confirmPassword = ref('')
+import type { FormInstance } from 'element-plus'
 
+
+const passwordReg = /^[a-zA-Z](?![a-zA-Z]+$)\W{5,19}$/
 const shadowGroup = ref([
     {
         name: 'Basic Shadow',
@@ -33,13 +30,13 @@ const checkPhoneNumber = (rule: any, value: any, callback: any) => {
 const validatePass = (rule: any, value: any, callback: any) => {
     if (value === '') {
         callback(new Error('请输入密码'))
-    } else {
-        if (ruleForm.checkPass !== '') {
-            if (!ruleFormRef.value) return
-            ruleFormRef.value.validateField('checkPass', () => null)
-        }
-        callback()
+    } else if (value.length < 6 || value.length > 20) {
+        callback(new Error('密码长度为6~20位'))
+    } else if (passwordReg.test(value)) {
+        callback(new Error('不能包含特殊字符'))
     }
+    callback()
+
 }
 const validatePass2 = (rule: any, value: any, callback: any) => {
     if (value === '') {
@@ -54,6 +51,7 @@ const checkUserName = (rule: any, value: any, callback: any) => {
     if (value === '') {
         callback(new Error('请输入用户名'))
     }
+    callback()
 }
 
 const ruleForm = reactive({
@@ -82,10 +80,7 @@ const submitForm = (formEl: FormInstance | undefined) => {
     })
 }
 
-const resetForm = (formEl: FormInstance | undefined) => {
-    if (!formEl) return
-    formEl.resetFields()
-}
+
 </script>
 
 <template>
@@ -106,13 +101,17 @@ const resetForm = (formEl: FormInstance | undefined) => {
                         show-password />
                 </el-form-item>
                 <el-form-item class="phoneNumber" prop="phoneNumber">
-                    <el-input v-model="ruleForm.phoneNumber" type="text" placeholder="请输入手机号" clearable />
+                    <el-input v-model.number="ruleForm.phoneNumber" type="text" placeholder="请输入手机号" clearable />
                 </el-form-item>
+                <el-form-item class="btn">
+                    <el-button class="submit" size="large" type="danger" @click="submitForm(ruleFormRef)">注册</el-button>
+                    <el-button class="toLogon" size="large" type="danger">去登录</el-button>
+                </el-form-item>
+                <!-- <div class="btn">
+               
+            </div> -->
             </el-form>
-            <div class="btn">
-                <el-button class="submit" size="large" type="danger" @click="submitForm(ruleFormRef)">注册</el-button>
-                <el-button class="toLogon" size="large" type="danger">去登录</el-button>
-            </div>
+
         </div>
     </div>
 </template>
@@ -147,14 +146,18 @@ h3 {
     padding: 10px 0;
 }
 
-.btn {
+
+
+::v-deep .el-form-item {
+    margin: 0;
+}
+
+
+::v-deep .el-form-item__content{
     text-align: center;
     padding: 10px;
     display: flex;
     justify-content: space-around;
 }
 
-::v-deep .el-form-item {
-    margin: 0;
-}
 </style>
