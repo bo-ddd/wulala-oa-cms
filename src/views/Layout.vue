@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { RouterView, useRouter, useRoute } from "vue-router";
 import { ArrowRight, HomeFilled, UserFilled, Checked, Stamp, TrendCharts, Key, Tools } from '@element-plus/icons-vue';
-
+import { reactive, ref, type Ref } from 'vue';
 import {//顶部导航栏下拉效果;
     ArrowDown,
     Check,
@@ -11,23 +11,14 @@ import {//顶部导航栏下拉效果;
     Plus,
 } from '@element-plus/icons-vue';
 
-//路由跳转;
-let router = useRouter();
-function to(name: string) {
-    router.push(name)
-}
-
-let route = useRoute();
-console.log('----------------route----------------------')
-console.log(route.name)
-
-//侧边栏路由列表;
+//侧边栏导航列表;
 const sidebarList = [
     {
         id: '1',
         icon: 'HomeFilled',
         name: '首页',
-        targetPath: '/home'
+        targetPath: '/home',
+        childrenList: []
     },
     {
         id: '2',
@@ -35,7 +26,7 @@ const sidebarList = [
         name: '员工管理',
         childrenList: [
             {
-                id: 1,
+                id: '201',
                 name: '员工列表',
                 targetPath: '/userlist'
             }
@@ -47,7 +38,7 @@ const sidebarList = [
         name: '流程审批',
         childrenList: [
             {
-                id: 1,
+                id: '301',
                 name: '请假',
                 targetPath: '/leave'
             }
@@ -57,29 +48,47 @@ const sidebarList = [
         id: '4',
         icon: 'Stamp',
         name: '审核管理',
-        targetPath: '/home'
+        targetPath: '',
+        childrenList: []
     },
     {
         id: '5',
         icon: 'TrendCharts',
         name: '绩效管理',
-        targetPath: '/home'
+        targetPath: '',
+        childrenList: []
     },
     {
         id: '6',
         icon: 'Key',
         name: '权限管理',
-        targetPath: '/home'
+        targetPath: '',
+        childrenList: []
     },
     {
         id: '7',
         icon: 'Tools',
         name: '设置',
-        targetPath: '/home'
+        targetPath: '',
+        childrenList: []
     },
 ]
 
 
+//路由跳转;
+let router = useRouter();
+function to(name: string) {
+    router.push(name)
+}
+
+//侧边栏点击获取列表元素;
+const itemObj = reactive({ data: sidebarList[0] });
+const keyIndexs: Ref = ref(0);
+function changeNavData(item: object, keyIndex?: number) {
+    itemObj.data = item;
+    keyIndexs.value = keyIndex;
+
+}
 
 //侧边栏下拉功能;
 const handleOpen = (key: string, keyPath: string[]) => {
@@ -87,6 +96,11 @@ const handleOpen = (key: string, keyPath: string[]) => {
 }
 const handleClose = (key: string, keyPath: string[]) => {
     console.log(key, keyPath)
+}
+
+//点击退出登录按钮之后的回调;
+function quit(name: string) {
+    router.push(name)
 }
 
 
@@ -102,24 +116,28 @@ const handleClose = (key: string, keyPath: string[]) => {
                     <img class="icon-main" src="/src/assets/images/logo.png" alt="">
                     <h3 class="title">后台管理系统</h3>
                 </div>
+                <!-- 动态渲染侧边栏列表 -->
                 <el-row class="tac sidebar-list">
                     <el-col :span="1">
-                        <el-menu default-active="1" @open="handleOpen" @close="handleClose">
-                            <div v-for="item in sidebarList">
-                                <el-menu-item :index='item.id' v-if="!item.childrenList">
+                        <el-menu router default-active="/home" unique-opened @open="handleOpen" @close="handleClose">
+                            <div v-for="(item,index) in sidebarList">
+                                <el-menu-item :index="item.targetPath" :key="index" v-if="!item.childrenList.length">
                                     <el-icon>
                                         <component :is="item.icon"></component>
                                     </el-icon>
-                                    <span @click="to(item.targetPath)">{{item.name}}</span>
+                                    <span @click="changeNavData(item)">{{item.name}}</span>
                                 </el-menu-item>
-                                <el-sub-menu :index="item.id" v-if="item.childrenList">
+
+                                <el-sub-menu :key="index" :index="index+''" v-if="item.childrenList.length">
                                     <template #title>
                                         <el-icon>
                                             <component :is="item.icon"></component>
                                         </el-icon>
                                         <span>{{item.name}}</span>
                                     </template>
-                                    <el-menu-item v-for="key in item.childrenList" @click="to(key.targetPath)">
+                                    <el-menu-item :index="key.targetPath" :key="index+'-'+keyIndex"
+                                        v-for="(key,keyIndex) in item.childrenList"
+                                        @click="changeNavData(item,keyIndex)">
                                         {{key.name}}
                                     </el-menu-item>
                                 </el-sub-menu>
@@ -133,10 +151,11 @@ const handleClose = (key: string, keyPath: string[]) => {
             <el-container class="container">
                 <el-header>
                     <div class="nav">
-                        <el-breadcrumb :separator-icon="ArrowRight" v-show="item.id==3" v-for="item in sidebarList">
-                            <el-breadcrumb-item :to="{ path: null }">{{item.name}}</el-breadcrumb-item>
-                            <el-breadcrumb-item v-if="item.childrenList" v-for="key in item.childrenList">
-                                {{key.name}}
+
+                        <el-breadcrumb :separator-icon="ArrowRight">
+                            <el-breadcrumb-item :to="{ path: null }">{{itemObj.data.name}}</el-breadcrumb-item>
+                            <el-breadcrumb-item v-if="itemObj.data.childrenList.length">
+                                {{itemObj.data.childrenList[keyIndexs].name}}
                             </el-breadcrumb-item>
                         </el-breadcrumb>
 
@@ -153,9 +172,9 @@ const handleClose = (key: string, keyPath: string[]) => {
                                         </el-icon>
                                     </span>
                                     <template #dropdown>
-                                        <el-dropdown-menu>
-                                            <el-dropdown-item>个人中心</el-dropdown-item>
-                                            <el-dropdown-item>
+                                        <el-dropdown-menu split-button>
+                                            <el-dropdown-item @click="quit('/mine')">个人中心</el-dropdown-item>
+                                            <el-dropdown-item divided @click="quit('/')">
                                                 退出登录
                                             </el-dropdown-item>
                                         </el-dropdown-menu>
@@ -235,8 +254,6 @@ const handleClose = (key: string, keyPath: string[]) => {
     font-size: 14px;
     margin-bottom: 20px;
 }
-
-
 
 .header-sidebar {
     width: 100%;
