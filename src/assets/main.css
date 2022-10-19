@@ -95,10 +95,15 @@ h6 {
 }
 
 .pd-10 {
-    /* 有点胖 */
     padding: 10px;
 }
 
 .no-shrink {
+    /* 不被压缩 */
     flex-shrink: 0;
+}
+
+.no-selected {
+    /* 用户不可选中 */
+    user-select: none;
 }

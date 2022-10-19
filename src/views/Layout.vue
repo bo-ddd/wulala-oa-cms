@@ -74,12 +74,26 @@ const sidebarList = [
     },
 ]
 
+//右上角个人中心列表;
+const dropDownList = [
+    {
+        id: 1,
+        name: '个人中心',
+        targetPath: '/mine',
+        childrenList: []
+
+    },
+    {
+        id: 2,
+        name: '退出登录',
+        targetPath: '/',
+        childrenList: []
+    },
+]
 
 //路由跳转;
 let router = useRouter();
-function to(name: string) {
-    router.push(name)
-}
+
 
 //侧边栏点击获取列表元素;
 const itemObj = reactive({ data: sidebarList[0] });
@@ -87,7 +101,12 @@ const keyIndexs: Ref = ref(0);
 function changeNavData(item: object, keyIndex?: number) {
     itemObj.data = item;
     keyIndexs.value = keyIndex;
+}
 
+//右上角个人中心路由跳转;
+function to(name: string, item: object) {
+    router.push(name)
+    changeNavData(item)
 }
 
 //侧边栏下拉功能;
@@ -98,17 +117,12 @@ const handleClose = (key: string, keyPath: string[]) => {
     console.log(key, keyPath)
 }
 
-//点击退出登录按钮之后的回调;
-function quit(name: string) {
-    router.push(name)
-}
-
 
 </script>
 
 <template>
 
-    <div class="common-layout gradient">
+    <div class="common-layout gradient no-selected">
         <el-container>
             <!-- 侧边栏 -->
             <el-aside width="200px" class="pt-20">
@@ -173,9 +187,9 @@ function quit(name: string) {
                                     </span>
                                     <template #dropdown>
                                         <el-dropdown-menu split-button>
-                                            <el-dropdown-item @click="quit('/mine')">个人中心</el-dropdown-item>
-                                            <el-dropdown-item divided @click="quit('/')">
-                                                退出登录
+                                            <el-dropdown-item divided @click="to(item.targetPath,item)"
+                                                v-for="(item,index) in dropDownList" :key="index">
+                                                {{item.name}}
                                             </el-dropdown-item>
                                         </el-dropdown-menu>
                                     </template>
