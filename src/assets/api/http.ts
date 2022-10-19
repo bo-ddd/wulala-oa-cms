@@ -1,4 +1,6 @@
 import axios from "axios";
+import {useRouter  } from "vue-router";
+let router= useRouter()
 const $http = axios.create({
   baseURL: '/api',
   timeout: 5000,   //如果接口5秒钟都没有返回，则axios会自动帮我们做失败的处理
@@ -9,12 +11,11 @@ const $http = axios.create({
 $http.interceptors.request.use(function (config) {
   // 在发送请求之前做些什么
   //作用一：统一设置请求头信息
-  if (config.headers) {
-    config.headers.authorization = 'token';
-  }
   console.log(config);
+  if (config.headers) {
+    config.headers.token =sessionStorage.getItem('token');
+  }
   // 作用二： 给所有的接口加一些公共的弹层
-  console.log('-------弹层展示啦');
   return config;
 }, function (error) {
   // 对请求错误做些什么
@@ -29,12 +30,9 @@ $http.interceptors.response.use(function (response) {
   //作用2: 根据不同的状态码，提示不同的信息
   console.log('-----响应啦');
   console.log(response.data);
-  if(response.data.status==1){
-    sessionStorage.setItem("token", response.data.token);
-      
-  }else if(response.data.status==404){
-    alert('错误，请稍后再试')
-  }
+//  if(response.data.status==404){
+//     alert('错误，请稍后再试')
+//   }
   //作用3：改变接口的返回数据类型
   return response.data;
 }, function (error) {
