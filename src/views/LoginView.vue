@@ -8,8 +8,8 @@ let router = useRouter()
 
 
 const ruleForm = reactive({
-    accountNumber: 'xiaoming',
-    checkPass: '999999',
+    accountNumber: '',
+    checkPass: '',
 })
 const validateNumber = (rule: any, value: any, callback: any) => {
     if (value === '') {
@@ -34,6 +34,9 @@ const rules = reactive({
     checkPass: [{ validator: validatePass2, trigger: 'blur' }],
 })
 
+let to=function(name:string){
+    router.push(name)
+}
 const submitForm = (formEl: FormInstance | undefined) => {
 
     if (!formEl) return
@@ -41,13 +44,13 @@ const submitForm = (formEl: FormInstance | undefined) => {
         if (valid) {
             (async function () {
                 await axios.loginApi({
-                    username: ruleForm.accountNumber,
-                    password: ruleForm.checkPass
+                    username: 'xiaoming',
+                    password: '999999'
                 }).then(res=>{
                 console.log(res);
                 if(res.status==1){
                     sessionStorage.setItem("token", res.data.token);
-                    router.push('leave')
+                    to('home')
                 }else{
                     alert('用户名或密码错误')
                 }
