@@ -13,10 +13,10 @@ interface User {
 }
 
 const handleEdit = (index: number, row: User) => {
-  console.log(index, row)
+  console.log(index+1, row)
 }
 const handleDelete = (index: number, row: User) => {
-  console.log(index, row)
+  console.log(index+1, row)
 }
 
 const tableData: User[] = [
@@ -78,8 +78,7 @@ const tableData: User[] = [
       <template #default="scope">
         <el-popover effect="light" trigger="hover" placement="top" width="auto">
           <template #default>
-            <div>applicant: {{ scope.row.applicant }}</div>
-            <div>address: {{ scope.row.address }}</div>
+            <div>申请人: {{ scope.row.applicant }}</div>
           </template>
           <template #reference>
             <el-tag>{{ scope.row.applicant }}</el-tag>
@@ -88,7 +87,7 @@ const tableData: User[] = [
       </template>
     </el-table-column>
 
-    <el-table-column label="部门" width="150">
+    <el-table-column label="部门">
       <template #default="scope">
         <div style="display: flex; align-items: center;justify-content: center;">
           <span style="margin-left: 10px">{{ scope.row.department }}</span>
@@ -96,7 +95,7 @@ const tableData: User[] = [
       </template>
     </el-table-column>
 
-    <el-table-column label="开始时间" width="150">
+    <el-table-column label="开始时间">
       <template #default="scope">
         <div style="display: flex; align-items: center;justify-content: center;">
           <el-icon><timer /></el-icon>
@@ -105,7 +104,7 @@ const tableData: User[] = [
       </template>
     </el-table-column>
 
-    <el-table-column label="结束时间" width="150">
+    <el-table-column label="结束时间" >
       <template #default="scope">
         <div style="display: flex; align-items: center;justify-content: center;">
           <el-icon><timer /></el-icon>
@@ -114,16 +113,16 @@ const tableData: User[] = [
       </template>
     </el-table-column>
 
-    <el-table-column label="时长" width="100">
+    <el-table-column label="时长">
       <template #default="scope">
         <div style="display: flex; align-items: center;justify-content: center;">
-          <el-icon><timer /></el-icon>
+            <el-icon><Watch/></el-icon>
           <span style="margin-left: 10px">{{ scope.row.duration }}</span>
         </div>
       </template>
     </el-table-column>
 
-    <el-table-column label="状态" width="100">
+    <el-table-column label="状态">
       <template #default="scope">
         <div style="display: flex; align-items: center;justify-content: center;">
           <span style="margin-left: 10px">{{ scope.row.state }}</span>
@@ -131,7 +130,7 @@ const tableData: User[] = [
       </template>
     </el-table-column>
     
-    <el-table-column label="审核者" width="100">
+    <el-table-column label="审核者">
       <template #default="scope">
         <div style="display: flex; align-items: center;justify-content: center;">
           <span style="margin-left: 10px">{{ scope.row.Audit }}</span>
@@ -157,6 +156,7 @@ const tableData: User[] = [
 
 
 <style scoped>
+/* 标题与操作的居中样式 */
 ::v-deep .cell{
     text-align: center;
 }
