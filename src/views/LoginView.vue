@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { reactive, ref } from 'vue'
-import { useRouter} from "vue-router";
+import { useRouter } from "vue-router";
 import type { FormInstance } from 'element-plus'
 import axios from '@/assets/api/api';
 const ruleFormRef = ref<FormInstance>();
-let router=useRouter()
+let router = useRouter()
 
 
 const ruleForm = reactive({
@@ -16,21 +16,18 @@ const validateNumber = (rule: any, value: any, callback: any) => {
         callback(new Error('请输入您的用户名'))
     } else if (value.length < 6 || value.lenght > 20) {
         callback(new Error("用户名的长度应该在6-20位之间!"))
-    } else if (/\W/.test(value)) {
+    }else if (/\W/.test(value)) {
         callback(new Error("用户名和密码不符合规范"))
-    }else if(value!== ruleForm.accountNumber) {
-        callback(new Error("用户名或密码不正确"))
+    }else {
+        callback();
     }
 }
 const validatePass2 = (rule: any, value: any, callback: any) => {
     if (value === '') {
         callback(new Error('请输入密码'))
-    } else if (value !== ruleForm.checkPass) {
-        callback(new Error("密码错误，请重试"))
+    } else {
+        callback()
     }
-    //  else {
-    //     callback()
-    // }
 }
 const rules = reactive({
     accountNumber: [{ validator: validateNumber, trigger: 'blur' }],
@@ -38,20 +35,22 @@ const rules = reactive({
 })
 
 const submitForm = (formEl: FormInstance | undefined) => {
+
     if (!formEl) return
-    formEl.validate((valid: any) => {
+    formEl.validate((valid) => {
         if (valid) {
             (async function () {
-                let login = await axios.loginApi({
+                await axios.loginApi({
                     username: ruleForm.accountNumber,
                     password: ruleForm.checkPass
                 }).then(res=>{
-                console.log('提交成功!')
                 console.log(res);
-                sessionStorage.setItem("token", res.data.token);
-                router.push('leave')
-            }).catch(res=>{
-
+                if(res.status==1){
+                    sessionStorage.setItem("token", res.data.token);
+                    router.push('leave')
+                }else{
+                    alert('用户名或密码错误')
+                }
             })
             })()
         } else {
