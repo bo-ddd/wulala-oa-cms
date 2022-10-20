@@ -12,9 +12,7 @@ const toLogin = function () {
 }
 const checkAvatarName = (rule: any, value: any, callback: any) => {
     if (/[!0-9]/.test(value)) {
-        callback(new Error('您输入的用户名不符合规范'))
-    } else if (value.length < 5 || value.length > 20) {
-        callback(new Error('用户名长度为4-20位'))
+        callback(new Error('您输入昵称不符合规范'))
     }
     callback();
 }
@@ -48,25 +46,25 @@ const validatePass = (rule: any, value: any, callback: any) => {
 const validatePass2 = (rule: any, value: any, callback: any) => {
     if (value === '') {
         callback(new Error('请再次输入密码'))
-    } else if (value !== ruleForm.pass) {
+    } else if (value !== ruleForm.password) {
         callback(new Error("两次输入密码不一致!"))
     }
     callback();
 }
 
 const ruleForm = reactive({
-    pass: '',
+    password: '',
     checkPass: '',
     phoneNumber: '',
-    userName: '',
+    username: '',
     avatarName: '',
 })
 
 const rules = reactive({
-    pass: [{ validator: validatePass, trigger: 'blur' }],
+    password: [{ validator: validatePass, trigger: 'blur' }],
     checkPass: [{ validator: validatePass2, trigger: 'blur' }],
     phoneNumber: [{ validator: checkPhoneNumber, trigger: 'blur' }],
-    userName: [{ validator: checkUserName, trigger: 'blur' }],
+    username: [{ validator: checkUserName, trigger: 'blur' }],
     avatarName: [{ validator: checkAvatarName, trigger: 'blur' }],
 
 })
@@ -75,20 +73,26 @@ const submitForm = (formEl: FormInstance | undefined) => {
     if (!formEl) return
     formEl.validate((valid) => {
         if (valid) {
-            console.log('submit!');
             (async function () {
-                let userRegister = await axios.userRegisterApi({
-                    pass: ruleForm.pass,
-                    checkPass: ruleForm.checkPass,
+                await axios.userRegisterApi({
+                    password: ruleForm.password,
                     phoneNumber: ruleForm.phoneNumber,
-                    userName: ruleForm.userName,
+                    username: ruleForm.username,
                     avatarName: ruleForm.avatarName
+                }).then(res => {
+                    if (res.status == 1) {
+                        console.log(res);
+                        alert('注册成功')
+                    } else if (res.status == 10107) {
+                        alert('用户名已存在')
+                    }
                 })
             })()
-        } else {
-            console.log('error submit!')
-            return false
         }
+        // else {
+        //     console.log('失败')
+        //     return false
+        // }
     })
 }
 </script>
@@ -98,14 +102,14 @@ const submitForm = (formEl: FormInstance | undefined) => {
         <div class="box" :style="{ boxShadow:'--el-box-shadow-dark',}">
             <h3>用户注册</h3>
             <el-form ref="ruleFormRef" :model="ruleForm" status-icon :rules="rules" class="demo-ruleForm">
-                <el-form-item class="username" prop="userName">
-                    <el-input v-model="ruleForm.userName" type="text" placeholder="请输入用户名" clearable />
+                <el-form-item class="username" prop="username">
+                    <el-input v-model="ruleForm.username" type="text" placeholder="请输入用户名" clearable />
                 </el-form-item>
                 <el-form-item class="avatarName" prop="avatarName">
                     <el-input v-model="ruleForm.avatarName" type="text" placeholder="请输入昵称(非必填)" clearable />
                 </el-form-item>
-                <el-form-item class="password" prop="pass">
-                    <el-input v-model="ruleForm.pass" type="password" placeholder="请输入密码" clearable show-password />
+                <el-form-item class="password" prop="password">
+                    <el-input v-model="ruleForm.password" type="password" placeholder="请输入密码" clearable show-password />
                 </el-form-item>
                 <el-form-item class="confirmPassword" prop="checkPass">
                     <el-input v-model="ruleForm.checkPass" type="password" placeholder="请再次输入密码" clearable
@@ -134,7 +138,7 @@ const submitForm = (formEl: FormInstance | undefined) => {
 }
 
 .box {
-    background-color: rgba(251, 203, 203, .2);
+    background-color: rgba(251, 203, 203, .4);
     margin: 0 auto;
     border-radius: 12px;
     width: 360px;

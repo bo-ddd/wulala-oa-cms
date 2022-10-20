@@ -7,6 +7,14 @@ interface userRegister {
     phoneNumber: string
 }
 
+interface userList {
+    pageNum?: number,
+    pageSize?: number
+}
+interface userInfo {
+    userId: number
+}
+
 export default {
     /**
     * 登录接口**/
@@ -15,13 +23,14 @@ export default {
     },
     /**
     * 获取请假列表接口**/
+
     getLeaveListApi(payload = {}) {
         return axios.post('/user/leave/list', payload)
     },
     /**
-     * @description  * 请假申请接口**
+     * @description  * 请假申请接口** 
  * **/
-    leaveCreateApi(payload = {}) {
+    createLeaveApi(payload = {}) {
         return axios.post('/user/leave/create', payload)
     },
     /**
@@ -30,7 +39,19 @@ export default {
      * "password":  //密码，6-20位之间
      *  avatarName": //昵称，1-12位之间
      *  "phoneNumber":  //手机号*/
-    userRegisterApi(payload: userRegister) {
+    registerApi(payload: userRegister) {
         return axios.post('/user/register', payload)
-    }
+    },
+    /**
+     * 获取用户列表接口
+     * **/
+    getUserListApi(payload: userList) {
+        return axios.post('/user/list', payload)
+    },
+    /**
+     * 查询用户接口
+     * **/
+     queryUserInfoApi(payload: userInfo) {
+        return axios.post('/user/info', payload)
+    },
 }
