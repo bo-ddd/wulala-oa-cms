@@ -39,6 +39,11 @@ const router = createRouter({
           path: "/mine",
           name: "mine",
           component: () => import("../views/MineView.vue"),
+        },
+        {//权限管理页面;
+          path: "/rightmanagement",
+          name: "rightmanagement",
+          component: () => import("../views/RightManagement.vue"),
         }
       ]
     },

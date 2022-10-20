@@ -11,8 +11,10 @@ interface User {
   auditStatus: number
 }
 
-const handleEdit = (index: number, row: User) => {
-  console.log(index + 1, row)
+const handleEdit = async (index: number, row: User) => {
+  // console.log(index + 1, row)
+  let status = await axios.leaveListApi({})
+  status.data.list[0].auditStatus = 1
 }
 
 const getList = (index: number, row: User) => {
@@ -20,17 +22,24 @@ const getList = (index: number, row: User) => {
 }
 
 const handleDelete = (index: number, row: User) => {
-  console.log(index + 1, row)
+  // console.log(index + 1, row)
+  row.auditStatus = 2;
 }
 
 let leave = ref();
+//页面的条数
+let pageSize = ref();
+//总条数
+let total = ref();
 (async function () {
-  var leaveData = await axios.leaveListApi({})
+  let leaveData = await axios.leaveListApi({})
+  //页面的条数
+  pageSize.value = leaveData.data.pageSize
+  //总条数
+  total.value = leaveData.data.total
   leave.value = leaveData.data.list
   leave.value[0].startTime
 })()
-
-
 </script>
 
 <template>
@@ -128,7 +137,18 @@ let leave = ref();
         getList(scope.$index,scope.row)">不通过</el-button>
       </template>
     </el-table-column>
+
+    
   </el-table>
+
+  <el-pagination
+    background
+    layout="prev, pager, next"
+    :total="total"
+    :hide-on-single-page="false"
+    v-model:page-size="pageSize"
+  />
+    
 </template>
 
 
@@ -136,5 +156,14 @@ let leave = ref();
 /* 标题与操作的居中样式 */
 ::v-deep .cell {
   text-align: center;
+}
+.box{
+  height: 500px;
+  background-color: aqua;
+}
+.el-pagination{
+  position:fixed;
+  bottom: 50px;
+  right: 40%;
 }
 </style>

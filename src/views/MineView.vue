@@ -1,16 +1,16 @@
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, type Ref } from 'vue'
 import type { TabsPaneContext } from 'element-plus'
 import { reactive, toRefs } from 'vue'
 import { StarFilled } from '@element-plus/icons-vue'
 import { EditPen } from '@element-plus/icons-vue'
 const activeName = ref('first')
-
 const handleClick = (tab: TabsPaneContext, event: Event) => {
     console.log(tab, event)
 }
-
+const text: Ref = ref('');
+const disabled: Ref = ref(true);
 
 //用户头像自适应功能;
 const state = reactive({
@@ -18,7 +18,15 @@ const state = reactive({
     url: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
 })
 
-const { fit, url } = toRefs(state)
+const { fit, url } = toRefs(state);
+
+//修改个性签名功能;
+function updataDisabledStatus() {
+    disabled.value = false;
+}
+function handleBlur() {
+    disabled.value = true;
+}
 </script>
 
 <template>
@@ -34,17 +42,20 @@ const { fit, url } = toRefs(state)
                             </div>
                         </div>
                     </el-aside>
-                    <el-main>
-                        <el-container>
+                    <el-main class="main">
+                        <el-container class="username">
                             <el-header>
-                                <div class="flex-header">
+                                <div class="flex-box">
                                     <span class="strong">马格烜</span>
                                     <el-button type="plain" :icon="EditPen" circle size="small" link />
                                 </div>
-
-
                             </el-header>
-                            <el-main>Main</el-main>
+                            <el-main class="bottom-main flex-box">
+                                <el-input v-model="text" maxlength="30" placeholder="个性签名" clearable show-word-limit
+                                    type="text" :disabled="disabled" @blur="handleBlur" />
+                                <el-button @click="updataDisabledStatus" type="plain" :icon="EditPen" circle
+                                    size="small" link />
+                            </el-main>
                         </el-container>
                     </el-main>
                 </el-container>
@@ -57,14 +68,14 @@ const { fit, url } = toRefs(state)
                     </el-icon>
                 </el-divider>
                 <el-descriptions title="基础信息" class="mt-20">
-                    <el-descriptions-item label="年龄">24</el-descriptions-item>
+                    <el-descriptions-item label="年龄">24岁</el-descriptions-item>
                     <el-descriptions-item label="性别">男</el-descriptions-item>
                     <el-descriptions-item label="户籍地">山西临汾</el-descriptions-item>
                     <el-descriptions-item label="标签">
                         <el-tag size="small">有点格调</el-tag>
                     </el-descriptions-item>
-                    <el-descriptions-item label="个性签名">
-                        您还没编辑个性签名
+                    <el-descriptions-item label="联系方式">
+                        18234506649
                     </el-descriptions-item>
                 </el-descriptions>
 
@@ -135,7 +146,7 @@ const { fit, url } = toRefs(state)
     background-color: transparent;
 }
 
-.flex-header {
+.flex-box {
     display: flex;
     gap: 10px;
     align-items: center;
@@ -144,5 +155,25 @@ const { fit, url } = toRefs(state)
 ::v-deep .el-descriptions__body {
     /* 设置基础信息的背景颜色 */
     background-color: transparent;
+}
+
+::v-deep .el-main {
+    padding: 0;
+}
+
+.main {
+    display: flex;
+    text-align: left;
+    align-items: center;
+
+}
+
+.main .bottom-main {
+    padding-left: 20px;
+}
+
+::v-deep .el-input {
+    /* 修改个性签名输入框的宽度 */
+    width: 30%;
 }
 </style>

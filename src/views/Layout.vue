@@ -62,7 +62,7 @@ const sidebarList = [
         id: '6',
         icon: 'Key',
         name: '权限管理',
-        targetPath: '',
+        targetPath: '/rightmanagement',
         childrenList: []
     },
     {
