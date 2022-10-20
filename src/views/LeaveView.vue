@@ -40,6 +40,7 @@ let total = ref();
   leave.value = leaveData.data.list
   leave.value[0].startTime
 })()
+
 </script>
 
 <template>
