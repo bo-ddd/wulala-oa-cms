@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { reactive, ref } from 'vue'
+import { reactive, ref,onMounted } from 'vue'
 import { useRouter } from "vue-router";
 import type { FormInstance } from 'element-plus'
 import axios from '@/assets/api/api';
@@ -62,7 +62,16 @@ const submitForm = (formEl: FormInstance | undefined) => {
         }
     })
 }
-
+//回车自动登录
+onMounted(()=>{
+    document.onkeydown = function(e) {
+      let key=e.key;
+      if(key == "Enter"){
+        console.log(ruleFormRef)
+        submitForm(ruleFormRef.value); //ref对象在js中需要value才能获取到
+      }
+    };
+})
 </script>
 
 <template>
