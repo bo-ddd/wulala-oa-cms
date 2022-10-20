@@ -6,7 +6,8 @@ h2,
 h3,
 h4,
 h5,
-h6 {
+h6,
+p {
     margin: 0;
 }
 
@@ -99,11 +100,21 @@ h6 {
 }
 
 .no-shrink {
-    /* 不被压缩 */
+    /* 弹性盒子中的元素不被压缩 */
     flex-shrink: 0;
 }
 
 .no-selected {
     /* 用户不可选中 */
     user-select: none;
+}
+
+.over-hidden {
+    /* 多余部分隐藏 */
+    overflow: hidden;
+}
+
+.strong {
+    /* 字体加粗 */
+    font-weight: bold;
 }

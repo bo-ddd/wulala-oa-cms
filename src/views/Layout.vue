@@ -214,6 +214,7 @@ const handleClose = (key: string, keyPath: string[]) => {
 
 <style scoped>
 .common-layout {
+    min-width:1154px;
     height: 100vh;
 }
 
@@ -301,6 +302,7 @@ const handleClose = (key: string, keyPath: string[]) => {
 }
 
 .nav {
+    min-width: 998px;
     display: flex;
     width: 100%;
     justify-content: space-between;
@@ -314,12 +316,14 @@ const handleClose = (key: string, keyPath: string[]) => {
 }
 
 .el-main {
+    min-width: 998px;
     border-radius: 15px;
     background-color: #e6f7f7;
 
 }
 
 .footer {
+    min-width: 998px;
     height: 30px;
     display: flex;
     align-items: center;
