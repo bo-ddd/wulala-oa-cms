@@ -13,7 +13,7 @@ interface User {
 
 const handleEdit = async (index: number, row: User) => {
   // console.log(index + 1, row)
-  let status = await axios.leaveListApi({})
+  let status = await axios.getLeaveListApi({})
   status.data.list[0].auditStatus = 1
 }
 
@@ -31,14 +31,20 @@ let leave = ref();
 let pageSize = ref();
 //总条数
 let total = ref();
+//总页数
+let pageNum = ref();
 (async function () {
-  let leaveData = await axios.leaveListApi({})
+  let leaveData = await axios.getLeaveListApi({})
   //页面的条数
   pageSize.value = leaveData.data.pageSize
   //总条数
   total.value = leaveData.data.total
+  //总页数
+  pageNum.value = leaveData.data.pageNum
   leave.value = leaveData.data.list
   leave.value[0].startTime
+  console.log(pageNum.value);
+  
 })()
 
 </script>
@@ -148,6 +154,7 @@ let total = ref();
     :total="total"
     :hide-on-single-page="false"
     v-model:page-size="pageSize"
+    :page-count:="pageNum"
   />
     
 </template>
