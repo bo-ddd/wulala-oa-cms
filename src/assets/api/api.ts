@@ -54,4 +54,10 @@ export default {
      queryUserInfoApi(payload: userInfo) {
         return axios.post('/user/info', payload)
     },
+    /**
+     * 修改用户信息接口
+     * **/
+     updateUserInfoApi(payload: userInfo) {
+        return axios.post('/user/update', payload)
+    },
 }

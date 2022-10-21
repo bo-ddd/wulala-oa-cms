@@ -3,12 +3,7 @@ import { RouterView, useRouter, useRoute } from "vue-router";
 import { ArrowRight, HomeFilled, UserFilled, Checked, Stamp, TrendCharts, Key, Tools } from '@element-plus/icons-vue';
 import { reactive, ref, type Ref } from 'vue';
 import {//顶部导航栏下拉效果;
-    ArrowDown,
-    Check,
-    CircleCheck,
-    CirclePlus,
-    CirclePlusFilled,
-    Plus,
+    ArrowDown
 } from '@element-plus/icons-vue';
 
 //侧边栏导航列表;
@@ -219,7 +214,7 @@ const handleClose = (key: string, keyPath: string[]) => {
 
 <style scoped>
 .common-layout {
-    min-width:1154px;
+    min-width: 1154px;
     height: 100vh;
 }
 
