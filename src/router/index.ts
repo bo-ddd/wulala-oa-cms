@@ -54,6 +54,11 @@ const router = createRouter({
           path: "/submitapplication",
           name: "submitapplication",
           component: () => import("../views/SubmitApplication.vue"),
+        },
+        {//修改个人资料页面;
+          path: "/updatauserinfo",
+          name: "updatauserinfo",
+          component: () => import("../views/UpdataUserInfo.vue"),
         }
       ]
     },
