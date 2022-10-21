@@ -44,6 +44,16 @@ const router = createRouter({
           path: "/rightmanagement",
           name: "rightmanagement",
           component: () => import("../views/RightManagement.vue"),
+        },
+        {//修改头像页面;
+          path: "/updataavatar",
+          name: "updataavatar",
+          component: () => import("../views/UpdataAvatarView.vue"),
+        },
+        {//提交申请页面;
+          path: "/submitapplication",
+          name: "submitapplication",
+          component: () => import("../views/SubmitApplication.vue"),
         }
       ]
     },

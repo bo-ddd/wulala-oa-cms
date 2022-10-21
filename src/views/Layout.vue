@@ -39,8 +39,13 @@ const sidebarList = [
         childrenList: [
             {
                 id: '301',
-                name: '请假',
+                name: '请假审批',
                 targetPath: '/leave'
+            },
+            {
+                id: '302',
+                name: '提交申请',
+                targetPath: '/submitapplication'
             }
         ]
     },
