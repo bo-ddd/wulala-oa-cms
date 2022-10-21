@@ -51,7 +51,7 @@ function leaveStatus() {
     <div>
         <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick">
             <el-tab-pane label="个人资料" name="first">
-                <el-container>  
+                <el-container>
                     <el-aside width="10%">
                         <div class="demo-fit">
                             <div class="block">
