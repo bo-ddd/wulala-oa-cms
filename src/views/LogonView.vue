@@ -74,7 +74,7 @@ const submitForm = (formEl: FormInstance | undefined) => {
     formEl.validate((valid) => {
         if (valid) {
             (async function () {
-                await axios.userRegisterApi({
+                await axios.registerApi({
                     password: ruleForm.password,
                     phoneNumber: ruleForm.phoneNumber,
                     username: ruleForm.username,

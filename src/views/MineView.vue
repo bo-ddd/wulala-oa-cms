@@ -1,10 +1,12 @@
 
 <script setup lang="ts">
 import { ref, type Ref } from 'vue'
+import { useRouter } from 'vue-router';
 import type { TabsPaneContext } from 'element-plus'
 import { reactive, toRefs } from 'vue'
 import { StarFilled } from '@element-plus/icons-vue'
 import { EditPen } from '@element-plus/icons-vue'
+const router = useRouter();
 const activeName = ref('first')
 const handleClick = (tab: TabsPaneContext, event: Event) => {
     console.log(tab, event)
@@ -20,13 +22,29 @@ const state = reactive({
 
 const { fit, url } = toRefs(state);
 
-//修改个性签名功能;
-function updataDisabledStatus() {
+//公共路由跳转方法：
+function to(name: string) {
+    router.push(name)
+}
+
+//切换个性签名编辑状态;
+function openInput() {
     disabled.value = false;
 }
-function handleBlur() {
+function closeInput() {
     disabled.value = true;
 }
+
+//切换头像入口状态;
+const isOver: Ref = ref(false);
+function enterStatus() {
+    isOver.value = true;
+}
+function leaveStatus() {
+    isOver.value = false;
+}
+
+
 </script>
 
 <template>
@@ -38,7 +56,13 @@ function handleBlur() {
                         <div class="demo-fit">
                             <div class="block">
                                 <span class="title">{{ fit }}</span>
-                                <el-avatar shape="circle" :size="100" :fit="fit" :src="url" />
+                                <div class="box" @mouseover="enterStatus" @mouseout="leaveStatus">
+                                    <el-avatar shape="circle" :size="100" :fit="fit" :src="url" />
+                                    <div class="beforeEnter" :class="{blur:isOver}">
+                                        <el-button size="small" text bg link round @click="to('updataAvatar')">修改头像
+                                        </el-button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </el-aside>
@@ -47,14 +71,14 @@ function handleBlur() {
                             <el-header>
                                 <div class="flex-box">
                                     <span class="strong">马格烜</span>
-                                    <el-button type="plain" :icon="EditPen" circle size="small" link />
+                                    <el-button type="plain" :icon="EditPen" circle size="large" link />
                                 </div>
                             </el-header>
                             <el-main class="bottom-main flex-box">
-                                <el-input v-model="text" maxlength="30" placeholder="个性签名" clearable show-word-limit
-                                    type="text" :disabled="disabled" @blur="handleBlur" />
-                                <el-button @click="updataDisabledStatus" type="plain" :icon="EditPen" circle
-                                    size="small" link />
+                                <el-input class="input" v-model="text" maxlength="30" placeholder="个性签名" clearable
+                                    show-word-limit type="text" :disabled="disabled" @blur="closeInput"
+                                    @keyup.enter="closeInput" />
+                                <el-button @click="openInput" type="plain" :icon="EditPen" circle size="large" link />
                             </el-main>
                         </el-container>
                     </el-main>
@@ -68,18 +92,24 @@ function handleBlur() {
                     </el-icon>
                 </el-divider>
                 <el-descriptions title="基础信息" class="mt-20">
+                    <template #extra>
+                        <el-button type="primary" text bg>
+                            <el-icon>
+                                <EditPen />
+                            </el-icon>编辑资料
+                        </el-button>
+                    </template>
+
                     <el-descriptions-item label="年龄">24岁</el-descriptions-item>
                     <el-descriptions-item label="性别">男</el-descriptions-item>
                     <el-descriptions-item label="户籍地">山西临汾</el-descriptions-item>
                     <el-descriptions-item label="标签">
                         <el-tag size="small">有点格调</el-tag>
                     </el-descriptions-item>
-                    <el-descriptions-item label="联系方式">
-                        18234506649
+                    <el-descriptions-item label="个人爱好">
+                        吃瓜
                     </el-descriptions-item>
                 </el-descriptions>
-
-
             </el-tab-pane>
 
 
@@ -175,5 +205,29 @@ function handleBlur() {
 ::v-deep .el-input {
     /* 修改个性签名输入框的宽度 */
     width: 30%;
+}
+
+.beforeEnter {
+    display: none;
+    padding: 40px 0;
+    box-sizing: border-box;
+    text-align: center;
+
+
+}
+
+.blur {
+    display: block;
+    width: 100px;
+    height: 100px;
+    position: absolute;
+    top: 0;
+    backdrop-filter: blur(7px);
+    background-color: rgba(125, 123, 123, 0.2);
+    border-radius: 100px;
+}
+
+.box {
+    position: relative;
 }
 </style>

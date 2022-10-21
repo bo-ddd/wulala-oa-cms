@@ -48,7 +48,7 @@ const input = ref();
 
 let userListData = ref();
 (async function () {
-    let userList = await axios.userListApi({})
+    let userList = await axios.getUserListApi({})
     userListData.value = userList.data.list
 })()
 interface User {
@@ -62,13 +62,13 @@ const userDelete = (index: number, row: User) => {
 }
 // let userInfoData = ref();
 
-const userSearch = function(userId: any) {
+const userSearch = function (userId: any) {
     console.log('------------userId------------');
     console.log(userId)
     console.log('------------ipt--------');
     console.log(input.value);
     (async function () {
-        await axios.userInfoApi(userId)
+        await axios.queryUserInfoApi(userId)
     })()
 }
 </script>
