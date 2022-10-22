@@ -49,7 +49,7 @@ export default {
         return axios.post('/user/list', payload)
     },
     /**
-     * 查询用户接口
+     * 查询用户信息接口
      * **/
      queryUserInfoApi(payload: userInfo) {
         return axios.post('/user/info', payload)
