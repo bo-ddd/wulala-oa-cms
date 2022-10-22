@@ -1,20 +1,18 @@
 <script lang="ts" setup>
 import { reactive } from 'vue'
 import { Calendar } from '@element-plus/icons-vue'
+import axios from '@/assets/api/api'
 // do not use same name with ref
 const form = reactive({
   name: '',
-  region: '',
   date1: '',
   date2: '',
-  delivery: false,
   type: [],
-  resource: '',
   desc: '',
 })
 
 const onSubmit = () => {
-  console.log('submit!')
+  let submitData = axios
 }
 </script>
 
@@ -50,7 +48,7 @@ const onSubmit = () => {
       </el-col>
       <el-col :span="11">
         <el-date-picker
-          v-model="form.date1"
+          v-model="form.date2"
           type="date"
           placeholder="结束时间"
           style="width: 100%"
