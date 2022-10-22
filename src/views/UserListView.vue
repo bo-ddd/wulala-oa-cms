@@ -37,6 +37,7 @@
             </template>
         </el-table-column> -->
     </el-table>
+
     <div class="pagination">
         <el-pagination v-model:currentPage="pageNum" v-model:page-size="pageSize" :page-sizes="[ 5,10, 20, 30, 40]"
             :small="small" :disabled="disabled" :background="background"
@@ -49,26 +50,41 @@
 import { ref } from 'vue'
 import axios from '@/assets/api/api'
 const small = ref(false)
-const background = ref(false)
+const background = ref(true)
 const disabled = ref(false)
 
 const handleSizeChange = (val: number) => {
-    console.log(`${val} items per page`)
+    console.log(`每页${val}条信息`);
+    (async function () {
+        let userList = await axios.getUserListApi({
+            pageSize: val,
+        })
+        userListData.value = userList.data.list;
+        pageSize2 = userList.data.pageSize
+    })()
 }
 const handleCurrentChange = (val: number) => {
-    console.log(`current page: ${val}`)
+    (async function () {
+        let userList = await axios.getUserListApi({
+            pageNum: val,
+            pageSize: pageSize2
+        })
+        userListData.value = userList.data.list;
+    })()
+    console.log(`这是第${val}页`)
+
 }
 const input = ref();
-const pageNum = ref() as unknown as number
-const pageSize = ref() as unknown as number
-let total = ref()
-
+let pageNum = ref() as unknown as number
+let pageSize = ref() as unknown as number
+let total = ref();
+let pageSize2 = ref() as unknown as number
 let userListData = ref();
 
 (async function () {
     let userList = await axios.getUserListApi({})
     userListData.value = userList.data.list;
-    total.value = userList.data.list.length
+    total.value = userList.data.total
 })()
 
 
@@ -83,19 +99,17 @@ const userDelete = (index: number, row: User) => {
 }
 let userInfoData = ref();
 
-const userSearch = function (userId: any) {
-    console.log('------------userId------------');
-    console.log(userId)
-    console.log('------------ipt--------');
-    console.log(input.value);
+const userSearch = function (id: any) {
     (async function () {
-        await axios.queryUserInfoApi(userId).then(res => {
-            if (res.data.userId === userId) {
-                userInfoData = res.data
-                console.log('---------ssss------------');
-                console.log(res.data);
-            }
+        await axios.queryUserInfoApi(id).then(res => {
+            if (res.data.userId == id) {
+                userInfoData.value = res.data
 
+                console.log('-----查询成功----------');
+                console.log(userInfoData.value);
+            } else {
+                alert('查询失败')
+            }
         })
     })()
 }
