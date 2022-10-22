@@ -53,32 +53,46 @@ const small = ref(false)
 const background = ref(true)
 const disabled = ref(false)
 
-const handleSizeChange = (val: number) => {
+const handleSizeChange = async (val: number) => {
     console.log(`每页${val}条信息`);
-    (async function () {
-        let userList = await axios.getUserListApi({
-            pageSize: val,
-        })
-        userListData.value = userList.data.list;
-        pageSize2 = userList.data.pageSize
-    })()
-}
-const handleCurrentChange = (val: number) => {
-    (async function () {
-        let userList = await axios.getUserListApi({
-            pageNum: val,
-            pageSize: pageSize2
-        })
-        userListData.value = userList.data.list;
-    })()
-    console.log(`这是第${val}页`)
+    // await axios.getUserListApi({
+    //     pageSize: val,
+    // }).then(res => {
+    //     if (res.status === 1) {
+    //         userListData.value = res.data.list;
+    //     }
+    // })
+    await getUserList(pageSize.value, pageNum.value)
 
+    pageSize.value = val
+}
+const handleCurrentChange = async (val: number) => {
+    console.log(`这是第${val}页`)
+    // await axios.getUserListApi({
+    //     pageNum: val,
+    //     pageSize: pageSize.value
+    // }).then(res => {
+    //     if (res.status === 1) {
+    //         userListData.value = res.data.list;
+    //     }
+    // })
+    await getUserList(pageSize.value, pageNum.value)
+    pageNum.value = val
+}
+const getUserList = (pageSize?: number, pageNum?: number) => {
+    axios.getUserListApi({
+        pageNum: pageNum,
+        pageSize: pageSize
+    }).then(res => {
+        if (res.status === 1) {
+            userListData.value = res.data.list;
+        }
+    })
 }
 const input = ref();
-let pageNum = ref() as unknown as number
-let pageSize = ref() as unknown as number
+let pageNum = ref(1);
+let pageSize = ref(10);
 let total = ref();
-let pageSize2 = ref() as unknown as number
 let userListData = ref();
 
 (async function () {
