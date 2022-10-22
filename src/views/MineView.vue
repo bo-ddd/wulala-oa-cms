@@ -93,7 +93,7 @@ function leaveStatus() {
                 </el-divider>
                 <el-descriptions title="基础信息" class="mt-20">
                     <template #extra>
-                        <el-button type="primary" text bg>
+                        <el-button type="primary" text bg @click="to('/updatauserinfo')">
                             <el-icon>
                                 <EditPen />
                             </el-icon>编辑资料

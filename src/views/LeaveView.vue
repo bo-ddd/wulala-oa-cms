@@ -33,6 +33,14 @@ let pageSize = ref();
 let total = ref();
 //总页数
 let pageNum = ref();
+//小时
+let hour = ref();
+//总时长
+let duration = ref();
+
+let startTime1 = ref();
+
+let endTime1 = ref();
 (async function () {
   let leaveData = await axios.getLeaveListApi({})
   //页面的条数
@@ -41,10 +49,27 @@ let pageNum = ref();
   total.value = leaveData.data.total
   //总页数
   pageNum.value = leaveData.data.pageNum
+  //渲染列表的数据
   leave.value = leaveData.data.list
   leave.value[0].startTime
-  console.log(pageNum.value);
-  
+
+  //获取总时长
+  let startTime = new Date(leaveData.data.list[0].startTime).getTime()
+  let endTime = new Date(leaveData.data.list[0].endTime).getTime()
+  let duration1 = endTime - startTime;
+  duration.value = Math.ceil(hour.value = duration1/1000/60/60%24)
+  //获取开始时间
+  let Y = new Date(leaveData.data.list[0].startTime).getFullYear()
+  let M = new Date(leaveData.data.list[0].startTime).getMonth()+1
+  let D = new Date(leaveData.data.list[0].startTime).getDay()+1
+  let H = new Date(leaveData.data.list[0].startTime).getHours()+1
+  startTime1.value = Y + '-' + M + '-' + D + '-' + H
+  //获取结束时间
+  let Y1 = new Date(leaveData.data.list[0].endTime).getFullYear()
+  let M1 = new Date(leaveData.data.list[0].endTime).getMonth()+1
+  let D1 = new Date(leaveData.data.list[0].endTime).getDay()+1
+  let H1 = new Date(leaveData.data.list[0].endTime).getHours()+1
+  endTime1.value = Y1 + '-' + M1 + '-' + D1 + '-' + H1
 })()
 
 </script>
@@ -76,7 +101,7 @@ let pageNum = ref();
     <el-table-column label="开始时间">
       <template #default="scope">
         <div style="display: flex; align-items: center;justify-content: center;">
-          <span style="margin-left: 10px">{{ scope.row.startTime.split('T')[0] }}</span>
+          <span style="margin-left: 10px">{{ startTime1 }}</span>
         </div>
       </template>
     </el-table-column>
@@ -84,7 +109,15 @@ let pageNum = ref();
     <el-table-column label="结束时间">
       <template #default="scope">
         <div style="display: flex; align-items: center;justify-content: center;">
-          <span style="margin-left: 10px">{{ scope.row.endTime.split('T')[0] }}</span>
+          <span style="margin-left: 10px">{{ endTime1 }}</span>
+        </div>
+      </template>
+    </el-table-column>
+
+    <el-table-column label="时长">
+      <template #default="scope">
+        <div style="display: flex; align-items: center;justify-content: center;">
+          <span style="margin-left: 10px">{{ duration }}</span>
         </div>
       </template>
     </el-table-column>
