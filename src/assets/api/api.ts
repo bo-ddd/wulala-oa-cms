@@ -17,6 +17,10 @@ interface createLeave{
      startTime: string;
      endTime: string;
     }
+interface examineUserLeave{
+    id:number,
+    auditStatus:number
+    }
    
 export default {
     /**
@@ -41,11 +45,11 @@ export default {
         return axios.post('/user/leave/create', payload)
     },
     /**
-     * 用户注册接口*
+     * 用户注册接口*  
      * "username": //用户名，6-20位之间
      * "password":  //密码，6-20位之间
      *  avatarName": //昵称，1-12位之间
-     *  "phoneNumber":  //手机号*/
+     * "phoneNumber":  //手机号*/
     registerApi(payload: userRegister) {
         return axios.post('/user/register', payload)
     },
@@ -87,9 +91,61 @@ export default {
     },
        /**
      * 请假审核接口
+     * params: id:
+     * params: auditStatus:
      * **/
-        examineUserLeaveApi(payload={}) {
+        examineUserLeaveApi(payload:examineUserLeave) {
             return axios.post('/user/leave/examine', payload)
+        },
+       /**
+     * 给用户添加角色接口
+     * params: userId": 1, 
+     * params: "roleId": 1 
+     * **/
+        addUserRoleApi(payload={}) {
+            return axios.post('/user/addRole', payload)
+        },
+   
+       /**
+     * 删除用户角色接口
+     * **/
+        deleteUserRoleApi(payload={}) {
+            return axios.post('/user/deleteRole', payload)
+        },
+       /**
+     * 查询用户权限列表接口
+     * params  userId": 1 
+     * **/
+        permissionUserListApi(payload={}) {
+            return axios.post('/user/permission/list', payload)
+        },
+       /**
+     * 创建角色接口
+     * params  roleName": string
+     * **/
+        createRoleApi(payload={}) {
+            return axios.post('/role/create', payload)
+        },
+       /**
+     * 获取角色列表接口
+     * **/
+        getRoleListApi(payload={}) {
+            return axios.post('/role/list', payload)
+        },
+       /**
+     *给角色添加权限接口
+     * params  roleId": number
+     * params  permissionId": number
+     * **/
+     addPermissionRoleApi(payload={}) {
+            return axios.post('/role/addPermission', payload)
+        },
+       /**
+     *删除角色对应权限接口
+     * params  Id": number
+     * **/
+     deletePermissionRoleApi(payload={}) {
+            return axios.post('/role/deletePermission', payload)
         },
    
 
