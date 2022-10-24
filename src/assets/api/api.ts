@@ -79,6 +79,12 @@ export default {
     deletePermissionApi(payload={}) {
         return axios.post('/permission/delete', payload)
     },
+       /**
+     * 请假审核接口
+     * **/
+        examineUserLeaveApi(payload={}) {
+            return axios.post('/user/leave/examine', payload)
+        },
    
 
 }
