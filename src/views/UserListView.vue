@@ -12,6 +12,13 @@
                 <div>{{ scope.row.userId }}</div>
             </template>
         </el-table-column>
+
+        <!-- <el-table-column label="用户头像" align="center">
+            <template #default="scope">
+                <div><img src="{{scope.row.avatarImg}}" alt=""></div>
+            </template>
+        </el-table-column> -->
+
         <el-table-column label="用户昵称" align="center">
             <template #default="scope">
                 <div>{{ scope.row.avatarName }}</div>
@@ -32,14 +39,14 @@
         <el-table-column label="操作" width="300" align='center'>
             <template #default="scope">
                 <el-button size="small">修改信息</el-button>
-                <el-button size="small" type="danger" @click="userDelete(scope.$index, scope.row)">删除
-                </el-button>
+                <!-- <el-button size="small" type="danger" @click="userDelete(scope.$index, scope.row)">删除 
+                </el-button> -->
             </template>
-        </el-table-column> -->
+        </el-table-column>
     </el-table>
 
     <div class="pagination">
-        <el-pagination v-model:currentPage="pageNum" v-model:page-size="pageSize" :page-sizes="[ 5,10, 20, 30, 40]"
+        <el-pagination v-model:currentPage="pageNum" v-model:page-size="pageSize" :page-sizes="[5, 10, 20, 30, 40]"
             :small="small" :disabled="disabled" :background="background"
             layout="total, sizes, prev, pager, next, jumper" :total="total" @size-change="handleSizeChange"
             @current-change="handleCurrentChange" />
@@ -55,27 +62,11 @@ const disabled = ref(false)
 
 const handleSizeChange = async (val: number) => {
     console.log(`每页${val}条信息`);
-    // await axios.getUserListApi({
-    //     pageSize: val,
-    // }).then(res => {
-    //     if (res.status === 1) {
-    //         userListData.value = res.data.list;
-    //     }
-    // })
     await getUserList(pageSize.value, pageNum.value)
-
     pageSize.value = val
 }
 const handleCurrentChange = async (val: number) => {
     console.log(`这是第${val}页`)
-    // await axios.getUserListApi({
-    //     pageNum: val,
-    //     pageSize: pageSize.value
-    // }).then(res => {
-    //     if (res.status === 1) {
-    //         userListData.value = res.data.list;
-    //     }
-    // })
     await getUserList(pageSize.value, pageNum.value)
     pageNum.value = val
 }
@@ -113,19 +104,18 @@ const userDelete = (index: number, row: User) => {
 }
 let userInfoData = ref();
 
-const userSearch = function (id: any) {
-    (async function () {
-        await axios.queryUserInfoApi(id).then(res => {
-            if (res.data.userId == id) {
-                userInfoData.value = res.data
-
-                console.log('-----查询成功----------');
-                console.log(userInfoData.value);
-            } else {
-                alert('查询失败')
-            }
-        })
-    })()
+const userSearch = async (id: any) => {
+    axios.queryUserInfoApi({
+        userId: id
+    }).then(res => {
+        if (res.data.status == 1) {
+            userInfoData.value = res.data
+            console.log('-----查询成功----------');
+            console.log(res.data);
+        } else {
+            alert('查询失败')
+        }
+    })
 }
 </script>
 
