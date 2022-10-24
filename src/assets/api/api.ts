@@ -62,7 +62,23 @@ export default {
         return axios.post('/user/update', payload)
     },
     /**
-     * 接口
+     * 获取权限列表的接口
      * **/
+     getPermissionListApi(payload={}) {
+        return axios.post('/permission/list', payload)
+    },
+    /**
+     * 新增权限的接口
+     * params: "permissionName": "人员管理" **/
+     addPermissionApi(payload={}) {
+        return axios.post('/permission/add', payload)
+    },
+    /**
+     * 删除权限的接口
+     * params: "id" 用户 id**/
+    deletePermissionApi(payload={}) {
+        return axios.post('/permission/delete', payload)
+    },
+   
 
 }
