@@ -26,13 +26,19 @@ const handleDelete = (index: number, row: User) => {
   row.auditStatus = 2;
 }
 
+
+
+
+
+
+
 let leave = ref();
 //页面的条数
-let pageSize = ref();
+let pageSize = ref(10);
 //总条数
 let total = ref();
 //总页数
-let pageNum = ref();
+let pageNum = ref(1);
 //小时
 let hour = ref();
 //总时长
@@ -41,6 +47,11 @@ let duration = ref();
 let startTime1 = ref();
 
 let endTime1 = ref();
+
+// const pageNum = ref(1);
+// const pageSize = ref(10);
+const small = ref(false);
+const disabled = ref(false);
 (async function () {
   let leaveData = await axios.getLeaveListApi({})
   //页面的条数
@@ -72,6 +83,19 @@ let endTime1 = ref();
   endTime1.value = Y1 + '-' + M1 + '-' + D1 + '-' + H1
 })()
 
+const handleSizeChange = (val: number) => {
+  console.log(`${val} items per page`);
+  (async function(){
+    let leaveData = await axios.getLeaveListApi({
+      pageSize:val
+    })
+    leave.value = leaveData.data.list
+  })()
+}
+
+const handleCurrentChange = (val: number) => {
+  console.log(`current page: ${val}`)
+}
 </script>
 
 <template>
@@ -181,14 +205,20 @@ let endTime1 = ref();
     
   </el-table>
 
-  <el-pagination
-    background
-    layout="prev, pager, next"
-    :total="total"
-    :hide-on-single-page="false"
-    v-model:page-size="pageSize"
-    :page-count:="pageNum"
-  />
+  <div class="demo-pagination-block">
+    <el-pagination
+      v-model:currentPage="pageNum"
+      v-model:page-size="pageSize"
+      :page-sizes="[5, 10, 15, 20]"
+      :small="small"
+      :disabled="disabled"
+      :background="true"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="total"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+    />
+  </div>
     
 </template>
 
