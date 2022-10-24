@@ -1,48 +1,21 @@
-<script lang="ts" setup>
-import { reactive } from 'vue'
-import { Calendar } from '@element-plus/icons-vue'
-import axios from '@/assets/api/api'
-// do not use same name with ref
-const form = reactive({
-  userId: '',
-  startTime: '',
-  endTime: '',
-  type: [],
-  reason: '',
-})
-
-const onSubmit = () => {
-    // let userInfo = axios.queryUserInfoApi({
-    //   userId = form.userId
-    // });
-    let submitData = axios.createLeaveApi({})
-    
-  
-}
-</script>
-
-    <template>
-
-  <el-tabs type="border-card" class="demo-tabs">
-
-    <el-tab-pane>
-
-      <template #label>
-        <span class="custom-tabs-label">
-          <el-icon><calendar /></el-icon>
-          <span>请假申请</span>
-        </span>
-      </template>
-
-      <el-form :model="form" label-width="120px">
-    <el-form-item label="昵称">
-      <el-input v-model="form.userId" />
+<template>
+  <el-form
+    ref="ruleFormRef"
+    :model="ruleForm"
+    :rules="rules"
+    label-width="120px"
+    class="demo-ruleForm"
+    :size="formSize"
+    status-icon
+  >
+    <el-form-item label="Activity name" prop="name">
+      <el-input v-model="ruleForm.name" />
     </el-form-item>
-    
+   
     <el-form-item label="请假时间">
       <el-col :span="11">
         <el-date-picker
-          v-model="form.startTime"
+          v-model="ruleForm.date1"
           type="date"
           placeholder="开始时间"
           style="width: 100%"
@@ -53,7 +26,7 @@ const onSubmit = () => {
       </el-col>
       <el-col :span="11">
         <el-date-picker
-          v-model="form.endTime"
+          v-model="ruleForm.date2"
           type="date"
           placeholder="结束时间"
           style="width: 100%"
@@ -61,41 +34,93 @@ const onSubmit = () => {
       </el-col>
     </el-form-item>
    
-    <el-form-item label="请假原因">
-      <el-input v-model="form.reason" type="textarea" />
+    <el-form-item label="Activity form" prop="desc">
+      <el-input v-model="ruleForm.desc" type="textarea" />
     </el-form-item>
     <el-form-item>
-      <el-button type="primary" @click="onSubmit">提交申请</el-button>
-      <el-button>取消</el-button>
+      <el-button type="primary" @click="submitForm(ruleFormRef)"
+        >Create</el-button
+      >
+      <el-button @click="resetForm(ruleFormRef)">Reset</el-button>
     </el-form-item>
   </el-form>
-    </el-tab-pane>
-    <el-tab-pane label="Config">Config</el-tab-pane>
-    <el-tab-pane label="Role">Role</el-tab-pane>
-    <el-tab-pane label="Task">Task</el-tab-pane>
-  </el-tabs>
-
-
-
-
 </template>
 
+<script lang="ts" setup>
+import { reactive, ref } from 'vue'
+import type { FormInstance, FormRules } from 'element-plus'
+import axios from '@/assets/api/api'
 
+const formSize = ref('default')
+const ruleFormRef = ref<FormInstance>()
+console.log(ruleFormRef);
 
+const ruleForm = reactive({
+  name: '',
+  date1: '',
+  date2: '',
+  type: [],
+  desc: '',
+})
+
+const rules = reactive<FormRules>({
+  name: [
+    { required: true, message: 'Please input Activity name', trigger: 'blur' },
+    { min: 3, max: 5, message: 'Length should be 3 to 5', trigger: 'blur' },
+  ],
+  date1: [
+    {
+      type: 'date',
+      required: true,
+      message: 'Please pick a date',
+      trigger: 'change',
+    },
+  ],
+  date2: [
+    {
+      type: 'date',
+      required: true,
+      message: 'Please pick a time',
+      trigger: 'change',
+    },
+  ],
+  type: [
+    {
+      type: 'array',
+      required: true,
+      message: 'Please select at least one activity type',
+      trigger: 'change',
+    },
+  ],
+  desc: [
+    { required: true, message: 'Please input activity form', trigger: 'blur' },
+  ],
+})
+
+const submitForm = (formEl: FormInstance | undefined) => {
+  if (!formEl) return
+   formEl.validate(async (valid, fields) => {
+    if (valid) {
+      console.log('submit!');
+      let userInfo = await axios.createLeaveApi({});
+      ruleForm.name = userInfo.data.userId
+    } else {
+      console.log('error submit!', fields)
+    }
+  })
+}
+
+const resetForm = (formEl: FormInstance | undefined) => {
+  if (!formEl) return
+  formEl.resetFields()
+}
+
+const options = Array.from({ length: 10000 }).map((_, idx) => ({
+  value: `${idx + 1}`,
+  label: `${idx + 1}`,
+}))
+</script>
 <style scoped>
-.demo-tabs > .el-tabs__content {
-  padding: 32px;
-  color: #6b778c;
-  font-size: 32px;
-  font-weight: 600;
-}
-.demo-tabs .custom-tabs-label .el-icon {
-  vertical-align: middle;
-}
-.demo-tabs .custom-tabs-label span {
-  vertical-align: middle;
-  margin-left: 4px;
-}
 .text-center{
   text-align: center;
 }
