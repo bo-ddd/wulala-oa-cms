@@ -66,11 +66,6 @@ onMounted(() => {
 .el-calendar-table {
   height: var(--el-calendar-cell-width);
 }
-
-/* .chart {
-  width: 100px;
-  border: 1px solid #ccc;
-} */
 .box{
    margin-bottom: 10px;
 }
