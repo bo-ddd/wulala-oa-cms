@@ -11,9 +11,6 @@ interface userList {
     pageNum?: number,
     pageSize?: number
 }
-interface userInfo {
-    userId: number
-}
 
 export default {
     /**
@@ -22,7 +19,11 @@ export default {
         return axios.post('/user/login', payload)
     },
     /**
-    * 获取请假列表接口**/
+    * 获取请假列表接口*
+    * params "userId": 1, //用户id
+             "reason": "世界那么大，我想去看看",  //请假原因
+             "startTime": 1280977330000,
+             "endTime": 128097743000*/
 
     getLeaveListApi(payload = {}) {
         return axios.post('/user/leave/list', payload)
@@ -51,13 +52,17 @@ export default {
     /**
      * 查询用户信息接口
      * **/
-     queryUserInfoApi(payload: userInfo) {
+    queryUserInfoApi(payload={}) {
         return axios.post('/user/info', payload)
     },
     /**
      * 修改用户信息接口
      * **/
-     updateUserInfoApi(payload: userInfo) {
+    updateUserInfoApi(payload={}) {
         return axios.post('/user/update', payload)
     },
+    /**
+     * 接口
+     * **/
+
 }
