@@ -4,15 +4,20 @@ import { Calendar } from '@element-plus/icons-vue'
 import axios from '@/assets/api/api'
 // do not use same name with ref
 const form = reactive({
-  name: '',
-  date1: '',
-  date2: '',
+  userId: '',
+  startTime: '',
+  endTime: '',
   type: [],
-  desc: '',
+  reason: '',
 })
 
 const onSubmit = () => {
-  let submitData = axios
+    // let userInfo = axios.queryUserInfoApi({
+    //   userId = form.userId
+    // });
+    let submitData = axios.createLeaveApi({})
+    
+  
 }
 </script>
 
@@ -31,13 +36,13 @@ const onSubmit = () => {
 
       <el-form :model="form" label-width="120px">
     <el-form-item label="昵称">
-      <el-input v-model="form.name" />
+      <el-input v-model="form.userId" />
     </el-form-item>
     
     <el-form-item label="请假时间">
       <el-col :span="11">
         <el-date-picker
-          v-model="form.date1"
+          v-model="form.startTime"
           type="date"
           placeholder="开始时间"
           style="width: 100%"
@@ -48,7 +53,7 @@ const onSubmit = () => {
       </el-col>
       <el-col :span="11">
         <el-date-picker
-          v-model="form.date2"
+          v-model="form.endTime"
           type="date"
           placeholder="结束时间"
           style="width: 100%"
@@ -57,7 +62,7 @@ const onSubmit = () => {
     </el-form-item>
    
     <el-form-item label="请假原因">
-      <el-input v-model="form.desc" type="textarea" />
+      <el-input v-model="form.reason" type="textarea" />
     </el-form-item>
     <el-form-item>
       <el-button type="primary" @click="onSubmit">提交申请</el-button>
