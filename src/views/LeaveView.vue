@@ -12,8 +12,7 @@ interface User {
 }
 
 const handleEdit = async (index: number, row: User) => {
-  // console.log(index + 1, row)
-  let status = await axios.getLeaveListApi({})
+  let status = await axios.examineUserLeaveApi({})
   status.data.list[0].auditStatus = 1
 }
 
@@ -25,11 +24,6 @@ const handleDelete = (index: number, row: User) => {
   // console.log(index + 1, row)
   row.auditStatus = 2;
 }
-
-
-
-
-
 
 
 let leave = ref();

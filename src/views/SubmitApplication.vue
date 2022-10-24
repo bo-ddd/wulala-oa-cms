@@ -9,7 +9,7 @@
     status-icon
   >
     <el-form-item label="Activity name" prop="name">
-      <el-input v-model="ruleForm.name" />
+      <el-input v-model="ruleForm.name" readonly=“readonly” />
     </el-form-item>
    
     <el-form-item label="请假时间">
@@ -53,7 +53,6 @@ import axios from '@/assets/api/api'
 
 const formSize = ref('default')
 const ruleFormRef = ref<FormInstance>()
-console.log(ruleFormRef);
 
 const ruleForm = reactive({
   name: '',
@@ -64,10 +63,10 @@ const ruleForm = reactive({
 })
 
 const rules = reactive<FormRules>({
-  name: [
-    { required: true, message: 'Please input Activity name', trigger: 'blur' },
-    { min: 3, max: 5, message: 'Length should be 3 to 5', trigger: 'blur' },
-  ],
+  // name: [
+  //   { required: true, message: 'Please input Activity name', trigger: 'blur' },
+  //   { min: 1, max: 3, message: 'Length should be 3 to 5', trigger: 'blur' },
+  // ],
   date1: [
     {
       type: 'date',
@@ -95,15 +94,26 @@ const rules = reactive<FormRules>({
   desc: [
     { required: true, message: 'Please input activity form', trigger: 'blur' },
   ],
-})
+});
+
+(async function(){
+let userId = await axios.queryUserInfoApi({});
+ruleForm.name = userId.data.userId
+})();
 
 const submitForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return
    formEl.validate(async (valid, fields) => {
     if (valid) {
       console.log('submit!');
-      let userInfo = await axios.createLeaveApi({});
-      ruleForm.name = userInfo.data.userId
+      let userInfo = await axios.createLeaveApi({
+        userId : ruleForm.name,
+        reason : ruleForm.desc,
+        startTime : ruleForm.date1,
+        endTime : ruleForm.date2,
+      });
+      console.log(userInfo.data.userId);
+      
     } else {
       console.log('error submit!', fields)
     }
@@ -115,10 +125,6 @@ const resetForm = (formEl: FormInstance | undefined) => {
   formEl.resetFields()
 }
 
-const options = Array.from({ length: 10000 }).map((_, idx) => ({
-  value: `${idx + 1}`,
-  label: `${idx + 1}`,
-}))
 </script>
 <style scoped>
 .text-center{
