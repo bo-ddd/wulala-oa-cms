@@ -22,6 +22,7 @@ $http.interceptors.request.use(function (config) {
   return Promise.reject(error);
 });
 
+
 // 添加响应拦截器
 $http.interceptors.response.use(function (response) {
   // 2xx 范围内的状态码都会触发该函数。

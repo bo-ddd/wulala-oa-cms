@@ -1,73 +1,56 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
+import {useRouter} from 'vue-router'
 import type { FormInstance, FormRules } from 'element-plus'
+import { ArrowLeft } from '@element-plus/icons-vue';
 
+const router=useRouter();
+const to=(name:string)=>{
+    router.push(name)
+}
+
+//form表单
 const formSize = ref('default')
 const ruleFormRef = ref<FormInstance>()
 const ruleForm = reactive({
-    name: 'Hello',
-    region: '',
-    count: '',
-    date1: '',
-    date2: '',
-    delivery: false,
-    type: [],
+    name: '',
+    date: '',
+    tags: [],
     resource: '',
     desc: '',
 })
 
+//form表单校验规则
 const rules = reactive<FormRules>({
     name: [
-        { required: true, message: 'Please input Activity name', trigger: 'blur' },
-        { min: 3, max: 5, message: 'Length should be 3 to 5', trigger: 'blur' },
-    ],
-    region: [
-        {
-            required: true,
-            message: 'Please select Activity zone',
-            trigger: 'change',
-        },
-    ],
-    count: [
-        {
-            required: true,
-            message: 'Please select Activity count',
-            trigger: 'change',
-        },
-    ],
-    date1: [
-        {
-            type: 'date',
-            required: true,
-            message: 'Please pick a date',
-            trigger: 'change',
-        },
-    ],
-    date2: [
-        {
-            type: 'date',
-            required: true,
-            message: 'Please pick a time',
-            trigger: 'change',
-        },
-    ],
-    type: [
-        {
-            type: 'array',
-            required: true,
-            message: 'Please select at least one activity type',
-            trigger: 'change',
-        },
+        { required: true, message: '请输入昵称', trigger: 'blur' },
+        { min: 0, max: 7, message: '长度必须在0-7位字符之间', trigger: 'blur' },
     ],
     resource: [
         {
             required: true,
-            message: 'Please select activity resource',
+            message: '请选择性别',
+            trigger: 'change',
+        },
+    ],
+    date: [
+        {
+            type: 'date',
+            required: true,
+            message: '请选择您的生日',
+            trigger: 'blur',
+        },
+    ],
+    tags: [
+        {
+            type: 'array',
+            required: false,
+            message: '挑选你喜欢的个性标签',
             trigger: 'change',
         },
     ],
     desc: [
-        { required: true, message: 'Please input activity form', trigger: 'blur' },
+        { required: false, message: '请', trigger: 'blur' },
     ],
 })
 
@@ -96,56 +79,47 @@ const options = Array.from({ length: 10000 }).map((_, idx) => ({
 
 <template>
     <div>
-        <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" label-width="120px" class="demo-ruleForm"
+        <el-page-header :icon="ArrowLeft" title="返回" @back="to('mine')">
+            <template #content>
+                <span class="text-large font-600 mr-3"> 编辑资料 </span>
+            </template>
+        </el-page-header>
+        <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" label-width="120px" class="demo-ruleForm mt-24"
             :size="formSize" status-icon>
-            <el-form-item label="姓名" prop="name">
+            <el-form-item label="姓名" prop="name" class="name-label">
                 <el-input v-model="ruleForm.name" />
             </el-form-item>
-            <el-form-item label="性别" prop="region">
-                <el-select v-model="ruleForm.region" placeholder="性别">
-                    <el-option label="男" value="shanghai" />
-                    <el-option label="女" value="beijing" />
-                </el-select>
-            </el-form-item>
-            <!-- <el-form-item label="Activity count" prop="count">
-                <el-select-v2 v-model="ruleForm.count" placeholder="Activity count" :options="options" />
-            </el-form-item> -->
-            <el-form-item label="生日" required>
-                <el-col :span="11">
-                    <el-form-item prop="date1">
-                        <el-date-picker v-model="ruleForm.date1" type="date" label="Pick a date"
-                            placeholder="选择日期" style="width: 100%" />
-                    </el-form-item>
-                </el-col>
-                <!-- <el-col class="text-center" :span="2">
-                    <span class="text-gray-500">-</span>
-                </el-col>
-                <el-col :span="11">
-                    <el-form-item prop="date2">
-                        <el-time-picker v-model="ruleForm.date2" label="Pick a time" placeholder="Pick a time"
-                            style="width: 100%" />
-                    </el-form-item>
-                </el-col> -->
-            </el-form-item>
-            <el-form-item label="Instant delivery" prop="delivery">
-                <el-switch v-model="ruleForm.delivery" />
-            </el-form-item>
-            <el-form-item label="Activity type" prop="type">
-                <el-checkbox-group v-model="ruleForm.type">
-                    <el-checkbox label="Online activities" name="type" />
-                    <el-checkbox label="Promotion activities" name="type" />
-                    <el-checkbox label="Offline activities" name="type" />
-                    <el-checkbox label="Simple brand exposure" name="type" />
-                </el-checkbox-group>
-            </el-form-item>
-            <el-form-item label="Resources" prop="resource">
+            <el-form-item label="性别" prop="resource" class="mt-20">
                 <el-radio-group v-model="ruleForm.resource">
-                    <el-radio label="Sponsorship" />
-                    <el-radio label="Venue" />
+                    <el-radio label="男" />
+                    <el-radio label="女" />
                 </el-radio-group>
             </el-form-item>
-            <el-form-item label="Activity form" prop="desc">
-                <el-input v-model="ruleForm.desc" type="textarea" />
+
+            <el-form-item label="生日" required class="birthday-label mt-20">
+                <el-col :span="11">
+                    <el-form-item prop="date">
+                        <el-date-picker v-model="ruleForm.date" type="date" label="Pick a date" placeholder="选择日期"
+                            style="width: 100%" />
+                    </el-form-item>
+                </el-col>
+            </el-form-item>
+
+            <el-form-item label="标签(非必选)" prop="tags"  class="mt-20">
+                <el-checkbox-group v-model="ruleForm.tags">
+                    <el-checkbox label="夜猫子协会常任理事" name="tags" />
+                    <el-checkbox label="顶级外卖鉴赏师" name="tags" />
+                    <el-checkbox label="秃头选拔赛形象大使" name="tags" />
+                    <el-checkbox label="互联网冲浪金牌选手" name="tags" />
+                    <el-checkbox label="退役熬夜选手" name="tags" />
+                    <el-checkbox label="P图竞赛金奖获得者" name="tags" />
+                    <el-checkbox label="花式作死冠军" name="tags" />
+                    <el-checkbox label="魔芋爽" name="tags" />
+                </el-checkbox-group>
+            </el-form-item>
+            
+            <el-form-item label="个性签名" prop="desc" class="desc  mt-20">
+                <el-input v-model="ruleForm.desc" type="text" />
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" @click="submitForm(ruleFormRef)">Create</el-button>
@@ -156,5 +130,18 @@ const options = Array.from({ length: 10000 }).map((_, idx) => ({
 </template>
 
 <style scoped>
+.name-label {
+    width: 250px;
+}
 
+.sex-label {
+    width: 250px;
+}
+
+.birthday-label {
+    width: 500px;
+}
+.desc{
+    width:500px;
+}
 </style>
