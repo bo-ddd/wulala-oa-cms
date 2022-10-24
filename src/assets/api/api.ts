@@ -12,11 +12,12 @@ interface userList {
     pageSize?: number
 }
 interface createLeave{
-     userId: number;
+     userId: string;
      reason: string;
-     startTime: number;
-     endTime: number;
+     startTime: string;
+     endTime: string;
     }
+   
 export default {
     /**
     * 登录接口**/
