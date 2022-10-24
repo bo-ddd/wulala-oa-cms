@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
-import {useRouter} from 'vue-router'
+import { useRouter } from 'vue-router'
 import type { FormInstance, FormRules } from 'element-plus'
 import { ArrowLeft } from '@element-plus/icons-vue';
 
-const router=useRouter();
-const to=(name:string)=>{
+const router = useRouter();
+const to = (name: string) => {
     router.push(name)
 }
 
@@ -18,13 +18,14 @@ const ruleForm = reactive({
     tags: [],
     resource: '',
     desc: '',
+    hobby: ''
 })
 
 //form表单校验规则
 const rules = reactive<FormRules>({
     name: [
         { required: true, message: '请输入昵称', trigger: 'blur' },
-        { min: 0, max: 7, message: '长度必须在0-7位字符之间', trigger: 'blur' },
+        { min: 1, max: 7, message: '长度必须在1-7位字符之间', trigger: 'blur' },
     ],
     resource: [
         {
@@ -50,17 +51,22 @@ const rules = reactive<FormRules>({
         },
     ],
     desc: [
-        { required: false, message: '请', trigger: 'blur' },
+        { required: false, message: '请填写您的个性签名', trigger: 'blur' },
+        { min: 1, max: 30, message: '长度必须在1-30位字符之间', trigger: 'blur' },
     ],
+    hobby: [
+        { required: true, message: '请填写您的个人爱好', trigger: 'blur' },
+        { min: 1, max: 30, message: '长度必须在1-30位字符之间', trigger: 'blur' },
+    ]
 })
 
 const submitForm = async (formEl: FormInstance | undefined) => {
     if (!formEl) return
     await formEl.validate((valid, fields) => {
         if (valid) {
-            console.log('submit!')
+            console.log('修改成功')
         } else {
-            console.log('error submit!', fields)
+            console.log('修改失败', fields)
         }
     })
 }
@@ -86,7 +92,7 @@ const options = Array.from({ length: 10000 }).map((_, idx) => ({
         </el-page-header>
         <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" label-width="120px" class="demo-ruleForm mt-24"
             :size="formSize" status-icon>
-            <el-form-item label="姓名" prop="name" class="name-label">
+            <el-form-item label="昵称" prop="name" class="name-label">
                 <el-input v-model="ruleForm.name" />
             </el-form-item>
             <el-form-item label="性别" prop="resource" class="mt-20">
@@ -105,7 +111,15 @@ const options = Array.from({ length: 10000 }).map((_, idx) => ({
                 </el-col>
             </el-form-item>
 
-            <el-form-item label="标签(非必选)" prop="tags"  class="mt-20">
+            <el-form-item label="个人爱好" prop="hobby" class="hobby  mt-20">
+                <el-input v-model="ruleForm.hobby" type="text" placeholder="如吃瓜，户外运动" />
+            </el-form-item>
+
+            <el-form-item label="个性签名" prop="desc" class="desc  mt-20">
+                <el-input v-model="ruleForm.desc" type="text" placeholder="非必填项" />
+            </el-form-item>
+
+            <el-form-item label="标签(非必选)" prop="tags" class="mt-20">
                 <el-checkbox-group v-model="ruleForm.tags">
                     <el-checkbox label="夜猫子协会常任理事" name="tags" />
                     <el-checkbox label="顶级外卖鉴赏师" name="tags" />
@@ -117,13 +131,10 @@ const options = Array.from({ length: 10000 }).map((_, idx) => ({
                     <el-checkbox label="魔芋爽" name="tags" />
                 </el-checkbox-group>
             </el-form-item>
-            
-            <el-form-item label="个性签名" prop="desc" class="desc  mt-20">
-                <el-input v-model="ruleForm.desc" type="text" />
-            </el-form-item>
+
             <el-form-item>
-                <el-button type="primary" @click="submitForm(ruleFormRef)">Create</el-button>
-                <el-button @click="resetForm(ruleFormRef)">Reset</el-button>
+                <el-button type="primary" @click="submitForm(ruleFormRef)">确认</el-button>
+                <el-button @click="resetForm(ruleFormRef)">重置</el-button>
             </el-form-item>
         </el-form>
     </div>
@@ -134,14 +145,9 @@ const options = Array.from({ length: 10000 }).map((_, idx) => ({
     width: 250px;
 }
 
-.sex-label {
-    width: 250px;
-}
-
-.birthday-label {
+.birthday-label,
+.desc,
+.hobby {
     width: 500px;
-}
-.desc{
-    width:500px;
 }
 </style>

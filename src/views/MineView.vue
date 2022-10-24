@@ -100,9 +100,9 @@ function leaveStatus() {
                         </el-button>
                     </template>
 
-                    <el-descriptions-item label="年龄">24岁</el-descriptions-item>
                     <el-descriptions-item label="性别">男</el-descriptions-item>
-                    <el-descriptions-item label="户籍地">山西临汾</el-descriptions-item>
+                    <el-descriptions-item label="年龄">24岁</el-descriptions-item>
+                    <el-descriptions-item label="生日">1998-01-12</el-descriptions-item>
                     <el-descriptions-item label="标签">
                         <el-tag size="small">有点格调</el-tag>
                     </el-descriptions-item>
@@ -131,30 +131,6 @@ function leaveStatus() {
     font-size: 32px;
     font-weight: 600;
 }
-
-/* -------------------------------------- */
-
-.demo-fit {
-    /* 用户头像自适应 */
-    display: flex;
-    text-align: center;
-    justify-content: space-between;
-}
-
-.demo-fit .block {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    flex-grow: 0;
-}
-
-.demo-fit .title {
-    margin-bottom: 10px;
-    font-size: 14px;
-    color: var(--el-text-color-secondary);
-}
-
-/* -------------------------------------- */
 
 ::v-deep .demo-fit .title[data-v-7429c297] {
     /* 隐藏头像框组件中的默认文本 */
