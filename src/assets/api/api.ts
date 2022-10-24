@@ -11,7 +11,13 @@ interface userList {
     pageNum?: number,
     pageSize?: number
 }
-
+interface createLeave{
+     userId: string;
+     reason: string;
+     startTime: string;
+     endTime: string;
+    }
+   
 export default {
     /**
     * 登录接口**/
@@ -31,7 +37,7 @@ export default {
     /**
      * @description  * 请假申请接口** 
  * **/
-    createLeaveApi(payload = {}) {
+    createLeaveApi(payload :createLeave) {
         return axios.post('/user/leave/create', payload)
     },
     /**
@@ -79,6 +85,12 @@ export default {
     deletePermissionApi(payload={}) {
         return axios.post('/permission/delete', payload)
     },
+       /**
+     * 请假审核接口
+     * **/
+        examineUserLeaveApi(payload={}) {
+            return axios.post('/user/leave/examine', payload)
+        },
    
 
 }
