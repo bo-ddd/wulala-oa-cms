@@ -7,6 +7,7 @@ import 'vue-cropper/dist/index.css';
 import { VueCropper } from 'vue-cropper';
 import { ArrowLeft } from '@element-plus/icons-vue';
 
+
 console.log(VueCropper)
 
 const router = useRouter()
@@ -38,45 +39,72 @@ interface Option {
     fixedNumber: number[]
 }
 
-//控制文件列表
-const fileList = ref<UploadUserFile[]>([
-    {
-        name: 'food.jpeg',
-        url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100',
-    }
-])
-
-
-
-// img: '/src/assets/images/OIP-C.png',
-//  const changeImg:Ref=ref('')
-let selectedImg:Ref = ref(fileList)
-console.log(fileList)
-const option: Option = {
-    img: selectedImg.value[0].url,
+const option: Option = reactive({
+    // 默认在裁剪框中呈现的图片
+    img: "https://img0.baidu.com/it/u=3396602011,1979079210&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=313",
     size: 1,
     outputType: 'png',
     fixedNumber: [1, 1]
+})
+
+
+//控制进度条
+const active: Ref = ref(0)
+
+//选择图片按钮与裁剪框建立链接;
+const handleChange: UploadProps['onChange'] = (uploadFile, uploadFiles) => {
+
+    imgToBase64(uploadFile.url as string).then(res => {
+        option.img = res as string;
+    })
+    active.value=1
 }
+
+
+//img转base64方法：
+function imgToBase64(url: string, outputFormat?: string | null) {
+    return new Promise((resolve, reject) => {
+        let canvas: HTMLCanvasElement | null = document.createElement('canvas');
+        const ctx: CanvasRenderingContext2D | null = canvas.getContext('2d');
+        const img = new Image;
+        img.src = url;
+        img.crossOrigin = 'Anonymous'; //解决Canvas.toDataURL 图片跨域问题
+        img.onload = () => {
+            let width = img.width;
+            let height = img.height;
+
+            // 压缩比例 -- 可以自己修改参数。500px宽度以下原尺寸，大于500px比例处理
+            let bili = Math.round(width / 500) || 1;
+            let rate = 1 / bili;
+            canvas!.width = width * rate;
+            canvas!.height = height * rate;
+            ctx!.drawImage(img, 0, 0, width, height, 0, 0, width * rate, height * rate);
+            let dataURL: string = canvas!.toDataURL(outputFormat || 'image/jpeg');
+            // 去除标头 -- 传递给后台时一般去除头部
+            // let reg = new RegExp('^data:image/[^;]+;base64,');
+            // dataURL = dataURL.replace(reg, '');
+            canvas = null;
+            resolve(dataURL);
+        }
+        img.src = url;
+    })
+};
 
 
 //图片移动事件
 function imgMoving(data) {
     //获取图片距离外边框的尺寸
     console.log(data)
-
+    
 }
 
 //裁剪框移动事件
 function cropMoving(data) {
     //获取裁剪框的距离外边框的距离
     console.log(data)
+    
 }
-//裁剪框尺寸改变事件
-function changeCropSize(data) {
-    //获取裁剪框的尺寸
-    console.log(data)
-}
+
 
 
 //返回图片加载的状态，success/error
@@ -94,8 +122,7 @@ function realTime(obj) {
 }
 
 
-//控制进度条
-const active: Ref = ref(0)
+
 
 </script>
 
@@ -107,6 +134,7 @@ const active: Ref = ref(0)
         </template>
     </el-page-header>
 
+    <!-- 进度条 -->
     <div class="mt-20">
         <el-steps :active="active" finish-status="success" align-center>
             <el-step title="选择图片" />
@@ -117,36 +145,35 @@ const active: Ref = ref(0)
         <div class="flex-center mt-20">
 
             <!-- 裁剪框 -->
-            <div class="cropper ">
+            <div class="cropper " v-if="option.img">
                 <vueCropper ref="cropper" @img-moving="imgMoving" @crop-moving="cropMoving"
-                    @change-crop-size="changeCropSize" @img-load="imgLoad" @real-time="realTime" info canScale autoCrop
+                    @img-load="imgLoad" @real-time="realTime" info canScale autoCrop
                     canMoveBox fixed fixedBox centerBox :fixedNumber="option.fixedNumber" :img="option.img"
                     :outputSize="option.size" :outputType="option.outputType">
                 </vueCropper>
             </div>
             <!-- 预览图 -->
-            <div v-html="previewHtml" class="preview"></div>
+            <div class="flex-column ml-30">
+                <h4>头像预览</h4>
+                <div v-html="previewHtml" class="preview"></div>
+            </div>
+            
         </div>
 
-
-        <el-upload ref="upload" v-model:file-list="fileList" class="upload-demo mt-20"
-            action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15" list-type='picture' :limit="1"
-            :on-exceed="handleExceed" :auto-upload="false">
+        <el-upload ref="upload" class="upload-demo mt-20"
+            action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15" list-type='picture'
+            :show-file-list="false" :limit="1" :on-exceed="handleExceed" :auto-upload="false" :on-change="handleChange">
             <template #trigger>
                 <el-button type="primary">选择图片</el-button>
-            </template>
+            </template> 
             <el-button class="ml-10" type="success" @click="submitUpload">
                 上传头像
-            </el-button>
+            </el-button>    
             <template #tip>
                 <div class="el-upload__tip text-red">
-                    limit 1 file, new file will cover the old file
+                    温馨提示：仅支持jpg、jpeg、png格式，大小不超过2M
                 </div>
             </template>
-            <template #file>
-                <img :src="fileList[0].url">
-            </template>
-
         </el-upload>
     </div>
 </template>
@@ -162,6 +189,13 @@ const active: Ref = ref(0)
     display: flex;
     align-items: center;
     gap: 20px;
+}
+
+.flex-column{
+    display: flex;
+    align-items:center;
+    flex-direction:column;
+    gap:20px;
 }
 
 .preview {
