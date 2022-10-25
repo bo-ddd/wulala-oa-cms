@@ -12,17 +12,25 @@ interface User {
 }
 
 const handleEdit = async (index: number, row: User) => {
-  let status = await axios.examineUserLeaveApi({})
-  status.data.list[0].auditStatus = 1
+  let setStatus = await axios.examineUserLeaveApi({
+    auditStatus : 1,
+    id : row.id
+  })
+  getLeaveListApi()
+  
+  // status.data.list[0].auditStatus = 1
 }
 
 const getList = (index: number, row: User) => {
   console.log(row.startTime);
 }
 
-const handleDelete = (index: number, row: User) => {
-  // console.log(index + 1, row)
-  row.auditStatus = 2;
+const handleDelete = async (index: number, row: User) => {
+  let setStatus = await axios.examineUserLeaveApi({
+    auditStatus : 2,
+    id : row.id
+  })
+  getLeaveListApi()
 }
 
 
@@ -41,22 +49,24 @@ let duration = ref();
 let startTime1 = ref();
 
 let endTime1 = ref();
-
-// const pageNum = ref(1);
-// const pageSize = ref(10);
 const small = ref(false);
 const disabled = ref(false);
-(async function () {
-  let leaveData = await axios.getLeaveListApi({})
+const getLeaveListApi = async function(){
+  let leaveData = await axios.getLeaveListApi({
+    pageSize : pageSize.value,
+    pageNum : pageNum.value
+  })
+  // console.log('------------------------leaveData')
+  // console.log(leaveData)
   //页面的条数
-  pageSize.value = leaveData.data.pageSize
+  //  pageSize.value = leaveData.data.pageSize
   //总条数
   total.value = leaveData.data.total
   //总页数
-  pageNum.value = leaveData.data.pageNum
+  //  pageNum.value = leaveData.data.pageNum
   //渲染列表的数据
   leave.value = leaveData.data.list
-  leave.value[0].startTime
+  // leave.value[0].startTime
 
   //获取总时长
   let startTime = new Date(leaveData.data.list[0].startTime).getTime()
@@ -75,20 +85,23 @@ const disabled = ref(false);
   let D1 = new Date(leaveData.data.list[0].endTime).getDay()+1
   let H1 = new Date(leaveData.data.list[0].endTime).getHours()+1
   endTime1.value = Y1 + '-' + M1 + '-' + D1 + '-' + H1
-})()
+}
+getLeaveListApi()
+  
+
 
 const handleSizeChange = (val: number) => {
   console.log(`${val} items per page`);
-  (async function(){
-    let leaveData = await axios.getLeaveListApi({
-      pageSize:val
-    })
-    leave.value = leaveData.data.list
-  })()
+  pageSize.value = val
+  console.log(pageSize);
+  
+  getLeaveListApi()
 }
 
 const handleCurrentChange = (val: number) => {
-  console.log(`current page: ${val}`)
+  console.log(`current page: ${val}`);
+  pageNum.value = val
+  getLeaveListApi()
 }
 </script>
 
@@ -98,9 +111,9 @@ const handleCurrentChange = (val: number) => {
     <el-table-column label="编号" width="100">
       <template #default="scope">
         <div style="display: flex; align-items: center;justify-content: center;">
-          <span style="margin-left: 10px">{{ scope.row.id }}</span>
+          <span style="margin-left: 10px">{{ scope.row.userId }}</span>
         </div>
-      </template>
+      </template> 
     </el-table-column>
 
     <el-table-column label="申请人" width="100">
@@ -201,12 +214,12 @@ const handleCurrentChange = (val: number) => {
 
   <div class="demo-pagination-block">
     <el-pagination
-      v-model:currentPage="pageNum"
+      v-model:pageNum="pageNum"
       v-model:page-size="pageSize"
       :page-sizes="[5, 10, 15, 20]"
       :small="small"
       :disabled="disabled"
-      :background="true"
+      background
       layout="total, sizes, prev, pager, next, jumper"
       :total="total"
       @size-change="handleSizeChange"
