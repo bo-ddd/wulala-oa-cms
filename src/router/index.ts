@@ -64,6 +64,16 @@ const router = createRouter({
           path: "/roles",
           name: "roles",
           component: () => import("../views/Roles.vue"),
+        },
+        {//创建角色页面;
+          path: "/createroles",
+          name: "createroles",
+          component: () => import("../views/CreateRoles.vue"),
+        },
+        {//角色权限编辑页面;
+          path: "/roleediting",
+          name: "roleediting",
+          component: () => import("../views/RoleEditing.vue")
         }
       ]
     },

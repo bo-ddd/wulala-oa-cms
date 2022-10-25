@@ -73,6 +73,16 @@ const sidebarList = [
                 id: '602',
                 name: '角色管理',
                 targetPath: '/roles'
+        },
+        {
+                id: '603',
+                name: '新增角色',
+                targetPath: '/createroles'
+        },
+        {
+                id: '604',
+                name: '角色编辑',
+                targetPath: '/roleediting'
         }
         ]
     },
