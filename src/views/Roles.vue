@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
 import axios from "@/assets/api/api";
+import {useRouter } from "vue-router";
+let router=useRouter()
 const input = ref('')
 const value = ref('')
 let data = ref()
@@ -9,7 +11,9 @@ interface User {
     id: string
     RoleName: string
 }
-
+const to=function(name:string){
+    router.push(name)
+}
 let getRoleList = async function () {
     await axios.getRoleListApi({}).then(res => {
         console.log(res);
@@ -18,14 +22,9 @@ let getRoleList = async function () {
     })
 }
 getRoleList()
-//增加角色权限
-const addRole = async function () {
-    await axios.addPermissionRoleApi({
-        roleId: 1,
-        permissionId: 1
-    }).then(res => {
-        console.log(res);
-    })
+//点击创建角色     
+const addRole =  function () {
+   to('createroles')
 }
 //创建角色
 const createRole = async function () {
@@ -46,6 +45,7 @@ const handleDelete = async (index: number, row: User) => {
 }
 const handleEdit = (index: number, row: User) => {
     console.log(index, row.id)
+    to('roleediting')
 }
 </script>
 
@@ -54,7 +54,7 @@ const handleEdit = (index: number, row: User) => {
         <div>
             <span class="lable">查询角色：</span>
             <el-select v-model="value" placeholder="请选择">
-                <el-option v-for="item in data" :key="item.id" :label="item.roleName" :value="item.value" />
+                <el-option v-for="item in data" :key="item.id" :label="item.roleName" :value="item.id" />
             </el-select>
             <el-button type="primary" class="ml-10">查询</el-button>
         </div>
@@ -83,7 +83,7 @@ const handleEdit = (index: number, row: User) => {
             </el-table-column>
             <el-table-column label="Operations">
                 <template #default="scope">
-                    <el-button size="small" @click="handleEdit(scope.$index, scope.row)">添加角色权限</el-button>
+                    <el-button size="small" @click="handleEdit(scope.$index, scope.row)">设置角色权限</el-button>
                     <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">Delete
                     </el-button>
                 </template>
@@ -109,7 +109,5 @@ const handleEdit = (index: number, row: User) => {
 :deep(.el-input) {
     width: 200px;
 }
-.table{
-    
-}
+
 </style>
