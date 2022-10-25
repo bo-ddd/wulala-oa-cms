@@ -30,17 +30,9 @@
                 <div>{{ scope.row.phoneNumber }}</div>
             </template>
         </el-table-column>
-        <!-- <el-table-column prop="userId" label="用户名" align='center' />
-            <el-table-column prop="address" label="用户身份" align='center' />
-            <el-table-column prop="phoneNumber" label="手机号" align='center' />
-            <el-table-column prop="sex" label="性别" align='center' />
-            <el-table-column prop="aaa" label="状态" align='center' /> 
-            <el-table-column prop="date" label="入职时间" align='center' /> -->
         <el-table-column label="操作" width="300" align='center'>
             <template #default="scope">
                 <el-button size="small">修改信息</el-button>
-                <!-- <el-button size="small" type="danger" @click="userDelete(scope.$index, scope.row)">删除 
-                </el-button> -->
             </template>
         </el-table-column>
     </el-table>
@@ -139,7 +131,6 @@ const userSearch = async (id: any) => {
 
 
 :deep(.el-pagination) {
-    justify-content: center;
     margin-top: 20px;
 }
 

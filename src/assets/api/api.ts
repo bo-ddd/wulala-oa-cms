@@ -45,11 +45,11 @@ export default {
         return axios.post('/user/leave/create', payload)
     },
     /**
-     * 用户注册接口*  
+     * 用户注册接口*
      * "username": //用户名，6-20位之间
      * "password":  //密码，6-20位之间
      *  avatarName": //昵称，1-12位之间
-     * "phoneNumber":  //手机号*/
+     *  "phoneNumber":  //手机号*/
     registerApi(payload: userRegister) {
         return axios.post('/user/register', payload)
     },
