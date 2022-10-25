@@ -152,22 +152,22 @@ let userInfo = reactive({
     font-weight: 600;
 }
 
-::v-deep .demo-fit .title[data-v-7429c297] {
+:deep(.demo-fit .title[data-v-7429c297]) {
     /* 隐藏头像框组件中的默认文本 */
     font-size: 0;
 }
 
-::v-deep .el-aside {
+:deep(.el-aside) {
     /* 修改头像框组件中的属性 */
     overflow: visible;
 }
 
-::v-deep .el-divider__text {
+:deep(.el-divider__text) {
     /* 修改五角星分隔线的背景颜色 */
     background-color: transparent;
 }
 
-::v-deep .el-button {
+:deep(.el-button) {
     /* 设置修改昵称按钮的背景颜色 */
     background-color: transparent;
 }
@@ -178,12 +178,12 @@ let userInfo = reactive({
     align-items: center;
 }
 
-::v-deep .el-descriptions__body {
+:deep(.el-descriptions__body) {
     /* 设置基础信息的背景颜色 */
     background-color: transparent;
 }
 
-::v-deep .el-main {
+:deep(.el-main) {
     padding: 0;
 }
 
@@ -198,7 +198,7 @@ let userInfo = reactive({
     padding-left: 20px;
 }
 
-::v-deep .el-input {
+:deep(.el-input) {
     /* 修改个性签名输入框的宽度 */
     width: 30%;
 }

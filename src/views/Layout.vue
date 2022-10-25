@@ -254,40 +254,40 @@ let userInfo= reactive({
             #f7c6cd);
 }
 
-::v-deep .el-menu {
+:deep(.el-menu) {
     /* 侧边导航栏列表 */
     border-right: 0;
     background-color: transparent;
 }
 
-::v-deep .el-sub-menu__title {
+:deep(.el-sub-menu__title) {
     /* 侧边导航栏列表--点击效果 */
     background-color: transparent;
 }
 
-::v-deep .el-menu-item {
+:deep(.el-menu-item) {
     /* 侧边导航栏列表 */
     background-color: transparent;
 }
 
-::v-deep .el-header {
+:deep(.el-header) {
     /* 顶部导航栏 */
     display: flex;
     height: 40px;
 }
 
-::v-deep .el-page-header__breadcrumb {
+:deep(.el-page-header__breadcrumb) {
     /* 顶部导航栏--面包屑导航 */
     margin-bottom: 6px;
 
 }
 
-::v-deep .el-col-8 {
+:deep(.el-col-8) {
     /* 顶部导航栏下拉效果 */
     flex: none;
 }
 
-::v-deep .el-dropdown {
+:deep(.el-dropdown) {
     /* 顶部导航栏下拉效果 */
     vertical-align: center;
 }
