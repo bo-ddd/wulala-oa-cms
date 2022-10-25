@@ -63,8 +63,18 @@ const sidebarList = [
         id: '6',
         icon: 'Key',
         name: '权限管理',
-        targetPath: '/rightmanagement',
-        childrenList: []
+        childrenList: [
+        {
+                id: '601',
+                name: '权限列表',
+                targetPath: '/rightmanagement'
+        },
+        {
+                id: '602',
+                name: '角色管理',
+                targetPath: '/roles'
+        }
+        ]
     },
     {
         id: '7',
