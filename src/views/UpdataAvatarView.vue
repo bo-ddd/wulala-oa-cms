@@ -27,6 +27,7 @@ const handleExceed: UploadProps['onExceed'] = (files) => {
 
 const submitUpload = () => {
     upload.value!.submit()
+    active.value=3
 }
 
 //图片剪裁区域
@@ -102,7 +103,6 @@ function imgMoving(data) {
 function cropMoving(data) {
     //获取裁剪框的距离外边框的距离
     console.log(data)
-    
 }
 
 
@@ -120,10 +120,6 @@ function realTime(obj) {
     previewRadius.value = obj.w;
     previewHtml.value = obj.html
 }
-
-
-
-
 </script>
 
 <template>
@@ -168,7 +164,7 @@ function realTime(obj) {
             </template> 
             <el-button class="ml-10" type="success" @click="submitUpload">
                 上传头像
-            </el-button>    
+            </el-button>   
             <template #tip>
                 <div class="el-upload__tip text-red">
                     温馨提示：仅支持jpg、jpeg、png格式，大小不超过2M

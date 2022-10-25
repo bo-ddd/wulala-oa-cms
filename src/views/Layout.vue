@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { RouterView, useRouter, useRoute } from "vue-router";
 import { ArrowRight, HomeFilled, UserFilled, Checked, Stamp, TrendCharts, Key, Tools } from '@element-plus/icons-vue';
+import axios from '../assets/api/api';
 import { reactive, ref, type Ref } from 'vue';
 import {//顶部导航栏下拉效果;
     ArrowDown
@@ -62,8 +63,28 @@ const sidebarList = [
         id: '6',
         icon: 'Key',
         name: '权限管理',
-        targetPath: '/rightmanagement',
-        childrenList: []
+        childrenList: [
+        {
+                id: '601',
+                name: '权限列表',
+                targetPath: '/rightmanagement'
+        },
+        {
+                id: '602',
+                name: '角色管理',
+                targetPath: '/roles'
+        },
+        {
+                id: '603',
+                name: '新增角色',
+                targetPath: '/createroles'
+        },
+        {
+                id: '604',
+                name: '角色编辑',
+                targetPath: '/roleediting'
+        }
+        ]
     },
     {
         id: '7',
@@ -116,6 +137,25 @@ const handleOpen = (key: string, keyPath: string[]) => {
 const handleClose = (key: string, keyPath: string[]) => {
     console.log(key, keyPath)
 }
+
+
+let userInfo= reactive({
+    user:{
+        avatarName: '',
+        url: ''
+    }
+});
+      
+
+    (async ()=>{
+        userInfo.user =(await axios.queryUserInfoApi({})).data;
+        if(!userInfo.user.url){
+            userInfo.user.url='https://img.ixintu.com/download/jpg/20200815/18ae766809ff27de6b7a942d7ea4111c_512_512.jpg!bg'
+        }
+      })()
+
+
+        
 
 
 </script>
@@ -175,9 +215,9 @@ const handleClose = (key: string, keyPath: string[]) => {
 
                         <div class="mine">
 
-                            <el-avatar src="/src/assets/images/icon-avatar.png" />
+                            <el-avatar :src="userInfo.user.url" />
 
-                            <div class="no-shrink">马格烜</div>
+                            <div class="no-shrink">{{userInfo.user.avatarName}}</div>
                             <el-col :span="8">
                                 <el-dropdown trigger="click">
                                     <span class="el-dropdown-link">
@@ -224,40 +264,40 @@ const handleClose = (key: string, keyPath: string[]) => {
             #f7c6cd);
 }
 
-::v-deep .el-menu {
+:deep(.el-menu) {
     /* 侧边导航栏列表 */
     border-right: 0;
     background-color: transparent;
 }
 
-::v-deep .el-sub-menu__title {
+:deep(.el-sub-menu__title) {
     /* 侧边导航栏列表--点击效果 */
     background-color: transparent;
 }
 
-::v-deep .el-menu-item {
+:deep(.el-menu-item) {
     /* 侧边导航栏列表 */
     background-color: transparent;
 }
 
-::v-deep .el-header {
+:deep(.el-header) {
     /* 顶部导航栏 */
     display: flex;
     height: 40px;
 }
 
-::v-deep .el-page-header__breadcrumb {
+:deep(.el-page-header__breadcrumb) {
     /* 顶部导航栏--面包屑导航 */
     margin-bottom: 6px;
 
 }
 
-::v-deep .el-col-8 {
+:deep(.el-col-8) {
     /* 顶部导航栏下拉效果 */
     flex: none;
 }
 
-::v-deep .el-dropdown {
+:deep(.el-dropdown) {
     /* 顶部导航栏下拉效果 */
     vertical-align: center;
 }

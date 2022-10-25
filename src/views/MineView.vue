@@ -1,11 +1,11 @@
 
 <script setup lang="ts">
-import { ref, type Ref } from 'vue'
+import { ref, type Ref, reactive, toRefs } from 'vue'
 import { useRouter } from 'vue-router';
 import type { TabsPaneContext } from 'element-plus'
-import { reactive, toRefs } from 'vue'
 import { StarFilled } from '@element-plus/icons-vue'
 import { EditPen } from '@element-plus/icons-vue'
+import axios from '../assets/api/api'
 const router = useRouter();
 const activeName = ref('first')
 const handleClick = (tab: TabsPaneContext, event: Event) => {
@@ -17,7 +17,7 @@ const disabled: Ref = ref(true);
 //用户头像自适应功能;
 const state = reactive({
     fit: 'fill',
-    url: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
+    url: 'https://img.ixintu.com/download/jpg/20200815/18ae766809ff27de6b7a942d7ea4111c_512_512.jpg!bg',
 })
 
 const { fit, url } = toRefs(state);
@@ -44,6 +44,27 @@ function leaveStatus() {
     isOver.value = false;
 }
 
+//刷新页面，调用用户信息接口，渲染个人页面数据
+let userInfo = reactive({
+    user:{
+        avatarName: '',
+        url: '',
+        sign: '',
+        sex: '',
+        age: '',
+        birthday:'',
+        tags: ''
+    }
+});
+(async () => {
+    userInfo.user = (await axios.queryUserInfoApi({})).data;
+    if(!userInfo.user.url){
+        userInfo.user.url = 'https://img.ixintu.com/download/jpg/20200815/18ae766809ff27de6b7a942d7ea4111c_512_512.jpg!bg'
+    }
+    if(!userInfo.user.sign){
+        userInfo.user.sign = '这个人很懒,什么都没留下'
+    }
+})();
 
 </script>
 
@@ -57,8 +78,8 @@ function leaveStatus() {
                             <div class="block">
                                 <span class="title">{{ fit }}</span>
                                 <div class="box" @mouseover="enterStatus" @mouseout="leaveStatus">
-                                    <el-avatar shape="circle" :size="100" :fit="fit" :src="url" />
-                                    <div class="beforeEnter" :class="{blur:isOver}">
+                                    <el-avatar shape="circle" :size="100" :fit="fit" :src="userInfo.user.url" />
+                                    <div class="beforeEnter" :class="{ blur: isOver }">
                                         <el-button size="small" text bg link round @click="to('updataAvatar')">修改头像
                                         </el-button>
                                     </div>
@@ -70,7 +91,7 @@ function leaveStatus() {
                         <el-container class="username">
                             <el-header>
                                 <div class="flex-box">
-                                    <span class="strong">马格烜</span>
+                                    <span class="strong">{{userInfo.user.avatarName}}</span>
                                     <el-button type="plain" :icon="EditPen" circle size="large" link />
                                 </div>
                             </el-header>
@@ -118,7 +139,6 @@ function leaveStatus() {
             <el-tab-pane label="Task" name="fourth">Task</el-tab-pane>
         </el-tabs>
 
-
     </div>
 </template>
 
@@ -132,22 +152,22 @@ function leaveStatus() {
     font-weight: 600;
 }
 
-::v-deep .demo-fit .title[data-v-7429c297] {
+:deep(.demo-fit .title[data-v-7429c297]) {
     /* 隐藏头像框组件中的默认文本 */
     font-size: 0;
 }
 
-::v-deep .el-aside {
+:deep(.el-aside) {
     /* 修改头像框组件中的属性 */
     overflow: visible;
 }
 
-::v-deep .el-divider__text {
+:deep(.el-divider__text) {
     /* 修改五角星分隔线的背景颜色 */
     background-color: transparent;
 }
 
-::v-deep .el-button {
+:deep(.el-button) {
     /* 设置修改昵称按钮的背景颜色 */
     background-color: transparent;
 }
@@ -158,12 +178,12 @@ function leaveStatus() {
     align-items: center;
 }
 
-::v-deep .el-descriptions__body {
+:deep(.el-descriptions__body) {
     /* 设置基础信息的背景颜色 */
     background-color: transparent;
 }
 
-::v-deep .el-main {
+:deep(.el-main) {
     padding: 0;
 }
 
@@ -178,7 +198,7 @@ function leaveStatus() {
     padding-left: 20px;
 }
 
-::v-deep .el-input {
+:deep(.el-input) {
     /* 修改个性签名输入框的宽度 */
     width: 30%;
 }

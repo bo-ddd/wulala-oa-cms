@@ -40,7 +40,7 @@ const router = createRouter({
           name: "mine",
           component: () => import("../views/MineView.vue"),
         },
-        {//权限管理页面;
+        {//权限列表页面;
           path: "/rightmanagement",
           name: "rightmanagement",
           component: () => import("../views/RightManagement.vue"),
@@ -59,6 +59,21 @@ const router = createRouter({
           path: "/updatauserinfo",
           name: "updatauserinfo",
           component: () => import("../views/UpdataUserInfo.vue"),
+        },
+        {//角色管理页面;
+          path: "/roles",
+          name: "roles",
+          component: () => import("../views/Roles.vue"),
+        },
+        {//创建角色页面;
+          path: "/createroles",
+          name: "createroles",
+          component: () => import("../views/CreateRoles.vue"),
+        },
+        {//角色权限编辑页面;
+          path: "/roleediting",
+          name: "roleediting",
+          component: () => import("../views/RoleEditing.vue")
         }
       ]
     },
