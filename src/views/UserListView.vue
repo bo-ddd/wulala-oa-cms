@@ -21,7 +21,7 @@
 
         <el-table-column label="用户昵称" align="center">
             <template #default="scope">
-                <div>{{ scope.row.avatarName }}</div>
+                <el-tag size="small" >{{ scope.row.avatarName }}</el-tag>
             </template>
         </el-table-column>
 

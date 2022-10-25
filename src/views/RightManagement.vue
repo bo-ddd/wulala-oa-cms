@@ -144,7 +144,7 @@ const addPermission = async (inputAdd: string) => {
 
         <el-table-column label="模块" align="center">
             <template #default="scope">
-                <div>{{ scope.row.permissionName }}</div>
+                <el-tag size="small" >{{ scope.row.permissionName }}</el-tag>
             </template>
         </el-table-column>
         <el-table-column label="操作" align='center' width="300">
