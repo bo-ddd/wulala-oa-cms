@@ -10,23 +10,41 @@ const small = ref(false)
 const background = ref(true)
 const disabled = ref(false)
 const input = ref();
-const inputAdd = ref();
+const permissionNameAdd = ref();
+const pidAdd = ref();
+const permissionNameId = ref();
+const newPermissionName = ref();
+const parentId = ref();
 let pageNum = ref(1);
 let pageSize = ref(10);
 const addSuccess = () => {
     ElMessage({
-    showClose: true,
-    message: '添加成功',
-    type: 'success',
-  })
+        showClose: true,
+        message: '添加成功',
+        type: 'success',
+    })
 }
 const addError = () => {
     ElMessage({
-    showClose: true,
-    message: '添加失败',
-    type: 'error',
-  })
+        showClose: true,
+        message: '添加失败',
+        type: 'error',
+    })
+}
 
+const upSuccess = () => {
+    ElMessage({
+        showClose: true,
+        message: '修改成功',
+        type: 'success',
+    })
+}
+const upError = () => {
+    ElMessage({
+        showClose: true,
+        message: '修改失败',
+        type: 'error',
+    })
 }
 interface Permission {
     id: number,
@@ -72,7 +90,6 @@ const open = (id: number) => {
                     getPermissionList();
                 }
             })
-
     })
         .catch(() => {
             ElMessage({
@@ -84,15 +101,13 @@ const open = (id: number) => {
 }
 
 const handleSizeChange = async (val: number) => {
-    console.log(`每页${val}条信息`);
     pageSize.value = val
 }
 
 const handleCurrentChange = async (val: number) => {
-    console.log(`这是第${val}页`)
     pageNum.value = val
 }
-
+// 查询权限
 const userSearch = async (input: number) => {
     axios.permissionUserListApi({
         userId: input
@@ -107,9 +122,10 @@ const userSearch = async (input: number) => {
     })
 }
 // 添加权限
-const addPermission = async (inputAdd: string) => {
+const addPermission = async (permissionNameAdd: string, pidAdd: number) => {
     await axios.addPermissionApi({
-        permissionName: inputAdd
+        permissionName: permissionNameAdd,
+        pid: pidAdd
     }).then(res => {
         if (res.status == 1) {
             addSuccess();
@@ -119,7 +135,21 @@ const addPermission = async (inputAdd: string) => {
         }
     })
 }
-
+// 修改权限
+const upPermission = async (permissionNameId: number, newPermissionName: string, parentId: number) => {
+    axios.updatePermissionApi({
+        id: permissionNameId,
+        permissionName: newPermissionName,
+        pid: parentId
+    }).then(res => {
+        if(res.status==1){
+            upSuccess();
+            getPermissionList();
+        } else{
+            upError();
+        }
+    })
+}
 
 
 </script>
@@ -127,13 +157,22 @@ const addPermission = async (inputAdd: string) => {
 
     <div class="ipt-add">
         <span class="label label-add">添加权限：</span>
-        <el-input v-model="inputAdd" size="small" placeholder="请输入权限名称" clearable />
-        <el-button type="danger" size="small" @click="addPermission(inputAdd)">添加</el-button>
+        <el-input v-model="permissionNameAdd" size="small" placeholder="请输入权限名称" clearable />
+        <el-input class="ml-10" v-model="pidAdd" size="small" placeholder="请输入Pid" clearable />
+        <el-button class="ml-10" type="danger" size="small" @click="addPermission(permissionNameAdd, pidAdd)">添加</el-button>
+    </div>
+    <div class="ipt-updata">
+        <span class="label label-add">修改权限：</span>
+        <el-input v-model="permissionNameId" size="small" placeholder="请输入权限Id" clearable />
+        <el-input class="ml-10" v-model="newPermissionName" size="small" placeholder="请输入新的权限名称" clearable />
+        <el-input class="ml-10" v-model="parentId" size="small" placeholder="请输入pid" clearable />
+        <el-button class="ml-10" type="danger" size="small" @click="upPermission(permissionNameId, newPermissionName, parentId)">修改
+        </el-button>
     </div>
     <div class="ipt">
         <span class="label label-search">查询权限：</span>
         <el-input v-model="input" size="small" placeholder="请输入权限ID" clearable />
-        <el-button type="danger" size="small" @click="userSearch(input)">搜索</el-button>
+        <el-button class="ml-10" type="danger" size="small" @click="userSearch(input)">搜索</el-button>
     </div>
     <el-table :data="currentList" border style="width: 100%" fit>
         <el-table-column label="权限ID" align="center">
@@ -141,10 +180,14 @@ const addPermission = async (inputAdd: string) => {
                 <div>{{ scope.row.id }}</div>
             </template>
         </el-table-column>
-
+        <el-table-column label="PID" align="center">
+            <template #default="scope">
+                <div>{{ scope.row.pid }}</div>
+            </template>
+        </el-table-column>
         <el-table-column label="模块" align="center">
             <template #default="scope">
-                <el-tag size="small" >{{ scope.row.permissionName }}</el-tag>
+                <el-tag size="small">{{ scope.row.permissionName }}</el-tag>
             </template>
         </el-table-column>
         <el-table-column label="操作" align='center' width="300">
@@ -186,7 +229,5 @@ const addPermission = async (inputAdd: string) => {
     width: 200px;
 }
 
-:deep(.el-button) {
-    margin-left: 20px;
-}
+
 </style>
