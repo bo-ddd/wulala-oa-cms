@@ -31,8 +31,8 @@ const router = createRouter({
           component: () => import("../views/LeaveView.vue"),
         },
         {//员工列表页面;
-          path: "/userlist",
-          name: "userlist",
+          path: "/userList",
+          name: "userList",
           component: () => import("../views/UserListView.vue"),
         },
         {//个人中心页面;
@@ -41,23 +41,23 @@ const router = createRouter({
           component: () => import("../views/MineView.vue"),
         },
         {//权限列表页面;
-          path: "/rightmanagement",
-          name: "rightmanagement",
+          path: "/rightManagement",
+          name: "rightManagement",
           component: () => import("../views/RightManagement.vue"),
         },
         {//修改头像页面;
-          path: "/updataavatar",
-          name: "updataavatar",
+          path: "/updataAvatar",
+          name: "updataAvatar",
           component: () => import("../views/UpdataAvatarView.vue"),
         },
         {//提交申请页面;
-          path: "/submitapplication",
-          name: "submitapplication",
+          path: "/submitApplication",
+          name: "submitApplication",
           component: () => import("../views/SubmitApplication.vue"),
         },
         {//修改个人资料页面;
-          path: "/updatauserinfo",
-          name: "updatauserinfo",
+          path: "/updataUserInfo",
+          name: "updataUserInfo",
           component: () => import("../views/UpdataUserInfo.vue"),
         },
         {//角色管理页面;
@@ -66,13 +66,13 @@ const router = createRouter({
           component: () => import("../views/Roles.vue"),
         },
         {//创建角色页面;
-          path: "/createroles",
-          name: "createroles",
+          path: "/createRoles",
+          name: "createRoles",
           component: () => import("../views/CreateRoles.vue"),
         },
         {//角色权限编辑页面;
-          path: "/roleediting",
-          name: "roleediting",
+          path: "/roleEditing",
+          name: "roleEditing",
           component: () => import("../views/RoleEditing.vue")
         }
       ]

@@ -1,53 +1,20 @@
 <script lang="ts" setup>
     import { reactive, ref } from 'vue'
     import type { FormInstance, FormRules } from 'element-plus'
+    import axios from "../assets/api/api"
 
 const formSize = ref('default')
 const ruleFormRef = ref<FormInstance>()
 const ruleForm = reactive({
-  name: 'Hello',
-  region: '',
-  count: '',
-  date1: '',
-  date2: '',
-  delivery: false,
+  region: '组长',
   type: [],
-  resource: '',
-  desc: '',
 })
 
 const rules = reactive<FormRules>({
-  name: [
-    { required: true, message: 'Please input Activity name', trigger: 'blur' },
-    { min: 3, max: 5, message: 'Length should be 3 to 5', trigger: 'blur' },
-  ],
   region: [
     {
       required: true,
-      message: 'Please select Activity zone',
-      trigger: 'change',
-    },
-  ],
-  count: [
-    {
-      required: true,
-      message: 'Please select Activity count',
-      trigger: 'change',
-    },
-  ],
-  date1: [
-    {
-      type: 'date',
-      required: true,
-      message: 'Please pick a date',
-      trigger: 'change',
-    },
-  ],
-  date2: [
-    {
-      type: 'date',
-      required: true,
-      message: 'Please pick a time',
+      message: '请选择角色名称',
       trigger: 'change',
     },
   ],
@@ -55,20 +22,10 @@ const rules = reactive<FormRules>({
     {
       type: 'array',
       required: true,
-      message: 'Please select at least one activity type',
+      message: '',
       trigger: 'change',
     },
-  ],
-  resource: [
-    {
-      required: true,
-      message: 'Please select activity resource',
-      trigger: 'change',
-    },
-  ],
-  desc: [
-    { required: true, message: 'Please input activity form', trigger: 'blur' },
-  ],
+  ]
 })
 
 const submitForm = async (formEl: FormInstance | undefined) => {
@@ -80,18 +37,46 @@ const submitForm = async (formEl: FormInstance | undefined) => {
       console.log('error submit!', fields)
     }
   })
+};
+
+
+
+interface PermissionList{
+  id:number,
+  permissionName:string,
+  pid:number
 }
 
-const resetForm = (formEl: FormInstance | undefined) => {
-  if (!formEl) return
-  formEl.resetFields()
+interface FormatData extends PermissionList{
+  children: PermissionList[]
 }
 
-const options = Array.from({ length: 10000 }).map((_, idx) => ({
-  value: `${idx + 1}`,
-  label: `${idx + 1}`,
-}))
+const formatePermissionList=(data:PermissionList)=>{
+    const res=JSON.parse(JSON.stringify(data))
+    res.forEach((item:FormatData)=>{
+      item.children=[];
+      if(item.pid!=0){
+       let pItem=res.find((pItem:FormatData)=>pItem.id==item.pid)
+       if(!pItem.children) pItem.children=[];
+       pItem.children.push(item)
+      }
+    })
+  return res.filter((item:FormatData)=>item.pid==0)
+}
+
+
+//刷新页面渲染数据;
+const roleList=reactive<{id:number,roleName:string}[]>([]);
+const formatData=reactive<FormatData[]>([]);
+
+(async ()=>{
+  Object.assign(roleList,(await axios.getRoleListApi({})).data)
+  let permissionList=(await axios.getPermissionListApi({})).data
+  Object.assign(formatData,formatePermissionList(permissionList))
+})();
+console.log(formatData)
 </script>
+
 <template>
     <div>
         <el-form
@@ -99,51 +84,35 @@ const options = Array.from({ length: 10000 }).map((_, idx) => ({
     :model="ruleForm"
     :rules="rules"
     label-width="120px"
-    class="demo-ruleForm"
+    class="demo-ruleForm center"
     :size="formSize"
     status-icon
   >
-    <el-form-item label="Activity count" prop="count">
-      <el-select-v2
-        v-model="ruleForm.count"
-        placeholder="Activity count"
-        :options="options"
-      />
+
+    <el-form-item label="角色名称" prop="region">
+      <el-select v-model="ruleForm.region" placeholder="请输入角色名称" size="small">
+        <el-option v-for="item in roleList" :key="item.id" :label="item.roleName" :value="item.roleName"/>
+      </el-select>
     </el-form-item>
 
-    <el-form-item label="Activity type" prop="type">
-      <el-checkbox-group v-model="ruleForm.type">
-        <el-checkbox label="Online activities" name="type" />
-        <el-checkbox label="Promotion activities" name="type" />
-        <el-checkbox label="Offline activities" name="type" />
-        <el-checkbox label="Simple brand exposure" name="type" />
-      </el-checkbox-group>
-    </el-form-item>
-    <el-form-item label="Activity type" prop="type">
-      <el-checkbox-group v-model="ruleForm.type">
-        <el-checkbox label="Online activities" name="type" />
-        <el-checkbox label="Promotion activities" name="type" />
-        <el-checkbox label="Offline activities" name="type" />
-        <el-checkbox label="Simple brand exposure" name="type" />
-      </el-checkbox-group>
-    </el-form-item>
-    <el-form-item label="Activity type" prop="type">
-      <el-checkbox-group v-model="ruleForm.type">
-        <el-checkbox label="Online activities" name="type" />
-        <el-checkbox label="Promotion activities" name="type" />
-        <el-checkbox label="Offline activities" name="type" />
-        <el-checkbox label="Simple brand exposure" name="type" />
+
+    <el-form-item v-for="item in formatData"  :label="item.permissionName" prop="type">
+      <el-checkbox-group v-model="ruleForm.type" v-if="item.children" v-for="key in item.children" :key="key.id" size="small">
+        <el-checkbox :label="key.permissionName" name="type" />
       </el-checkbox-group>
     </el-form-item>
     
     
     <el-form-item>
-      <el-button type="primary" @click="submitForm(ruleFormRef)">确定</el-button>
+      <el-button type="danger" @click="submitForm(ruleFormRef)" size="small">确定</el-button>
     </el-form-item>
   </el-form>
     </div>
 
 </template>
-<style scoped>
 
+<style scoped>
+:deep(.el-input){
+  width:200px
+}
 </style>

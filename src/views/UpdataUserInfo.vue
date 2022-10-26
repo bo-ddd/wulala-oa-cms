@@ -122,34 +122,34 @@ const options = Array.from({ length: 10000 }).map((_, idx) => ({
         <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" label-width="120px" class="demo-ruleForm mt-24"
             :size="formSize" status-icon>
             <el-form-item label="昵称" prop="avatarName" class="name-label">
-                <el-input v-model="ruleForm.avatarName" />
+                <el-input v-model="ruleForm.avatarName" size="small" />
             </el-form-item>
             <el-form-item label="性别" prop="sex" class="mt-20">
-                <el-radio-group v-model="ruleForm.sex">
-                    <el-radio label="男" />
-                    <el-radio label="女" />
+                <el-radio-group v-model="ruleForm.sex" size="small">
+                    <el-radio label="男"/>
+                    <el-radio label="女"/>
                 </el-radio-group>
             </el-form-item>
 
             <el-form-item label="生日" required class="birthday-label mt-20">
                 <el-col :span="11">
                     <el-form-item prop="birthday">
-                        <el-date-picker v-model="ruleForm.birthday" type="date" label="Pick a date" placeholder="选择日期"
-                            style="width: 100%" />
+                        <el-date-picker v-model="ruleForm.birthday" type="date" size="small" label="Pick a date" placeholder="选择日期"
+                         />
                     </el-form-item>
                 </el-col>
             </el-form-item>
 
-            <el-form-item label="联系方式" prop="phoneNumber" class="phone-number  mt-20">
-                <el-input v-model="ruleForm.phoneNumber" type="text" placeholder="请输入11位手机号码" />
+            <el-form-item label="联系方式" prop="phoneNumber" class="mt-20">
+                <el-input v-model="ruleForm.phoneNumber" type="text" size="small" placeholder="请输入11位手机号码" />
             </el-form-item>
 
             <el-form-item label="个人爱好" prop="hobby" class="hobby  mt-20">
-                <el-input v-model="ruleForm.hobby" type="text" placeholder="如吃瓜，户外运动" />
+                <el-input v-model="ruleForm.hobby" type="text" size="small" placeholder="如吃瓜，户外运动" />
             </el-form-item>
 
             <el-form-item label="个性签名" prop="personalSignatrue" class="desc  mt-20">
-                <el-input v-model="ruleForm.personalSignature" type="text" placeholder="非必填项" />
+                <el-input v-model="ruleForm.personalSignature" type="text" size="small" placeholder="非必填项" />
             </el-form-item>
 
             <!-- <el-form-item label="标签(非必选)" prop="tags" class="mt-20">
@@ -166,25 +166,15 @@ const options = Array.from({ length: 10000 }).map((_, idx) => ({
             </el-form-item> -->
 
             <el-form-item>
-                <el-button type="primary" @click="submitForm(ruleFormRef)">确认</el-button>
-                <el-button @click="resetForm(ruleFormRef)">重置</el-button>
+                <el-button type="danger" @click="submitForm(ruleFormRef)" size="small">确认</el-button>
+                <el-button @click="resetForm(ruleFormRef)" size="small">重置</el-button>
             </el-form-item>
         </el-form>
     </div>
 </template>
 
 <style scoped>
-.name-label {
-    width: 250px;
-}
-
-.birthday-label,
-.desc,
-.hobby {
-    width: 500px;
-}
-
-.phone-number {
-    width: 300px
+:deep(.el-input){
+    width:200px
 }
 </style>

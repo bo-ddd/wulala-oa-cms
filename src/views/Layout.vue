@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { RouterView, useRouter, useRoute } from "vue-router";
-import { ArrowRight, HomeFilled, UserFilled, Checked, Stamp, TrendCharts, Key, Tools } from '@element-plus/icons-vue';
+import { onMounted } from "vue";
+import { ArrowRight } from '@element-plus/icons-vue';
 import axios from '../assets/api/api';
-import { reactive, ref, type Ref } from 'vue';
+import { reactive, ref } from 'vue';
 import {//顶部导航栏下拉效果;
     ArrowDown
 } from '@element-plus/icons-vue';
@@ -20,11 +21,12 @@ const sidebarList = [
         id: '2',
         icon: 'UserFilled',
         name: '员工管理',
+        targetPath:'',
         childrenList: [
             {
                 id: '201',
                 name: '员工列表',
-                targetPath: '/userlist'
+                targetPath: '/userList'
             }
         ]
     },
@@ -32,6 +34,7 @@ const sidebarList = [
         id: '3',
         icon: 'Checked',
         name: '流程审批',
+        targetPath:'',
         childrenList: [
             {
                 id: '301',
@@ -41,7 +44,7 @@ const sidebarList = [
             {
                 id: '302',
                 name: '提交申请',
-                targetPath: '/submitapplication'
+                targetPath: '/submitApplication'
             }
         ]
     },
@@ -63,27 +66,28 @@ const sidebarList = [
         id: '6',
         icon: 'Key',
         name: '权限管理',
+        targetPath:'',
         childrenList: [
-        {
+            {
                 id: '601',
                 name: '权限列表',
-                targetPath: '/rightmanagement'
-        },
-        {
+                targetPath: '/rightManagement'
+            },
+            {
                 id: '602',
                 name: '角色管理',
                 targetPath: '/roles'
-        },
-        {
+            },
+            {
                 id: '603',
                 name: '新增角色',
-                targetPath: '/createroles'
-        },
-        {
+                targetPath: '/createRoles'
+            },
+            {
                 id: '604',
                 name: '角色编辑',
-                targetPath: '/roleediting'
-        }
+                targetPath: '/roleEditing'
+            }
         ]
     },
     {
@@ -114,20 +118,50 @@ const dropDownList = [
 
 //路由跳转;
 let router = useRouter();
+let route = useRoute();
 
 
-//侧边栏点击获取列表元素;
-const itemObj = reactive({ data: sidebarList[0] });
-const keyIndexs: Ref = ref(0);
-function changeNavData(item: object, keyIndex?: number) {
-    itemObj.data = item;
-    keyIndexs.value = keyIndex;
+//动态渲染面包屑导航;
+let pName=ref('');
+let cName=ref('');
+
+function getPageName(path: string) {
+    sidebarList.forEach(item=>{
+        if(item.targetPath==path){
+            pName.value=item.name;
+            cName.value="";
+        }else if(item.childrenList.length){
+                item.childrenList.forEach(childItem=>{
+                if(childItem.targetPath==path){
+                    pName.value=item.name;
+                    cName.value=childItem.name;
+                }
+            })
+            }
+        }
+    )
+}
+function getMinePageName(path:string){
+    dropDownList.forEach(item=>{
+       if(item.targetPath==path){
+        pName.value=item.name;
+        cName.value="";
+       }
+    })
 }
 
+//页面刷新不会变动面包屑导航名称;
+onMounted(()=>{
+    getPageName(route.path);
+    getMinePageName(route.path);
+})
+
+
 //右上角个人中心路由跳转;
-function to(name: string, item: object) {
-    router.push(name)
-    changeNavData(item)
+function to(path: string) {
+    router.push(path)
+    getMinePageName(path)
+    
 }
 
 //侧边栏下拉功能;
@@ -139,24 +173,18 @@ const handleClose = (key: string, keyPath: string[]) => {
 }
 
 
-let userInfo= reactive({
-        avatarName: '',
-        avatarImg: ''
+let userInfo = reactive({
+    avatarName: '',
+    avatarImg: ''
 });
-      
 
-    (async ()=>{
-       let  data =(await axios.queryUserInfoApi({})).data;
-        userInfo.avatarName=data.avatarName;
-        userInfo.avatarImg=data.avatarImg;
-        if(!userInfo.avatarImg){
-            userInfo.avatarImg='https://img.ixintu.com/download/jpg/20200815/18ae766809ff27de6b7a942d7ea4111c_512_512.jpg!bg'
-        }
-      })()
+const defaultAvatarImg = 'https://img.ixintu.com/download/jpg/20200815/18ae766809ff27de6b7a942d7ea4111c_512_512.jpg!bg';
 
-
-        
-
+(async () => {
+    let data = (await axios.queryUserInfoApi({})).data;
+    userInfo.avatarName = data.avatarName;
+    userInfo.avatarImg = data.avatarImg;
+})()
 
 </script>
 
@@ -174,25 +202,25 @@ let userInfo= reactive({
                 <el-row class="tac sidebar-list">
                     <el-col :span="1">
                         <el-menu router default-active="/home" unique-opened @open="handleOpen" @close="handleClose">
-                            <div v-for="(item,index) in sidebarList">
+                            <div v-for="(item, index) in sidebarList">
                                 <el-menu-item :index="item.targetPath" :key="index" v-if="!item.childrenList.length">
                                     <el-icon>
                                         <component :is="item.icon"></component>
                                     </el-icon>
-                                    <span @click="changeNavData(item)">{{item.name}}</span>
+                                    <span @click="getPageName(item.targetPath)">{{ item.name }}</span>
                                 </el-menu-item>
 
-                                <el-sub-menu :key="index" :index="index+''" v-if="item.childrenList.length">
+                                <el-sub-menu :key="index" :index="index + ''" v-if="item.childrenList.length">
                                     <template #title>
                                         <el-icon>
                                             <component :is="item.icon"></component>
                                         </el-icon>
-                                        <span>{{item.name}}</span>
+                                        <span>{{ item.name }}</span>
                                     </template>
-                                    <el-menu-item :index="key.targetPath" :key="index+'-'+keyIndex"
-                                        v-for="(key,keyIndex) in item.childrenList"
-                                        @click="changeNavData(item,keyIndex)">
-                                        {{key.name}}
+                                    <el-menu-item :index="key.targetPath" :key="index + '-' + keyIndex"
+                                        v-for="(key, keyIndex) in item.childrenList"
+                                        @click="getPageName(key.targetPath)">
+                                        {{ key.name }}
                                     </el-menu-item>
                                 </el-sub-menu>
                             </div>
@@ -205,19 +233,20 @@ let userInfo= reactive({
             <el-container class="container">
                 <el-header>
                     <div class="nav">
-
                         <el-breadcrumb :separator-icon="ArrowRight">
-                            <el-breadcrumb-item :to="{ path: null }">{{itemObj.data.name}}</el-breadcrumb-item>
-                            <el-breadcrumb-item v-if="itemObj.data.childrenList.length">
-                                {{itemObj.data.childrenList[keyIndexs].name}}
+                            <el-breadcrumb-item :to="{ path: null }">
+                              {{pName}}
+                            </el-breadcrumb-item>
+                            <el-breadcrumb-item>
+                                {{cName}}
                             </el-breadcrumb-item>
                         </el-breadcrumb>
 
                         <div class="mine">
 
-                            <el-avatar :src="userInfo.avatarImg" />
+                            <el-avatar :src="userInfo.avatarImg || defaultAvatarImg" />
 
-                            <div class="no-shrink">{{userInfo.avatarName}}</div>
+                            <div class="no-shrink">{{ userInfo.avatarName }}</div>
                             <el-col :span="8">
                                 <el-dropdown trigger="click">
                                     <span class="el-dropdown-link">
@@ -227,9 +256,9 @@ let userInfo= reactive({
                                     </span>
                                     <template #dropdown>
                                         <el-dropdown-menu split-button>
-                                            <el-dropdown-item divided @click="to(item.targetPath,item)"
-                                                v-for="(item,index) in dropDownList" :key="index">
-                                                {{item.name}}
+                                            <el-dropdown-item divided @click="to(item.targetPath)"
+                                                v-for="(item, index) in dropDownList" :key="index">
+                                                {{ item.name }}
                                             </el-dropdown-item>
                                         </el-dropdown-menu>
                                     </template>
@@ -239,7 +268,7 @@ let userInfo= reactive({
                     </div>
                 </el-header>
 
-                <el-main class="el-main">
+                <el-main class="el-main mt-10">
                     <RouterView></RouterView>
                 </el-main>
 
@@ -262,6 +291,7 @@ let userInfo= reactive({
     background: linear-gradient(to bottom,
             #f47599,
             #f7c6cd);
+    overflow-y: hidden;
 }
 
 :deep(.el-menu) {
@@ -289,7 +319,6 @@ let userInfo= reactive({
 :deep(.el-page-header__breadcrumb) {
     /* 顶部导航栏--面包屑导航 */
     margin-bottom: 6px;
-
 }
 
 :deep(.el-col-8) {
@@ -338,7 +367,13 @@ let userInfo= reactive({
 .sidebar-list {
     width: 120px;
     margin: 50px auto;
-    overflow: hidden;
+    height: 70%;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
+.sidebar-list::-webkit-scrollbar {
+    display: none;
 }
 
 .nav {

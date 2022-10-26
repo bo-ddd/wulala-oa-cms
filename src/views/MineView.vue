@@ -40,13 +40,20 @@ function closeInput() {
         hobby:userInfo.hobby,
         personalSignature:userInfo.personalSignature
     }).then(res=>{
-        disabled.value = true;
         ElMessage({
                     message: '修改成功',
                     type: 'success',
                 })
+        disabled.value = true;
+        
     })
 }
+
+function toBlur(){
+    disabled.value = true;
+}
+
+
 
 //切换头像入口状态;
 const isOver: Ref = ref(false);
@@ -119,9 +126,9 @@ let userInfo = reactive<UserInfo>({});
                             </el-header>
                             <el-main class="bottom-main flex-box">
                                 <el-input class="input" v-model="userInfo.personalSignature" maxlength="30" placeholder="个性签名" clearable
-                                    show-word-limit type="text" :disabled="disabled" @blur="closeInput"
-                                    @keyup.enter="closeInput" />
-                                <el-button @click="openInput" type="plain" :icon="EditPen" circle size="large" link />
+                                    show-word-limit type="text" :disabled="disabled" @blur="closeInput" size="small" 
+                                    @keyup.enter="toBlur" />
+                                <el-button @click="openInput" type="danger" :icon="EditPen" circle size="large" link />
                                 
                             </el-main>
                         </el-container>
@@ -137,13 +144,12 @@ let userInfo = reactive<UserInfo>({});
                 </el-divider>
                 <el-descriptions title="基础信息" class="mt-20">
                     <template #extra>
-                        <el-button type="primary" text bg @click="to('/updatauserinfo')">
+                        <el-button type="danger" text bg @click="to('/updataUserInfo')" size="small" >
                             <el-icon>
                                 <EditPen />
-                            </el-icon>编辑资料
+                            </el-icon>编辑资料  
                         </el-button>
                     </template>
-
                     <el-descriptions-item label="性别">{{ userInfo.sex==1?"男":"女" }}</el-descriptions-item>
                     <el-descriptions-item label="年龄">{{ age||'— —' }}</el-descriptions-item>
                     <el-descriptions-item label="生日">{{ userInfo.birthday||'— —' }}</el-descriptions-item>
@@ -155,13 +161,10 @@ let userInfo = reactive<UserInfo>({});
                     </el-descriptions-item>
                 </el-descriptions>
             </el-tab-pane>
-
-
             <el-tab-pane label="我的消息" name="second">我的消息</el-tab-pane>
             <el-tab-pane label="我的钱包" name="third">我的钱包</el-tab-pane>
             <el-tab-pane label="Task" name="fourth">Task</el-tab-pane>
         </el-tabs>
-
     </div>
 </template>
 
@@ -248,5 +251,9 @@ let userInfo = reactive<UserInfo>({});
 
 .box {
     position: relative;
+}
+
+:deep(.el-input){
+    width:200px;
 }
 </style>
