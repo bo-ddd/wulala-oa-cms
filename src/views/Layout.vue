@@ -131,6 +131,7 @@ function getPageName(path: string) {
             pName.value=item.name;
             cName.value="";
         }else if(item.childrenList.length){
+
                 item.childrenList.forEach(childItem=>{
                 if(childItem.targetPath==path){
                     pName.value=item.name;
@@ -150,18 +151,19 @@ function getMinePageName(path:string){
     })
 }
 
-//页面刷新不会变动面包屑导航名称;
+//解决页面刷新后面包屑导航名称与侧边栏名称会重置的情况;
+const activeItem=ref('/')
 onMounted(()=>{
     getPageName(route.path);
     getMinePageName(route.path);
+    activeItem.value=route.path
 })
-
 
 //右上角个人中心路由跳转;
 function to(path: string) {
     router.push(path)
     getMinePageName(path)
-    
+    activeItem.value='/'
 }
 
 //侧边栏下拉功能;
@@ -201,7 +203,7 @@ const defaultAvatarImg = 'https://img.ixintu.com/download/jpg/20200815/18ae76680
                 <!-- 动态渲染侧边栏列表 -->
                 <el-row class="tac sidebar-list">
                     <el-col :span="1">
-                        <el-menu router default-active="/home" unique-opened @open="handleOpen" @close="handleClose">
+                        <el-menu router :default-active="activeItem" unique-opened @open="handleOpen" @close="handleClose">
                             <div v-for="(item, index) in sidebarList">
                                 <el-menu-item :index="item.targetPath" :key="index" v-if="!item.childrenList.length">
                                     <el-icon>
