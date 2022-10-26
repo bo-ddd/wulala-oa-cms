@@ -3,6 +3,7 @@ import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import type { FormInstance, FormRules } from 'element-plus'
 import { ArrowLeft } from '@element-plus/icons-vue';
+import axios from '../assets/api/api';
 
 const router = useRouter();
 const to = (name: string) => {
@@ -12,29 +13,35 @@ const to = (name: string) => {
 //form表单
 const formSize = ref('default')
 const ruleFormRef = ref<FormInstance>()
-const ruleForm = reactive({
-    name: '',
-    date: '',
-    tags: [],
-    resource: '',
-    desc: '',
-    hobby: ''
-})
+
+interface RuleForm{
+    avatarImg:string;
+    avatarName:string;
+    birthday:string|Date|number;
+    hobby:string;
+    personalSignature:string;
+    phoneNumber:string;
+    sex:number|string;
+    userId:number;
+}
+
+
+const ruleForm = reactive<RuleForm>({})
 
 //form表单校验规则
 const rules = reactive<FormRules>({
-    name: [
+    avatarName: [
         { required: true, message: '请输入昵称', trigger: 'blur' },
         { min: 1, max: 7, message: '长度必须在1-7位字符之间', trigger: 'blur' },
     ],
-    resource: [
+    sex: [
         {
             required: true,
             message: '请选择性别',
             trigger: 'change',
         },
     ],
-    date: [
+    birthday: [
         {
             type: 'date',
             required: true,
@@ -50,13 +57,17 @@ const rules = reactive<FormRules>({
             trigger: 'change',
         },
     ],
-    desc: [
+    personalSignature: [
         { required: false, message: '请填写您的个性签名', trigger: 'blur' },
         { min: 1, max: 30, message: '长度必须在1-30位字符之间', trigger: 'blur' },
     ],
     hobby: [
         { required: true, message: '请填写您的个人爱好', trigger: 'blur' },
         { min: 1, max: 30, message: '长度必须在1-30位字符之间', trigger: 'blur' },
+    ],
+    phoneNumber:[
+        { required: true, message: '请输入您的手机号', trigger: 'blur' },
+        { min: 11, max: 11, message: '请输入正确的手机号码', trigger: 'blur' },
     ]
 })
 
@@ -64,7 +75,12 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     if (!formEl) return
     await formEl.validate((valid, fields) => {
         if (valid) {
-            console.log('修改成功')
+            ruleForm.sex=ruleForm.sex=="男"?1:0;
+            ruleForm.birthday=new Date(ruleForm.birthday).valueOf();
+            axios.updateUserInfoApi(ruleForm).then(res=>{
+                console.log('修改成功')
+                to('mine')
+            })
         } else {
             console.log('修改失败', fields)
         }
@@ -79,9 +95,15 @@ const resetForm = (formEl: FormInstance | undefined) => {
 const options = Array.from({ length: 10000 }).map((_, idx) => ({
     value: `${idx + 1}`,
     label: `${idx + 1}`,
-}))
+}));
 
+//刷新页面，调用用户信息接口，渲染个人页面数据
 
+(async () => { 
+    let data = (await axios.queryUserInfoApi({})).data;
+    Object.assign(ruleForm, data);
+    ruleForm.sex=data.sex==1?"男":"女";
+})();
 
 
 </script>
@@ -95,11 +117,11 @@ const options = Array.from({ length: 10000 }).map((_, idx) => ({
         </el-page-header>
         <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" label-width="120px" class="demo-ruleForm mt-24"
             :size="formSize" status-icon>
-            <el-form-item label="昵称" prop="name" class="name-label">
-                <el-input v-model="ruleForm.name" />
+            <el-form-item label="昵称" prop="avatarName" class="name-label">
+                <el-input v-model="ruleForm.avatarName" />
             </el-form-item>
-            <el-form-item label="性别" prop="resource" class="mt-20">
-                <el-radio-group v-model="ruleForm.resource">
+            <el-form-item label="性别" prop="sex" class="mt-20">
+                <el-radio-group v-model="ruleForm.sex">
                     <el-radio label="男" />
                     <el-radio label="女" />
                 </el-radio-group>
@@ -107,23 +129,27 @@ const options = Array.from({ length: 10000 }).map((_, idx) => ({
 
             <el-form-item label="生日" required class="birthday-label mt-20">
                 <el-col :span="11">
-                    <el-form-item prop="date">
-                        <el-date-picker v-model="ruleForm.date" type="date" label="Pick a date" placeholder="选择日期"
+                    <el-form-item prop="birthday">
+                        <el-date-picker v-model="ruleForm.birthday" type="date" label="Pick a date" placeholder="选择日期"
                             style="width: 100%" />
                     </el-form-item>
                 </el-col>
             </el-form-item>
 
+            <el-form-item label="联系方式" prop="phoneNumber" class="phone-number  mt-20">
+                <el-input v-model="ruleForm.phoneNumber" type="text" placeholder="请输入11位手机号码" />
+            </el-form-item>
+
             <el-form-item label="个人爱好" prop="hobby" class="hobby  mt-20">
                 <el-input v-model="ruleForm.hobby" type="text" placeholder="如吃瓜，户外运动" />
+            </el-form-item> 
+
+            <el-form-item label="个性签名" prop="personalSignatrue" class="desc  mt-20">
+                <el-input v-model="ruleForm.personalSignature" type="text" placeholder="非必填项" />
             </el-form-item>
 
-            <el-form-item label="个性签名" prop="desc" class="desc  mt-20">
-                <el-input v-model="ruleForm.desc" type="text" placeholder="非必填项" />
-            </el-form-item>
-
-            <el-form-item label="标签(非必选)" prop="tags" class="mt-20">
-                <el-checkbox-group v-model="ruleForm.tags">
+            <!-- <el-form-item label="标签(非必选)" prop="tags" class="mt-20">
+                <el-checkbox-group v-model="">
                     <el-checkbox label="夜猫子协会常任理事" name="tags" />
                     <el-checkbox label="顶级外卖鉴赏师" name="tags" />
                     <el-checkbox label="秃头选拔赛形象大使" name="tags" />
@@ -133,7 +159,7 @@ const options = Array.from({ length: 10000 }).map((_, idx) => ({
                     <el-checkbox label="花式作死冠军" name="tags" />
                     <el-checkbox label="魔芋爽" name="tags" />
                 </el-checkbox-group>
-            </el-form-item>
+            </el-form-item> -->
 
             <el-form-item>
                 <el-button type="primary" @click="submitForm(ruleFormRef)">确认</el-button>
@@ -152,5 +178,8 @@ const options = Array.from({ length: 10000 }).map((_, idx) => ({
 .desc,
 .hobby {
     width: 500px;
+}
+.phone-number{
+    width:300px
 }
 </style>
