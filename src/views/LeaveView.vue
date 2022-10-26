@@ -17,8 +17,6 @@ const handleEdit = async (index: number, row: User) => {
     id : row.id
   })
   getLeaveListApi()
-  
-  // status.data.list[0].auditStatus = 1
 }
 
 const getList = (index: number, row: User) => {
@@ -32,7 +30,14 @@ const handleDelete = async (index: number, row: User) => {
   })
   getLeaveListApi()
 }
-
+function updateTime(time:Date){
+  let date = new Date(time);
+  let year = date.getFullYear();
+  let mounth=date.getMonth()+1;
+  let day = date.getUTCDate();
+  let hour = date.getUTCHours();
+  return `${year}-${mounth}-${day}-${hour}`;
+}
 
 let leave = ref();
 //页面的条数
@@ -41,14 +46,8 @@ let pageSize = ref(10);
 let total = ref();
 //总页数
 let pageNum = ref(1);
-//小时
-let hour = ref();
-//总时长
-let duration = ref();
 
-let startTime1 = ref();
 
-let endTime1 = ref();
 const small = ref(false);
 const disabled = ref(false);
 const getLeaveListApi = async function(){
@@ -56,35 +55,11 @@ const getLeaveListApi = async function(){
     pageSize : pageSize.value,
     pageNum : pageNum.value
   })
-  // console.log('------------------------leaveData')
-  // console.log(leaveData)
-  //页面的条数
-  //  pageSize.value = leaveData.data.pageSize
-  //总条数
   total.value = leaveData.data.total
-  //总页数
-  //  pageNum.value = leaveData.data.pageNum
+
   //渲染列表的数据
   leave.value = leaveData.data.list
-  // leave.value[0].startTime
-
-  //获取总时长
-  let startTime = new Date(leaveData.data.list[0].startTime).getTime()
-  let endTime = new Date(leaveData.data.list[0].endTime).getTime()
-  let duration1 = endTime - startTime;
-  duration.value = Math.ceil(hour.value = duration1/1000/60/60%24)
-  //获取开始时间
-  let Y = new Date(leaveData.data.list[0].startTime).getFullYear()
-  let M = new Date(leaveData.data.list[0].startTime).getMonth()+1
-  let D = new Date(leaveData.data.list[0].startTime).getDay()+1
-  let H = new Date(leaveData.data.list[0].startTime).getHours()+1
-  startTime1.value = Y + '-' + M + '-' + D + '-' + H
-  //获取结束时间
-  let Y1 = new Date(leaveData.data.list[0].endTime).getFullYear()
-  let M1 = new Date(leaveData.data.list[0].endTime).getMonth()+1
-  let D1 = new Date(leaveData.data.list[0].endTime).getDay()+1
-  let H1 = new Date(leaveData.data.list[0].endTime).getHours()+1
-  endTime1.value = Y1 + '-' + M1 + '-' + D1 + '-' + H1
+  
 }
 getLeaveListApi()
   
@@ -108,7 +83,7 @@ const handleCurrentChange = (val: number) => {
 <template>
   <el-table :data="leave" style="width: 100%">
 
-    <el-table-column label="编号" width="100">
+    <el-table-column label="编号">
       <template #default="scope">
         <div style="display: flex; align-items: center;justify-content: center;">
           <span style="margin-left: 10px">{{ scope.row.userId }}</span>
@@ -116,7 +91,7 @@ const handleCurrentChange = (val: number) => {
       </template> 
     </el-table-column>
 
-    <el-table-column label="申请人" width="100">
+    <el-table-column label="申请人">
       <template #default="scope">
         <el-popover effect="light" trigger="hover" placement="top" width="auto">
           <template #default>
@@ -132,7 +107,7 @@ const handleCurrentChange = (val: number) => {
     <el-table-column label="开始时间">
       <template #default="scope">
         <div style="display: flex; align-items: center;justify-content: center;">
-          <span style="margin-left: 10px">{{ startTime1 }}</span>
+          <span style="margin-left: 10px">{{  updateTime(scope.row.startTime) }}</span>
         </div>
       </template>
     </el-table-column>
@@ -140,7 +115,7 @@ const handleCurrentChange = (val: number) => {
     <el-table-column label="结束时间">
       <template #default="scope">
         <div style="display: flex; align-items: center;justify-content: center;">
-          <span style="margin-left: 10px">{{ endTime1 }}</span>
+          <span style="margin-left: 10px">{{ updateTime(scope.row.endTime) }}</span>
         </div>
       </template>
     </el-table-column>
@@ -148,7 +123,7 @@ const handleCurrentChange = (val: number) => {
     <el-table-column label="时长">
       <template #default="scope">
         <div style="display: flex; align-items: center;justify-content: center;">
-          <span style="margin-left: 10px">{{ duration }}</span>
+          <span style="margin-left: 10px">{{  }}</span>
         </div>
       </template>
     </el-table-column>
@@ -204,8 +179,7 @@ const handleCurrentChange = (val: number) => {
     <el-table-column label="操作">
       <template #default="scope">
         <el-button size="small" @click="handleEdit(scope.$index, scope.row)">通过</el-button>
-        <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row),
-        getList(scope.$index,scope.row)">不通过</el-button>
+        <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">不通过</el-button>
       </template>
     </el-table-column>
 

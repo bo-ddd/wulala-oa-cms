@@ -3,6 +3,7 @@
 import { ref, type Ref, reactive, toRefs } from 'vue'
 import { useRouter } from 'vue-router';
 import type { TabsPaneContext } from 'element-plus'
+import { ElMessage } from 'element-plus';
 import { StarFilled } from '@element-plus/icons-vue'
 import { EditPen } from '@element-plus/icons-vue'
 import axios from '../assets/api/api'
@@ -39,8 +40,11 @@ function closeInput() {
         hobby:userInfo.hobby,
         personalSignature:userInfo.personalSignature
     }).then(res=>{
-        console.log('修改成功')
         disabled.value = true;
+        ElMessage({
+                    message: '修改成功',
+                    type: 'success',
+                })
     })
 }
 
