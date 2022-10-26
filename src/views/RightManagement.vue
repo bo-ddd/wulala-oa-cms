@@ -1,7 +1,10 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, reactive } from 'vue'
 import axios from '@/assets/api/api'
-import { Check, Close } from '@element-plus/icons-vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import { computed } from '@vue/reactivity';
+
+
 
 const small = ref(false)
 const background = ref(true)
@@ -10,35 +13,92 @@ const input = ref();
 const inputAdd = ref();
 let pageNum = ref(1);
 let pageSize = ref(10);
-let total = ref();
-let permissionList = ref();
+const addSuccess = () => {
+    ElMessage({
+    showClose: true,
+    message: '添加成功',
+    type: 'success',
+  })
+}
+const addError = () => {
+    ElMessage({
+    showClose: true,
+    message: '添加失败',
+    type: 'error',
+  })
 
-const handleSizeChange = async (val: number) => {
-    console.log(`每页${val}条信息`);
-    await getPermissionList(pageSize.value, pageNum.value)
-    pageSize.value = val
 }
-const handleCurrentChange = async (val: number) => {
-    console.log(`这是第${val}页`)
-    await getPermissionList(pageSize.value, pageNum.value)
-    pageNum.value = val
+interface Permission {
+    id: number,
+    permissionName: string
 }
-const getPermissionList = (pageSize?: number, pageNum?: number) => {
-    axios.getPermissionListApi({
-        pageNum: pageNum,
-        pageSize: pageSize
-    }).then(res => {
+let permissionList = reactive<Permission[]>([]);
+//数据总条数
+let total = computed(() => permissionList.length)
+// 当前页面数据条数
+let currentList = computed(() => {
+    return permissionList.slice(startIndex.value, endIndex.value)
+})
+// 
+let startIndex = computed(() => (pageNum.value - 1) * pageSize.value)
+let endIndex = computed(() => pageNum.value * pageSize.value)
+const getPermissionList = async (pageSize?: number, pageNum?: number) => {
+    await axios.getPermissionListApi({}).then(res => {
         if (res.status === 1) {
-            permissionList.value = res.data.list;
+            permissionList.length = 0;
+            permissionList.push(...res.data);
         }
     })
 }
-const userSearch = async (id: any) => {
-    axios.queryUserInfoApi({
-        userId: id
+// 进页面先调用接口获取列表
+getPermissionList();
+// 删除权限
+const open = (id: number) => {
+    ElMessageBox.confirm(
+        '确定要删除该权限吗？',
+        '警告',
+        {
+            confirmButtonText: '确认删除',
+            cancelButtonText: '取消删除',
+            type: 'warning',
+        }
+    ).then(() => {
+        ElMessage({
+            type: 'success',
+            message: '删除成功',
+        }),
+            axios.deletePermissionApi({ id }).then(res => {
+                if (res.status == 1) {
+                    getPermissionList();
+                }
+            })
+
+    })
+        .catch(() => {
+            ElMessage({
+                type: 'info',
+                message: '删除已取消'
+                // userDelete(scope.row.id)
+            })
+        })
+}
+
+const handleSizeChange = async (val: number) => {
+    console.log(`每页${val}条信息`);
+    pageSize.value = val
+}
+
+const handleCurrentChange = async (val: number) => {
+    console.log(`这是第${val}页`)
+    pageNum.value = val
+}
+
+const userSearch = async (input: number) => {
+    axios.permissionUserListApi({
+        userId: input
     }).then(res => {
         if (res.data.status == 1) {
-            permissionList.value = res.data
+            permissionList = res.data
             console.log('-----查询成功----------');
             console.log(res.data);
         } else {
@@ -46,56 +106,37 @@ const userSearch = async (id: any) => {
         }
     })
 }
+// 添加权限
 const addPermission = async (inputAdd: string) => {
-    axios.addPermissionApi({
+    await axios.addPermissionApi({
         permissionName: inputAdd
     }).then(res => {
-        console.log(inputAdd);
-        console.log(res);
         if (res.status == 1) {
-            alert('添加成功')
-            axios.getPermissionListApi({}).then(res => {
-                permissionList.value = res.data;
-                total.value = res.data.length
-            })
+            addSuccess();
+            getPermissionList();
         } else {
-            alert('添加失败')
+            addError();
         }
     })
 }
-const userDelete = (id: number) => {
-    console.log(id)
-    axios.deletePermissionApi({ id }).then(res => {
-        if (res.status == 1) {
-            alert('删除成功')
-            axios.getPermissionListApi({}).then(res => {
-                permissionList.value = res.data;
-                total.value = res.data.length
-            })
-        } else {
-            alert('删除失败')
-        }
-    })
-}
-(async function () {
-    let userList = await axios.getPermissionListApi({})
-    permissionList.value = userList.data;
-    // console.log(userList);
-    total.value = userList.data.length
-})()
+
+
+
 </script>
 <template>
-    <div class="ipt">
-        <span class="label label-search">查询：</span>
-        <el-input v-model="input" size="small" placeholder="请输入用户ID" clearable />
-        <el-button type="danger" size="small" @click="userSearch(input)">搜索</el-button>
+
+    <div class="ipt-add">
         <span class="label label-add">添加权限：</span>
         <el-input v-model="inputAdd" size="small" placeholder="请输入权限名称" clearable />
         <el-button type="danger" size="small" @click="addPermission(inputAdd)">添加</el-button>
     </div>
-
-    <el-table :data="permissionList" border style="width: 100%" fit>
-        <el-table-column label="用户ID" align="center">
+    <div class="ipt">
+        <span class="label label-search">查询权限：</span>
+        <el-input v-model="input" size="small" placeholder="请输入权限ID" clearable />
+        <el-button type="danger" size="small" @click="userSearch(input)">搜索</el-button>
+    </div>
+    <el-table :data="currentList" border style="width: 100%" fit>
+        <el-table-column label="权限ID" align="center">
             <template #default="scope">
                 <div>{{ scope.row.id }}</div>
             </template>
@@ -103,15 +144,12 @@ const userDelete = (id: number) => {
 
         <el-table-column label="模块" align="center">
             <template #default="scope">
-                <div>{{ scope.row.permissionName }}</div>
+                <el-tag size="small" >{{ scope.row.permissionName }}</el-tag>
             </template>
         </el-table-column>
         <el-table-column label="操作" align='center' width="300">
             <template #default="scope">
-                <!-- <el-button size="small">修改信息</el-button> -->
-                <el-switch v-model="scope.row.value" class="mt-2" style="margin-left: 24px" inline-prompt
-                    :active-icon="Check" :inactive-icon="Close" />
-                <el-button size="small" type="danger" @click="userDelete( scope.row.id)">删除
+                <el-button size="small" type="danger" @click="open(scope.row.id)">删除
                 </el-button>
             </template>
         </el-table-column>
@@ -125,7 +163,8 @@ const userDelete = (id: number) => {
     </div>
 </template>
 <style scoped>
-.ipt {
+.ipt,
+.ipt-add {
     padding: 20px 0;
 }
 
@@ -136,12 +175,10 @@ const userDelete = (id: number) => {
     color: rgb(145, 137, 137);
 }
 
-.label-add {
-    margin-left: 20px;
-}
+
 
 :deep(.el-pagination) {
-    justify-content: center;
+    /* justify-content: center; */
     margin-top: 20px;
 }
 

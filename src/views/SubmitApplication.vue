@@ -112,7 +112,6 @@ const submitForm = (formEl: FormInstance | undefined) => {
         startTime : ruleForm.date1,
         endTime : ruleForm.date2,
       });
-      console.log(userInfo.data.userId);
       
     } else {
       console.log('error submit!', fields)
