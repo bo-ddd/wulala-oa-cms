@@ -140,17 +140,17 @@ const handleClose = (key: string, keyPath: string[]) => {
 
 
 let userInfo= reactive({
-    user:{
         avatarName: '',
-        url: ''
-    }
+        avatarImg: ''
 });
       
 
     (async ()=>{
-        userInfo.user =(await axios.queryUserInfoApi({})).data;
-        if(!userInfo.user.url){
-            userInfo.user.url='https://img.ixintu.com/download/jpg/20200815/18ae766809ff27de6b7a942d7ea4111c_512_512.jpg!bg'
+       let  data =(await axios.queryUserInfoApi({})).data;
+        userInfo.avatarName=data.avatarName;
+        userInfo.avatarImg=data.avatarImg;
+        if(!userInfo.avatarImg){
+            userInfo.avatarImg='https://img.ixintu.com/download/jpg/20200815/18ae766809ff27de6b7a942d7ea4111c_512_512.jpg!bg'
         }
       })()
 
@@ -215,9 +215,9 @@ let userInfo= reactive({
 
                         <div class="mine">
 
-                            <el-avatar :src="userInfo.user.url" />
+                            <el-avatar :src="userInfo.avatarImg" />
 
-                            <div class="no-shrink">{{userInfo.user.avatarName}}</div>
+                            <div class="no-shrink">{{userInfo.avatarName}}</div>
                             <el-col :span="8">
                                 <el-dropdown trigger="click">
                                     <span class="el-dropdown-link">

@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import type { FormInstance, FormRules } from 'element-plus'
 import { ArrowLeft } from '@element-plus/icons-vue';
 import axios from '../assets/api/api';
+import { ElMessage } from 'element-plus';
 
 const router = useRouter();
 const to = (name: string) => {
@@ -14,15 +15,15 @@ const to = (name: string) => {
 const formSize = ref('default')
 const ruleFormRef = ref<FormInstance>()
 
-interface RuleForm{
-    avatarImg:string;
-    avatarName:string;
-    birthday:string|Date|number;
-    hobby:string;
-    personalSignature:string;
-    phoneNumber:string;
-    sex:number|string;
-    userId:number;
+interface RuleForm {
+    avatarImg: string;
+    avatarName: string;
+    birthday: string | Date | number;
+    hobby: string;
+    personalSignature: string;
+    phoneNumber: string;
+    sex: number | string;
+    userId: number;
 }
 
 
@@ -65,7 +66,7 @@ const rules = reactive<FormRules>({
         { required: true, message: '请填写您的个人爱好', trigger: 'blur' },
         { min: 1, max: 30, message: '长度必须在1-30位字符之间', trigger: 'blur' },
     ],
-    phoneNumber:[
+    phoneNumber: [
         { required: true, message: '请输入您的手机号', trigger: 'blur' },
         { min: 11, max: 11, message: '请输入正确的手机号码', trigger: 'blur' },
     ]
@@ -75,14 +76,17 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     if (!formEl) return
     await formEl.validate((valid, fields) => {
         if (valid) {
-            ruleForm.sex=ruleForm.sex=="男"?1:0;
-            ruleForm.birthday=new Date(ruleForm.birthday).valueOf();
-            axios.updateUserInfoApi(ruleForm).then(res=>{
-                console.log('修改成功')
+            ruleForm.sex = ruleForm.sex == "男" ? 1 : 0;
+            ruleForm.birthday = new Date(ruleForm.birthday).valueOf();
+            axios.updateUserInfoApi(ruleForm).then(res => {
+                ElMessage({
+                    message: '修改成功',
+                    type: 'success',
+                })
                 to('mine')
             })
         } else {
-            console.log('修改失败', fields)
+            ElMessage.error('修改失败')
         }
     })
 }
@@ -99,10 +103,10 @@ const options = Array.from({ length: 10000 }).map((_, idx) => ({
 
 //刷新页面，调用用户信息接口，渲染个人页面数据
 
-(async () => { 
+(async () => {
     let data = (await axios.queryUserInfoApi({})).data;
     Object.assign(ruleForm, data);
-    ruleForm.sex=data.sex==1?"男":"女";
+    ruleForm.sex = data.sex == 1 ? "男" : "女";
 })();
 
 
@@ -142,7 +146,7 @@ const options = Array.from({ length: 10000 }).map((_, idx) => ({
 
             <el-form-item label="个人爱好" prop="hobby" class="hobby  mt-20">
                 <el-input v-model="ruleForm.hobby" type="text" placeholder="如吃瓜，户外运动" />
-            </el-form-item> 
+            </el-form-item>
 
             <el-form-item label="个性签名" prop="personalSignatrue" class="desc  mt-20">
                 <el-input v-model="ruleForm.personalSignature" type="text" placeholder="非必填项" />
@@ -179,7 +183,8 @@ const options = Array.from({ length: 10000 }).map((_, idx) => ({
 .hobby {
     width: 500px;
 }
-.phone-number{
-    width:300px
+
+.phone-number {
+    width: 300px
 }
 </style>
