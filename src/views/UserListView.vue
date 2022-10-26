@@ -7,25 +7,23 @@
     </div>
 
     <el-table :data="userListData" border style="width: 100%" fit>
-        <el-table-column label="用户ID" align="center">
+        <el-table-column label="用户ID" align="center" width="80px">
             <template #default="scope">
                 <div>{{ scope.row.userId }}</div>
             </template>
         </el-table-column>
-
-        <!-- <el-table-column label="用户头像" align="center">
+        <el-table-column label="用户昵称" align="center" width="200px">
             <template #default="scope">
-                <div><img src="{{scope.row.avatarImg}}" alt=""></div>
+                <el-tag size="small">{{ scope.row.avatarName }}</el-tag>
             </template>
-        </el-table-column> -->
-
-        <el-table-column label="用户昵称" align="center">
+        </el-table-column>
+        <el-table-column label="用户权限" align="center">
             <template #default="scope">
-                <el-tag size="small" >{{ scope.row.avatarName }}</el-tag>
+                <el-tag size="small">{{ scope.row.id }}</el-tag>
             </template>
         </el-table-column>
 
-        <el-table-column label="联系方式" align="center">
+        <el-table-column label="联系方式" align="center" width="200px">
             <template #default="scope">
                 <div>{{ scope.row.phoneNumber }}</div>
             </template>
@@ -76,11 +74,17 @@ const input = ref();
 let pageNum = ref(1);
 let pageSize = ref(10);
 let total = ref();
-let userListData = ref();
-
+let userListData = ref([]);
+let permissionList = ref([]);
 (async function () {
     let userList = await axios.getUserListApi({})
-    userListData.value = userList.data.list;
+    axios.getPermissionListApi({}).then(res => {
+        if (res.status == 1) {
+            permissionList.value = res.data
+            Object.assign(userListData, permissionList)
+        }
+    })
+    userListData.value = userList.data.list; 
     total.value = userList.data.total
 })()
 
@@ -109,6 +113,7 @@ const userSearch = async (id: any) => {
         }
     })
 }
+
 </script>
 
 <style scoped>
