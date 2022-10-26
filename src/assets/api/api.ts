@@ -21,7 +21,11 @@ interface examineUserLeave {
     id: number,
     auditStatus: number
 }
-
+interface updatePermission{
+    id:number
+    permissionName:string 
+    pid:number
+}
 export default {
     /**
     * 登录接口**/
@@ -79,9 +83,18 @@ export default {
     },
     /**
      * 新增权限的接口
-     * params: "permissionName": "人员管理" **/
+     * params: "permissionName": "人员管理" 
+     * params: "pid": 如果是0 为最外层父级，不为0 则为子级 **/
     addPermissionApi(payload = {}) {
         return axios.post('/permission/add', payload)
+    },
+    /**
+     * 修改权限的接口
+     * params: "id": ", //id  必填
+     * params: "permissionName": "新修改的权限名称", //权限名称 必填
+     * params: "pid": 如果是0 为最外层父级，不为0 则为子级   必填**/
+    updatePermissionApi(payload :updatePermission) {
+        return axios.post('/permission/update', payload)
     },
     /**
      * 删除权限的接口
