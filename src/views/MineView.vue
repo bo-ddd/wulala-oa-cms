@@ -3,6 +3,7 @@
 import { ref, type Ref, reactive, toRefs } from 'vue'
 import { useRouter } from 'vue-router';
 import type { TabsPaneContext } from 'element-plus'
+import { ElMessage } from 'element-plus';
 import { StarFilled } from '@element-plus/icons-vue'
 import { EditPen } from '@element-plus/icons-vue'
 import axios from '../assets/api/api'
@@ -11,7 +12,6 @@ const activeName = ref('first')
 const handleClick = (tab: TabsPaneContext, event: Event) => {
     console.log(tab, event)
 }
-const text: Ref = ref('');
 const disabled: Ref = ref(true);
 
 //用户头像自适应功能;
@@ -27,12 +27,25 @@ function to(name: string) {
     router.push(name)
 }
 
+
 //切换个性签名编辑状态;
 function openInput() {
     disabled.value = false;
 }
 function closeInput() {
-    disabled.value = true;
+    axios.updateUserInfoApi({
+        userId:userInfo.userId,
+        sex:userInfo.sex,
+        birthday:userInfo.birthday, 
+        hobby:userInfo.hobby,
+        personalSignature:userInfo.personalSignature
+    }).then(res=>{
+        disabled.value = true;
+        ElMessage({
+                    message: '修改成功',
+                    type: 'success',
+                })
+    })
 }
 
 //切换头像入口状态;
@@ -45,25 +58,35 @@ function leaveStatus() {
 }
 
 //刷新页面，调用用户信息接口，渲染个人页面数据
-let userInfo = reactive({
-    user:{
-        avatarName: '',
-        url: '',
-        sign: '',
-        sex: '',
-        age: '',
-        birthday:'',
-        tags: ''
-    }
-});
+
+interface UserInfo{
+    avatarImg:string;
+    avatarName:string;
+    birthday:string|Date|number;
+    hobby:string;
+    personalSignature:string;
+    phoneNumber:string;
+    sex:number|string;
+    userId:number;
+}
+
+let age=ref<number>()
+
+let userInfo = reactive<UserInfo>({});
+
+//打开页面自动渲染数据;
 (async () => {
-    userInfo.user = (await axios.queryUserInfoApi({})).data;
-    if(!userInfo.user.url){
-        userInfo.user.url = 'https://img.ixintu.com/download/jpg/20200815/18ae766809ff27de6b7a942d7ea4111c_512_512.jpg!bg'
+    let data = (await axios.queryUserInfoApi({})).data;
+    Object.assign(userInfo, data);
+    if(!userInfo.personalSignature){
+        userInfo.personalSignature='这个人很懒，什么都没留下！';
     }
-    if(!userInfo.user.sign){
-        userInfo.user.sign = '这个人很懒,什么都没留下'
-    }
+    let year=new Date(userInfo.birthday).getFullYear();
+    let month=new Date(userInfo.birthday).getMonth()+1;
+    let date=new Date(userInfo.birthday).getDate();
+    let months=month>=10? month:'0'+month;
+    userInfo.birthday=year+'-'+months+'-'+date; 
+    age.value=parseInt((Date.now()-new Date(userInfo.birthday).valueOf())/1000/60/60/24/365);
 })();
 
 </script>
@@ -78,7 +101,7 @@ let userInfo = reactive({
                             <div class="block">
                                 <span class="title">{{ fit }}</span>
                                 <div class="box" @mouseover="enterStatus" @mouseout="leaveStatus">
-                                    <el-avatar shape="circle" :size="100" :fit="fit" :src="userInfo.user.url" />
+                                    <el-avatar shape="circle" :size="100" :fit="fit" :src="userInfo.avatarImg||state.url" />
                                     <div class="beforeEnter" :class="{ blur: isOver }">
                                         <el-button size="small" text bg link round @click="to('updataAvatar')">修改头像
                                         </el-button>
@@ -91,15 +114,15 @@ let userInfo = reactive({
                         <el-container class="username">
                             <el-header>
                                 <div class="flex-box">
-                                    <span class="strong">{{userInfo.user.avatarName}}</span>
-                                    <el-button type="plain" :icon="EditPen" circle size="large" link />
+                                    <span class="strong">{{ userInfo.avatarName }}</span>
                                 </div>
                             </el-header>
                             <el-main class="bottom-main flex-box">
-                                <el-input class="input" v-model="text" maxlength="30" placeholder="个性签名" clearable
+                                <el-input class="input" v-model="userInfo.personalSignature" maxlength="30" placeholder="个性签名" clearable
                                     show-word-limit type="text" :disabled="disabled" @blur="closeInput"
                                     @keyup.enter="closeInput" />
                                 <el-button @click="openInput" type="plain" :icon="EditPen" circle size="large" link />
+                                
                             </el-main>
                         </el-container>
                     </el-main>
@@ -121,14 +144,14 @@ let userInfo = reactive({
                         </el-button>
                     </template>
 
-                    <el-descriptions-item label="性别">男</el-descriptions-item>
-                    <el-descriptions-item label="年龄">24岁</el-descriptions-item>
-                    <el-descriptions-item label="生日">1998-01-12</el-descriptions-item>
+                    <el-descriptions-item label="性别">{{ userInfo.sex==1?"男":"女" }}</el-descriptions-item>
+                    <el-descriptions-item label="年龄">{{ age||'— —' }}</el-descriptions-item>
+                    <el-descriptions-item label="生日">{{ userInfo.birthday||'— —' }}</el-descriptions-item>
                     <el-descriptions-item label="标签">
-                        <el-tag size="small">有点格调</el-tag>
+                        <el-tag size="small">萌新</el-tag>
                     </el-descriptions-item>
                     <el-descriptions-item label="个人爱好">
-                        吃瓜
+                        {{ userInfo.hobby||'— —' }}
                     </el-descriptions-item>
                 </el-descriptions>
             </el-tab-pane>
