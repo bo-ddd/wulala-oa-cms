@@ -45,6 +45,11 @@ const sidebarList = [
                 id: '302',
                 name: '提交申请',
                 targetPath: '/submitApplication'
+            },
+            {
+                id: '303',
+                name: '提交日报',
+                targetPath: '/submitDaily'
             }
         ]
     },
@@ -212,7 +217,7 @@ const defaultAvatarImg = 'https://img.ixintu.com/download/jpg/20200815/18ae76680
                                 </el-menu-item>
 
                                 <el-sub-menu :key="index" :index="index + ''" v-if="item.childrenList.length">
-                                    <template #title>
+                                    <template #title>      
                                         <el-icon>
                                             <component :is="item.icon"></component>
                                         </el-icon>

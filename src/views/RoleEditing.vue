@@ -99,14 +99,13 @@ const customNodeClass = (data: Tree, node: Node) => {
   <div>
     <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" label-width="120px" class="demo-ruleForm center"
       :size="formSize" status-icon>
-      <template class="top-list mt-10">
 
+      <template class="top-list mt-10">
         <el-form-item label="角色名称" prop="region">
           <el-select v-model="ruleForm.region" placeholder="请输入角色名称" size="small">
             <el-option v-for="item in roleList" :key="item.id" :label="item.roleName" :value="item.roleName" />
           </el-select>
         </el-form-item>
-
         <el-form-item>
           <el-button type="danger" @click="submitForm(ruleFormRef)" size="small">确定</el-button>
         </el-form-item>
@@ -137,7 +136,7 @@ const customNodeClass = (data: Tree, node: Node) => {
   display: none;
 }
 
-/* Tree */
+/* Tree控件 */
 .is-penultimate > .el-tree-node__content {
   color: #626aef;
 }
@@ -146,7 +145,13 @@ const customNodeClass = (data: Tree, node: Node) => {
   display: flex;
   flex-direction: row;
 }
+
 .is-penultimate > .el-tree-node__children > div {
   width: 25%;
 }
+
+/* 改变树形控件的背景颜色 */
+/* :deep(.el-tree){
+   background-color: transparent;
+} */
 </style>
