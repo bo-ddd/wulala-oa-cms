@@ -1,40 +1,24 @@
 <template>
-  <el-form
-    ref="ruleFormRef"
-    :model="ruleForm"
-    :rules="rules"
-    label-width="120px"
-    class="demo-ruleForm"
-    :size="formSize"
-    status-icon
-  >
-·    <el-form-item label="用户ID" prop="name">
-      <el-input v-model="ruleForm.name" readonly=“readonly” />
+  <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" label-width="120px" class="demo-ruleForm" :size="formSize"
+    status-icon>
+    · <el-form-item label="用户ID" prop="name">
+      <el-input v-model="ruleForm.name" />
     </el-form-item>
-   
-  <div class="demo-datetime-picker">
-    <div class="block">
-      <span class="demonstration">开始时间</span>
-      <el-date-picker
-        v-model="ruleForm.date1"
-        type="datetime"
-        placeholder="选择开始时间"
-      />
+
+    <div class="demo-datetime-picker">
+      <div class="block">
+        <span class="demonstration">开始时间</span>
+        <el-date-picker v-model="ruleForm.date1" type="datetime" placeholder="选择开始时间" />
+      </div>
+
+      <div class="block">
+        <span class="demonstration">结束时间</span>
+        <el-date-picker v-model="ruleForm.date2" type="datetime" placeholder="选择结束时间" :shortcuts="shortcuts" />
+      </div>
     </div>
-    
-    <div class="block">
-      <span class="demonstration">结束时间</span>
-      <el-date-picker
-        v-model="ruleForm.date2"
-        type="datetime"
-        placeholder="选择结束时间"
-        :shortcuts="shortcuts"
-      />
-    </div>
-  </div>
 
 
-   
+
     <el-form-item label="请假理由" prop="desc">
       <el-input v-model="ruleForm.desc" type="textarea" />
     </el-form-item>
@@ -118,27 +102,31 @@ const rules = reactive<FormRules>({
   ],
 });
 
-(async function(){
-let userId = await axios.queryUserInfoApi({});
-ruleForm.name = userId.data.userId
-})();
-
+const getsunmit = async ()=>{
+  let userId = await axios.queryUserInfoApi({});
+  ruleForm.name = userId.data.userId
+}
+getsunmit()
 const submitForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return
-   formEl.validate(async (valid, fields) => {
+  formEl.validate(async (valid, fields) => {
     if (valid) {
       console.log('submit!');
+      alert("提交成功")
       let userInfo = await axios.createLeaveApi({
-        userId : ruleForm.name,
-        reason : ruleForm.desc,
-        startTime : ruleForm.date1,
-        endTime : ruleForm.date2,
+        userId: ruleForm.name,
+        reason: ruleForm.desc,
+        startTime: ruleForm.date1,
+        endTime: ruleForm.date2,
       });
-      
+      formEl.resetFields()
     } else {
-      console.log('error submit!', fields)
+      // console.log('error submit!', fields)
+      alert('提交错误')
+      formEl.resetFields()
     }
   })
+
 }
 
 const resetForm = (formEl: FormInstance | undefined) => {
@@ -148,7 +136,7 @@ const resetForm = (formEl: FormInstance | undefined) => {
 
 </script>
 <style scoped>
-.text-center{
+.text-center {
   text-align: center;
 }
 
@@ -159,15 +147,18 @@ const resetForm = (formEl: FormInstance | undefined) => {
   padding: 0;
   flex-wrap: wrap;
 }
+
 .demo-datetime-picker .block {
   padding: 30px 0;
   text-align: center;
   border-right: solid 1px var(--el-border-color);
   flex: 1;
 }
+
 .demo-datetime-picker .block:last-child {
   border-right: none;
 }
+
 .demo-datetime-picker .demonstration {
   display: block;
   color: var(--el-text-color-secondary);

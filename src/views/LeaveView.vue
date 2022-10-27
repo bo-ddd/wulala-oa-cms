@@ -25,16 +25,17 @@ const handleDelete = async (index: number, row: User) => {
     auditStatus: 2,
     id: row.id
   })
+
   getLeaveListApi()
 }
 function updateTime(time: Date) {
   let date = new Date(time);
-  console.log(date);
+  // console.log(date);
   let year = date.getFullYear();
   let mounth = date.getMonth() + 1;
   let day = date.getUTCDate();
   let hour = date.getHours();
-  console.log(hour);  
+  // console.log(hour);  
   return `${ year }-${ mounth }-${ day }-${ hour }`;
 }
 
@@ -58,13 +59,15 @@ const getLeaveListApi = async function () {
   leave.value = leaveData.data.list;
 }
 getLeaveListApi()
-let date = async (index : number ,row : User) =>{
-  console.log(row);
+
+let date = (startTime1 : number , endTime1 : number) =>{
+  let starTime = new Date(startTime1).getTime()
+  let endTime = new Date(endTime1).getTime()
+  let timeStamp = endTime - starTime
+  // let duration = timeStamp/1000/60/60%24
+  return timeStamp/1000/60/60/24*24;
   
 };
-
-
-
 
 const handleSizeChange = (val: number) => {
   console.log(`${val} items per page`);
@@ -123,7 +126,7 @@ const handleCurrentChange = (val: number) => {
     <el-table-column label="时长">
       <template #default="scope">
         <div style="display: flex; align-items: center;justify-content: center;">
-          <span style="margin-left: 10px">{{  }}</span>
+          <span style="margin-left: 10px">{{ date(scope.row.startTime,scope.row.endTime) }}</span>
         </div>
       </template>
     </el-table-column>
@@ -178,14 +181,14 @@ const handleCurrentChange = (val: number) => {
 
     <el-table-column label="操作">
       <template #default="scope">
-        <div v-if="scope.row.auditStatus == 0">
-          <el-button size="small" @click="handleEdit(scope.$index, scope.row)">通过</el-button>
-          <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">不通过</el-button>
-        </div>
-
+        <!-- <div v-if="scope.row.auditStatus == 0"> -->
+          <el-button size="small" @click="handleEdit(scope.$index , scope.row)">通过</el-button>
+          <el-button size="small" type="danger" @click="handleDelete(scope.$index , scope.row)">不通过</el-button>
+        <!-- </div> -->
+<!-- 
         <div v-else-if="scope.row.auditStatus == 1 || scope.row.auditStatus == 2">
           <span>已审核</span>
-        </div>
+        </div> -->
       </template>
     </el-table-column>
   </el-table>
