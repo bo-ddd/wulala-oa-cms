@@ -17,12 +17,11 @@
                 <el-tag size="small">{{ scope.row.avatarName }}</el-tag>
             </template>
         </el-table-column>
-        <el-table-column label="用户权限" align="center">
+        <el-table-column label="用户角色" align="center" >
             <template #default="scope">
-                <el-tag size="small">{{ scope.row.id }}</el-tag>
+                <el-tag size="small">{{ scope.row.avatarName }}</el-tag>
             </template>
         </el-table-column>
-
         <el-table-column label="联系方式" align="center" width="200px">
             <template #default="scope">
                 <div>{{ scope.row.phoneNumber }}</div>
@@ -78,12 +77,6 @@ let userListData = ref([]);
 let permissionList = ref([]);
 (async function () {
     let userList = await axios.getUserListApi({})
-    axios.getPermissionListApi({}).then(res => {
-        if (res.status == 1) {
-            permissionList.value = res.data
-            Object.assign(userListData, permissionList)
-        }
-    })
     userListData.value = userList.data.list; 
     total.value = userList.data.total
 })()
