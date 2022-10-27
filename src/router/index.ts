@@ -14,6 +14,9 @@ const router = createRouter({
       path: "/",
       name: "login",
       component: () => import("../views/LoginView.vue"),
+      meta:{
+        label:"登录"
+      }
     },
     {//layout页面;
       path: "/layout",
@@ -74,6 +77,11 @@ const router = createRouter({
           path: "/roleEditing",
           name: "roleEditing",
           component: () => import("../views/RoleEditing.vue")
+        },
+        {//提交日报编辑页面;
+          path: "/submitDaily",
+          name: "submitDaily",
+          component: () => import("../views/SubmitDaily.vue")
         }
       ]
     },
