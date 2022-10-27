@@ -45,6 +45,11 @@ const sidebarList = [
                 id: '302',
                 name: '提交申请',
                 targetPath: '/submitApplication'
+            },
+            {
+                id: '303',
+                name: '提交日报',
+                targetPath: '/submitDaily'
             }
         ]
     },
@@ -131,7 +136,6 @@ function getPageName(path: string) {
             pName.value=item.name;
             cName.value="";
         }else if(item.childrenList.length){
-
                 item.childrenList.forEach(childItem=>{
                 if(childItem.targetPath==path){
                     pName.value=item.name;
@@ -213,7 +217,7 @@ const defaultAvatarImg = 'https://img.ixintu.com/download/jpg/20200815/18ae76680
                                 </el-menu-item>
 
                                 <el-sub-menu :key="index" :index="index + ''" v-if="item.childrenList.length">
-                                    <template #title>
+                                    <template #title>      
                                         <el-icon>
                                             <component :is="item.icon"></component>
                                         </el-icon>
@@ -275,7 +279,7 @@ const defaultAvatarImg = 'https://img.ixintu.com/download/jpg/20200815/18ae76680
                 </el-main>
 
                 <el-footer class="footer">
-                    技术支持: 呜啦啦有点儿项目组
+                    技术支持: 呜啦啦OA项目组
                 </el-footer>
             </el-container>
         </el-container>
