@@ -408,4 +408,8 @@ const defaultAvatarImg = 'https://img.ixintu.com/download/jpg/20200815/18ae76680
     font-size: 10px;
     color: #c6c9c9;
 }
+
+.el-main::-webkit-scrollbar {
+    display: none;
+}
 </style>
