@@ -131,7 +131,6 @@ function getPageName(path: string) {
             pName.value=item.name;
             cName.value="";
         }else if(item.childrenList.length){
-
                 item.childrenList.forEach(childItem=>{
                 if(childItem.targetPath==path){
                     pName.value=item.name;
@@ -275,7 +274,7 @@ const defaultAvatarImg = 'https://img.ixintu.com/download/jpg/20200815/18ae76680
                 </el-main>
 
                 <el-footer class="footer">
-                    技术支持: 呜啦啦有点儿项目组
+                    技术支持: 呜啦啦OA项目组
                 </el-footer>
             </el-container>
         </el-container>
