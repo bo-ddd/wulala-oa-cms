@@ -24,7 +24,8 @@ let getRoleList = async function () {
 getRoleList()
 //点击创建角色     
 const addRole =  function () {
-   to('createroles')
+   to('createRoles')
+   
 }
 //创建角色
 const createRole = async function () {
@@ -53,36 +54,37 @@ const handleEdit = (index: number, row: User) => {
     <div class="select">
         <div>
             <span class="lable">查询角色：</span>
-            <el-select v-model="value" placeholder="请选择">
+            <el-select v-model="value" placeholder="请选择" size="small">
                 <el-option v-for="item in data" :key="item.id" :label="item.roleName" :value="item.id" />
             </el-select>
-            <el-button type="primary" class="ml-10">查询</el-button>
+            <el-button type="danger"  size="small" class="ml-10" plain>查询</el-button>
         </div>
 
         <div>
         </div>
     </div>
     <div class="table">
-        <el-button type="primary" class="mb-10" @click="addRole">创建角色</el-button>
+
+        <el-button type="danger" class="mb-10" @click="addRole" size="small" >创建角色</el-button>
         <el-table :data="data" style="width: 100%">
-            <el-table-column label="id">
-                <template #default="scope">
-                    <div style="display: flex; align-items: center">
+            <el-table-column label="id" width="240px"  align="center">
+                <template #default="scope" align="center">
+                    <div align="center">
                         <span style="margin-left: 10px">{{ scope.row.id }}</span>
                     </div>
                 </template>
             </el-table-column>
-            <el-table-column label="角色名称">
-                <template #default="scope">
+            <el-table-column label="角色名称"  align="center">
+                <template #default="scope" align="center">
                     <el-popover effect="light" trigger="hover" placement="top" width="auto">
-                        <template #reference>
+                        <template #reference  align="center">
                             <el-tag>{{ scope.row.roleName }}</el-tag>
                         </template>
                     </el-popover>
                 </template>
             </el-table-column>
-            <el-table-column label="Operations">
-                <template #default="scope">
+            <el-table-column label="操作" align="center">
+                <template #default="scope" align="center">
                     <el-button size="small" @click="handleEdit(scope.$index, scope.row)">设置角色权限</el-button>
                     <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">Delete
                     </el-button>
@@ -98,6 +100,7 @@ const handleEdit = (index: number, row: User) => {
 
 <style scoped>
 .select {
+    align-items: center;
     padding: 10px;
     margin-bottom: 10px;
 }
