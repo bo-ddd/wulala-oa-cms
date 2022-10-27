@@ -143,11 +143,17 @@ const resetForm = (formEl: FormInstance | undefined) => {
 
 .demo-datetime-picker {
   display: flex;
-  width: 100%;
+  width: 60%;
   padding: 0;
+  margin-left: 80px;
   flex-wrap: wrap;
 }
-
+.el-input{
+width: 60%;
+}
+.el-textarea{
+  width: 60%;
+}
 .demo-datetime-picker .block {
   padding: 30px 0;
   text-align: center;
