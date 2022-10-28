@@ -146,7 +146,7 @@ const resetForm = (formEl: FormInstance | undefined) => {
   width: 60%;
   padding: 0;
   margin-left: 80px;
-  flex-wrap: wrap;
+  flex-wrap: wrap;  
 }
 .el-input{
 width: 60%;
