@@ -21,10 +21,10 @@ interface examineUserLeave {
     id: number,
     auditStatus: number
 }
-interface updatePermission{
-    id:number
-    permissionName:string 
-    pid:number
+interface updatePermission {
+    id: number
+    permissionName: string
+    pid: number
 }
 export default {
     /**
@@ -93,7 +93,7 @@ export default {
      * params: "id": ", //id  必填
      * params: "permissionName": "新修改的权限名称", //权限名称 必填
      * params: "pid": 如果是0 为最外层父级，不为0 则为子级   必填**/
-    updatePermissionApi(payload :updatePermission) {
+    updatePermissionApi(payload: updatePermission) {
         return axios.post('/permission/update', payload)
     },
     /**
@@ -139,13 +139,19 @@ export default {
     getRoleListApi(payload = {}) {
         return axios.post('/role/list', payload)
     },
-
     /**
    * 创建角色接口                  
    * params  roleName": string
    * **/
     createRoleApi(payload = {}) {
         return axios.post('/role/create', payload)
+    },
+    /**
+   * 删除角色接口                  
+   * params  id": string
+   * **/
+    deleteRoleApi(payload = {}) {
+        return axios.post('/role/delete', payload)
     },
     /**
   *给角色添加权限接口
@@ -162,6 +168,21 @@ export default {
     deletePermissionRoleApi(payload = {}) {
         return axios.post('/role/deletePermission', payload)
     },
-
+    /**
+  *创建文章接口
+  * title	2022.10.28日报	String	
+    content	哇哈哈哈哈，今天吃了一只烤鸡，好开心鸭！
+  * **/
+    createArticleApi(payload = {}) {
+        return axios.post('/article/create', payload)
+    },
+    /**
+  *获取文章；列表接口
+   *pageSize	2	Integer	
+    pageNum	1	Integer
+  * **/
+    getArticleListApi(payload = {}) {
+        return axios.post('/article/list', payload)
+    },
 
 }
