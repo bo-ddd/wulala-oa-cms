@@ -1,8 +1,7 @@
 <script lang="ts" setup>
-import { reactive, ref } from 'vue'
+import { reactive, ref, onMounted } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
 import axios from "../assets/api/api"
-import type Node from 'element-plus/es/components/tree/src/model/node'
 
 const formSize = ref('default')
 const ruleFormRef = ref<FormInstance>()
@@ -29,6 +28,7 @@ const rules = reactive<FormRules>({
   ]
 })
 
+ //提交表单事件;
 const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
   await formEl.validate((valid, fields) => {
@@ -40,11 +40,12 @@ const submitForm = async (formEl: FormInstance | undefined) => {
   })
 };
 
+
+//处理数据结构，为无限极结构;
 interface PermissionList {
   id: number,
   permissionName: string,
   pid: number,
-  // isPenultimate:true
 }
 
 interface FormatData extends PermissionList {
@@ -54,7 +55,6 @@ interface FormatData extends PermissionList {
 const formatePermissionList = (data: PermissionList) => {
   const res = JSON.parse(JSON.stringify(data))
   res.forEach((item: FormatData) => {
-    // item.isPenultimate=true;
     item.children = [];
     if (item.pid != 0) {
       let pItem = res.find((pItem: FormatData) => pItem.id == item.pid)
@@ -76,21 +76,12 @@ const formatData = reactive<Tree[]>([]);
   Object.assign(formatData, formatePermissionList(permissionList))
 })();
 
+//树形数据结构的类型接口;
 interface Tree {
   id: number,
   permissionName: string,
   pid: number,
-  isPenultimate?: boolean
   children: Tree[]
-}
-
-
-
-const customNodeClass = (data: Tree, node: Node) => {
-  if (data.isPenultimate) {
-    return 'is-penultimate'
-  }
-  return null
 }
 
 </script>
@@ -149,9 +140,4 @@ const customNodeClass = (data: Tree, node: Node) => {
 .is-penultimate > .el-tree-node__children > div {
   width: 25%;
 }
-
-/* 改变树形控件的背景颜色 */
-/* :deep(.el-tree){
-   background-color: transparent;
-} */
 </style>
