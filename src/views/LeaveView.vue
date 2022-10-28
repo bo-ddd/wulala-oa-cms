@@ -181,14 +181,14 @@ const handleCurrentChange = (val: number) => {
 
     <el-table-column label="操作">
       <template #default="scope">
-        <!-- <div class="btn" v-if="scope.row.auditStatus == 0"> -->
+        <div class="btn" v-if="scope.row.auditStatus == 0">
           <el-button size="small" @click="handleEdit(scope.$index , scope.row)">通过</el-button>
           <el-button size="small" type="danger" @click="handleDelete(scope.$index , scope.row)">不通过</el-button>
-        <!-- </div> -->
+        </div>
 
-        <!-- <div v-else-if="scope.row.auditStatus == 1 || scope.row.auditStatus == 2">
+        <div v-else-if="scope.row.auditStatus == 1 || scope.row.auditStatus == 2">
           <span>已审核</span>
-        </div> -->
+        </div>
       </template>
     </el-table-column>
   </el-table>

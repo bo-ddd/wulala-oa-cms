@@ -370,6 +370,10 @@ const defaultAvatarImg = 'https://img.ixintu.com/download/jpg/20200815/18ae76680
     box-sizing: border-box;
 }
 
+:deep(.el-aside){
+    overflow: hidden;
+}
+
 .sidebar-list {
     width: 120px;
     margin: 50px auto;
