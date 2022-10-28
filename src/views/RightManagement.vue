@@ -2,21 +2,53 @@
 import { ref, reactive } from 'vue'
 import axios from '@/assets/api/api'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { computed } from '@vue/reactivity';
 
 
 
-const small = ref(false)
-const background = ref(true)
-const disabled = ref(false)
 const input = ref();
 const permissionNameAdd = ref();
 const pidAdd = ref();
-const permissionNameId = ref();
-const newPermissionName = ref();
-const parentId = ref();
+let permissionListPid = ref();
+let permissionList = ref();
 let pageNum = ref(1);
 let pageSize = ref(10);
+
+interface Permission {
+    id: number,
+    permissionName: string,
+    pid: number,
+    label: string
+}
+
+interface FormatPermission extends Permission {
+    children: Permission[]
+}
+
+const formatData = (data: FormatPermission[]) => {
+    let res: FormatPermission[] = JSON.parse(JSON.stringify(data));
+    res.forEach(item => {
+        if (!item.children) item.children = [];
+        if (item.pid != 0) {
+            let pItem = res.find(pItem => pItem.id == item.pid)
+            if (pItem && !pItem.children) pItem.children = [];
+            pItem?.children.push(item)
+        }
+    })
+    return res.filter(item => item.pid == 0)
+}
+
+const formDataPid = (data: FormatPermission[]) => {
+    return data.filter(item => item.pid == 0)
+}
+const getPermissionList = async () => {
+    await axios.getPermissionListApi({}).then(res => {
+        if (res.status === 1) {
+            permissionList.value = formatData(res.data)
+            permissionListPid.value = formDataPid(res.data)
+        }
+    })
+}
+
 const addSuccess = () => {
     ElMessage({
         showClose: true,
@@ -46,30 +78,14 @@ const upError = () => {
         type: 'error',
     })
 }
-interface Permission {
-    id: number,
-    permissionName: string
-}
-let permissionList = reactive<Permission[]>([]);
-//数据总条数
-let total = computed(() => permissionList.length)
-// 当前页面数据条数
-let currentList = computed(() => {
-    return permissionList.slice(startIndex.value, endIndex.value)
-})
-// 
-let startIndex = computed(() => (pageNum.value - 1) * pageSize.value)
-let endIndex = computed(() => pageNum.value * pageSize.value)
-const getPermissionList = async (pageSize?: number, pageNum?: number) => {
-    await axios.getPermissionListApi({}).then(res => {
-        if (res.status === 1) {
-            permissionList.length = 0;
-            permissionList.push(...res.data);
-        }
-    })
-}
-// 进页面先调用接口获取列表
+
+
+
+
+
 getPermissionList();
+
+
 // 删除权限
 const open = (id: number) => {
     ElMessageBox.confirm(
@@ -112,7 +128,7 @@ const userSearch = async (input: number) => {
     axios.permissionUserListApi({
         userId: input
     }).then(res => {
-        if (res.data.status == 1) {
+        if (res.status == 1) {
             permissionList = res.data
             console.log('-----查询成功----------');
             console.log(res.data);
@@ -142,15 +158,84 @@ const upPermission = async (permissionNameId: number, newPermissionName: string,
         permissionName: newPermissionName,
         pid: parentId
     }).then(res => {
-        if(res.status==1){
+        if (res.status == 1) {
             upSuccess();
             getPermissionList();
-        } else{
+        } else {
             upError();
         }
     })
 }
 
+
+const renderContent = function (h: any, { node, data, store }: any) {
+    // return h('span', null, h('span', null, node.label)), h('span', null, h('a', { onClick: () => append(data) }, 'Append'))
+    return h(
+        'span',
+        {
+            class: 'custom-tree-node',
+        },
+        h('span', null, node.label),
+        h(
+            'span',
+            {
+                class: 'btn',
+                style: 'position: absolute; right:10px; color:pink',
+            },
+            h(
+                'a',
+                {
+                    class: 'edit',
+                    onclick: () => edit(data),
+                },
+                '修改'
+            ),
+            h(
+                'a',
+                {
+                    class: 'delete',
+                    style: 'margin-left: 8px',
+                    onClick: () => remove(node, data),
+                },
+                '删除'
+            )
+        )
+    )
+}
+let dialogFormVisible = ref(false)
+
+const edit = (data: Tree) => {
+    console.log(data);
+    let dialogFormVisible = ref(false)
+}
+
+const remove = (node: Node, data: Tree) => {
+    console.log(data);
+
+}
+interface Tree {
+    id: number,
+    permissionName: string,
+    pid: number,
+    children?: Tree[]
+}
+
+const defaultProps = {
+    children: 'children',
+    label: 'permissionName',
+    expandTrigger: 'hover'
+}
+
+const props = {
+    label: 'permissionName',
+    expandTrigger: 'hover',
+}
+
+const valueSearch = ref();
+const valueAdd = ref();
+const handleNodeClick = (data: Tree) => {
+    console.log(data)
+}
 
 </script>
 <template>
@@ -158,57 +243,52 @@ const upPermission = async (permissionNameId: number, newPermissionName: string,
     <div class="ipt-add">
         <span class="label label-add">添加权限：</span>
         <el-input v-model="permissionNameAdd" size="small" placeholder="请输入权限名称" clearable />
-        <el-input class="ml-10" v-model="pidAdd" size="small" placeholder="请输入Pid" clearable />
-        <el-button class="ml-10" type="danger" size="small" @click="addPermission(permissionNameAdd, pidAdd)">添加</el-button>
-    </div>
-    <div class="ipt-updata">
-        <span class="label label-add">修改权限：</span>
-        <el-input v-model="permissionNameId" size="small" placeholder="请输入权限Id" clearable />
-        <el-input class="ml-10" v-model="newPermissionName" size="small" placeholder="请输入新的权限名称" clearable />
-        <el-input class="ml-10" v-model="parentId" size="small" placeholder="请输入pid" clearable />
-        <el-button class="ml-10" type="danger" size="small" @click="upPermission(permissionNameId, newPermissionName, parentId)">修改
+        <!-- <el-input class="ml-10" v-model="pidAdd" size="small" placeholder="请输入Pid" clearable /> -->
+        <el-cascader size="small" v-model="valueAdd" :options="permissionListPid" :props="props" clearable />
+
+        <el-button class="ml-10" type="danger" size="small" @click="addPermission(permissionNameAdd, pidAdd)">添加
         </el-button>
     </div>
     <div class="ipt">
-        <span class="label label-search">查询权限：</span>
-        <el-input v-model="input" size="small" placeholder="请输入权限ID" clearable />
-        <el-button class="ml-10" type="danger" size="small" @click="userSearch(input)">搜索</el-button>
+        <!-- <span class="label label-search"></span> -->
+        <!-- <el-input v-model="input" size="small" placeholder="请输入权限ID" clearable /> -->
+        <div class="example-block">
+            <span class="example-demonstration">查询权限：</span>
+            <el-cascader size="small" v-model="valueSearch" :options="permissionList" :props="defaultProps" clearable />
+        </div>
     </div>
-    <el-table :data="currentList" border style="width: 100%" fit>
-        <el-table-column label="权限ID" align="center">
-            <template #default="scope">
-                <div>{{ scope.row.id }}</div>
-            </template>
-        </el-table-column>
-        <el-table-column label="PID" align="center">
-            <template #default="scope">
-                <div>{{ scope.row.pid }}</div>
-            </template>
-        </el-table-column>
-        <el-table-column label="模块" align="center">
-            <template #default="scope">
-                <el-tag size="small">{{ scope.row.permissionName }}</el-tag>
-            </template>
-        </el-table-column>
-        <el-table-column label="操作" align='center' width="300">
-            <template #default="scope">
-                <el-button size="small" type="danger" @click="open(scope.row.id)">删除
+
+    <el-tree :data="permissionList" node-key="id" :expand-on-click-node="false" @click="handleNodeClick"
+        :render-content="renderContent" :props="defaultProps" />
+
+    <el-dialog v-model="dialogFormVisible" title="Shipping address">
+        <el-form :model="form">
+            <el-form-item label="Promotion name" :label-width="formLabelWidth">
+                <el-input v-model="form.name" autocomplete="off" />
+            </el-form-item>
+            <el-form-item label="Zones" :label-width="formLabelWidth">
+                <el-select v-model="form.region" placeholder="Please select a zone">
+                    <el-option label="Zone No.1" value="shanghai" />
+                    <el-option label="Zone No.2" value="beijing" />
+                </el-select>
+            </el-form-item>
+        </el-form>
+        <template #footer>
+            <span class="dialog-footer">
+                <el-button @click="dialogFormVisible = false">Cancel</el-button>
+                <el-button type="primary" @click="dialogFormVisible = false">
+                    Confirm
                 </el-button>
-            </template>
-        </el-table-column>
-    </el-table>
-    <!-- 分页 -->
-    <div class="pagination">
-        <el-pagination v-model:currentPage="pageNum" v-model:page-size="pageSize" :page-sizes="[5, 10, 20, 30, 40]"
-            :small="small" :disabled="disabled" :background="background"
-            layout="total, sizes, prev, pager, next, jumper" :total="total" @size-change="handleSizeChange"
-            @current-change="handleCurrentChange" />
-    </div>
+            </span>
+        </template>
+    </el-dialog>
 </template>
 <style scoped>
 .ipt,
 .ipt-add {
     padding: 20px 0;
+    display: flex;
+    align-items: center;
 }
 
 .label {
@@ -216,9 +296,8 @@ const upPermission = async (permissionNameId: number, newPermissionName: string,
     font-size: 16px;
     font-weight: 600;
     color: rgb(145, 137, 137);
+
 }
-
-
 
 :deep(.el-pagination) {
     /* justify-content: center; */
@@ -229,5 +308,11 @@ const upPermission = async (permissionNameId: number, newPermissionName: string,
     width: 200px;
 }
 
+:deep(.el-tree-node) {
+    padding: 5px 0;
+}
 
+:deep(.el-input__wrapper) {
+    margin-left: 20px;
+}
 </style>
