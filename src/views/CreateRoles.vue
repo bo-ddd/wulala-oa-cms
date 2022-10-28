@@ -1,19 +1,30 @@
 <script setup lang="ts">
 import axios from '@/assets/api/api';
 import { ref, reactive } from 'vue'
-import type Node from 'element-plus/es/components/tree/src/model/node'
-const formInline = reactive({
-    user: '',
-    region: '',
-})
-
-const onSubmit = () => {
-    console.log('submit!')
-}
-
-//列表
 const dataList = ref()
-
+const Role = reactive({
+    roleId: '',
+    permissionId: '',
+    roleName: ''
+})
+//创建角色
+const addRole = async () => {
+   let res= await axios.createRoleApi({
+        roleName: Role.roleName
+    })
+   console.log(res.data.id);
+   Role.roleId=res.data.id
+}
+//给角色新增权限
+const addRolePermission = async (res: any) => {
+    await axios.addPermissionRoleApi({
+        roleId: Role.roleId,
+        permissionId: Role.permissionId
+    })
+    console.log(res);
+    Role.roleId=''
+}
+//列表
 // 全线接口的定义
 interface Permission {
     id: number;
@@ -41,10 +52,10 @@ function formatData(data: FormatPermission[]) {
             pItem?.children.push(item)
         }
     })
-    // 浅拷贝  过滤出所有的父级 
+    // 浅拷贝  过滤出所有的父级  //return一个什么值  那么这个方法就是什么值
     return res.filter(item => item.pid == 0);
 }
-   //封装权限列表接口
+//封装权限列表接口
 const getPermissionList = async function () {
     await axios.getPermissionListApi({}).then(res => {
         dataList.value = formatData(res.data)
@@ -54,56 +65,41 @@ const getPermissionList = async function () {
     })
 }
 getPermissionList()  //进入页面调接口
-
-
-const append = (data: FormatPermission) => {
-    const newChild = { id: data.id, permissionName: data.permissionName, pid: data.pid }
-    if (!data.children) {
-        data.children = []
-    }
-    data.children.push(newChild)
-    dataList.value = [...dataList.value]
+//点击当前权限获取 权限id
+const checkPermission = function (data: any) {
+    Role.permissionId = data.id
+    console.log(Role.permissionId)
 }
 
-const remove = (node: Node, data: FormatPermission) => {
-    const parent = node.parent
-    const children: FormatPermission[] = parent.data.children || parent.data
-    const index = children.findIndex((d) => d.id === data.id)
-    children.splice(index, 1)
-    dataList.value = [...dataList.value]
-}
 </script>
 
 <template>
-    <el-form :inline="true" :model="formInline" class="demo-form-inline">
+    <el-form :inline="true" :model="Role" class="demo-form-inline">
         <el-form-item label="角色名称">
-            <el-input v-model="formInline.user" placeholder="请输入新增角色名称" size="small" />
+            <el-input v-model="Role.roleName" placeholder="请输入新增角色名称" size="small" />
         </el-form-item>
         <el-form-item label="所属部门">
-            <el-select v-model="formInline.region" placeholder="请选择部门" size="small">
+            <el-select v-model="Role" placeholder="请选择部门" size="small">
                 <el-option label="Zone one" value="shanghai" />
                 <el-option label="Zone two" value="beijing" />
                 <!-- <el-option v-for="item in data" :key="item.id" :label="item.roleName" :value="item.id" /> -->
             </el-select>
-        </el-form-item>
+        </el-form-item> 
         <el-form-item>
-            <el-button type="danger" @click="onSubmit" size="small" plain>确定</el-button>
+            <el-button type="danger" @click="addRole" size="small" plain>创建角色</el-button>
         </el-form-item>
     </el-form>
 
-    <div class="custom-tree-container">
-        <el-tree :data="dataList" show-checkbox node-key="id" default-expand-all :expand-on-click-node="false">
-            <template #default="{ node, data }">
+    <div class="custom-tree-container mb-10">
+        <el-tree :data="dataList" show-checkbox @check='checkPermission' node-key="id" :expand-on-click-node="true">
+            <template #default="{ data }">
                 <span class="custom-tree-node">
                     <span>{{ data.permissionName }}</span>
-                    <span class="add">
-                        <a @click="append(data)"> 添加 </a>
-                        <a style="margin-left: 8px" @click="remove(node, data)"> 取消 </a>
-                    </span>
-                </span> 
+                </span>
             </template>
         </el-tree>
     </div>
+    <el-button type="danger" @click="addRolePermission" size="small">创建角色权限</el-button>
 </template>
 
 <style scoped>

@@ -12,9 +12,12 @@
         </div>
       </div>
   
-      <el-form-item label="请假理由" prop="desc">
+      <!-- <el-form-item label="提交内容" prop="desc">
         <el-input v-model="ruleForm.desc" type="textarea" />
-      </el-form-item>
+      </el-form-item> -->
+
+      <MyEditor></MyEditor>
+
       <el-form-item>
         <el-button type="primary" @click="submitForm(ruleFormRef)">提交</el-button>
         <el-button @click="resetForm(ruleFormRef)">取消</el-button>
@@ -26,7 +29,7 @@
   import { reactive, ref } from 'vue'
   import type { FormInstance, FormRules } from 'element-plus'
   import axios from '@/assets/api/api'
-  
+  import MyEditor from '@/components/MyEditor.vue'
   
   const formSize = ref('default')
   const ruleFormRef = ref<FormInstance>()
