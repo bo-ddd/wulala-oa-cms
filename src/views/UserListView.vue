@@ -12,17 +12,17 @@
                 <div>{{ scope.row.userId }}</div>
             </template>
         </el-table-column>
-        <el-table-column label="用户昵称" align="center" width="200px">
+        <el-table-column label="用户昵称" align="center" >
             <template #default="scope">
                 <el-tag size="small">{{ scope.row.avatarName }}</el-tag>
             </template>
         </el-table-column>
-        <el-table-column label="用户角色" align="center" >
+        <el-table-column label="用户爱好" align="center" >
             <template #default="scope">
-                <el-tag size="small">{{ scope.row.avatarName }}</el-tag>
+                <div size="small">{{ scope.row.hobby }}</div>
             </template>
         </el-table-column>
-        <el-table-column label="联系方式" align="center" width="200px">
+        <el-table-column label="联系方式" align="center" >
             <template #default="scope">
                 <div>{{ scope.row.phoneNumber }}</div>
             </template>
