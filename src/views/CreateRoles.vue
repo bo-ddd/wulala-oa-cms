@@ -1,29 +1,38 @@
 <script setup lang="ts">
 import axios from '@/assets/api/api';
+import {useRouter} from 'vue-router';
 import { ref, reactive } from 'vue'
+let router=useRouter()
 const dataList = ref()
+const permissionIds=reactive<number[]>([])
+
+const to=function(name:string){
+router.push(name)
+}
 const Role = reactive({
-    roleId: '',
-    permissionId: '',
+    roleId: 0,
+    permissionId: 0,
     roleName: ''
 })
 //创建角色
 const addRole = async () => {
    let res= await axios.createRoleApi({
-        roleName: Role.roleName
+        roleName: Role.roleName,
+        permissionIds:permissionIds,
     })
    console.log(res.data.id);
    Role.roleId=res.data.id
+   to('roles')
 }
-//给角色新增权限
-const addRolePermission = async (res: any) => {
-    await axios.addPermissionRoleApi({
-        roleId: Role.roleId,
-        permissionId: Role.permissionId
-    })
-    console.log(res);
-    Role.roleId=''
-}
+// //给角色新增权限
+// const addRolePermission = async (res: any) => {
+//     await axios.addPermissionRoleApi({
+//         roleId: Role.roleId,
+//         permissionId: Role.permissionId
+//     })
+//     console.log(res);
+//     Role.roleName='';
+// }
 //列表
 // 全线接口的定义
 interface Permission {
@@ -69,6 +78,7 @@ getPermissionList()  //进入页面调接口
 const checkPermission = function (data: any) {
     Role.permissionId = data.id
     console.log(Role.permissionId)
+    permissionIds.push(Role.permissionId)
 }
 
 </script>
@@ -99,7 +109,7 @@ const checkPermission = function (data: any) {
             </template>
         </el-tree>
     </div>
-    <el-button type="danger" @click="addRolePermission" size="small">创建角色权限</el-button>
+    <!-- <el-button type="danger" @click="addRolePermission" size="small">创建角色权限</el-button> -->
 </template>
 
 <style scoped>
