@@ -75,6 +75,7 @@ interface UserInfo{
     phoneNumber:string;
     sex:number|string;
     userId:number;
+    address:string;
 }
 
 let age=ref<number>()
@@ -158,6 +159,9 @@ let userInfo = reactive<UserInfo>({});
                     </el-descriptions-item>
                     <el-descriptions-item label="个人爱好">
                         {{ userInfo.hobby||'— —' }}
+                    </el-descriptions-item>
+                    <el-descriptions-item label="详细地址">
+                        {{ userInfo.address||'— —' }}
                     </el-descriptions-item>
                 </el-descriptions>
             </el-tab-pane>
