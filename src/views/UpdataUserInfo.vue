@@ -17,7 +17,7 @@ const ruleFormRef = ref<FormInstance>()
 
 interface RuleForm {
     avatarName: string;
-    birthday: string | Date | number;
+    birthday:  Date | number|null;
     hobby: string;
     personalSignature: string;
     phoneNumber: string;
@@ -45,7 +45,7 @@ const rules = reactive<FormRules>({
     birthday: [
         {
             type: 'date',
-            required: true,
+            required: false,
             message: '请选择您的生日',
             trigger: 'blur',
         },
@@ -81,7 +81,12 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     await formEl.validate((valid, fields) => {
         if (valid) {
             ruleForm.sex = ruleForm.sex == "男" ? 1 : 0;
-            ruleForm.birthday = new Date(ruleForm.birthday).valueOf();
+            if(!ruleForm.birthday){
+                ruleForm.birthday=null
+            }else{
+                ruleForm.birthday = new Date(ruleForm.birthday).valueOf();
+            }
+            
             axios.updateUserInfoApi(ruleForm).then(res => {
                 ElMessage({
                     message: '修改成功',
