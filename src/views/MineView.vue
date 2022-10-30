@@ -13,7 +13,9 @@ const handleClick = (tab: TabsPaneContext, event: Event) => {
     console.log(tab, event)
 }
 const disabled: Ref = ref(true);
-
+let age=ref<number|null>()
+let birthday=ref<string|null>()
+let userInfo = reactive<UserInfo>({});
 //用户头像自适应功能;
 const state = reactive({
     fit: 'fill',
@@ -33,10 +35,11 @@ function openInput() {
     disabled.value = false;
 }
 function closeInput() {
+   
     axios.updateUserInfoApi({
         userId:userInfo.userId,
         sex:userInfo.sex,
-        birthday:userInfo.birthday, 
+        birthday:new Date(userInfo.birthday).getTime(), 
         hobby:userInfo.hobby,
         personalSignature:userInfo.personalSignature
     }).then(res=>{
@@ -45,7 +48,6 @@ function closeInput() {
                     type: 'success',
                 })
         disabled.value = true;
-        
     })
 }
 
@@ -69,7 +71,7 @@ function leaveStatus() {
 interface UserInfo{
     avatarImg:string;
     avatarName:string;
-    birthday:string|Date|number;
+    birthday:string|null;
     hobby:string;
     personalSignature:string;
     phoneNumber:string;
@@ -78,9 +80,6 @@ interface UserInfo{
     address:string;
 }
 
-let age=ref<number>()
-
-let userInfo = reactive<UserInfo>({});
 
 //打开页面自动渲染数据;
 (async () => {
@@ -88,13 +87,19 @@ let userInfo = reactive<UserInfo>({});
     Object.assign(userInfo, data);
     if(!userInfo.personalSignature){
         userInfo.personalSignature='这个人很懒，什么都没留下！';
+    };
+    if(!userInfo.birthday){
+        birthday.value=null
+        age.value=null
+    }else{
+        let year=new Date(userInfo.birthday).getFullYear();
+        let month=new Date(userInfo.birthday).getMonth()+1;
+        let date=new Date(userInfo.birthday).getDate();
+        let months=month>=10? month:'0'+month;
+        let dates=date>=10? date:'0'+date;
+        birthday.value=year+'-'+months+'-'+dates;
+        age.value=Math.floor((Date.now()-new Date(userInfo.birthday).valueOf())/1000/60/60/24/365) ;
     }
-    let year=new Date(userInfo.birthday).getFullYear();
-    let month=new Date(userInfo.birthday).getMonth()+1;
-    let date=new Date(userInfo.birthday).getDate();
-    let months=month>=10? month:'0'+month;
-    userInfo.birthday=year+'-'+months+'-'+date; 
-    age.value=parseInt((Date.now()-new Date(userInfo.birthday).valueOf())/1000/60/60/24/365);
 })();
 
 </script>
@@ -153,7 +158,7 @@ let userInfo = reactive<UserInfo>({});
                     </template>
                     <el-descriptions-item label="性别">{{ userInfo.sex==1?"男":"女" }}</el-descriptions-item>
                     <el-descriptions-item label="年龄">{{ age||'— —' }}</el-descriptions-item>
-                    <el-descriptions-item label="生日">{{ userInfo.birthday||'— —' }}</el-descriptions-item>
+                    <el-descriptions-item label="生日">{{ birthday||'— —' }}</el-descriptions-item>
                     <el-descriptions-item label="标签">
                         <el-tag size="small">萌新</el-tag>
                     </el-descriptions-item>
