@@ -3,36 +3,61 @@
     <div class="ipt">
         <span class="label">查询：</span>
         <el-input v-model="input" size="small" placeholder="请输入用户ID" clearable />
-        <el-button type="danger" size="small" @click="userSearch(input)">搜索</el-button>
+        <el-button class="ml-10" type="danger" size="small" @click="userSearch(input)">搜索</el-button>
     </div>
 
-    <el-table :data="userListData" border style="width: 100%" fit>
+    <el-table v-if="userListData" :data="userListData" border style="width: 100%" fit>
         <el-table-column label="用户ID" align="center" width="80px">
             <template #default="scope">
-                <div>{{ scope.row.userId }}</div>
+                <el-tag size="small" type="warning">{{ scope.row.userId }}</el-tag>
             </template>
         </el-table-column>
-        <el-table-column label="用户昵称" align="center" >
+        <el-table-column label="用户昵称" width="200" align="center">
             <template #default="scope">
                 <el-tag size="small">{{ scope.row.avatarName }}</el-tag>
             </template>
         </el-table-column>
-        <el-table-column label="用户爱好" align="center" >
+        <el-table-column label="用户角色" align="center">
             <template #default="scope">
-                <div size="small">{{ scope.row.hobby }}</div>
+                <div size="small" type="danger">{{ scope.row.roleName }}</div>
             </template>
         </el-table-column>
-        <el-table-column label="联系方式" align="center" >
+        <el-table-column label="联系方式" width="180" align="center">
             <template #default="scope">
-                <div>{{ scope.row.phoneNumber }}</div>
+                <el-tag type="success">{{ scope.row.phoneNumber }}</el-tag>
             </template>
         </el-table-column>
-        <el-table-column label="操作" width="300" align='center'>
+        <el-table-column label="操作" width="200" align='center'>
             <template #default="scope">
-                <el-button size="small">修改信息</el-button>
+                <el-button type="danger" size="small" @click="addRoles(scope.row); dialogFormVisible = true">添加角色
+                </el-button>
+                <el-button type="danger" size="small" @click="addRoles(scope.row); dialogFormVisible = true">删除角色
+                </el-button>
             </template>
         </el-table-column>
     </el-table>
+
+    <el-dialog v-model="dialogFormVisible" title="添加角色">
+        <el-form :model="form">
+            <el-form-item label="用户ID" :label-width="formLabelWidth">
+                <el-input v-model="form.userId" size="small" autocomplete="off" readonly='readonly' />
+            </el-form-item>
+            <el-form-item label="角色ID" :label-width="formLabelWidth">
+                <el-select v-model="form.rolesId" class="m-2" placeholder="请选择权限" size="small">
+                    <el-option v-for="item in roleList" :key="item.id" :label="item.roleName"
+                        :value="item.id" size="small" />
+                </el-select>
+            </el-form-item>
+        </el-form>
+        <template #footer>
+            <span class="dialog-footer">
+                <el-button @click="dialogFormVisible = false">取消</el-button>
+                <el-button type="primary" @click="dialogFormVisible = false; addUserRole(form.userId, form.rolesId)">
+                    确认修改
+                </el-button>
+            </span>
+        </template>
+    </el-dialog>
 
     <div class="pagination">
         <el-pagination v-model:currentPage="pageNum" v-model:page-size="pageSize" :page-sizes="[5, 10, 20, 30, 40]"
@@ -43,8 +68,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, reactive, type Ref } from 'vue'
 import axios from '@/assets/api/api'
+import { ElMessage } from 'element-plus'
+
 const small = ref(false)
 const background = ref(true)
 const disabled = ref(false)
@@ -75,37 +102,103 @@ let pageSize = ref(10);
 let total = ref();
 let userListData = ref([]);
 let permissionList = ref([]);
+let roleList = ref();
+let addUserId = ref();
+let addRoleId = ref();
 (async function () {
     let userList = await axios.getUserListApi({})
-    userListData.value = userList.data.list; 
+    userListData.value = userList.data.list;
     total.value = userList.data.total
+})();
+
+(async function () {
+    let rolesList = await axios.getRoleListApi({})
+    roleList.value = rolesList.data
+    console.log(roleList);
 })()
 
+interface User {
+    address: string
+    avatarImg: string | null
+    avatarName: string
+    birthday: string
+    hobby: string
+    personalSignature: string
+    phoneNumber: string
+    roles: []
+    sex: number
+    userId: number
+}
+const dialogFormVisible = ref(false)
+const form = reactive({
+    userId: 0,
+    rolesId:null
+})
+const addRoles = (row: User) => {
+    form.userId = row.userId
+}
 
+const addUserRole = async (addUserId: number, addRoleId: number) => {
+    let res = await axios.addUserRoleApi({
+        userId: addUserId,
+        roleId: addRoleId
+    })
+    if (res.status == 1) {
+        addSuccess();
+    } else {
+        addError();
+    }
+}
+
+const upError = () => {
+    ElMessage({
+        showClose: true,
+        message: '查询失败',
+        type: 'error',
+    })
+}
+const addSuccess = () => {
+    ElMessage({
+        showClose: true,
+        message: '添加成功',
+        type: 'success',
+    })
+}
+const addError = () => {
+    ElMessage({
+        showClose: true,
+        message: '添加失败',
+        type: 'error',
+    })
+}
 interface User {
     userId: number
     avatarName: string
-    phoneNumber: number
+    phoneNumber: string
 }
 
 const userDelete = (index: number, row: User) => {
     console.log(index, row)
 }
-let userInfoData = ref();
-
+// 查询用户权限
 const userSearch = async (id: any) => {
-    axios.queryUserInfoApi({
+    let res = await axios.permissionUserListApi({
         userId: id
-    }).then(res => {
-        if (res.data.status == 1) {
-            userInfoData.value = res.data
-            console.log('-----查询成功----------');
-            console.log(res.data);
-        } else {
-            alert('查询失败')
-        }
     })
+    if (res.status == 1) {
+        permissionList.value = res.data
+        Object.assign(userListData.value, permissionList.value)
+        console.log('-----查询成功----------');
+        console.log(res.data);
+
+    } else {
+        upError();
+    }
+
 }
+
+
+const formLabelWidth = '140px'
 
 </script>
 
@@ -134,9 +227,5 @@ const userSearch = async (id: any) => {
 
 :deep(.el-input) {
     width: 200px;
-}
-
-:deep(.el-button) {
-    margin-left: 20px;
 }
 </style>

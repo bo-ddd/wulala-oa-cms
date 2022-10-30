@@ -58,7 +58,6 @@ const getPermissionList = async () => {
         if (res.status === 1) {
             permissionList2.value = res.data;
             console.log('权限列表');
-            console.log(permissionList2.value);
             Object.assign(permissionList, formatData(res.data))
             permissionListPid.value = formDataPid(res.data)
         }
@@ -282,8 +281,6 @@ const formLabelWidth = '140px'
                 <el-input v-model="newPermissionName" size="small" placeholder="请输入新的权限名称" clearable />
             </el-form-item>
             <el-form-item label="挂载" :label-width="formLabelWidth">
-                <!-- <el-cascader size="small" v-model="form.valueUp" :options="permissionList2" :props="props"
-                    @change="queryDataId" clearable /> -->
                 <el-select v-model="permissionId" class="m-2" placeholder="请选择需要挂载到？" size="small">
                     <el-option v-for="item in permissionList2" :key="item.id" :label="item.permissionName"
                         :value="item.id" size="small" />
