@@ -3,9 +3,15 @@ import { reactive, ref, onMounted, watch } from 'vue'
 import axios from "../assets/api/api"
 
 
+interface RolePermission{
+  id:number,
+  permissionId: number,
+  permissionName:string
+}
+
 const value = ref('')
-
-
+const roleId = ref<number>()
+const defaultCheckedKeys=reactive<number[]>([])
 //处理数据结构，为无限极结构;
 interface PermissionList {
   id: number,
@@ -37,9 +43,12 @@ const formatData = reactive<Tree[]>([]);
 
 (async () => {
   Object.assign(roleList, (await axios.getRoleListApi({})).data)
-  console.log(roleList)
   let permissionList = (await axios.getPermissionListApi({})).data
   Object.assign(formatData, formatePermissionList(permissionList))
+  console.log('----------------角色列表--------------------')
+  console.log(roleList)
+  console.log('----------------权限列表--------------------')
+  console.log(formatData)
 })();
 
 //树形数据结构的类型接口;
@@ -50,10 +59,28 @@ interface Tree {
   children: Tree[]
 }
 
-// const getCheckedId = (id: number) => {
-//   console.log(id)
+const getUserPermission = () => {
+  
+ //拿到id;
+  roleList.forEach(item => {
+    if (item.roleName == value.value) {
+      roleId.value = item.id
+    }
+  });
 
-// }
+  //根据id搜索出对应的数据;
+  (async()=>{
+  let {data}= await axios.queryRolePermissionApi({
+      roleId: roleId.value
+    })
+     defaultCheckedKeys.length=0
+     data.forEach((item:RolePermission)=>{
+        defaultCheckedKeys.push(item.permissionId)
+      })
+      console.log('-------------------默认选中的权限数组-------------------')
+      console.log(defaultCheckedKeys)
+  })();
+}
 
 
 
@@ -62,14 +89,21 @@ interface Tree {
 <template>
   <div>
     <div class="top-list mt-10">
-      <el-select v-model="value" filterable placeholder="请输入角色名称" @change="">
+      <el-select v-model="value" filterable placeholder="请输入角色名称" @change="getUserPermission">
         <el-option v-for="item in roleList" :key="item.id" :label="item.roleName" :value="item.roleName" />
       </el-select>
-      <el-button type="danger" size="small">确定</el-button>
+      <el-button type="danger" size="small">确定{{defaultCheckedKeys}}</el-button>
     </div>
     <div class="custom-tree-node-container mt-10">
-      <el-tree :data="formatData" show-checkbox node-key="id" default-expand-all :expand-on-click-node="false"
-        :props="{ label: 'permissionName' }" />
+      <el-tree :data="formatData" 
+      node-key="id" 
+      default-expand-all
+      show-checkbox
+      :default-checked-keys="defaultCheckedKeys"
+      check-on-click-node
+      :expand-on-click-node="false" 
+      :props="{ label: 'permissionName' }" />
+
     </div>
   </div>
 
