@@ -18,6 +18,7 @@ export default defineConfig({
       //我就自动帮你访问地址
       '/api': {
         target: 'http://8.131.89.181:8080',
+        // target: 'http://192.168.1.39:8080',
         changeOrigin: true,
         //rewrite 重写
         rewrite: (path) => path.replace(/^\/api/, '')

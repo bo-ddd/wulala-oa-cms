@@ -4,8 +4,9 @@ import { useRouter } from 'vue-router';
 import { genFileId } from 'element-plus'
 import type { UploadInstance, UploadProps, UploadRawFile, UploadUserFile } from 'element-plus'
 import 'vue-cropper/dist/index.css';
-import { VueCropper } from 'vue-cropper';
 import { ArrowLeft } from '@element-plus/icons-vue';
+import { VueCropper } from 'vue-cropper';
+
 
 
 console.log(VueCropper)
