@@ -29,31 +29,53 @@
         </el-table-column>
         <el-table-column label="操作" width="200" align='center'>
             <template #default="scope">
-                <el-button type="danger" size="small" @click="addRoles(scope.row); dialogFormVisible = true">添加角色
+                <el-button type="danger" size="small" @click="addRoles(scope.row); dialogFormVisibleAdd = true">添加角色
                 </el-button>
-                <el-button type="danger" size="small" @click="addRoles(scope.row); dialogFormVisible = true">删除角色
+                <el-button type="danger" size="small" @click="getUserId(scope.row); dialogFormVisibleDelete = true">删除角色
                 </el-button>
             </template>
         </el-table-column>
     </el-table>
 
-    <el-dialog v-model="dialogFormVisible" title="添加角色">
+    <el-dialog v-model="dialogFormVisibleAdd" title="添加角色">
         <el-form :model="form">
             <el-form-item label="用户ID" :label-width="formLabelWidth">
                 <el-input v-model="form.userId" size="small" autocomplete="off" readonly='readonly' />
             </el-form-item>
             <el-form-item label="角色ID" :label-width="formLabelWidth">
                 <el-select v-model="form.rolesId" class="m-2" placeholder="请选择权限" size="small">
-                    <el-option v-for="item in roleList" :key="item.id" :label="item.roleName"
-                        :value="item.id" size="small" />
+                    <el-option v-for="item in roleList" :key="item.id" :label="item.roleName" :value="item.id"
+                        size="small" />
                 </el-select>
             </el-form-item>
         </el-form>
         <template #footer>
             <span class="dialog-footer">
-                <el-button @click="dialogFormVisible = false">取消</el-button>
-                <el-button type="primary" @click="dialogFormVisible = false; addUserRole(form.userId, form.rolesId)">
-                    确认修改
+                <el-button @click="dialogFormVisibleAdd = false">取消</el-button>
+                <el-button type="primary" @click="dialogFormVisibleAdd = false; addUserRole(form.userId, form.rolesId)">
+                    确认添加
+                </el-button>
+            </span>
+        </template>
+    </el-dialog>
+
+    <el-dialog v-model="dialogFormVisibleDelete" title="删除用户角色">
+        <el-form :model="form">
+            <el-form-item label="用户ID" :label-width="formLabelWidth">
+                <el-input v-model="form.userId" size="small" autocomplete="off" readonly='readonly' />
+            </el-form-item>
+            <el-form-item label="角色ID" :label-width="formLabelWidth">
+                <el-select v-model="form.rolesId" class="m-2" placeholder="请选择权限" size="small">
+                    <el-option v-for="item in userRolesList" :key="item.id" :label="item.roleName" :value="item.id"
+                        size="small" />
+                </el-select>
+            </el-form-item>
+        </el-form>
+        <template #footer>
+            <span class="dialog-footer">
+                <el-button @click="dialogFormVisibleDelete = false">取消</el-button>
+                <el-button type="primary" @click="dialogFormVisibleDelete = false; deleteUserRole(form.rolesId)">
+                    确认删除
                 </el-button>
             </span>
         </template>
@@ -101,8 +123,8 @@ let pageNum = ref(1);
 let pageSize = ref(10);
 let total = ref();
 let userListData = ref([]);
-let permissionList = ref([]);
 let roleList = ref();
+let userRolesList = ref();
 let addUserId = ref();
 let addRoleId = ref();
 (async function () {
@@ -110,11 +132,10 @@ let addRoleId = ref();
     userListData.value = userList.data.list;
     total.value = userList.data.total
 })();
-
+// 获取用户角色ID
 (async function () {
     let rolesList = await axios.getRoleListApi({})
     roleList.value = rolesList.data
-    console.log(roleList);
 })()
 
 interface User {
@@ -129,10 +150,12 @@ interface User {
     sex: number
     userId: number
 }
-const dialogFormVisible = ref(false)
+const dialogFormVisibleAdd = ref(false)
+const dialogFormVisibleDelete = ref(false)
+
 const form = reactive({
     userId: 0,
-    rolesId:null
+    rolesId: null
 })
 const addRoles = (row: User) => {
     form.userId = row.userId
@@ -171,26 +194,53 @@ const addError = () => {
         type: 'error',
     })
 }
+const deleteSuccess = () => {
+    ElMessage({
+        showClose: true,
+        message: '删除成功',
+        type: 'success',
+    })
+}
+const deleteError = () => {
+    ElMessage({
+        showClose: true,
+        message: '删除失败',
+        type: 'error',
+    })
+}
 interface User {
     userId: number
     avatarName: string
     phoneNumber: string
 }
-
-const userDelete = (index: number, row: User) => {
-    console.log(index, row)
+// 删除用户角色
+const getUserId = async (row: User) => {
+    let res = await axios.queryUserInfoApi({
+        userId: row.userId
+    })
+    if (res.status == 1) {
+        userRolesList.value = res.data.roles
+    }
+    form.userId = row.userId
+}
+const deleteUserRole = async () => {
+    let res = await axios.deleteUserRoleApi({
+        id: form.rolesId
+    })
+    if (res.status == 1) {
+        deleteSuccess();
+    } else {
+        deleteError();
+    }
 }
 // 查询用户权限
 const userSearch = async (id: any) => {
-    let res = await axios.permissionUserListApi({
+    let res = await axios.queryUserInfoApi({
         userId: id
     })
     if (res.status == 1) {
-        permissionList.value = res.data
-        Object.assign(userListData.value, permissionList.value)
         console.log('-----查询成功----------');
-        console.log(res.data);
-
+        console.log(res.data.roles);
     } else {
         upError();
     }
