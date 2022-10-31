@@ -1,9 +1,10 @@
 <template>
 
     <div class="ipt">
-        <span class="label">查询：</span>
+        <span class="label">查询用户角色：</span>
         <el-input v-model="input" size="small" placeholder="请输入用户ID" clearable />
         <el-button class="ml-10" type="danger" size="small" @click="userSearch(input)">搜索</el-button>
+        <el-button class="ml-10" type="danger" size="small" @click="getUserList()">重置</el-button>
     </div>
 
     <el-table v-if="userListData" :data="userListData" border style="width: 100%" fit>
@@ -17,9 +18,10 @@
                 <el-tag size="small">{{ scope.row.avatarName }}</el-tag>
             </template>
         </el-table-column>
-        <el-table-column label="用户角色" align="center">
+        <el-table-column label="用户爱好" align="center">
             <template #default="scope">
-                <div size="small" type="danger">{{ scope.row.roleName }}</div>
+                <div size="small" type="danger">{{ scope.row.roles ? showRoleName(scope.row.roles) : scope.row.hobby }}
+                </div>
             </template>
         </el-table-column>
         <el-table-column label="联系方式" width="180" align="center">
@@ -74,7 +76,7 @@
         <template #footer>
             <span class="dialog-footer">
                 <el-button @click="dialogFormVisibleDelete = false">取消</el-button>
-                <el-button type="primary" @click="dialogFormVisibleDelete = false; deleteUserRole(form.rolesId)">
+                <el-button type="primary" @click="dialogFormVisibleDelete = false; deleteUserRole()">
                     确认删除
                 </el-button>
             </span>
@@ -117,12 +119,13 @@ const getUserList = (pageSize?: number, pageNum?: number) => {
             userListData.value = res.data.list;
         }
     })
+    input.value = '';
 }
 const input = ref();
 let pageNum = ref(1);
 let pageSize = ref(10);
 let total = ref();
-let userListData = ref([]);
+let userListData = ref();
 let roleList = ref();
 let userRolesList = ref();
 let addUserId = ref();
@@ -137,6 +140,8 @@ let addRoleId = ref();
     let rolesList = await axios.getRoleListApi({})
     roleList.value = rolesList.data
 })()
+
+
 
 interface User {
     address: string
@@ -161,16 +166,21 @@ const addRoles = (row: User) => {
     form.userId = row.userId
 }
 
+const showRoleName = function (roleList: any) {
+    if (!Array.isArray(roleList)) return;
+    let str = '';
+    roleList.forEach(item => {
+        str += `${item.roleName},`
+    })
+    return str.substring(0, str.length - 1);
+}
+// 添加用户角色
 const addUserRole = async (addUserId: number, addRoleId: number) => {
     let res = await axios.addUserRoleApi({
         userId: addUserId,
         roleId: addRoleId
     })
-    if (res.status == 1) {
-        addSuccess();
-    } else {
-        addError();
-    }
+    // userSearch(addRoleId);
 }
 
 const upError = () => {
@@ -240,11 +250,12 @@ const userSearch = async (id: any) => {
     })
     if (res.status == 1) {
         console.log('-----查询成功----------');
-        console.log(res.data.roles);
+        console.log(res.data);
+        userListData.value.length = 0
+        userListData.value.push(res.data)
     } else {
         upError();
     }
-
 }
 
 
