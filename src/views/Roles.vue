@@ -2,6 +2,7 @@
 import { ref, computed, reactive } from 'vue'
 import axios from "@/assets/api/api";
 import { useRouter } from "vue-router";
+import { ITEM_RENDER_EVT } from 'element-plus/es/components/virtual-list/src/defaults';
 let router = useRouter()
 const value = ref('')
 const centerDialogVisible = ref(false)
@@ -9,7 +10,6 @@ const pageNum = ref(1)
 const pageSize = ref(8)
 const small = ref(false)
 const deleteId=ref()
-// let resData = reactive<User[]>([])
 let resData = reactive<{key:User[]}>({
     key:[],
 })
@@ -34,7 +34,6 @@ const to = function (name: string) {
 }
 let getRoleList = async function () {
     let res = await axios.getRoleListApi()
-    // resData.push(...res.data)
     resData.key = res.data;
     console.log(resData.key);
 }
@@ -43,21 +42,18 @@ getRoleList()
 //点击创建角色     
 const addRole = function () {
     to('createRoles')
-
 }
 //删除角色权限
 const handleDelete = async (index: number, row: User) => {
     deleteId.value=row.id
     console.log(index, row)
     console.log( deleteId.value);
-    
 }
 //点击设置权限按钮
 const setPermissions = (index: number, row: User) => {
     console.log(index, row.id)
     to('roleEditing')
 }
-
 //弹层确定删除角色及权限
 const isDelete = async function () {
      await axios.deleteRoleApi({
@@ -66,27 +62,31 @@ const isDelete = async function () {
     getRoleList()
 }
 const total = computed(() => resData.key.length)
-console.log(total);
 //当前每页列表数据
 let currentList = computed(() => {
     console.log('我是第几页面');
-    console.log(startIndex.value);
     return resData.key.slice(startIndex.value, endIndex.value)
 })
 //开始下标
 let startIndex = computed(() => (pageNum.value - 1) * pageSize.value)
 //结束下标
 let endIndex = computed(() => pageNum.value * pageSize.value)
+const change=function(value: any){
+    console.log(value);
+    console.log(resData.key);
+    let user=resData.key.filter(res=>res.id==value)
+    resData.key=user
+    
+}
 </script>
 
 <template>
     <div class="select">
         <div>
             <span class="lable">查询角色：</span>
-            <el-select v-model="value" placeholder="请选择" size="small">
-                <el-option v-for="item in resData.key" :key="item.id" :label="item.roleName" :value="item.id" />
+            <el-select v-model="value" placeholder="请选择" size="small"  @change='change(value)'>
+                <el-option v-for="item in resData.key" :key="item.id" :label="item.roleName" :value="item.id"/>
             </el-select>
-            <el-button type="danger" size="small" class="ml-10" plain>查询</el-button>
         </div>
     </div>
     <div class="table">
