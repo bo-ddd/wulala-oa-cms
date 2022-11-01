@@ -82,47 +82,143 @@ const projectProgress = [
   }
 ]
 
-onMounted(() => {
-  //班费排行榜;
+//员工综合评估排行榜;
+const assessmentList = () => {
   type EChartsOption = echarts.EChartsOption;
-  let myChart = echarts.init(document.getElementById('fund')!);
-
+  let myChart = echarts.init(document.getElementById('assessment')!);
   let option: EChartsOption = {
-    title: {
-      text: '呜啦啦基金会',
-      subtext: '贡献占比',
-      left: 'center'
-    },
     tooltip: {
-      trigger: 'item'
+      trigger: 'axis',
+      axisPointer: {
+        // Use axis to trigger tooltip
+        type: 'shadow' // 'shadow' as default; can also be 'line' or 'shadow'
+      }
     },
-    legend: {
-      orient: 'vertical',
-      left: 'left'
+    legend: {},
+    grid: {
+      left: '3%',
+      right: '4%',
+      bottom: '3%',
+      containLabel: true
+    },
+    xAxis: {
+      type: 'value'
+    },
+    yAxis: {
+      type: 'category',
+      data: [ '侯鑫茹','朱江艳','尚宇豪','卫正阳', '魏浩爽']
     },
     series: [
       {
-        name: '呜啦啦基金会贡献占比',
-        type: 'pie',
-        radius: '50%',
-        data: [
-          { value: 150, name: '魏浩爽' },
-          { value: 55, name: '李展鹏' },
-          { value: 20, name: '朱鑫鹏' },
-          { value: 20, name: '申少杰' }
-        ],
+        name: '工作态度',
+        type: 'bar',
+        stack: 'total',
+        label: {
+          show: true
+        },
         emphasis: {
-          itemStyle: {
-            shadowBlur: 10,
-            shadowOffsetX: 0,
-            shadowColor: 'rgba(0, 0, 0, 0.5)'
-          }
-        }
+          focus: 'series'
+        },
+        data: [88, 88, 88, 89, 92, 92, 95]
+      },
+      {
+        name: '专业技能',
+        type: 'bar',
+        stack: 'total',
+        label: {
+          show: true
+        },
+        emphasis: {
+          focus: 'series'
+        },
+        data: [92, 92, 87, 82, 90, 92, 95]
+      },
+      {
+        name: '绩效考核',
+        type: 'bar',
+        stack: 'total',
+        label: {
+          show: true
+        },
+        emphasis: {
+          focus: 'series'
+        },
+        data: [75, 74, 73, 82, 90, 95, 97]
+      },
+      {
+        name: '个人能力',
+        type: 'bar',
+        stack: 'total',
+        label: {
+          show: true
+        },
+        emphasis: {
+          focus: 'series'
+        },
+        data: [75, 80, 86, 89, 92, 95, 95]
+      },
+      {
+        name: '综合评价',
+        type: 'bar',
+        stack: 'total',
+        label: {
+          show: true
+        },
+        emphasis: {
+          focus: 'series'
+        },
+        data: [74, 74, 81, 82, 85, 88, 86]
       }
     ]
   };
-
   option && myChart.setOption(option);
+}
+//基金贡献占比排行榜;
+const contributionList = () => {
+    type EChartsOption = echarts.EChartsOption;
+    let myChart = echarts.init(document.getElementById('fund')!);
+
+    let option: EChartsOption = {
+      title: {
+        text: '呜啦啦基金会',
+        subtext: '贡献占比',
+        left: 'center'
+      },
+      tooltip: {
+        trigger: 'item'
+      },
+      legend: {
+        orient: 'vertical',
+        left: 'left'
+      },
+      series: [
+        {
+          name: '呜啦啦基金会贡献占比',
+          type: 'pie',
+          radius: '50%',
+          data: [
+            { value: 150, name: '魏浩爽' },
+            { value: 55, name: '李展鹏' },
+            { value: 20, name: '朱鑫鹏' },
+            { value: 20, name: '申少杰' }
+          ],
+          emphasis: {
+            itemStyle: {
+              shadowBlur: 10,
+              shadowOffsetX: 0,
+              shadowColor: 'rgba(0, 0, 0, 0.5)'
+            }
+          }
+        }
+      ]
+    };
+    option && myChart.setOption(option);
+
+  }
+
+  onMounted(() => {
+  contributionList(); //基金贡献占比排行榜;
+  assessmentList(); //员工综合评估排行榜;
 })
 
 
@@ -152,14 +248,13 @@ onMounted(() => {
     </el-row>
 
     <el-row :gutter="20">
-      <el-col :span="10">
+      <el-col :span="8">
         <!-- 项目进度条 -->
         <div class="progress-project">
           <h3>
             项目进展情况
           </h3>
           <div class="progress ep-bg-purple">
-
             <div v-for="item in projectProgress" :key="item.id">
               <!-- 项目完成的样式 -->
               <el-progress v-if="item.percentage == 100" type="circle" :percentage="100" status="success">
@@ -176,19 +271,14 @@ onMounted(() => {
           </div>
         </div>
       </el-col>
-      <el-col :span="6">
+      <el-col :span="8">
         <div class="grid-content ep-bg-purple">
-          ahfoanfa
+          <div id="assessment"></div>
         </div>
       </el-col>
-      <el-col :span="4">
+      <el-col :span="8">
         <div class="grid-content ep-bg-purple">
-          ahfoanfa
-        </div>
-      </el-col>
-      <el-col :span="4">
-        <div class="grid-content ep-bg-purple">
-          ahfoanfa
+          
         </div>
       </el-col>
     </el-row>
@@ -221,6 +311,11 @@ onMounted(() => {
 #fund {
   min-height: 300px;
   min-width: 400px;
+}
+
+#assessment {
+  min-height:300px;
+  min-width:400px;
 }
 
 /* 轮播图 */
