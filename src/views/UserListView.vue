@@ -18,7 +18,7 @@
                 <el-tag size="small">{{ scope.row.avatarName }}</el-tag>
             </template>
         </el-table-column>
-        <el-table-column label="用户爱好" align="center">
+        <el-table-column :label=label align="center">
             <template #default="scope">
                 <div size="small" type="danger">{{ scope.row.roles ? showRoleName(scope.row.roles) : scope.row.hobby }}
                 </div>
@@ -111,6 +111,7 @@ const handleCurrentChange = async (val: number) => {
     pageNum.value = val
 }
 const getUserList = (pageSize?: number, pageNum?: number) => {
+    label.value = '用户爱好' 
     axios.getUserListApi({
         pageNum: pageNum,
         pageSize: pageSize
@@ -130,10 +131,12 @@ let roleList = ref();
 let userRolesList = ref();
 let addUserId = ref();
 let addRoleId = ref();
+let label = ref('');
 (async function () {
     let userList = await axios.getUserListApi({})
     userListData.value = userList.data.list;
     total.value = userList.data.total
+    label.value = '用户爱好' 
 })();
 // 获取用户角色ID
 (async function () {
@@ -180,7 +183,13 @@ const addUserRole = async (addUserId: number, addRoleId: number) => {
         userId: addUserId,
         roleId: addRoleId
     })
-    // userSearch(addRoleId);
+    if (res.status == 1) {
+        userSearch(addUserId)
+        addSuccess();
+        form.rolesId = null
+    } else {
+        addError();
+    }
 }
 
 const upError = () => {
@@ -238,13 +247,16 @@ const deleteUserRole = async () => {
         id: form.rolesId
     })
     if (res.status == 1) {
+        userSearch(form.userId)
         deleteSuccess();
+        form.rolesId = null
     } else {
         deleteError();
     }
 }
 // 查询用户权限
 const userSearch = async (id: any) => {
+    label.value = '用户角色'
     let res = await axios.queryUserInfoApi({
         userId: id
     })
