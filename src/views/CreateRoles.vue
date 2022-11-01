@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import axios from '@/assets/api/api';
-import {useRouter} from 'vue-router';
+import { useRouter } from 'vue-router';
+import { ElMessage } from 'element-plus'
 import { ref, reactive } from 'vue'
-let router=useRouter()
-const dataList = ref()
-const permissionIds=reactive<number[]>([])
+import type{ Permission,FormatPermission } from "../types/type";
 
-const to=function(name:string){
-router.push(name)
+let router = useRouter()
+const dataList = ref()
+const permissionIds = reactive<number[]>([])
+
+const to = function (name: string) {
+    router.push(name)
 }
 const Role = reactive({
     roleId: 0,
@@ -16,33 +19,13 @@ const Role = reactive({
 })
 //创建角色
 const addRole = async () => {
-   let res= await axios.createRoleApi({
+    let res = await axios.createRoleApi({
         roleName: Role.roleName,
-        permissionIds:permissionIds,
+        permissionIds: permissionIds,
     })
-   console.log(res.data.id);
-   Role.roleId=res.data.id
-   to('roles')
-}
-// //给角色新增权限
-// const addRolePermission = async (res: any) => {
-//     await axios.addPermissionRoleApi({
-//         roleId: Role.roleId,
-//         permissionId: Role.permissionId
-//     })
-//     console.log(res);
-//     Role.roleName='';
-// }
-//列表
-// 全线接口的定义
-interface Permission {
-    id: number;
-    permissionName: string;
-    pid: number;
-}
-//格式化后的接口定义
-interface FormatPermission extends Permission {
-    children: Permission[]
+    console.log(res.data.id);
+    Role.roleId = res.data.id
+    to('roles')
 }
 ///吧服务端返回的数据处理成我们要的JSON格式的数据
 function formatData(data: FormatPermission[]) {
@@ -78,7 +61,16 @@ getPermissionList()  //进入页面调接口
 const checkPermission = function (data: any) {
     Role.permissionId = data.id
     console.log(Role.permissionId)
-    permissionIds.push(Role.permissionId)
+    let Ids=permissionIds.filter(res=>res==Role.permissionId)
+    if (Ids) {
+        ElMessage({
+            message: '已有当前权限，请勿重复添加.',
+            type: 'warning',
+        })
+    } else{
+        permissionIds.push(Role.permissionId)
+        console.log(permissionIds);
+    }
 }
 
 </script>
@@ -94,7 +86,7 @@ const checkPermission = function (data: any) {
                 <el-option label="Zone two" value="beijing" />
                 <!-- <el-option v-for="item in data" :key="item.id" :label="item.roleName" :value="item.id" /> -->
             </el-select>
-        </el-form-item> 
+        </el-form-item>
         <el-form-item>
             <el-button type="danger" @click="addRole" size="small" plain>创建角色</el-button>
         </el-form-item>

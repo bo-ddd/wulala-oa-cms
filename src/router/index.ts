@@ -87,6 +87,11 @@ const router = createRouter({
           path: "/dailyList",
           name: "dailyList",
           component: () => import("../views/DailyList.vue")
+        },
+        {//查看用户权限详情页面;
+          path: "/rolePermissionDetails",
+          name: "rolePermissionDetails",
+          component: () => import("../views/RolePermissionDetails.vue")
         }
       ]
     },
