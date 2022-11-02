@@ -16,14 +16,14 @@ const formSize = ref('default')
 const ruleFormRef = ref<FormInstance>()
 
 interface RuleForm {
-    avatarImg: string;
     avatarName: string;
-    birthday: string | Date | number;
+    birthday:  Date | number|null;
     hobby: string;
     personalSignature: string;
     phoneNumber: string;
     sex: number | string;
     userId: number;
+    address: string;
 }
 
 
@@ -45,7 +45,7 @@ const rules = reactive<FormRules>({
     birthday: [
         {
             type: 'date',
-            required: true,
+            required: false,
             message: '请选择您的生日',
             trigger: 'blur',
         },
@@ -69,6 +69,10 @@ const rules = reactive<FormRules>({
     phoneNumber: [
         { required: true, message: '请输入您的手机号', trigger: 'blur' },
         { min: 11, max: 11, message: '请输入正确的手机号码', trigger: 'blur' },
+    ],
+    address:[
+        { required: true, message: '请输入您的家庭住址', trigger: 'blur' },
+        { min: 0, max: 30, message: '长度不能超过30个字符', trigger: 'blur' },
     ]
 })
 
@@ -77,7 +81,12 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     await formEl.validate((valid, fields) => {
         if (valid) {
             ruleForm.sex = ruleForm.sex == "男" ? 1 : 0;
-            ruleForm.birthday = new Date(ruleForm.birthday).valueOf();
+            if(!ruleForm.birthday){
+                ruleForm.birthday=null
+            }else{
+                ruleForm.birthday = new Date(ruleForm.birthday).valueOf();
+            }
+            
             axios.updateUserInfoApi(ruleForm).then(res => {
                 ElMessage({
                     message: '修改成功',
@@ -144,13 +153,18 @@ const options = Array.from({ length: 10000 }).map((_, idx) => ({
                 <el-input v-model="ruleForm.phoneNumber" type="text" size="small" placeholder="请输入11位手机号码" />
             </el-form-item>
 
-            <el-form-item label="个人爱好" prop="hobby" class="hobby  mt-20">
+            <el-form-item label="详细地址" prop="address" class="mt-20">
+                <el-input v-model="ruleForm.address" type="text" size="small" placeholder="省/市/县/镇/" />
+            </el-form-item>
+
+            <el-form-item label="个人爱好" prop="hobby" class="mt-20">
                 <el-input v-model="ruleForm.hobby" type="text" size="small" placeholder="如吃瓜，户外运动" />
             </el-form-item>
 
-            <el-form-item label="个性签名" prop="personalSignatrue" class="desc  mt-20">
+            <el-form-item label="个性签名" prop="personalSignatrue" class="mt-20">
                 <el-input v-model="ruleForm.personalSignature" type="text" size="small" placeholder="非必填项" />
             </el-form-item>
+
 
             <!-- <el-form-item label="标签(非必选)" prop="tags" class="mt-20">
                 <el-checkbox-group v-model="">

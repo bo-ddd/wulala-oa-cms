@@ -58,7 +58,6 @@ const getPermissionList = async () => {
         if (res.status === 1) {
             permissionList2.value = res.data;
             console.log('权限列表');
-            console.log(permissionList2.value);
             Object.assign(permissionList, formatData(res.data))
             permissionListPid.value = formDataPid(res.data)
         }
@@ -241,20 +240,16 @@ const formLabelWidth = '140px'
     <div class="ipt-add">
         <span class="label label-add">添加权限：</span>
         <el-input v-model="permissionNameAdd" size="small" placeholder="请输入权限名称" clearable />
-        <!-- <el-input class="ml-10" v-model="pidAdd" size="small" placeholder="请输入Pid" clearable /> -->
-        <!-- <el-cascader size="small" v-model="valueAdd" :options="permissionList2" :props="props" clearable /> -->
-        <el-select v-model="permissionId" class="m-2" placeholder="请选择挂载到？" size="small" clearable>
+        <el-select v-model="permissionId" class="parentId m-2" placeholder="请选择挂载到？" size="small" clearable>
             <el-option v-for="item in permissionList2" :key="item.id" :label="item.permissionName" :value="item.id" />
         </el-select>
         <el-button class="ml-10" type="danger" size="small" @click="addPermission(permissionNameAdd)">添加
         </el-button>
     </div>
     <div class="ipt">
-        <!-- <span class="label label-search"></span> -->
-        <!-- <el-input v-model="input" size="small" placeholder="请输入权限ID" clearable /> -->
         <div class="example-block">
             <span class="example-demonstration">查询权限：</span>
-            <el-cascader size="small" v-model="valueSearch" :options="permissionList" :props="defaultProps" clearable />
+            <el-cascader class="searchIpt" size="small" v-model="valueSearch" :options="permissionList" :props="defaultProps" clearable collapse-tags />
         </div>
     </div>
 
@@ -282,8 +277,6 @@ const formLabelWidth = '140px'
                 <el-input v-model="newPermissionName" size="small" placeholder="请输入新的权限名称" clearable />
             </el-form-item>
             <el-form-item label="挂载" :label-width="formLabelWidth">
-                <!-- <el-cascader size="small" v-model="form.valueUp" :options="permissionList2" :props="props"
-                    @change="queryDataId" clearable /> -->
                 <el-select v-model="permissionId" class="m-2" placeholder="请选择需要挂载到？" size="small">
                     <el-option v-for="item in permissionList2" :key="item.id" :label="item.permissionName"
                         :value="item.id" size="small" />
@@ -322,9 +315,14 @@ const formLabelWidth = '140px'
     right: 15px;
     color: pink;
 }
-
+.parentId{
+    margin-left: 20px;
+}
+.example-demonstration{
+    color: rgb(145, 137, 137);
+    font-weight: 600;
+}
 :deep(.el-pagination) {
-    /* justify-content: center; */
     margin-top: 20px;
 }
 
@@ -336,7 +334,5 @@ const formLabelWidth = '140px'
     padding: 5px 0;
 }
 
-:deep(.el-input__wrapper) {
-    margin-left: 20px;
-}
+
 </style>

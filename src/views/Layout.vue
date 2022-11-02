@@ -50,6 +50,11 @@ const sidebarList = [
                 id: '303',
                 name: '提交日报',
                 targetPath: '/submitDaily'
+            },
+            {
+                id: '304',
+                name: '日报列表',
+                targetPath: '/dailyList'
             }
         ]
     },
