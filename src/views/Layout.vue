@@ -192,7 +192,7 @@ let userInfo = reactive({
 const defaultAvatarImg = 'https://img.ixintu.com/download/jpg/20200815/18ae766809ff27de6b7a942d7ea4111c_512_512.jpg!bg';
 
 (async () => {
-    let data = (await axios.queryUserInfoApi({})).data;
+    let data = (await axios.queryUserInfoApi()).data;
     userInfo.avatarName = data.avatarName;
     userInfo.avatarImg = data.avatarImg;
 })()

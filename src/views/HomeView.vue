@@ -106,7 +106,7 @@ const assessmentList = () => {
     },
     yAxis: {
       type: 'category',
-      data: [ '侯鑫茹','朱江艳','尚宇豪','卫正阳', '魏浩爽']
+      data: ['侯鑫茹', '朱江艳', '尚宇豪', '卫正阳', '魏浩爽']
     },
     series: [
       {
@@ -175,48 +175,82 @@ const assessmentList = () => {
 }
 //基金贡献占比排行榜;
 const contributionList = () => {
-    type EChartsOption = echarts.EChartsOption;
-    let myChart = echarts.init(document.getElementById('fund')!);
+  type EChartsOption = echarts.EChartsOption;
+  let myChart = echarts.init(document.getElementById('fund')!);
 
-    let option: EChartsOption = {
-      title: {
-        text: '呜啦啦基金会',
-        subtext: '贡献占比',
-        left: 'center'
-      },
-      tooltip: {
-        trigger: 'item'
-      },
-      legend: {
-        orient: 'vertical',
-        left: 'left'
-      },
-      series: [
-        {
-          name: '呜啦啦基金会贡献占比',
-          type: 'pie',
-          radius: '50%',
-          data: [
-            { value: 150, name: '魏浩爽' },
-            { value: 55, name: '李展鹏' },
-            { value: 20, name: '朱鑫鹏' },
-            { value: 20, name: '申少杰' }
-          ],
-          emphasis: {
-            itemStyle: {
-              shadowBlur: 10,
-              shadowOffsetX: 0,
-              shadowColor: 'rgba(0, 0, 0, 0.5)'
-            }
+  let option: EChartsOption = {
+    title: {
+      text: '呜啦啦基金会',
+      subtext: '贡献占比',
+      left: 'center'
+    },
+    tooltip: {
+      trigger: 'item'
+    },
+    legend: {
+      orient: 'vertical',
+      left: 'left'
+    },
+    series: [
+      {
+        name: '呜啦啦基金会贡献占比',
+        type: 'pie',
+        radius: '50%',
+        data: [
+          { value: 150, name: '魏浩爽' },
+          { value: 55, name: '李展鹏' },
+          { value: 20, name: '朱鑫鹏' },
+          { value: 20, name: '申少杰' }
+        ],
+        emphasis: {
+          itemStyle: {
+            shadowBlur: 10,
+            shadowOffsetX: 0,
+            shadowColor: 'rgba(0, 0, 0, 0.5)'
           }
         }
-      ]
-    };
-    option && myChart.setOption(option);
+      }
+    ]
+  };
+  option && myChart.setOption(option);
 
+}
+const newsList=[
+  {
+    id:1,
+    text:'B端作品集就别用C端那套思路了',
+  },
+  {
+    id:2,
+    text:'中小企业最佳DevOps工具',
+  },
+  {
+    id:3,
+    text:'web3.0 会是下一代互联网的风口么？',
+  },
+  {
+    id:4,
+    text:'羊了个羊火爆全网，原来自己做个小游戏这么简单！',
+  },
+  {
+    id:5,
+    text:'你说你会Promise？那你解决一下项目中的这五个难题？',
+  },
+  {
+    id:6,
+    text:'刚工作三天就被裁是一种怎样的体验',
+  },
+  {
+    id:7,
+    text:'5年迭代5次，抖音推荐系统演进历程',
+  },
+  {
+    id:8  ,
+    text:'架构师的自我修养',
   }
+]
 
-  onMounted(() => {
+onMounted(() => {
   contributionList(); //基金贡献占比排行榜;
   assessmentList(); //员工综合评估排行榜;
 })
@@ -230,7 +264,7 @@ const contributionList = () => {
   <div class="box">
     <el-row :gutter="50">
       <el-col :span="16">
-        <div class="grid-content ep-bg-purple cyan">
+        <div class="grid-content ep-bg-purple">
           <!-- 轮播图 -->
           <el-carousel :interval="4000" type="card" height="200px">
             <el-carousel-item v-for="item in bannerList" :key="item.id">
@@ -240,17 +274,8 @@ const contributionList = () => {
         </div>
       </el-col>
       <el-col :span="8">
-        <div class="grid-content ep-bg-purple grid-fund">
-          <!-- 班费扇形图 -->
-          <div id="fund" class="pt-20"></div>
-        </div>
-      </el-col>
-    </el-row>
-
-    <el-row :gutter="20">
-      <el-col :span="8">
         <!-- 项目进度条 -->
-        <div class="progress-project">
+        <div class="grid-content progress-project">
           <h3>
             项目进展情况
           </h3>
@@ -271,16 +296,43 @@ const contributionList = () => {
           </div>
         </div>
       </el-col>
+    </el-row>
+
+    <el-row :gutter="20">
+
       <el-col :span="8">
+        <!-- 班费扇形图 -->
         <div class="grid-content ep-bg-purple">
+          <div id="fund"></div>
+        </div>
+      </el-col>
+
+      <el-col :span="8">
+        <div class="grid-content ep-bg-purple ">
           <div id="assessment"></div>
         </div>
       </el-col>
+
       <el-col :span="8">
-        <div class="grid-content ep-bg-purple">
-          
+        <div class="grid-content ep-bg-purple news">
+          <!-- 呜啦啦资讯 -->
+          <el-space wrap>
+            <el-card class="box-card pl-10" style="width: 380px">
+              <template #header>
+                <div class="card-header">
+                  <span>呜啦啦资讯</span>
+                  <el-button class="button" text>查看更多</el-button>
+                </div>
+              </template>
+              <div v-for="item in newsList" :key="item.id" class="text-item ">
+                {{item.id+'. '+item.text}}
+              </div>
+            </el-card>
+          </el-space>
+        
         </div>
       </el-col>
+
     </el-row>
 
     <el-row :gutter="20">
@@ -295,9 +347,6 @@ const contributionList = () => {
       </el-col>
     </el-row>
   </div>
-
-
-
 </template>
 
 <style scoped>
@@ -307,15 +356,17 @@ const contributionList = () => {
   height: 100%;
 }
 
+
 /* 设置呜啦啦基金会扇形图的尺寸 */
 #fund {
   min-height: 300px;
   min-width: 400px;
+  box-sizing: border-box;
 }
 
 #assessment {
-  min-height:300px;
-  min-width:400px;
+  min-height: 300px;
+  min-width: 400px;
 }
 
 /* 轮播图 */
@@ -365,7 +416,7 @@ const contributionList = () => {
 .progress-project {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 40px;
   align-items: center;
 }
 
@@ -373,6 +424,40 @@ const contributionList = () => {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 126px;
+}
+
+/* 资讯模块 */
+.news{
+  padding:5px;
+  box-sizing: border-box;
+}
+.card-header{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.box-card{
+  transition: all 0.1s ease-in;
+}
+
+:deep(.el-card__header){
+  padding:5px;
+}
+:deep(.el-card__body){
+  padding:5px;
+}
+.text-item{
+  padding:2px;
+  text-overflow:ellipsis;
+  white-space: noWrap;
+  overflow: hidden;
+  font-size:12px;
+}
+.text-item:hover{
+  background-color: rgba(130, 128, 128, 0.1);
+  transform: translate(1px, 1px);
+}
+.card-header .button{
+  font-size:8px;
 }
 </style>
