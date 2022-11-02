@@ -165,7 +165,7 @@ export default {
   *查询某角色所拥有的权限接口
   * params  roleId": number
   * **/
-  queryRolePermissionApi(payload = {}) {
+  queryRolePermissionListApi(payload = {}) {
         return axios.post('/role/permission/list', payload)
     },
     /**
