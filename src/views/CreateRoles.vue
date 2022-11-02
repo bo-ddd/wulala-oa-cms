@@ -3,7 +3,8 @@ import axios from '@/assets/api/api';
 import { useRouter } from 'vue-router';
 import { ElMessage } from 'element-plus'
 import { ref, reactive } from 'vue'
-import type{ Permission,FormatPermission } from "../types/type";
+import type PermissionVO from "../types/PermissionVO";
+
 
 let router = useRouter()
 const dataList = ref()
@@ -28,9 +29,9 @@ const addRole = async () => {
     to('roles')
 }
 ///吧服务端返回的数据处理成我们要的JSON格式的数据
-function formatData(data: FormatPermission[]) {
+function formatData(data: PermissionVO[]) {
     // 深拷贝,改变引用栈
-    let res: FormatPermission[] = JSON.parse(JSON.stringify(data));
+    let res: PermissionVO[] = JSON.parse(JSON.stringify(data));
     res.forEach(item => {  //10
         // 让每一个对象的item中都有一个children属性； 原因是，数据结构字段保证一致；
         if (!item.children) item.children = [];
@@ -59,22 +60,15 @@ const getPermissionList = async function () {
 getPermissionList()  //进入页面调接口
 //点击当前权限获取 权限id
 const checkPermission = function (data: any) {
-    Role.permissionId = data.id
-    console.log(Role.permissionId)
-    let Ids=permissionIds.filter(res=>res==Role.permissionId)
-    if (Ids) {
-        ElMessage({
-            message: '已有当前权限，请勿重复添加.',
-            type: 'warning',
-        })
-    } else{
-        permissionIds.push(Role.permissionId)
-        console.log(permissionIds);
-    }
+    console.log(data);
+    
+    // Role.permissionId = data.id
+    // console.log(Role.permissionId)
+    // permissionIds.push(Role.permissionId)
+    // console.log(permissionIds);
 }
 
 </script>
-
 <template>
     <el-form :inline="true" :model="Role" class="demo-form-inline">
         <el-form-item label="角色名称">

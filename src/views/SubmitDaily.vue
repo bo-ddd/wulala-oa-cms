@@ -8,7 +8,7 @@
       <div class="demo-datetime-picker">
         <div class="block">
           <span class="demonstration">提交时间</span>
-          <el-date-picker v-model="i" type="datetime" placeholder="提交时间" readonly="readonly" />
+          <el-date-picker v-model="nowTime" type="datetime" placeholder="提交时间" readonly="readonly" />
         </div>
       </div>
   
@@ -30,10 +30,12 @@
   import type { FormInstance, FormRules } from 'element-plus'
   import axios from '@/assets/api/api'
   import MyEditor from '@/components/MyEditor.vue'
+
+  console.log(MyEditor);
   
   const formSize = ref('default')
   const ruleFormRef = ref<FormInstance>()
-  let i = new Date()
+  let nowTime = new Date()
   const ruleForm = reactive({
     name: '',
     date1: '',
@@ -68,6 +70,8 @@
     let userId = await axios.queryUserInfoApi({});
     ruleForm.name = userId.data.avatarName
   }
+
+ 
   getsunmit()
   const submitForm = (formEl: FormInstance | undefined) => {
     if (!formEl) return
@@ -75,12 +79,9 @@
       if (valid) {
         console.log('submit!');
         alert("提交成功")
-        let userInfo = await axios.createLeaveApi({
-          userId: ruleForm.name,
-          reason: ruleForm.desc,
-          startTime: ruleForm.date1,
-          endTime: ruleForm.date2,
-        });
+        let createArticle = await axios.createArticleApi({});
+        console.log(createArticle);
+        
         formEl.resetFields()
       } else {
         // console.log('error submit!', fields)
@@ -101,9 +102,6 @@
   .text-center {
     text-align: center;
   }
-  
-  
-  
   .el-input{
   width: 60%;
   }
