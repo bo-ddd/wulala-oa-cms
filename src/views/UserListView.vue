@@ -41,11 +41,11 @@
 
     <el-dialog v-model="dialogFormVisibleAdd" title="添加角色">
         <el-form :model="form">
-            <el-form-item label="用户ID" :label-width="formLabelWidth">
-                <el-input v-model="form.userId" size="small" autocomplete="off" readonly='readonly' />
+            <el-form-item label="用户昵称" :label-width="formLabelWidth">
+                <el-input v-model="form.userName" size="small" autocomplete="off" readonly='readonly' />
             </el-form-item>
-            <el-form-item label="角色ID" :label-width="formLabelWidth">
-                <el-select v-model="form.rolesId" class="m-2" placeholder="请选择权限" size="small">
+            <el-form-item label="角色名称" :label-width="formLabelWidth">
+                <el-select v-model="form.rolesId" class="m-2" placeholder="请选择角色" size="small">
                     <el-option v-for="item in roleList" :key="item.id" :label="item.roleName" :value="item.id"
                         size="small" />
                 </el-select>
@@ -63,11 +63,11 @@
 
     <el-dialog v-model="dialogFormVisibleDelete" title="删除用户角色">
         <el-form :model="form">
-            <el-form-item label="用户ID" :label-width="formLabelWidth">
-                <el-input v-model="form.userId" size="small" autocomplete="off" readonly='readonly' />
+            <el-form-item label="用户昵称" :label-width="formLabelWidth">
+                <el-input v-model="form.userName" size="small" autocomplete="off" readonly='readonly' />
             </el-form-item>
-            <el-form-item label="角色ID" :label-width="formLabelWidth">
-                <el-select v-model="form.rolesId" class="m-2" placeholder="请选择权限" size="small">
+            <el-form-item label="角色名称" :label-width="formLabelWidth">
+                <el-select v-model="form.rolesId" class="m-2" placeholder="请选择要删除的角色" size="small">
                     <el-option v-for="item in userRolesList" :key="item.id" :label="item.roleName" :value="item.id"
                         size="small" />
                 </el-select>
@@ -163,10 +163,12 @@ const dialogFormVisibleDelete = ref(false)
 
 const form = reactive({
     userId: 0,
-    rolesId: null
+    rolesId: null,
+    userName:'用户昵称'
 })
 const addRoles = (row: User) => {
     form.userId = row.userId
+    form.userName = row.avatarName
 }
 
 const showRoleName = function (roleList: any) {
