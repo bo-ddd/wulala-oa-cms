@@ -273,25 +273,18 @@ onMounted(() => {
 <template>
 
 
-  <div class="box">
-    <el-row :gutter="10">
-      <el-col :span="24">
-        弹幕
-      </el-col>
-    </el-row>
-    <el-row :gutter="50">
+  <div class="main">
+    <el-row :gutter="40" justify="space-evenly">
       <!-- 轮播图 -->
-      <el-col :span="16">
-        <div class=" ep-bg-purple">
-          <el-carousel :interval="4000" type="card" height="200px">
-            <el-carousel-item v-for="item in bannerList" :key="item.id">
-              <img :src="item.url" style="width:100%">
-            </el-carousel-item>
-          </el-carousel>
-        </div>
+      <el-col :span="16" class="clear-padding">
+        <el-carousel :interval="4000" type="card" height="200px" class="slider">
+          <el-carousel-item v-for="item in bannerList" :key="item.id">
+            <img class="banner-img" :src="item.url">
+          </el-carousel-item>
+        </el-carousel>
       </el-col>
       <!-- 项目进度条 -->
-      <el-col :span="8">
+      <el-col :span="8" class="clear-padding">
         <div class=" progress-project">
           <h4>
             项目进展情况
@@ -299,11 +292,11 @@ onMounted(() => {
           <div class="progress ep-bg-purple">
             <div v-for="item in projectProgress" :key="item.id">
               <!-- 项目完成的样式 -->
-              <el-progress v-if="item.percentage == 100" type="circle" :percentage="100" status="success">
+              <el-progress v-if="item.percentage == 100" type="circle" :percentage="100" status="success" width="100">
                 <el-button type="success" :icon="Check" circle />
               </el-progress>
               <!-- 项目进行中的样式 -->
-              <el-progress v-if="item.percentage != 100" type="dashboard" :percentage="item.percentage">
+              <el-progress v-if="item.percentage != 100" type="dashboard" :percentage="item.percentage" width="100">
                 <template #default="{ percentage }">
                   <span class="percentage-value">{{ percentage }}%</span>
                   <span class="percentage-label">{{ item.name }}</span>
@@ -315,39 +308,33 @@ onMounted(() => {
       </el-col>
     </el-row>
 
-    <el-row :gutter="20">
+    <el-row :gutter="20" justify="space-evenly">
       <!-- 班费扇形图 -->
-      <el-col :span="8">
-        <div class=" ep-bg-purple fund">
-          <div id="fund"></div>
-        </div>
+      <el-col :span="8" class="clear-padding">
+        <div id="fund"></div>
       </el-col>
       <!-- 员工考核表 -->
       <el-col :span="8">
-        <div class=" ep-bg-purple ">
-          <div id="assessment"></div>
-        </div>
+        <div id="assessment"></div>
       </el-col>
       <!-- 呜啦啦资讯 -->
       <el-col :span="8">
-        <div class=" ep-bg-purple news">
+        <div class="box-card">
           <el-space wrap>
-            <el-card class="box-card pl-10" style="width: 380px">
+            <el-card>
               <template #header>
                 <div class="card-header">
                   <span class="strong">呜啦啦资讯</span>
                   <el-button class="button" text>查看更多</el-button>
                 </div>
               </template>
-              <div v-for="item in newsList" :key="item.id" class="text-item ">
-                {{ item.id + '. ' + item.text }}
-              </div>
+              <el-scrollbar height="246px">
+                <p v-for="item in newsList" :key="item.id" class="scrollbar-demo-item">{{ item.text }}</p>
+              </el-scrollbar>
             </el-card>
           </el-space>
-
         </div>
       </el-col>
-
     </el-row>
 
     <el-row :gutter="20">
@@ -365,6 +352,11 @@ onMounted(() => {
 </template>
 
 <style scoped>
+.main{
+  width:100%;
+  height:100%;
+  box-sizing: border-box;
+}
 /* 轮播图 */
 .el-carousel__item h3 {
   color: #475669;
@@ -373,6 +365,7 @@ onMounted(() => {
   margin: 0;
   text-align: center;
 }
+
 .el-carousel__item:nth-child(2n) {
   background-color: #99a9bf;
 }
@@ -386,26 +379,29 @@ onMounted(() => {
   width: 350px;
 }
 
+.banner-img {
+  width: 100%;
+}
+
 /* 呜啦啦基金会 */
 #fund {
   min-height: 300px;
   min-width: 400px;
   box-sizing: border-box;
-  padding-top: 50px;
   background-color: white;
-  overflow: hidden;
-  padding-right: 40px;
   border-radius: 10px;
   box-shadow: 0 0 12px rgba(0, 0, 0, 0.12);
+  padding: 50px 40px 0 0;
 }
+
 
 /* 员工考核表 */
 #assessment {
   min-height: 300px;
-  min-width: 400px;
-  box-sizing: border-box;
+  min-width: 400px; 
   background-color: white;
-  padding: 20px;
+  padding: 40px 20px 20px 20px;
+  box-sizing: border-box;
   overflow: hidden;
   border-radius: 10px;
   box-shadow: 0 0 12px rgba(0, 0, 0, 0.12);
@@ -413,16 +409,13 @@ onMounted(() => {
 
 /* 进度条 */
 .progress-project {
-  min-width: 400px;
-  max-height: 200px;
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 40px;
   align-items: center;
-  padding: 10px;
+  padding: 20px;
   background-color: white;
   box-sizing: border-box;
-  margin-left: -25px;
   border-radius: 10px;
   box-shadow: 0 0 12px rgba(0, 0, 0, 0.12);
 }
@@ -430,8 +423,10 @@ onMounted(() => {
 .progress {
   display: flex;
   justify-content: center;
+  gap:20px;
   align-items: center;
 }
+
 .percentage-value {
   display: block;
   margin-top: 10px;
@@ -454,19 +449,22 @@ onMounted(() => {
 }
 
 /* 资讯模块 */
-.news {
-  padding: 5px;
-  box-sizing: border-box;
-}
 
 .card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding-left: 15px;
 }
 
 .box-card {
+  min-width: 398px;
   transition: all 0.1s ease-in;
+}
+
+:deep(.el-card) {
+  border-radius: 10px;
+  min-width: 400px;
 }
 
 :deep(.el-card__header) {
@@ -477,20 +475,36 @@ onMounted(() => {
   padding: 5px;
 }
 
-.text-item {
-  padding: 2px;
+::deep(.el-space__item) {
+  margin-right: 0;
+  padding-bottom: 0;
+}
+
+.card-header .button {
+  font-size: 8px;
+}
+
+.scrollbar-demo-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  margin: 10px 15px;
+  text-align: center;
+  border-radius: 4px;
+  background: var(--el-color-primary-light-9);
+  color: var(--el-color-primary);
   text-overflow: ellipsis;
   white-space: noWrap;
   overflow: hidden;
   font-size: 13px;
 }
 
-.text-item:hover {
-  background-color: rgba(130, 128, 128, 0.1);
-  transform: translate(1px, 1px);
+:deep(.scrollbar-demo-item[data-v-b4e148ca]) {
+  background-color: rgba(239, 166, 178, 0.2);
+  color: rgb(228, 15, 122);
 }
-
-.card-header .button {
-  font-size: 8px;
+.clear-padding{
+  padding:0 !important;
 }
 </style>
