@@ -189,7 +189,7 @@ const contributionList = () => {
     },
     legend: {
       orient: 'vertical',
-      left: 'left'
+      left: 'right'
     },
     series: [
       {
@@ -215,38 +215,50 @@ const contributionList = () => {
   option && myChart.setOption(option);
 
 }
-const newsList=[
+const newsList = [
   {
-    id:1,
-    text:'B端作品集就别用C端那套思路了',
+    id: 1,
+    text: 'B端作品集就别用C端那套思路了',
   },
   {
-    id:2,
-    text:'中小企业最佳DevOps工具',
+    id: 2,
+    text: '中小企业最佳DevOps工具',
   },
   {
-    id:3,
-    text:'web3.0 会是下一代互联网的风口么？',
+    id: 3,
+    text: 'web3.0 会是下一代互联网的风口么？',
   },
   {
-    id:4,
-    text:'羊了个羊火爆全网，原来自己做个小游戏这么简单！',
+    id: 4,
+    text: '羊了个羊火爆全网，原来自己做个小游戏这么简单！',
   },
   {
-    id:5,
-    text:'你说你会Promise？那你解决一下项目中的这五个难题？',
+    id: 5,
+    text: '你说你会Promise？那你解决一下项目中的这五个难题？',
   },
   {
-    id:6,
-    text:'刚工作三天就被裁是一种怎样的体验',
+    id: 6,
+    text: '刚工作三天就被裁是一种怎样的体验',
   },
   {
-    id:7,
-    text:'5年迭代5次，抖音推荐系统演进历程',
+    id: 7,
+    text: '5年迭代5次，抖音推荐系统演进历程',
   },
   {
-    id:8  ,
-    text:'架构师的自我修养',
+    id: 8,
+    text: '嗨，程序员，你知道高级工程师用的搜索引擎吗？',
+  },
+  {
+    id: 9,
+    text: '架构师的自我修养',
+  },
+  {
+    id: 10,
+    text: '读《代码整洁之道》',
+  },
+  {
+    id: 11,
+    text: '为什么「确定按钮」正在慢慢消失',
   }
 ]
 
@@ -262,10 +274,15 @@ onMounted(() => {
 
 
   <div class="box">
+    <el-row :gutter="10">
+      <el-col :span="24">
+        弹幕
+      </el-col>
+    </el-row>
     <el-row :gutter="50">
+      <!-- 轮播图 -->
       <el-col :span="16">
-        <div class="grid-content ep-bg-purple">
-          <!-- 轮播图 -->
+        <div class=" ep-bg-purple">
           <el-carousel :interval="4000" type="card" height="200px">
             <el-carousel-item v-for="item in bannerList" :key="item.id">
               <img :src="item.url" style="width:100%">
@@ -273,12 +290,12 @@ onMounted(() => {
           </el-carousel>
         </div>
       </el-col>
+      <!-- 项目进度条 -->
       <el-col :span="8">
-        <!-- 项目进度条 -->
-        <div class="grid-content progress-project">
-          <h3>
+        <div class=" progress-project">
+          <h4>
             项目进展情况
-          </h3>
+          </h4>
           <div class="progress ep-bg-purple">
             <div v-for="item in projectProgress" :key="item.id">
               <!-- 项目完成的样式 -->
@@ -299,37 +316,35 @@ onMounted(() => {
     </el-row>
 
     <el-row :gutter="20">
-
+      <!-- 班费扇形图 -->
       <el-col :span="8">
-        <!-- 班费扇形图 -->
-        <div class="grid-content ep-bg-purple">
+        <div class=" ep-bg-purple fund">
           <div id="fund"></div>
         </div>
       </el-col>
-
+      <!-- 员工考核表 -->
       <el-col :span="8">
-        <div class="grid-content ep-bg-purple ">
+        <div class=" ep-bg-purple ">
           <div id="assessment"></div>
         </div>
       </el-col>
-
+      <!-- 呜啦啦资讯 -->
       <el-col :span="8">
-        <div class="grid-content ep-bg-purple news">
-          <!-- 呜啦啦资讯 -->
+        <div class=" ep-bg-purple news">
           <el-space wrap>
             <el-card class="box-card pl-10" style="width: 380px">
               <template #header>
                 <div class="card-header">
-                  <span>呜啦啦资讯</span>
+                  <span class="strong">呜啦啦资讯</span>
                   <el-button class="button" text>查看更多</el-button>
                 </div>
               </template>
               <div v-for="item in newsList" :key="item.id" class="text-item ">
-                {{item.id+'. '+item.text}}
+                {{ item.id + '. ' + item.text }}
               </div>
             </el-card>
           </el-space>
-        
+
         </div>
       </el-col>
 
@@ -337,38 +352,19 @@ onMounted(() => {
 
     <el-row :gutter="20">
       <el-col :span="4">
-        <div class="grid-content ep-bg-purple color4"></div>
+        <div class=" ep-bg-purple"></div>
       </el-col>
       <el-col :span="16">
-        <div class="grid-content ep-bg-purple color5"></div>
+        <div class=" ep-bg-purple"></div>
       </el-col>
       <el-col :span="4">
-        <div class="grid-content ep-bg-purple color6"></div>
+        <div class=" ep-bg-purple"></div>
       </el-col>
     </el-row>
   </div>
 </template>
 
 <style scoped>
-.grid-content {
-  border-radius: 4px;
-  /* min-height: 36px; */
-  height: 100%;
-}
-
-
-/* 设置呜啦啦基金会扇形图的尺寸 */
-#fund {
-  min-height: 300px;
-  min-width: 400px;
-  box-sizing: border-box;
-}
-
-#assessment {
-  min-height: 300px;
-  min-width: 400px;
-}
-
 /* 轮播图 */
 .el-carousel__item h3 {
   color: #475669;
@@ -377,7 +373,6 @@ onMounted(() => {
   margin: 0;
   text-align: center;
 }
-
 .el-carousel__item:nth-child(2n) {
   background-color: #99a9bf;
 }
@@ -391,7 +386,52 @@ onMounted(() => {
   width: 350px;
 }
 
+/* 呜啦啦基金会 */
+#fund {
+  min-height: 300px;
+  min-width: 400px;
+  box-sizing: border-box;
+  padding-top: 50px;
+  background-color: white;
+  overflow: hidden;
+  padding-right: 40px;
+  border-radius: 10px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.12);
+}
+
+/* 员工考核表 */
+#assessment {
+  min-height: 300px;
+  min-width: 400px;
+  box-sizing: border-box;
+  background-color: white;
+  padding: 20px;
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.12);
+}
+
 /* 进度条 */
+.progress-project {
+  min-width: 400px;
+  max-height: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  align-items: center;
+  padding: 10px;
+  background-color: white;
+  box-sizing: border-box;
+  margin-left: -25px;
+  border-radius: 10px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.12);
+}
+
+.progress {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .percentage-value {
   display: block;
   margin-top: 10px;
@@ -413,51 +453,44 @@ onMounted(() => {
   margin-right: 15px;
 }
 
-.progress-project {
-  display: flex;
-  flex-direction: column;
-  gap: 40px;
-  align-items: center;
-}
-
-.progress {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
 /* 资讯模块 */
-.news{
-  padding:5px;
+.news {
+  padding: 5px;
   box-sizing: border-box;
 }
-.card-header{
+
+.card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
-.box-card{
+
+.box-card {
   transition: all 0.1s ease-in;
 }
 
-:deep(.el-card__header){
-  padding:5px;
+:deep(.el-card__header) {
+  padding: 5px;
 }
-:deep(.el-card__body){
-  padding:5px;
+
+:deep(.el-card__body) {
+  padding: 5px;
 }
-.text-item{
-  padding:2px;
-  text-overflow:ellipsis;
+
+.text-item {
+  padding: 2px;
+  text-overflow: ellipsis;
   white-space: noWrap;
   overflow: hidden;
-  font-size:12px;
+  font-size: 13px;
 }
-.text-item:hover{
+
+.text-item:hover {
   background-color: rgba(130, 128, 128, 0.1);
   transform: translate(1px, 1px);
 }
-.card-header .button{
-  font-size:8px;
+
+.card-header .button {
+  font-size: 8px;
 }
 </style>
