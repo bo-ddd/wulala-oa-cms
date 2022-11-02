@@ -8,7 +8,7 @@ const newPermissionName = ref();
 const input = ref();
 const permissionNameAdd = ref();
 const pidAdd = ref();
-let permissionListPid= ref();
+let permissionListPid = ref();
 let permissionList = reactive<Permission1[]>([]);
 let pageNum = ref(1);
 let pageSize = ref(10);
@@ -184,7 +184,8 @@ const upPermission = async (permissionNameId: number, newPermissionName: string)
 
 const form = reactive({
     permissionNameId: 0,
-    valueUp: 0
+    valueUp: 0,
+    permissionName:'权限名称'
 })
 
 const dialogFormVisible = ref(false)
@@ -192,6 +193,7 @@ const dialogFormVisible = ref(false)
 const edit = (data: Tree) => {
     console.log(data);
     form.permissionNameId = data.id
+    form.permissionName = data.permissionName
     console.log(form.permissionNameId);
 
 
@@ -233,7 +235,6 @@ const handleNodeClick = (data: Tree) => {
 
 // --------------------------------------------------------------------------------------------------
 const formLabelWidth = '140px'
-
 </script>
 <template>
 
@@ -249,12 +250,13 @@ const formLabelWidth = '140px'
     <div class="ipt">
         <div class="example-block">
             <span class="example-demonstration">查询权限：</span>
-            <el-cascader class="searchIpt" size="small" v-model="valueSearch" :options="permissionList" :props="defaultProps" clearable collapse-tags />
+            <el-cascader class="searchIpt" size="small"  v-model="valueSearch"
+                :options="permissionList" :props="defaultProps" clearable />
         </div>
     </div>
 
-    <el-tree :data="permissionList" node-key="id" :expand-on-click-node="false" @click="handleNodeClick"
-        :props="defaultProps">
+    <el-tree :data="permissionList" node-key="id" :expand-on-click-node="true" @click="handleNodeClick"
+        :props="defaultProps" >
         <template #default="{ node, data }">
             <span class="custom-tree-node">
                 <span>{{ node.label }}</span>
@@ -270,14 +272,14 @@ const formLabelWidth = '140px'
 
     <el-dialog v-model="dialogFormVisible" title="修改权限">
         <el-form :model="form">
-            <el-form-item label="权限ID" :label-width="formLabelWidth">
-                <el-input v-model="form.permissionNameId" size="small" autocomplete="off" readonly='readonly' />
+            <el-form-item label="当前权限名称" :label-width="formLabelWidth">
+                <el-input v-model="form.permissionName" size="small" autocomplete="off" readonly='readonly' />
             </el-form-item>
-            <el-form-item label="权限名称" :label-width="formLabelWidth">
+            <el-form-item label="新的权限名称" :label-width="formLabelWidth">
                 <el-input v-model="newPermissionName" size="small" placeholder="请输入新的权限名称" clearable />
             </el-form-item>
             <el-form-item label="挂载" :label-width="formLabelWidth">
-                <el-select v-model="permissionId" class="m-2" placeholder="请选择需要挂载到？" size="small">
+                <el-select v-model="permissionId" class="m-2" placeholder="请选择需要挂载到？" size="small" clearable >
                     <el-option v-for="item in permissionList2" :key="item.id" :label="item.permissionName"
                         :value="item.id" size="small" />
                 </el-select>
@@ -297,7 +299,7 @@ const formLabelWidth = '140px'
 <style scoped>
 .ipt,
 .ipt-add {
-    padding: 20px 0;
+    padding: 10px 0;
     display: flex;
     align-items: center;
 }
@@ -315,13 +317,16 @@ const formLabelWidth = '140px'
     right: 15px;
     color: pink;
 }
-.parentId{
+
+.parentId {
     margin-left: 20px;
 }
-.example-demonstration{
+
+.example-demonstration {
     color: rgb(145, 137, 137);
     font-weight: 600;
 }
+
 :deep(.el-pagination) {
     margin-top: 20px;
 }
@@ -333,6 +338,4 @@ const formLabelWidth = '140px'
 :deep(.el-tree-node) {
     padding: 5px 0;
 }
-
-
 </style>
