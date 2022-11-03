@@ -76,7 +76,7 @@ const getUserPermission = () => {
 
   (async () => {
     //根据id搜索出对应的数据;
-    let { data } = await axios.queryRolePermissionApi({
+    let { data } = await axios.queryRolePermissionListApi({
       roleId: roleId.value
     })
     console.log(data)
