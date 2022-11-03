@@ -256,7 +256,7 @@ const formLabelWidth = '140px'
     </div>
 
     <el-tree :data="permissionList" node-key="id" :expand-on-click-node="true" @click="handleNodeClick"
-        :props="defaultProps" >
+        :props="defaultProps" accordion>
         <template #default="{ node, data }">
             <span class="custom-tree-node">
                 <span>{{ node.label }}</span>
