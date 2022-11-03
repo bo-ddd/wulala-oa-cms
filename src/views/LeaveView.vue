@@ -205,6 +205,7 @@ const handleCurrentChange = (val: number) => {
 <style scoped>
 /* 标题与操作的居中样式 */
 ::v-deep .cell {
+  width: 150px;
   text-align: center;
 }
 
@@ -217,8 +218,5 @@ const handleCurrentChange = (val: number) => {
   position: fixed;
   bottom: 50px;
   right: 40%;
-}
-::v-deep .cell{
-  width: 150px;
 }
 </style>
