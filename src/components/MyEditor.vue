@@ -1,16 +1,25 @@
 <script setup lang="ts">
 import '@wangeditor/editor/dist/css/style.css' // 引入 css
-import axios from '@/assets/api/api'
-import { onBeforeUnmount, ref, shallowRef, onMounted } from 'vue'
+import { onBeforeUnmount, shallowRef,toRefs  } from 'vue'
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue';
 
+let props = defineProps<{
+  modelValue : string
+}>();
+let prop = toRefs(props);
+let emit = defineEmits(['update:modelValue'])
+const emits = function(){
+  emit('update:modelValue',prop.modelValue)
+}
+    // defineEmits<{
+    //   "update:modelValue" , modelValue
+    // }>()
 
     // 编辑器实例，必须用 shallowRef
     const editorRef = shallowRef()
 
     // 内容 HTML
-    const valueHtml = ref('1')
-    console.log(valueHtml.value);
+
     
     // 模拟 ajax 异步获取内容
     // onMounted(() => {
@@ -34,7 +43,10 @@ import { Editor, Toolbar } from '@wangeditor/editor-for-vue';
     }
     
     let mode = 'default'
-  
+    const handleChange = (editor:any) => { 
+      emit('update:modelValue',editor.children[0].children[0].text)
+    }
+
    
 </script>  
 
@@ -48,9 +60,10 @@ import { Editor, Toolbar } from '@wangeditor/editor-for-vue';
       />
       <Editor
         style="height: 500px; overflow-y: hidden;"
-        v-model="valueHtml"
+        :value="prop.modelValue"
         :defaultConfig="editorConfig"
         :mode="mode"
+        @onChange="handleChange"
         @onCreated="handleCreated"
       />
     </div>

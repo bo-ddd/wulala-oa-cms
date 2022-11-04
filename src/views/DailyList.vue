@@ -1,19 +1,9 @@
 <script lang="ts" setup>
 import axios from '@/assets/api/api'
 import { ref } from 'vue'
-interface User {
-  id: number
-  userId: number
-  reason: string
-  startTime: string
-  endTime: string
-  leaveStatus: number
-  auditStatus: number
-}
 
 function updateTime(time: Date) {
   let date = new Date(time);
-  console.log(date);
   let year = date.getFullYear();
   let mounth = date.getMonth() + 1;
   let day = date.getUTCDate();
@@ -38,19 +28,16 @@ const getLeaveListApi = async function () {
     pageSize: pageSize.value,
     pageNum: pageNum.value
   })
+  
   total.value = leaveData.data.total;
   //渲染列表的数据
   leave.value = leaveData.data.list;
   title.value = leaveData.data.list[0].title
-  console.log(title.value);
 }
 getLeaveListApi()
 
-
 const handleSizeChange = (val: number) => {
-  console.log(`${val} items per page`);
   pageSize.value = val
-  console.log(pageSize);
   getLeaveListApi()
 }
 
@@ -112,22 +99,22 @@ const handleCurrentChange = (val: number) => {
 
 </template>
 
-
 <style scoped>
 /* 标题与操作的居中样式 */
-::v-deep .cell {
+:deep(.cell) {
   text-align: center;
   width: 200px;
 }
-.box {
+:deep(.cell span){
+  text-overflow:ellipsis ;
+  white-space: noWrap;
+  overflow: hidden;
+}
+.box{
   height: 500px;
   background-color: aqua;
 }
-.el-pagination {
-  position: fixed;
-  bottom: 50px;
-  right: 40%;
-}
+
 .title{
     margin: 20px;
 }
