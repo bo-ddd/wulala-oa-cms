@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive, watch, type Ref } from 'vue'
 import axios from '@/assets/api/api'
-import { ElMessage, ElMessageBox } from 'element-plus'
-import type { Ref } from "vue";
+import { ElMessage, ElMessageBox, ElTree } from 'element-plus'
 
+const treeRef = ref<InstanceType<typeof ElTree>>()
 const newPermissionName = ref();
 const input = ref();
 const permissionNameAdd = ref();
@@ -125,7 +125,7 @@ const open = (id: number) => {
         .catch(() => {
             ElMessage({
                 type: 'info',
-                message: '删除已取消'
+                message: '已取消删除'
                 // userDelete(scope.row.id)
             })
         })
@@ -185,7 +185,7 @@ const upPermission = async (permissionNameId: number, newPermissionName: string)
 const form = reactive({
     permissionNameId: 0,
     valueUp: 0,
-    permissionName:'权限名称'
+    permissionName: '权限名称'
 })
 
 const dialogFormVisible = ref(false)
@@ -227,12 +227,20 @@ const props = {
     expandTrigger: 'hover',
 }
 
-const valueSearch = ref();
+const searchValue = ref();
 const valueAdd = ref();
 const handleNodeClick = (data: Tree) => {
     console.log(data)
 }
 
+watch(searchValue, (val) => {
+    treeRef.value!.filter(val)
+})
+
+const filterNode = (value: string, data: Tree) => {
+    if (!value) return true
+    return data.permissionName.includes(value)
+}
 // --------------------------------------------------------------------------------------------------
 const formLabelWidth = '140px'
 </script>
@@ -250,13 +258,15 @@ const formLabelWidth = '140px'
     <div class="ipt">
         <div class="example-block">
             <span class="example-demonstration">查询权限：</span>
-            <el-cascader class="searchIpt" size="small"  v-model="valueSearch"
-                :options="permissionList" :props="defaultProps" clearable />
+            <!-- <el-cascader class="searchIpt" size="small" v-model="searchValue" :options="permissionList"
+                :props="defaultProps" clearable /> -->
+
+            <el-input size="small" v-model="searchValue" placeholder="请输入相关权限名称" clearable />
         </div>
     </div>
 
     <el-tree :data="permissionList" node-key="id" :expand-on-click-node="true" @click="handleNodeClick"
-        :props="defaultProps" accordion>
+        :props="defaultProps" ref="treeRef" :default-expand-all="false" :filter-node-method="filterNode" accordion>
         <template #default="{ node, data }">
             <span class="custom-tree-node">
                 <span>{{ node.label }}</span>
@@ -279,7 +289,7 @@ const formLabelWidth = '140px'
                 <el-input v-model="newPermissionName" size="small" placeholder="请输入新的权限名称" clearable />
             </el-form-item>
             <el-form-item label="挂载" :label-width="formLabelWidth">
-                <el-select v-model="permissionId" class="m-2" placeholder="请选择需要挂载到？" size="small" clearable >
+                <el-select v-model="permissionId" class="m-2" placeholder="请选择需要挂载到？" size="small" clearable>
                     <el-option v-for="item in permissionList2" :key="item.id" :label="item.permissionName"
                         :value="item.id" size="small" />
                 </el-select>
