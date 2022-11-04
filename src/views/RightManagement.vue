@@ -222,11 +222,6 @@ const defaultProps = {
     expandTrigger: 'hover'
 }
 
-const props = {
-    label: 'permissionName',
-    expandTrigger: 'hover',
-}
-
 const searchValue = ref();
 const valueAdd = ref();
 const handleNodeClick = (data: Tree) => {
