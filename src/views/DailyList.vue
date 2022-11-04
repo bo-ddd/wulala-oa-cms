@@ -28,7 +28,6 @@ const getLeaveListApi = async function () {
     pageSize: pageSize.value,
     pageNum: pageNum.value
   })
-  console.log(leaveData);
   
   total.value = leaveData.data.total;
   //渲染列表的数据
@@ -36,7 +35,6 @@ const getLeaveListApi = async function () {
   title.value = leaveData.data.list[0].title
 }
 getLeaveListApi()
-
 
 const handleSizeChange = (val: number) => {
   pageSize.value = val
