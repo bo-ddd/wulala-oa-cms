@@ -215,6 +215,61 @@ const contributionList = () => {
   option && myChart.setOption(option);
 
 }
+//动态标题;
+const dynamicTitle = () => {
+  type EChartsOption = echarts.EChartsOption;
+  let myChart = echarts.init(document.getElementById('title')!);
+  let option: EChartsOption = {
+    graphic: {
+      elements: [
+        {
+          type: 'text',
+          left: 'center',
+          top: 'center',
+          style: {
+            text: 'WULALA',
+            fontSize: 40,
+            fontWeight: 'bold',
+            lineDash: [0, 200],
+            lineDashOffset: 0,
+            fill: 'transparent',
+            stroke: '#000',
+            lineWidth: 1
+          },
+          keyframeAnimation: {
+            duration: 3000,
+            loop: false,
+            keyframes: [
+              {
+                percent: 0.7,
+                style: {
+                  fill: 'transparent',
+                  lineDashOffset: 200,
+                  lineDash: [200, 0]
+                }
+              },
+              {
+                // Stop for a while.
+                percent: 0.8,
+                style: {
+                  fill: 'transparent'
+                }
+              },
+              {
+                percent: 1,
+                style: {
+                  fill: 'pink'
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  };
+  option && myChart.setOption(option);
+
+}
 const newsList = [
   {
     id: 1,
@@ -265,6 +320,7 @@ const newsList = [
 onMounted(() => {
   contributionList(); //基金贡献占比排行榜;
   assessmentList(); //员工综合评估排行榜;
+  dynamicTitle(); //动态标题;
 })
 
 
@@ -336,10 +392,9 @@ onMounted(() => {
         </div>
       </el-col>
     </el-row>
-
     <el-row :gutter="20">
       <el-col :span="4">
-        <div class=" ep-bg-purple"></div>
+          <div id="title"></div>
       </el-col>
       <el-col :span="16">
         <div class=" ep-bg-purple"></div>
@@ -352,11 +407,12 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.main{
-  width:100%;
-  height:100%;
+.main {
+  width: 100%;
+  height: 100%;
   box-sizing: border-box;
 }
+
 /* 轮播图 */
 .el-carousel__item h3 {
   color: #475669;
@@ -398,7 +454,7 @@ onMounted(() => {
 /* 员工考核表 */
 #assessment {
   min-height: 300px;
-  min-width: 400px; 
+  min-width: 400px;
   background-color: white;
   padding: 40px 20px 20px 20px;
   box-sizing: border-box;
@@ -423,7 +479,7 @@ onMounted(() => {
 .progress {
   display: flex;
   justify-content: center;
-  gap:20px;
+  gap: 20px;
   align-items: center;
 }
 
@@ -504,7 +560,13 @@ onMounted(() => {
   background-color: rgba(239, 166, 178, 0.2);
   color: rgb(228, 15, 122);
 }
-.clear-padding{
-  padding:0 !important;
+
+.clear-padding {
+  padding: 0 !important;
+}
+/* 动态标题 */
+#title{
+  width:200px;
+  height:100px;
 }
 </style>

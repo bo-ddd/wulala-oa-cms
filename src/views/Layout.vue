@@ -7,107 +7,120 @@ import { reactive, ref } from 'vue';
 import {//顶部导航栏下拉效果;
     ArrowDown
 } from '@element-plus/icons-vue';
-
+import menu from '../router/menu';
+let sidebarList=menu.sidebarList
 //侧边栏导航列表;
-const sidebarList = [
-    {
-        id: '1',
-        icon: 'HomeFilled',
-        name: '首页',
-        targetPath: '/home',
-        childrenList: []
+// const sidebarList = [
+//     {
+//         id: '1',
+//         icon: 'HomeFilled',
+//         name: '首页',
+//         targetPath: '/home',
+//         childrenList: []
+//     },
+//     {
+//         id: '2',
+//         icon: 'UserFilled',
+//         name: '员工管理',
+//         targetPath:'',
+//         childrenList: [
+//             {
+//                 id: '201',
+//                 name: '员工列表',
+//                 targetPath: '/userList'
+//             }
+//         ]
+//     },
+//     {
+//         id: '3',
+//         icon: 'Checked',
+//         name: '流程审批',
+//         targetPath:'',
+//         childrenList: [
+//             {
+//                 id: '301',
+//                 name: '请假审批',
+//                 targetPath: '/leave'
+//             },
+//             {
+//                 id: '302',
+//                 name: '提交申请',
+//                 targetPath: '/submitApplication'
+//             },
+//             {
+//                 id: '303',
+//                 name: '提交日报',
+//                 targetPath: '/submitDaily'
+//             },
+//             {
+//                 id: '304',
+//                 name: '日报列表',
+//                 targetPath: '/dailyList'
+//             }
+//         ]
+//     },
+//     {
+//         id: '4',
+//         icon: 'Stamp',
+//         name: '审核管理',
+//         targetPath: '',
+//         childrenList: []
+//     },
+//     {
+//         id: '5',
+//         icon: 'TrendCharts',
+//         name: '绩效管理',
+//         targetPath: '',
+//         childrenList: []
+//     },
+//     {
+//         id: '6',
+//         icon: 'Key',
+//         name: '权限管理',
+//         targetPath:'',
+//         childrenList: [
+//             {
+//                 id: '601',
+//                 name: '权限列表',
+//                 targetPath: '/rightManagement'
+//             },
+//             {
+//                 id: '602',
+//                 name: '角色管理',
+//                 targetPath: '/roles'
+//             },
+//             {
+//                 id: '603',
+//                 name: '新增角色',
+//                 targetPath: '/createRoles'
+//             },
+//             {
+//                 id: '604',
+//                 name: '角色编辑',
+//                 targetPath: '/roleEditing'
+//             }
+//         ]
+//     },
+//     {
+//         id: '7',
+//         icon: 'Tools',
+//         name: '设置',
+//         targetPath: '',
+//         childrenList: []
+//     },
+// ]
+
+let data = {//角色权限编辑页面;
+    path: "/roleEditing",
+    name: "roleEditing",
+    component: () => import("../views/RoleEditing.vue"),
+    meta: {
+        label: "角色编辑",
+        requiresAuth: true
     },
-    {
-        id: '2',
-        icon: 'UserFilled',
-        name: '员工管理',
-        targetPath:'',
-        childrenList: [
-            {
-                id: '201',
-                name: '员工列表',
-                targetPath: '/userList'
-            }
-        ]
-    },
-    {
-        id: '3',
-        icon: 'Checked',
-        name: '流程审批',
-        targetPath:'',
-        childrenList: [
-            {
-                id: '301',
-                name: '请假审批',
-                targetPath: '/leave'
-            },
-            {
-                id: '302',
-                name: '提交申请',
-                targetPath: '/submitApplication'
-            },
-            {
-                id: '303',
-                name: '提交日报',
-                targetPath: '/submitDaily'
-            },
-            {
-                id: '304',
-                name: '日报列表',
-                targetPath: '/dailyList'
-            }
-        ]
-    },
-    {
-        id: '4',
-        icon: 'Stamp',
-        name: '审核管理',
-        targetPath: '',
-        childrenList: []
-    },
-    {
-        id: '5',
-        icon: 'TrendCharts',
-        name: '绩效管理',
-        targetPath: '',
-        childrenList: []
-    },
-    {
-        id: '6',
-        icon: 'Key',
-        name: '权限管理',
-        targetPath:'',
-        childrenList: [
-            {
-                id: '601',
-                name: '权限列表',
-                targetPath: '/rightManagement'
-            },
-            {
-                id: '602',
-                name: '角色管理',
-                targetPath: '/roles'
-            },
-            {
-                id: '603',
-                name: '新增角色',
-                targetPath: '/createRoles'
-            },
-            {
-                id: '604',
-                name: '角色编辑',
-                targetPath: '/roleEditing'
-            }
-        ]
-    },
-    {
-        id: '7',
-        icon: 'Tools',
-        name: '设置',
-        targetPath: '',
-        childrenList: []
-    },
-]
+}
+
+
 
 //右上角个人中心列表;
 const dropDownList = [
@@ -131,48 +144,51 @@ let router = useRouter();
 let route = useRoute();
 
 
+router.addRoute('layout',data)
+
+
 //动态渲染面包屑导航;
-let pName=ref('');
-let cName=ref('');
+let pName = ref('');
+let cName = ref('');
 
 function getPageName(path: string) {
-    sidebarList.forEach(item=>{
-        if(item.targetPath==path){
-            pName.value=item.name;
-            cName.value="";
-        }else if(item.childrenList.length){
-                item.childrenList.forEach(childItem=>{
-                if(childItem.targetPath==path){
-                    pName.value=item.name;
-                    cName.value=childItem.name;
+    sidebarList.forEach(item => {
+        if (item.targetPath == path) {
+            pName.value = item.name;
+            cName.value = "";
+        } else if (item.childrenList.length) {
+            item.childrenList.forEach(childItem => {
+                if (childItem.targetPath == path) {
+                    pName.value = item.name;
+                    cName.value = childItem.name;
                 }
             })
-            }
         }
+    }
     )
 }
-function getMinePageName(path:string){
-    dropDownList.forEach(item=>{
-       if(item.targetPath==path){
-        pName.value=item.name;
-        cName.value="";
-       }
+function getMinePageName(path: string) {
+    dropDownList.forEach(item => {
+        if (item.targetPath == path) {
+            pName.value = item.name;
+            cName.value = "";
+        }
     })
 }
 
 //解决页面刷新后面包屑导航名称与侧边栏名称会重置的情况;
-const activeItem=ref('/')
-onMounted(()=>{
+const activeItem = ref('/')
+onMounted(() => {
     getPageName(route.path);
     getMinePageName(route.path);
-    activeItem.value=route.path
+    activeItem.value = route.path
 })
 
 //右上角个人中心路由跳转;
 function to(path: string) {
     router.push(path)
     getMinePageName(path)
-    activeItem.value='/'
+    activeItem.value = '/'
 }
 
 //侧边栏下拉功能;
@@ -212,7 +228,8 @@ const defaultAvatarImg = 'https://img.ixintu.com/download/jpg/20200815/18ae76680
                 <!-- 动态渲染侧边栏列表 -->
                 <el-row class="tac sidebar-list">
                     <el-col :span="1">
-                        <el-menu router :default-active="activeItem" unique-opened @open="handleOpen" @close="handleClose">
+                        <el-menu router :default-active="activeItem" unique-opened @open="handleOpen"
+                            @close="handleClose">
                             <div v-for="(item, index) in sidebarList">
                                 <el-menu-item :index="item.targetPath" :key="index" v-if="!item.childrenList.length">
                                     <el-icon>
@@ -222,7 +239,7 @@ const defaultAvatarImg = 'https://img.ixintu.com/download/jpg/20200815/18ae76680
                                 </el-menu-item>
 
                                 <el-sub-menu :key="index" :index="index + ''" v-if="item.childrenList.length">
-                                    <template #title>      
+                                    <template #title>
                                         <el-icon>
                                             <component :is="item.icon"></component>
                                         </el-icon>
@@ -246,10 +263,10 @@ const defaultAvatarImg = 'https://img.ixintu.com/download/jpg/20200815/18ae76680
                     <div class="nav">
                         <el-breadcrumb :separator-icon="ArrowRight">
                             <el-breadcrumb-item :to="{ path: null }">
-                              {{pName}}
+                                {{ pName }}
                             </el-breadcrumb-item>
                             <el-breadcrumb-item>
-                                {{cName}}
+                                {{ cName }}
                             </el-breadcrumb-item>
                         </el-breadcrumb>
 
@@ -375,7 +392,7 @@ const defaultAvatarImg = 'https://img.ixintu.com/download/jpg/20200815/18ae76680
     box-sizing: border-box;
 }
 
-:deep(.el-aside){
+:deep(.el-aside) {
     overflow: hidden;
 }
 
