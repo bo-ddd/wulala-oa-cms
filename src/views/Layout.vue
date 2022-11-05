@@ -110,19 +110,12 @@ let sidebarList=menu.sidebarList
 //     },
 // ]
 
-let data = {//角色权限编辑页面;
-    path: "/roleEditing",
-    name: "roleEditing",
-    component: () => import("../views/RoleEditing.vue"),
-    meta: {
-        label: "角色编辑",
-        requiresAuth: true
-    },
-}
+
 
 
 
 //右上角个人中心列表;
+
 const dropDownList = [
     {
         id: 1,
@@ -144,12 +137,11 @@ let router = useRouter();
 let route = useRoute();
 
 
-router.addRoute('layout',data)
 
 
 //动态渲染面包屑导航;
 let pName = ref('');
-let cName = ref('');
+let cName = ref('');    
 
 function getPageName(path: string) {
     sidebarList.forEach(item => {

@@ -7,7 +7,6 @@ import router from "./router";
 import 'element-plus/dist/index.css';
 import "./assets/main.css";
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
-import * as echarts from 'echarts';
 
 
 

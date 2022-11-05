@@ -1,11 +1,9 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import axios from '../assets/api/api';
-import { reactive, onMounted } from 'vue';
-import { useNav }from "../stores/nav";
-import {storeToRefs} from "pinia";
-// let {targetData}=storeToRefs(useNav())
-
+import { useStore } from "../stores/nav";
+import { storeToRefs } from "pinia";
+// let {routerFlag} = storeToRefs(useStore());
 
 
 const router = createRouter({
@@ -85,12 +83,6 @@ const router = createRouter({
   ],
 });
 
-// router.beforeEach((to, from) => {
-//  if(){
-
-//  }
-//   return false
-// })
 
 let data = [
   {//员工列表页面;
@@ -163,49 +155,48 @@ interface UserPermissionList {
   permissionName: string
 }
 
-interface Meta {
-  label: string,
-  requiresAuth: boolean
+const initDynamicRoutes = async () => {
+  //获取当前用户ID;
+  let userInfo = await axios.queryUserInfoApi();
+  let { userId } = userInfo.data;
+  console.log('------用户ID------')
+  console.log(userId)
+  //获取当前用户的权限列表;
+  let userPermissionData = await axios.permissionUserListApi({ userId: userId })
+  let userPermissionList: UserPermissionList[] = userPermissionData.data;
+  console.log('------用户权限列表------')
+  console.log(userPermissionList)
+
+  let arr: string[] = [];
+  userPermissionList.forEach(item => {
+    arr.push(item.permissionName)
+  })
+  let targetData = data.filter(item => arr.includes(item.meta.label))
+  console.log("----------------targetdata-----------------")
+  console.log(targetData)
+  targetData.forEach(item => {
+    router.addRoute('layout', item)
+  })
 }
-interface TargetData {
-  path: string,
-  name: string,
-  component: () => void,
-  meta: Meta
-};
-let targetData = reactive<TargetData[]>([]);
 
-router.beforeEach((to, from) => {
-
-  (async () => {
-    //获取当前用户ID;
-    let { userId } = (await axios.queryUserInfoApi()).data;
-    console.log('------用户ID------')
-    console.log(userId)
-    //获取当前用户的权限列表;
-    let userPermissionList: UserPermissionList[] = (await axios.permissionUserListApi({ userId: userId })).data;
-    console.log('------用户权限列表------')
-    console.log(userPermissionList)
-
-    let arr: string[] = [];
-    userPermissionList.forEach(item => {
-      arr.push(item.permissionName)
-    })
-    targetData.length = 0;
-    Object.assign(targetData, data.filter(item => arr.includes(item.meta.label)))
-
-    targetData.forEach(item => {
-      router.addRoute('layout', item)
-    })
-  })();
-  
-  return true
-})
-
-
-
-
-
+let flag = true;
+router.beforeEach((to, from, next) => {
+  let isAuth = sessionStorage.getItem("token");
+  if (to.name != 'login' && !isAuth) {
+    next({ name: "login" });
+  } else if (to.name == 'login' && !isAuth) {
+    next()
+  } else {
+    if (flag) {
+      initDynamicRoutes();
+      next({ ...to, replace: true })
+      flag = false;
+    } else {
+      next()
+    }
+  }
+}
+)
 
 
 
