@@ -1,8 +1,8 @@
 <template>
   <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" label-width="120px" class="demo-ruleForm" :size="formSize"
     status-icon>
-    · <el-form-item label="用户ID" prop="name">
-      <el-input v-model="ruleForm.name" />
+    · <el-form-item label="用户名称" prop="name">
+      <el-input v-model="ruleForm.name" readonly="readonly"/>
     </el-form-item>
 
     <div class="demo-datetime-picker">
@@ -16,8 +16,6 @@
         <el-date-picker v-model="ruleForm.date2" type="datetime" placeholder="选择结束时间" :shortcuts="shortcuts" />
       </div>
     </div>
-
-
 
     <el-form-item label="请假理由" prop="desc">
       <el-input v-model="ruleForm.desc" type="textarea" />
@@ -61,7 +59,8 @@ const formSize = ref('default')
 const ruleFormRef = ref<FormInstance>()
 
 const ruleForm = reactive({
-  name: '',
+  name:'',
+  id: '',
   date1: '',
   date2: '',
   type: [],
@@ -104,7 +103,9 @@ const rules = reactive<FormRules>({
 
 const getsunmit = async ()=>{
   let userId = await axios.queryUserInfoApi({});
-  ruleForm.name = userId.data.userId
+  console.log(userId);
+  ruleForm.id = userId.data.userId
+  ruleForm.name = userId.data.avatarName
 }
 getsunmit()
 const submitForm = (formEl: FormInstance | undefined) => {
@@ -114,7 +115,7 @@ const submitForm = (formEl: FormInstance | undefined) => {
       console.log('submit!');
       alert("提交成功")
       let userInfo = await axios.createLeaveApi({
-        userId: ruleForm.name,
+        userId: ruleForm.id,
         reason: ruleForm.desc,
         startTime: ruleForm.date1,
         endTime: ruleForm.date2,
