@@ -74,7 +74,6 @@ function fn(val : any){
 
 <template>
     <h1 class="title">{{ title }}</h1>
-
     
     <div class="block">
       <el-date-picker
@@ -87,8 +86,7 @@ function fn(val : any){
       />
     </div>
 
-
-  <el-table :data="leave" style="width: 100%">
+  <el-table :data="leave" style="width: 100%" >
     <el-table-column label="编号">
       <template #default="scope">
         <div style="display: flex; align-items: center;justify-content: center;">
@@ -100,7 +98,7 @@ function fn(val : any){
     <el-table-column label="姓名" >
       <template #default="scope">
         <el-popover effect="light" trigger="hover" placement="top">
-          <template #default>
+          <template #default>  
             <div>{{ scope.row.avatarName }}的日报</div>
           </template>
           <template #reference>
@@ -160,7 +158,6 @@ function fn(val : any){
   height: 500px;
   background-color: aqua;
 }
-
 .title{
     margin: 20px;
 }
