@@ -1,16 +1,16 @@
 <script lang="ts" setup>
 import axios from '@/assets/api/api'
-import { value } from 'dom7';
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 interface User {
   id: number
+  avatarName: string
+  content: string
+  createdAt: string
+  title: string
   userId: number
-  reason: string
-  startTime: string
-  endTime: string
-  leaveStatus: number
-  auditStatus: number
+  userName: string
 }
 
 function updateTime(time: Date) {
@@ -22,7 +22,7 @@ function updateTime(time: Date) {
   // console.log(hour);  
   return `${ year }-${ mounth }-${ day }`;
 }
-
+let router = useRouter()
 let leave = ref();
 //页面的条数
 let pageSize = ref(10);
@@ -59,7 +59,11 @@ const handleCurrentChange = (val: number) => {
 }
 
 const handleEdit = async (index: number, row: User) => {
-  
+  console.log(row);
+  sessionStorage.setItem('avatarName',row.avatarName)
+  sessionStorage.setItem('content',row.content)
+  sessionStorage.setItem('title',row.title)
+  router.push('/dailyDetail')
 }
 
 let value2 = ref('');
