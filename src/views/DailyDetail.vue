@@ -8,7 +8,7 @@ let title = sessionStorage.getItem('title')
     <div class="body">
         <div class="content">
             <div class="content_l clearfix">
-                <h2>{{ title }}</h2>
+                <h3>{{ title }}</h3>
                 <p class="deeppink">{{ avatarName }}</p>
                 <p class="cc">{{ content }}</p>
             </div>
@@ -22,7 +22,7 @@ let title = sessionStorage.getItem('title')
     padding: 0;
 }
 
-h2{
+h3{
     margin: 20px 0;
 }
 
@@ -31,13 +31,11 @@ h2{
     height: 100%;
     display: inline-block;
     background: url(@/assets/images/6a947018821f45f9119b6cfd3cd88bad.png) no-repeat;
-    background-size: cover;
-    background-attachment: fixed;
+    background-size: 100%;
 }
 
 .content {
-    width: 900px;
-    height: 500px;
+    width: 600px;
     margin: 200px auto 0 auto;
     border-radius: 10px;
     background-color: rgba(236, 236, 236, 0.59);
@@ -49,25 +47,17 @@ h2{
 }
 
 .content_l {
-    float: left;
-    width: 100%;
     text-align: center;
 }
-
 .cc {
-    width: 300px;
+    width: 550px;
+    height: 300px;
     margin: 0 auto;
     margin-top: 10px;
     color: #1F2023;
     font-size: 18px;
 }
-
-
-
 .deeppink {
     color: deeppink;
 }
-
-
-
 </style>
