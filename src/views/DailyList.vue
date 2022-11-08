@@ -1,7 +1,17 @@
 <script lang="ts" setup>
 import axios from '@/assets/api/api'
-import { value } from 'dom7';
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+
+interface User {
+  id: number
+  avatarName: string
+  content: string
+  createdAt: string
+  title: string
+  userId: number
+  userName: string
+}
 
 function updateTime(time: Date) {
   let date = new Date(time);
@@ -12,7 +22,7 @@ function updateTime(time: Date) {
   // console.log(hour);  
   return `${ year }-${ mounth }-${ day }`;
 }
-
+let router = useRouter()
 let leave = ref();
 //页面的条数
 let pageSize = ref(10);
@@ -48,9 +58,18 @@ const handleCurrentChange = (val: number) => {
   getLeaveListApi()
 }
 
-let value2 = ref('');
-value2.value = updateTime(new Date());
+const handleEdit = async (index: number, row: User) => {
+  console.log(row);
+  sessionStorage.setItem('avatarName',row.avatarName)
+  sessionStorage.setItem('content',row.content)
+  sessionStorage.setItem('title',row.title)
+  router.push('/dailyDetail')
+}
 
+let value2 = ref('');
+function fn(val : any){
+  console.log(val);
+}
 </script>
 
 <template>
@@ -58,13 +77,13 @@ value2.value = updateTime(new Date());
 
     
     <div class="block">
-      <span class="demonstration">Use value-format</span>
-      <div class="demonstration">Value:{{ value2 }}</div>
       <el-date-picker
         v-model="value2"
         type="date"
         placeholder="选择日期"
         format="YYYY-MM-DD"
+        value-format="YYYY-MM-DD"
+        @change="fn(value2)"
       />
     </div>
 
@@ -107,6 +126,15 @@ value2.value = updateTime(new Date());
       </template>
     </el-table-column>
 
+    <el-table-column label="操作">
+      <template #default="scope">
+        <div class="btn">
+          <el-button size="small" @click="handleEdit(scope.$index , scope.row)">查看详情</el-button>
+        </div>
+
+      </template>
+    </el-table-column>
+
   </el-table>
 
   <div class="demo-pagination-block">
@@ -142,5 +170,11 @@ value2.value = updateTime(new Date());
 .time{
   display: inline-block;
   margin-right: 20px;
+}
+.block{
+  margin: 20px;
+}
+.demo-pagination-block{
+  margin: 20px 0;
 }
 </style>
