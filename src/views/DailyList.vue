@@ -107,11 +107,7 @@ value2.value = updateTime(new Date());
       </template>
     </el-table-column>
 
-  
-
   </el-table>
-
- 
 
   <div class="demo-pagination-block">
     <el-pagination v-model:pageNum="pageNum" v-model:page-size="pageSize" :page-sizes="[5, 10, 15, 20]" :small="small"
