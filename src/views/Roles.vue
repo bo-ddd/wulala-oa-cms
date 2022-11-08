@@ -87,9 +87,9 @@ const handleCurrentChange = (val: number) => {
 </script>
 <template>
     <div class="select">
-        <div style="display: inline-block; margin-left: 20px">
-            <span style="margin-left: 10px">查询角色：</span>
-            <el-select v-model="selectValue" filterable  placeholder="请搜索"  @change="handleChange">
+        <div style="display: inline-block;">
+            <span style="" class='lable' align="center">查询角色：</span>
+            <el-select v-model="selectValue" filterable  placeholder="请搜索"  size="small" @change="handleChange">
                 <el-option v-for="item in resData" :key="item.id" :label="item.roleName" :value="item.id" />
             </el-select>
         </div>
@@ -123,7 +123,7 @@ const handleCurrentChange = (val: number) => {
                 </template>
             </el-table-column>
         </el-table>
-        <div class="demo-pagination-block">
+        <div class="demo-pagination-block mt-10">
             <el-pagination v-model:currentPage="pageNum" v-model:page-size="pageSize" :page-sizes="[5, 10, 15, 20]"
                 layout="total, sizes, prev, pager, next, jumper" :total="total" @size-change="handleSizeChange"
                 @current-change="handleCurrentChange" />
@@ -142,7 +142,7 @@ const handleCurrentChange = (val: number) => {
         </template>
     </el-dialog>
     <!-- //查看角色权限 -->
-    <el-dialog v-model="dialogFormVisible" title="查看当前角色权限">
+    <el-dialog v-model="dialogFormVisible" title="查看当前角色权限"  width="30%" align-center>
         <el-table :data="permissionList" style="width: 100%" align="center">
             <el-table-column prop="permissionId" label="权限Id" align="center" />
             <el-table-column prop="permissionName" label="权限名称" align="center" />
@@ -153,12 +153,8 @@ const handleCurrentChange = (val: number) => {
 <style scoped>
 .select {
     align-items: center;
-    padding: 10px;
+    padding: 5px 0;
     margin-bottom: 10px;
-}
-
-.create {
-    display: flex;
 }
 
 :deep(.el-input) {
@@ -171,5 +167,14 @@ const handleCurrentChange = (val: number) => {
 
 .demo-pagination-block .demonstration {
     margin-bottom: 16px;
+}
+:deep(.el-dialog){
+    width: 600px;
+}
+.lable{
+    display: inline-block;
+    font-size: 15px;
+    font-weight: 600;
+    color: rgb(145, 137, 137);
 }
 </style>

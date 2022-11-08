@@ -4,8 +4,7 @@ import { useRouter } from 'vue-router';
 import { ElMessage } from 'element-plus'
 import { ref, reactive } from 'vue'
 import type PermissionVO from "../types/PermissionVO";
-
-
+let checked=ref(false) ;
 let router = useRouter()
 const dataList = ref()
 const permissionIds = reactive<number[]>([])
@@ -61,7 +60,10 @@ getPermissionList()  //进入页面调接口
 //点击当前权限获取 权限id
 const checkPermission = function (data: any) {
     console.log(data);
+    checked.value=!checked;
+    console.log(checked.value);
     
+  
     // Role.permissionId = data.id
     // console.log(Role.permissionId)
     // permissionIds.push(Role.permissionId)
@@ -71,14 +73,14 @@ const checkPermission = function (data: any) {
 </script>
 <template>
     <el-form :inline="true" :model="Role" class="demo-form-inline">
-        <el-form-item label="角色名称">
+        <el-form-item label="角色名称:" class="lable">
             <el-input v-model="Role.roleName" placeholder="请输入新增角色名称" size="small" />
         </el-form-item>
-        <el-form-item label="所属部门">
+        <el-form-item label="所属部门:" class="lable">
             <el-select v-model="Role" placeholder="请选择部门" size="small">
                 <el-option label="Zone one" value="shanghai" />
                 <el-option label="Zone two" value="beijing" />
-                <!-- <el-option v-for="item in data" :key="item.id" :label="item.roleName" :value="item.id" /> -->
+                <!-- <el-op;ption v-for="item in data" :key="item.id" :label="item.roleName" :value="item.id" /> -->
             </el-select>
         </el-form-item>
         <el-form-item>
@@ -87,9 +89,9 @@ const checkPermission = function (data: any) {
     </el-form>
 
     <div class="custom-tree-container mb-10">
-        <el-tree :data="dataList" show-checkbox @check='checkPermission' node-key="id" :expand-on-click-node="true">
+        <el-tree :data="dataList" show-checkbox  default-expand-all @check='checkPermission' node-key="id" :expand-on-click-node="true">
             <template #default="{ data }">
-                <span class="custom-tree-node">
+                <span class="custom-tree-node ">
                     <span>{{ data.permissionName }}</span>
                 </span>
             </template>
@@ -112,5 +114,11 @@ const checkPermission = function (data: any) {
 
 :deep(.el-input) {
     width: 200px;
+}
+.lable{
+    /* display: inline-block; */
+    font-size: 16px;
+    font-weight: 600;
+    color: rgb(145, 137, 137);
 }
 </style>

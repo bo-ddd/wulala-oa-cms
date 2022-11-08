@@ -146,6 +146,15 @@ let dynamicRoutes = [
       label: "角色编辑",
       requiresAuth: true
     },
+  },
+  {//日报详情页面;
+    path: "/dailyDetail",
+    name: "dailyDetail",
+    component: () => import("../views/DailyDetail.vue"),
+    meta: {
+      label: "日报详情",
+      requiresAuth: true
+    },
   }
 ];
 

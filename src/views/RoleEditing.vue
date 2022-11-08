@@ -182,7 +182,7 @@ const submit = function () {
 <template>
   <div>
     <div class="top-list mt-10">
-      <el-select v-model="value" filterable placeholder="请输入角色名称" @change="getUserPermission">
+      <el-select v-model="value" filterable placeholder="请输入角色名称" @change="getUserPermission" size="small">
         <el-option v-for="item in roleList" :key="item.id" :label="item.roleName" :value="item.roleName" />
       </el-select>
       <el-button type="danger" size="small" @click="setCheckedNodes">查询权限</el-button>
