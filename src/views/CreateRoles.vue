@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import axios from '@/assets/api/api';
 import { useRouter } from 'vue-router';
-import { ElMessage } from 'element-plus'
+import { ElMessage, formatter } from 'element-plus'
 import { ref, reactive } from 'vue'
 import type PermissionVO from "../types/PermissionVO";
-let checked=ref(false) ;
+// import type{ Permission } from "../types/Permission";
+// let isChecked=ref(false) ;
 let router = useRouter()
-const dataList = ref()
-const permissionIds = reactive<number[]>([])
+let dataList = ref()
+let permissionIds = reactive<number[]>([])
 
 const to = function (name: string) {
     router.push(name)
@@ -49,7 +50,7 @@ function formatData(data: PermissionVO[]) {
 }
 //封装权限列表接口
 const getPermissionList = async function () {
-    await axios.getPermissionListApi({}).then(res => {
+    await axios.getPermissionListApi().then(res => {
         dataList.value = formatData(res.data)
         console.log('----------data---------')
         console.log(res.data)
@@ -58,18 +59,42 @@ const getPermissionList = async function () {
 }
 getPermissionList()  //进入页面调接口
 //点击当前权限获取 权限id
-const checkPermission = function (data: any) {
-    console.log(data);
-    checked.value=!checked;
-    console.log(checked.value);
-    
-  
-    // Role.permissionId = data.id
-    // console.log(Role.permissionId)
-    // permissionIds.push(Role.permissionId)
-    // console.log(permissionIds);
+// const checkPermission = function (data: PermissionVO) {
+//     console.log(data);
+//     isChecked.value=!isChecked.value;
+//     console.log(isChecked.value);
+//     var arr = formatter(data)
+//      if(isChecked.value){
+//         permissionIds.push(...arr)
+//      }else{
+//         // console.log(123);
+//          permissionIds=permissionIds.filter(id=>!arr.includes(id))
+//      }
+// }
+// const formatter=function(data:PermissionVO){
+//      let res=[]
+//      res.push(data.id)
+//     if(data.children&&data.children.length){
+//        data.children.forEach(item=>{
+//           let ids=formatter(item)
+//           res.push(...ids)
+//        })
+//     }
+//     return res
+// }
+const checkChange=function(data:PermissionVO,isChecked: boolean){
+      if(isChecked){
+        permissionIds.push(data.id)
+      }else{
+        permissionIds.forEach(item=>{
+            if(data.id==item){
+                console.log(item);
+                permissionIds.splice(permissionIds.indexOf(item),1)  //找到item返回他的下标，从下标开始，删除一个
+            }
+        })
+      }
+      return [...new Set(permissionIds)]   ///去重
 }
-
 </script>
 <template>
     <el-form :inline="true" :model="Role" class="demo-form-inline">
@@ -89,7 +114,7 @@ const checkPermission = function (data: any) {
     </el-form>
 
     <div class="custom-tree-container mb-10">
-        <el-tree :data="dataList" show-checkbox  default-expand-all @check='checkPermission' node-key="id" :expand-on-click-node="true">
+        <el-tree :data="dataList" show-checkbox  default-expand-all @check-change='checkChange' node-key="id" :expand-on-click-node="true">
             <template #default="{ data }">
                 <span class="custom-tree-node ">
                     <span>{{ data.permissionName }}</span>
