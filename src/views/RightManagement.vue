@@ -195,15 +195,12 @@ const edit = (data: Tree) => {
     form.permissionNameId = data.id
     form.permissionName = data.permissionName
     console.log(form.permissionNameId);
-
-
 }
 
 // 删除权限
 const remove = (node: Node, id: number) => {
     console.log(id);
     open(id)
-
 }
 const queryDataId = (data: Permission1[]) => {
     console.log(data);
@@ -223,7 +220,6 @@ const defaultProps = {
 }
 
 const searchValue = ref();
-const valueAdd = ref();
 const handleNodeClick = (data: Tree) => {
     console.log(data)
 }
