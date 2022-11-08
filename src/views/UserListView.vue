@@ -186,7 +186,7 @@ const addUserRole = async (addUserId: number, addRoleId: number) => {
         roleId: addRoleId
     })
     if (res.status == 1) {
-        userSearch(addUserId)
+        // userSearch(addUserId)
         addSuccess();
         form.rolesId = null
     } else {
@@ -249,7 +249,7 @@ const deleteUserRole = async () => {
         id: form.rolesId
     })
     if (res.status == 1) {
-        userSearch(form.userId)
+        // userSearch(form.userId)
         deleteSuccess();
         form.rolesId = null
     } else {
