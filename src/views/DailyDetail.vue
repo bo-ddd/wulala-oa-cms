@@ -29,14 +29,15 @@ h3{
 .body {
     width: 100%;
     height: 100%;
-    display: inline-block;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
     background: url(@/assets/images/6a947018821f45f9119b6cfd3cd88bad.png) no-repeat;
     background-size: 100%;
 }
-
 .content {
     width: 600px;
-    margin: 200px auto 0 auto;
+    padding: 10px;
     border-radius: 10px;
     background-color: rgba(236, 236, 236, 0.59);
     transition: all 1.0s;
@@ -50,7 +51,6 @@ h3{
     text-align: center;
 }
 .cc {
-    width: 550px;
     height: 300px;
     margin: 0 auto;
     margin-top: 10px;

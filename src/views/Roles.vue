@@ -100,7 +100,7 @@ const handleCurrentChange = (val: number) => {
             <el-table-column label="id" width="240px" align="center">
                 <template #default="scope" align="center">
                     <div align="center">
-                        <span style="margin-left: 10px">{{ scope.row.id }}</span>
+                        <span style="margin-left: 10px">{{scope.row.id }}</span>
                     </div>
                 </template>
             </el-table-column>
