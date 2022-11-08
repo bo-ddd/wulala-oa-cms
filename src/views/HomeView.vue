@@ -270,6 +270,156 @@ const dynamicTitle = () => {
   option && myChart.setOption(option);
 
 }
+const dynamicData = () => {
+  var app: any = {};
+  type EChartsOption = echarts.EChartsOption;
+  var chartDom = document.getElementById('dynamicData')!;
+  var myChart = echarts.init(chartDom);
+
+  const categories = (function () {
+    let now = new Date();
+    let res = [];
+    let len = 10;
+    while (len--) {
+      res.unshift(now.toLocaleTimeString().replace(/^\D*/, ''));
+      now = new Date(+now - 2000);
+    }
+    return res;
+  })();
+  const categories2 = (function () {
+    let res = [];
+    let len = 10;
+    while (len--) {
+      res.push(10 - len - 1);
+    }
+    return res;
+  })();
+  const data: number[] = (function () {
+    let res = [];
+    let len = 10;
+    while (len--) {
+      res.push(Math.round(Math.random() * 1000));
+    }
+    return res;
+  })();
+  const data2: number[] = (function () {
+    let res = [];
+    let len = 0;
+    while (len < 10) {
+      res.push(+(Math.random() * 10 + 5).toFixed(1));
+      len++;
+    }
+    return res;
+  })();
+
+  let option: EChartsOption = {
+    title: {
+      text: 'Dynamic Data'
+    },
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: {
+        type: 'cross',
+        label: {
+          backgroundColor: '#283b56'
+        }
+      }
+    },
+    legend: {},
+    toolbox: {
+      show: true,
+      feature: {
+        dataView: { readOnly: false },
+        restore: {},
+        saveAsImage: {}
+      }
+    },
+    dataZoom: {
+      show: false,
+      start: 0,
+      end: 100
+    },
+    xAxis: [
+      {
+        type: 'category',
+        boundaryGap: true,
+        data: categories
+      },
+      {
+        type: 'category',
+        boundaryGap: true,
+        data: categories2
+      }
+    ],
+    yAxis: [
+      {
+        type: 'value',
+        scale: true,
+        name: 'Price',
+        max: 30,
+        min: 0,
+        boundaryGap: [0.2, 0.2]
+      },
+      {
+        type: 'value',
+        scale: true,
+        name: 'Order',
+        max: 1200,
+        min: 0,
+        boundaryGap: [0.2, 0.2]
+      }
+    ],
+    series: [
+      {
+        name: 'Dynamic Bar',
+        type: 'bar',
+        xAxisIndex: 1,
+        yAxisIndex: 1,
+        data: data
+      },
+      {
+        name: 'Dynamic Line',
+        type: 'line',
+        data: data2
+      }
+    ]
+  };
+
+  app.count = 11;
+  setInterval(function () {
+    let axisData = new Date().toLocaleTimeString().replace(/^\D*/, '');
+
+    data.shift();
+    data.push(Math.round(Math.random() * 1000));
+    data2.shift();
+    data2.push(+(Math.random() * 10 + 5).toFixed(1));
+
+    categories.shift();
+    categories.push(axisData);
+    categories2.shift();
+    categories2.push(app.count++);
+
+    myChart.setOption<echarts.EChartsOption>({
+      xAxis: [
+        {
+          data: categories
+        },
+        {
+          data: categories2
+        }
+      ],
+      series: [
+        {
+          data: data
+        },
+        {
+          data: data2
+        }
+      ]
+    });
+  }, 2100);
+  option && myChart.setOption(option);
+}
 const newsList = [
   {
     id: 1,
@@ -321,6 +471,7 @@ onMounted(() => {
   contributionList(); //基金贡献占比排行榜;
   assessmentList(); //员工综合评估排行榜;
   dynamicTitle(); //动态标题;
+  dynamicData();//动态数据;
 })
 
 
@@ -394,10 +545,10 @@ onMounted(() => {
     </el-row>
     <el-row :gutter="20">
       <el-col :span="4">
-          <div id="title"></div>
+        <div id="title"></div>
       </el-col>
       <el-col :span="16">
-        <div class=" ep-bg-purple"></div>
+        <div id="dynamicData"></div>
       </el-col>
       <el-col :span="4">
         <div class=" ep-bg-purple"></div>
@@ -505,7 +656,6 @@ onMounted(() => {
 }
 
 /* 资讯模块 */
-
 .card-header {
   display: flex;
   justify-content: space-between;
@@ -564,9 +714,15 @@ onMounted(() => {
 .clear-padding {
   padding: 0 !important;
 }
+
 /* 动态标题 */
-#title{
-  width:200px;
-  height:100px;
+#title {
+  width: 200px;
+  height: 100px;
+}
+
+#dynamicData{
+  width:600px;
+  height:400px;
 }
 </style>
