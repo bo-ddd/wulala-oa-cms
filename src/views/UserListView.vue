@@ -243,6 +243,7 @@ const getUserId = async (row: User) => {
         userRolesList.value = res.data.roles
     }
     form.userId = row.userId
+    form.userName = row.avatarName
 }
 const deleteUserRole = async () => {
     let res = await axios.deleteUserRoleApi({

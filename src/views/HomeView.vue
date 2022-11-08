@@ -215,61 +215,7 @@ const contributionList = () => {
   option && myChart.setOption(option);
 
 }
-//动态标题;
-const dynamicTitle = () => {
-  type EChartsOption = echarts.EChartsOption;
-  let myChart = echarts.init(document.getElementById('title')!);
-  let option: EChartsOption = {
-    graphic: {
-      elements: [
-        {
-          type: 'text',
-          left: 'center',
-          top: 'center',
-          style: {
-            text: 'WULALA',
-            fontSize: 40,
-            fontWeight: 'bold',
-            lineDash: [0, 200],
-            lineDashOffset: 0,
-            fill: 'transparent',
-            stroke: '#000',
-            lineWidth: 1
-          },
-          keyframeAnimation: {
-            duration: 3000,
-            loop: false,
-            keyframes: [
-              {
-                percent: 0.7,
-                style: {
-                  fill: 'transparent',
-                  lineDashOffset: 200,
-                  lineDash: [200, 0]
-                }
-              },
-              {
-                // Stop for a while.
-                percent: 0.8,
-                style: {
-                  fill: 'transparent'
-                }
-              },
-              {
-                percent: 1,
-                style: {
-                  fill: 'pink'
-                }
-              }
-            ]
-          }
-        }
-      ]
-    }
-  };
-  option && myChart.setOption(option);
-
-}
+// 动态数据
 const dynamicData = () => {
   var app: any = {};
   type EChartsOption = echarts.EChartsOption;
@@ -470,7 +416,7 @@ const newsList = [
 onMounted(() => {
   contributionList(); //基金贡献占比排行榜;
   assessmentList(); //员工综合评估排行榜;
-  dynamicTitle(); //动态标题;
+  // dynamicTitle(); //动态标题;
   dynamicData();//动态数据;
 })
 
@@ -514,6 +460,17 @@ onMounted(() => {
         </div>
       </el-col>
     </el-row>
+    <el-row :gutter="20" justify="space-evenly">
+      <el-col :span="4">
+        <div></div>
+      </el-col>
+      <el-col :span="16">
+        <div id="dynamicData"></div>
+      </el-col>
+      <el-col :span="4">
+        <div class=" ep-bg-purple"></div>
+      </el-col>
+    </el-row>
 
     <el-row :gutter="20" justify="space-evenly">
       <!-- 班费扇形图 -->
@@ -543,18 +500,8 @@ onMounted(() => {
         </div>
       </el-col>
     </el-row>
-    <el-row :gutter="20">
-      <el-col :span="4">
-        <div id="title"></div>
-      </el-col>
-      <el-col :span="16">
-        <div id="dynamicData"></div>
-      </el-col>
-      <el-col :span="4">
-        <div class=" ep-bg-purple"></div>
-      </el-col>
-    </el-row>
   </div>
+  
 </template>
 
 <style scoped>
@@ -720,9 +667,9 @@ onMounted(() => {
   width: 200px;
   height: 100px;
 }
-
+/* 动态数据 */
 #dynamicData{
-  width:600px;
-  height:400px;
+  width:800px;
+  height:380px;
 }
 </style>
