@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import axios from '@/assets/api/api'
+import { value } from 'dom7';
 import { ref } from 'vue'
 
 function updateTime(time: Date) {
@@ -9,7 +10,7 @@ function updateTime(time: Date) {
   let day = date.getUTCDate();
   let hour = date.getHours();
   // console.log(hour);  
-  return `${ year }-${ mounth }-${ day }-${ hour }`;
+  return `${ year }-${ mounth }-${ day }`;
 }
 
 let leave = ref();
@@ -46,10 +47,27 @@ const handleCurrentChange = (val: number) => {
   pageNum.value = val
   getLeaveListApi()
 }
+
+let value2 = ref('');
+value2.value = updateTime(new Date());
+
 </script>
 
 <template>
     <h1 class="title">{{ title }}</h1>
+
+    
+    <div class="block">
+      <span class="demonstration">Use value-format</span>
+      <div class="demonstration">Value:{{ value2 }}</div>
+      <el-date-picker
+        v-model="value2"
+        type="date"
+        placeholder="选择日期"
+        format="YYYY-MM-DD"
+      />
+    </div>
+
 
   <el-table :data="leave" style="width: 100%">
     <el-table-column label="编号">
@@ -89,7 +107,11 @@ const handleCurrentChange = (val: number) => {
       </template>
     </el-table-column>
 
+  
+
   </el-table>
+
+ 
 
   <div class="demo-pagination-block">
     <el-pagination v-model:pageNum="pageNum" v-model:page-size="pageSize" :page-sizes="[5, 10, 15, 20]" :small="small"
@@ -117,5 +139,12 @@ const handleCurrentChange = (val: number) => {
 
 .title{
     margin: 20px;
+}
+.demo-date-picker{
+  margin: 20px;
+}
+.time{
+  display: inline-block;
+  margin-right: 20px;
 }
 </style>
