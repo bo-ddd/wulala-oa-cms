@@ -1,9 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
-import axios from '../assets/api/api';
 import { useStore } from "../stores/nav";
 import { storeToRefs } from "pinia";
-// let {routerFlag} = storeToRefs(useStore());
 
 
 const router = createRouter({
@@ -15,8 +13,9 @@ const router = createRouter({
       component: () => import("../views/LogonView.vue"),
     },
     {//登录页面;
-      path: "/",
+      path: "/login",
       name: "login",
+      alias: "/",
       component: () => import("../views/LoginView.vue"),
     },
     {//layout页面;
@@ -84,7 +83,7 @@ const router = createRouter({
 });
 
 
-let data = [
+let dynamicRoutes = [
   {//员工列表页面;
     path: "/userList",
     name: "userList",
@@ -99,7 +98,7 @@ let data = [
     name: "leave",
     component: () => import("../views/LeaveView.vue"),
     meta: {
-      label: "请假审批管理",
+      label: "请假审批",
       requiresAuth: true
     }
   },
@@ -135,7 +134,7 @@ let data = [
     name: "createRoles",
     component: () => import("../views/CreateRoles.vue"),
     meta: {
-      label: "创建角色",
+      label: "新增角色",
       requiresAuth: true
     }
   },
@@ -150,57 +149,31 @@ let data = [
   }
 ];
 
-interface UserPermissionList {
-  permissionId: number,
-  permissionName: string
-}
-
-const initDynamicRoutes = async () => {
-  //获取当前用户ID;
-  let userInfo = await axios.queryUserInfoApi();
-  let { userId } = userInfo.data;
-  console.log('------用户ID------')
-  console.log(userId)
-  //获取当前用户的权限列表;
-  let userPermissionData = await axios.permissionUserListApi({ userId: userId })
-  let userPermissionList: UserPermissionList[] = userPermissionData.data;
-  console.log('------用户权限列表------')
-  console.log(userPermissionList)
-
-  let arr: string[] = [];
-  userPermissionList.forEach(item => {
-    arr.push(item.permissionName)
-  })
-  let targetData = data.filter(item => arr.includes(item.meta.label))
-  console.log("----------------targetdata-----------------")
-  console.log(targetData)
-  targetData.forEach(item => {
-    router.addRoute('layout', item)
-  })
-}
-
-let flag = true;
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to) => {
+  const userStore = useStore();
+  const { userId, userPremissionList } = storeToRefs(userStore);
   let isAuth = sessionStorage.getItem("token");
-  if (to.name != 'login' && !isAuth) {
-    next({ name: "login" });
-  } else if (to.name == 'login' && !isAuth) {
-    next()
+  //如果当前不是login页面并且没有token值；那么跳转到登录页面;
+  if (to.name == 'login') {
+    return true
+  } else if (to.name != 'login' && !isAuth) {
+    return { name: "login" }
   } else {
-    if (flag) {
-      initDynamicRoutes();
-      next({ ...to, replace: true })
-      flag = false;
+    if (!userPremissionList.value.length && !userId.value) {
+      await userStore.getUserId();
+      await userStore.getUserPermissionList();
+      userPremissionList.value.forEach(permission => {
+        let dynamicRoutesItem = dynamicRoutes.find(item => item.meta.label == permission.permissionName)
+        if (dynamicRoutesItem) {
+          router.addRoute('layout', dynamicRoutesItem)
+        }
+      })
+      return { ...to, replace: true }
     } else {
-      next()
+      return true
     }
   }
 }
 )
-
-
-
-
-
 
 export default router;

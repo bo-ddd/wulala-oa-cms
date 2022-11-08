@@ -7,8 +7,7 @@ import { reactive, ref } from 'vue';
 import {//顶部导航栏下拉效果;
     ArrowDown
 } from '@element-plus/icons-vue';
-import menu from '../router/menu';
-let sidebarList=menu.sidebarList
+import sidebarList from '../router/menu';
 //侧边栏导航列表;
 // const sidebarList = [
 //     {
@@ -137,11 +136,9 @@ let router = useRouter();
 let route = useRoute();
 
 
-
-
 //动态渲染面包屑导航;
 let pName = ref('');
-let cName = ref('');    
+let cName = ref('');
 
 function getPageName(path: string) {
     sidebarList.forEach(item => {
