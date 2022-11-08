@@ -3,6 +3,16 @@ import axios from '@/assets/api/api'
 import { value } from 'dom7';
 import { ref } from 'vue'
 
+interface User {
+  id: number
+  userId: number
+  reason: string
+  startTime: string
+  endTime: string
+  leaveStatus: number
+  auditStatus: number
+}
+
 function updateTime(time: Date) {
   let date = new Date(time);
   let year = date.getFullYear();
@@ -48,9 +58,14 @@ const handleCurrentChange = (val: number) => {
   getLeaveListApi()
 }
 
-let value2 = ref('');
-value2.value = updateTime(new Date());
+const handleEdit = async (index: number, row: User) => {
+  
+}
 
+let value2 = ref('');
+function fn(val : any){
+  console.log(val);
+}
 </script>
 
 <template>
@@ -58,13 +73,13 @@ value2.value = updateTime(new Date());
 
     
     <div class="block">
-      <span class="demonstration">Use value-format</span>
-      <div class="demonstration">Value:{{ value2 }}</div>
       <el-date-picker
         v-model="value2"
         type="date"
         placeholder="选择日期"
         format="YYYY-MM-DD"
+        value-format="YYYY-MM-DD"
+        @change="fn(value2)"
       />
     </div>
 
@@ -107,6 +122,15 @@ value2.value = updateTime(new Date());
       </template>
     </el-table-column>
 
+    <el-table-column label="操作">
+      <template #default="scope">
+        <div class="btn">
+          <el-button size="small" @click="handleEdit(scope.$index , scope.row)">查看详情</el-button>
+        </div>
+
+      </template>
+    </el-table-column>
+
   </el-table>
 
   <div class="demo-pagination-block">
@@ -142,5 +166,11 @@ value2.value = updateTime(new Date());
 .time{
   display: inline-block;
   margin-right: 20px;
+}
+.block{
+  margin: 20px;
+}
+.demo-pagination-block{
+  margin: 20px 0;
 }
 </style>
