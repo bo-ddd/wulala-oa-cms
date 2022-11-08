@@ -366,6 +366,7 @@ const dynamicData = () => {
   }, 2100);
   option && myChart.setOption(option);
 }
+// 每日资讯
 const newsList = [
   {
     id: 1,
@@ -412,15 +413,39 @@ const newsList = [
     text: '为什么「确定按钮」正在慢慢消失',
   }
 ]
+// 待办事项
+const toDoList = [
+  {
+    id: 1,
+    text: '部门会议',
+  },
+  {
+    id: 2,
+    text: '提交周报',
+  },
+  {
+    id: 3,
+    text: '整理客户资料',
+  },
+  {
+    id: 4,
+    text: '方案讨论会',
+  },
+  {
+    id: 5,
+    text: '客户方案对接',
+  },
+  {
+    id: 6,
+    text: '制定下个月的工作计划',
+  }
+]
 
 onMounted(() => {
   contributionList(); //基金贡献占比排行榜;
   assessmentList(); //员工综合评估排行榜;
-  // dynamicTitle(); //动态标题;
   dynamicData();//动态数据;
 })
-
-
 </script>
 
 <template>
@@ -429,16 +454,16 @@ onMounted(() => {
   <div class="main">
     <el-row :gutter="40" justify="space-evenly">
       <!-- 轮播图 -->
-      <el-col :span="16" class="clear-padding">
-        <el-carousel :interval="4000" type="card" height="200px" class="slider">
+      <el-col :span="16">
+        <el-carousel :interval="4000" type="card" height="230px" class="slider">
           <el-carousel-item v-for="item in bannerList" :key="item.id">
             <img class="banner-img" :src="item.url">
           </el-carousel-item>
         </el-carousel>
       </el-col>
       <!-- 项目进度条 -->
-      <el-col :span="8" class="clear-padding">
-        <div class=" progress-project">
+      <el-col :span="8">
+        <div class="progress-project">
           <h4>
             项目进展情况
           </h4>
@@ -460,19 +485,32 @@ onMounted(() => {
         </div>
       </el-col>
     </el-row>
-    <el-row :gutter="20" justify="space-evenly">
-      <el-col :span="4">
-        <div></div>
-      </el-col>
+    <el-row :gutter="20">
+      <!-- 动态数据表 -->
       <el-col :span="16">
         <div id="dynamicData"></div>
       </el-col>
-      <el-col :span="4">
-        <div class=" ep-bg-purple"></div>
+      <!-- 待办事项 -->
+      <el-col :span="8">
+        <div class="box-card">
+          <el-space wrap>
+            <el-card>
+              <template #header>
+                <div class="card-header">
+                  <span class="strong">待办事项</span>
+                  <el-button class="button" text>查看更多</el-button>
+                </div>
+              </template>
+              <el-scrollbar height="246px">
+                <p v-for="item in toDoList" :key="item.id" class="scrollbar-demo-item">{{ item.text }}</p>
+              </el-scrollbar>
+            </el-card>
+          </el-space>
+        </div>
       </el-col>
     </el-row>
 
-    <el-row :gutter="20" justify="space-evenly">
+    <el-row :gutter="20" justify="space-evenly" class="mt--10">
       <!-- 班费扇形图 -->
       <el-col :span="8" class="clear-padding">
         <div id="fund"></div>
@@ -501,10 +539,14 @@ onMounted(() => {
       </el-col>
     </el-row>
   </div>
-  
+
 </template>
 
 <style scoped>
+.mt--10 {
+  margin-top: -20px;
+}
+
 .main {
   width: 100%;
   height: 100%;
@@ -537,6 +579,10 @@ onMounted(() => {
   width: 100%;
 }
 
+.slider {
+  width: 800px;
+}
+
 /* 呜啦啦基金会 */
 #fund {
   min-height: 300px;
@@ -563,11 +609,15 @@ onMounted(() => {
 
 /* 进度条 */
 .progress-project {
+  width: 400px;
+  height: 210px;
   display: flex;
   flex-direction: column;
   gap: 40px;
   align-items: center;
   padding: 20px;
+  margin-left: -12px;
+  margin-top: 15px;
   background-color: white;
   box-sizing: border-box;
   border-radius: 10px;
@@ -667,9 +717,12 @@ onMounted(() => {
   width: 200px;
   height: 100px;
 }
+
 /* 动态数据 */
-#dynamicData{
-  width:800px;
-  height:380px;
+#dynamicData {
+  width: 800px;
+  height: 350px;
+  padding-top: 20px;
+  box-sizing: border-box;
 }
 </style>
