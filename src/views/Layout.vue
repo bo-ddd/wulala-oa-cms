@@ -414,7 +414,7 @@ const defaultAvatarImg = 'https://img.ixintu.com/download/jpg/20200815/18ae76680
 .el-main {
     min-width: 998px;
     border-radius: 15px;
-    background-color: #e6f7f7;
+    /* background-color: #e6f7f7; */
     box-sizing: border-box;
 }
 
