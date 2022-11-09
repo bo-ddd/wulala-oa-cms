@@ -21,11 +21,9 @@ let title = sessionStorage.getItem('title')
     margin: 0;
     padding: 0;
 }
-
 h3{
     margin: 20px 0;
 }
-
 .body {
     width: 100%;
     height: 100%;
@@ -42,11 +40,9 @@ h3{
     background-color: rgba(236, 236, 236, 0.59);
     transition: all 1.0s;
 }
-
 .content:hover {
     box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.52);
 }
-
 .content_l {
     text-align: center;
 }
