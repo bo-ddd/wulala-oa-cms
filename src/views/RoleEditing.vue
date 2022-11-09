@@ -1,12 +1,13 @@
 <script lang="ts" setup>
-import { reactive, ref, onMounted, watch } from 'vue'
+import { reactive, ref } from 'vue'
 import axios from "../assets/api/api"
-import { ElTree } from 'element-plus'
+import { ElTree, ElMessage } from 'element-plus'
 import type Node from 'element-plus/es/components/tree/src/model/node'
-
+import {useRouter}from "vue-router";
 const value = ref('')
 const roleId = ref<number>()
 const defaultCheckedKeys = reactive<number[]>([])
+const Router=useRouter()
 
 //------------------1.处理数据结构，为无限极结构--------------------
 interface PermissionList {
@@ -88,19 +89,19 @@ const getUserPermission = () => {
       data.forEach((item: RolePermission) => {
         beforeUpdateIdList.push(item.permissionId)
         RolePermissionList.push({ id: item.permissionId, label: item.permissionName })
-
       })
     }
   })();
 }
-
+ const checkedStatus=ref(false);
 //点击查询权限按钮复显选中角色的配置权限;
 const setCheckedNodes = () => {
-      treeRef.value!.setCheckedNodes(
-        RolePermissionList as Node[],
-        false
-      )
-    }
+  checkedStatus.value=true;
+  treeRef.value!.setCheckedNodes(
+    RolePermissionList as Node[],
+    false
+  )
+}
 
 //拿到修改后的数据调接口;
 const publicSection = reactive<number[]>([])
@@ -150,7 +151,17 @@ const submit = function () {
     )
 
     Promise.all(addData).then(res => {
-      console.log(res)
+      ElMessage({
+        message: '修改权限成功',
+        type: 'success',
+      })
+      Router.push('roles')
+      
+    }).catch(error => {
+      ElMessage({
+        message: '修改权限失败',
+        type: 'error',
+      })
     })
   }
   //调用删除权限接口;
@@ -170,7 +181,16 @@ const submit = function () {
     )
 
     Promise.all(deleteData).then(res => {
-      console.log(res)
+      ElMessage({
+        message: '修改权限成功',
+        type: 'success',
+      })
+      Router.push('roles')
+    }).catch(error => {
+      ElMessage({
+        message: '修改权限失败',
+        type: 'error',
+      })
     })
   }
 }
@@ -185,13 +205,13 @@ const submit = function () {
       <el-select v-model="value" filterable placeholder="请输入角色名称" @change="getUserPermission" size="small">
         <el-option v-for="item in roleList" :key="item.id" :label="item.roleName" :value="item.roleName" />
       </el-select>
-      <el-button type="danger" size="small" @click="setCheckedNodes">查询权限</el-button>
+      <el-button type="danger" size="small" @click="setCheckedNodes" >查询权限</el-button>
       <el-button type="danger" size="small" @click="submit">确认修改</el-button>
     </div>
     <div class="custom-tree-node-container mt-10">
-      <el-tree :data="formatData" ref="treeRef" node-key="id" default-expand-all show-checkbox
+      <el-tree :data="formatData" ref="treeRef" node-key="id" default-expand-all :show-checkbox='checkedStatus'
         :default-checked-keys="defaultCheckedKeys" check-on-click-node :expand-on-click-node="false"
-        :props="{ label: 'permissionName' }" />
+        :props="{ label: 'permissionName' }"/>
 
     </div>
   </div>
