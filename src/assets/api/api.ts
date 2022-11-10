@@ -219,5 +219,28 @@ export default {
     * **/
     getDeptList(payload = {}) {
         return axios.post('/dept/list', payload)
+    },
+    /**
+    *给用户添加组
+     *  "userId": 151, //用户id
+        "deptId": 4 //部门(组) 
+    * **/
+        addUserDept(payload = {}) {
+        return axios.post('/user/dept/add', payload)
+    },
+    /**
+    *删除用户对应的组
+    * userId": 151, 
+     "deptId": 2 // 部门(组）id
+    * **/
+    deleteUserDept(payload = {}) {
+        return axios.post('/user/dept/delete ', payload)
+    },
+    /**
+    *获取用户所在的组列表
+    *   "userId": 151, 
+    * **/
+    getUserDeptList(payload = {}) {
+        return axios.post('/user/dept/list ', payload)
     }
 }
