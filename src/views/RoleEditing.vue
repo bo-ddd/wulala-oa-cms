@@ -1,13 +1,17 @@
 <script lang="ts" setup>
-import { reactive, ref } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import axios from "../assets/api/api"
 import { ElTree, ElMessage } from 'element-plus'
 import type Node from 'element-plus/es/components/tree/src/model/node'
-import {useRouter}from "vue-router";
+import { useRouter, useRoute } from "vue-router";
+import { ArrowLeft } from '@element-plus/icons-vue';
 const value = ref('')
 const roleId = ref<number>()
 const defaultCheckedKeys = reactive<number[]>([])
-const Router=useRouter()
+const router = useRouter()
+const route = useRoute()
+console.log('---------------Route.query----------------')
+console.log(route.query.id)
 
 //------------------1.处理数据结构，为无限极结构--------------------
 interface PermissionList {
@@ -52,8 +56,20 @@ const RolePermissionList = reactive<{ id: number, label: string }[]>([]);
   Object.assign(roleList, (await axios.getRoleListApi({})).data)
   let permissionList = (await axios.getPermissionListApi({})).data
   Object.assign(formatData, formatePermissionList(permissionList))
-  console.log(formatData)
+
+  // -----------------拿到角色ID--------------
+  roleList.forEach(item => {
+    if (item.id == Number(route.query.id)) {
+      console.log('----item.id----')
+      console.log(item.id)
+      value.value = item.roleName
+    }
+  })
 })();
+
+
+
+
 
 //------------------3.角色权限复显功能--------------------
 const treeRef = ref();
@@ -66,7 +82,7 @@ interface RolePermission {
 }
 
 //3-1 角色下拉框选中状态改变时执行的函数;
-const getUserPermission = () => {
+const getUserPermission = async () => {
 
   //拿到选中角色的角色id;
   roleList.forEach(item => {
@@ -75,28 +91,30 @@ const getUserPermission = () => {
     }
   });
 
-  (async () => {
-    //根据id搜索出对应的数据;
-    let { data } = await axios.queryRolePermissionListApi({
-      roleId: roleId.value
+  //根据id搜索出对应的数据;
+  let { data } = await axios.queryRolePermissionListApi({
+    roleId: roleId.value
+  })
+  console.log(data)
+  //清空上一次的数据;
+  beforeUpdateIdList.length = 0; //存放修改前的id;
+  RolePermissionList.length = 0  //复显操作;
+  //如果有数据，将数据存起来;
+  if (data.length) {
+    data.forEach((item: RolePermission) => {
+      beforeUpdateIdList.push(item.permissionId)
+      RolePermissionList.push({ id: item.permissionId, label: item.permissionName })
     })
-    console.log(data)
-    //清空上一次的数据;
-    beforeUpdateIdList.length = 0; //存放修改前的id;
-    RolePermissionList.length = 0  //复显操作;
-    //如果有数据，将数据存起来;
-    if (data.length) {
-      data.forEach((item: RolePermission) => {
-        beforeUpdateIdList.push(item.permissionId)
-        RolePermissionList.push({ id: item.permissionId, label: item.permissionName })
-      })
-    }
-  })();
+  }
+  console.log('执行完毕')
 }
- const checkedStatus=ref(false);
+//控制禁选;
+const checkedStatus = ref(false);
+
 //点击查询权限按钮复显选中角色的配置权限;
-const setCheckedNodes = () => {
-  checkedStatus.value=true;
+const setCheckedNodes = async () => {
+  await getUserPermission()
+  checkedStatus.value = true;
   treeRef.value!.setCheckedNodes(
     RolePermissionList as Node[],
     false
@@ -155,8 +173,8 @@ const submit = function () {
         message: '修改权限成功',
         type: 'success',
       })
-      Router.push('roles')
-      
+      router.push('roles')
+
     }).catch(error => {
       ElMessage({
         message: '修改权限失败',
@@ -185,7 +203,7 @@ const submit = function () {
         message: '修改权限成功',
         type: 'success',
       })
-      Router.push('roles')
+      router.push('roles')
     }).catch(error => {
       ElMessage({
         message: '修改权限失败',
@@ -201,17 +219,18 @@ const submit = function () {
 
 <template>
   <div>
-    <div class="top-list mt-10">
+    <el-page-header :icon="ArrowLeft" title="返回" @back="router.push('Roles')" />
+    <div class="top-list mt-24">
       <el-select v-model="value" filterable placeholder="请输入角色名称" @change="getUserPermission" size="small">
         <el-option v-for="item in roleList" :key="item.id" :label="item.roleName" :value="item.roleName" />
       </el-select>
-      <el-button type="danger" size="small" @click="setCheckedNodes" >查询权限</el-button>
+      <el-button type="danger" size="small" @click="setCheckedNodes">查询权限</el-button>
       <el-button type="danger" size="small" @click="submit">确认修改</el-button>
     </div>
-    <div class="custom-tree-node-container mt-10">
-      <el-tree :data="formatData" ref="treeRef" node-key="id" default-expand-all :show-checkbox='checkedStatus'
+    <div class="custom-tree-node-container mt-24 scroll-bar">
+      <el-tree :data="formatData" ref="treeRef" node-key="id" default-expand-all :show-checkbox="checkedStatus"
         :default-checked-keys="defaultCheckedKeys" check-on-click-node :expand-on-click-node="false"
-        :props="{ label: 'permissionName' }"/>
+        :props="{ label: 'permissionName' }" />
 
     </div>
   </div>
@@ -219,6 +238,7 @@ const submit = function () {
 </template>
 
 <style scoped>
+
 :deep(.el-input) {
   width: 200px
 }
@@ -245,5 +265,14 @@ const submit = function () {
 
 .is-penultimate>.el-tree-node__children>div {
   width: 25%;
+}
+
+.scroll-bar {
+  height: 500px;
+  overflow-y: scroll;
+}
+
+.scroll-bar::-webkit-scrollbar {
+  display: none
 }
 </style>

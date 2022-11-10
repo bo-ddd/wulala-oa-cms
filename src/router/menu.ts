@@ -57,14 +57,7 @@ let requiresAuthList = [
         name: '新增角色',
         targetPath: '/createRoles',
         requiresAuth: true
-    },
-    {
-        id: 604,
-        name: '角色编辑',
-        targetPath: '/roleEditing',
-        requiresAuth: true
     }
-
 ]
 
 
