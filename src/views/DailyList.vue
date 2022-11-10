@@ -58,12 +58,14 @@ const handleCurrentChange = (val: number) => {
   getLeaveListApi()
 }
 
-const handleEdit = async (index: number, row: User) => {
+const handleEdit = async (row: User,id :number) => {
   console.log(row);
-  sessionStorage.setItem('avatarName',row.avatarName)
-  sessionStorage.setItem('content',row.content)
-  sessionStorage.setItem('title',row.title)
-  router.push('/dailyDetail')
+  router.push({
+    name:'dailyDetail',
+    query:{
+      id
+    }
+  })
 }
 
 let value2 = ref('');
@@ -127,7 +129,7 @@ function fn(val : any){
     <el-table-column label="操作">
       <template #default="scope">
         <div class="btn">
-          <el-button size="small" @click="handleEdit(scope.$index , scope.row)">查看详情</el-button>
+          <el-button size="small" @click="handleEdit(scope.row,scope.row.id)">查看详情</el-button>
         </div>
 
       </template>
