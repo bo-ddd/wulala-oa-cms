@@ -29,13 +29,13 @@
                 <el-tag type="success">{{ scope.row.phoneNumber }}</el-tag>
             </template>
         </el-table-column>
-        <el-table-column label="操作" width="340" align='center'>
+        <el-table-column label="操作" width="320" align='center'>
             <template #default="scope">
                 <el-button type="danger" size="small" @click="addRoles(scope.row); dialogFormVisibleAdd = true">添加角色
                 </el-button>
                 <el-button type="danger" size="small" @click="getUserId(scope.row); dialogFormVisibleDelete = true">删除角色
                 </el-button>
-                <el-button type="danger" size="small" @click="getUserId(scope.row); dialogFormisiblGeroup = true">添加项目组
+                <el-button type="danger" size="small" @click="getUserId(scope.row); dialogFormisiblGeroup = true">添加部门
                 </el-button>
             </template>
         </el-table-column>
