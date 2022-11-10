@@ -66,7 +66,6 @@ let date = (startTime1 : number , endTime1 : number) =>{
   let timeStamp = endTime - starTime
   // let duration = timeStamp/1000/60/60%24
   return timeStamp/1000/60/60/24*24;
-  
 };
 
 const handleSizeChange = (val: number) => {
