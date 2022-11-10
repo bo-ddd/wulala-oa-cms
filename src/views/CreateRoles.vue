@@ -147,4 +147,11 @@ const checkChange=function(data:PermissionVO,isChecked: boolean){
     font-weight: 600;
     color: rgb(145, 137, 137);
 }
+.el-tree {
+    height: 500px;
+    overflow-y:scroll ;
+}
+.el-tree::-webkit-scrollbar{
+    display: none;
+}
 </style>

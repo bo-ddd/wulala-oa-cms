@@ -451,11 +451,11 @@ onMounted(() => {
 
 </script>
 
-<template>
+<template>  
 
 
   <div class="main">
-    <el-row :gutter="40" justify="space-around">
+    <el-row :gutter="40">
       <!-- 轮播图 -->
       <el-col :span="16">
         <el-carousel :interval="4000" type="card" height="230px" class="slider">
@@ -488,7 +488,7 @@ onMounted(() => {
         </div>
       </el-col>
     </el-row>
-    <el-row :gutter="20" justify="space-around">
+    <el-row :gutter="20">
       <!-- 动态数据表 -->
       <el-col :span="16">
         <div id="dynamicData"></div>
@@ -513,7 +513,7 @@ onMounted(() => {
       </el-col>
     </el-row>
 
-    <el-row :gutter="20" justify="space-around" class="mt-24">
+    <el-row :gutter="20" class="mt-24">
       <!-- 班费扇形图 -->
       <el-col :span="8" class="clear-padding">
         <div id="fund"></div>
@@ -546,6 +546,15 @@ onMounted(() => {
 </template>
 
 <style scoped>
+:deep(.el-col-8){
+  width: 33.3333%;
+}
+:deep(.el-space){
+  width: 100%;
+}
+:deep(.el-space__item){
+  width: 100%;
+}
 .main {
   width: 100%;
   height: 100%;
