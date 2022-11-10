@@ -5,13 +5,9 @@ import { ElMessage, ElMessageBox, ElTree } from 'element-plus'
 
 const treeRef = ref<InstanceType<typeof ElTree>>()
 const newPermissionName = ref();
-const input = ref();
 const permissionNameAdd = ref();
-const pidAdd = ref();
 let permissionListPid = ref();
 let permissionList = reactive<Permission1[]>([]);
-let pageNum = ref(1);
-let pageSize = ref(10);
 interface Permission1 {
     id: number,
     permissionName: string,
@@ -27,15 +23,6 @@ interface Permission2 {
 }
 let permissionId = ref();
 let permissionList2: Ref<Permission2[]> = ref([]);
-
-// interface Permission {
-//     id: number,
-//     permissionName: string,
-//     pid: number,
-//     // label: string
-// }
-
-
 
 const formatData = (data: Permission1[]) => {
     let res: Permission1[] = JSON.parse(JSON.stringify(data));
@@ -94,12 +81,7 @@ const upError = () => {
     })
 }
 
-
-
-
-
 getPermissionList();
-
 
 // 删除权限
 const open = (id: number) => {
@@ -112,32 +94,31 @@ const open = (id: number) => {
             type: 'warning',
         }
     ).then(() => {
-        ElMessage({
-            type: 'success',
-            message: '删除成功',
-        }),
-            axios.deletePermissionApi({ id }).then(res => {
-                if (res.status == 1) {
-                    getPermissionList();
-                }
-            })
-    })
-        .catch(() => {
+        axios.deletePermissionApi({ id }).then(res => {
+            if (res.status == 1) {
+                ElMessage({
+                    showClose: true,
+                    type: 'success',
+                    message: '删除成功',
+                })
+                getPermissionList();
+            } else if (res.status == 8901) {
+                ElMessage({
+                    showClose: true,
+                    type: 'error',
+                    message: '有子权限所以不能被删除',
+                })
+            }
+        })
+    }).catch(() => {
             ElMessage({
-                type: 'info',
+                showClose: true,
+                type: 'error',
                 message: '已取消删除'
-                // userDelete(scope.row.id)
             })
         })
 }
 
-const handleSizeChange = async (val: number) => {
-    pageSize.value = val
-}
-
-const handleCurrentChange = async (val: number) => {
-    pageNum.value = val
-}
 // 查询权限
 const userSearch = async (input: number) => {
     axios.permissionUserListApi({
@@ -201,9 +182,6 @@ const edit = (data: Tree) => {
 const remove = (node: Node, id: number) => {
     console.log(id);
     open(id)
-}
-const queryDataId = (data: Permission1[]) => {
-    console.log(data);
 }
 
 interface Tree {
