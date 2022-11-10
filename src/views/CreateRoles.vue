@@ -93,12 +93,13 @@ const checkChange=function(data:PermissionVO,isChecked: boolean){
             }
         })
       }
-      return [...new Set(permissionIds)]   ///去重
+      return [...new Set(permissionIds)]   ///
+
 }
 </script>
 <template>
     <el-form :inline="true" :model="Role" class="demo-form-inline">
-        <el-form-item label="角色名称:" class="lable">
+        <el-form-item label="角色名称:" cla  ss="lable">
             <el-input v-model="Role.roleName" placeholder="请输入新增角色名称" size="small" />
         </el-form-item>
         <el-form-item label="所属部门:" class="lable">
