@@ -86,6 +86,7 @@ const projectProgress = [
 const assessmentList = () => {
   type EChartsOption = echarts.EChartsOption;
   let myChart = echarts.init(document.getElementById('assessment')!);
+  window.addEventListener('resize', () => { myChart.resize(); });
   let option: EChartsOption = {
     tooltip: {
       trigger: 'axis',
@@ -177,7 +178,7 @@ const assessmentList = () => {
 const contributionList = () => {
   type EChartsOption = echarts.EChartsOption;
   let myChart = echarts.init(document.getElementById('fund')!);
-
+  window.addEventListener('resize', () => { myChart.resize(); });
   let option: EChartsOption = {
     title: {
       text: '呜啦啦基金会',
@@ -220,6 +221,7 @@ const dynamicData = () => {
   var app: any = {};
   type EChartsOption = echarts.EChartsOption;
   var chartDom = document.getElementById('dynamicData')!;
+  window.addEventListener('resize', () => { myChart.resize(); });
   var myChart = echarts.init(chartDom);
 
   const categories = (function () {
@@ -446,13 +448,14 @@ onMounted(() => {
   assessmentList(); //员工综合评估排行榜;
   dynamicData();//动态数据;
 })
+
 </script>
 
 <template>
 
 
   <div class="main">
-    <el-row :gutter="40" justify="space-evenly">
+    <el-row :gutter="40" justify="space-around">
       <!-- 轮播图 -->
       <el-col :span="16">
         <el-carousel :interval="4000" type="card" height="230px" class="slider">
@@ -485,7 +488,7 @@ onMounted(() => {
         </div>
       </el-col>
     </el-row>
-    <el-row :gutter="20">
+    <el-row :gutter="20" justify="space-around">
       <!-- 动态数据表 -->
       <el-col :span="16">
         <div id="dynamicData"></div>
@@ -510,7 +513,7 @@ onMounted(() => {
       </el-col>
     </el-row>
 
-    <el-row :gutter="20" justify="space-evenly" class="mt--10">
+    <el-row :gutter="20" justify="space-around" class="mt-24">
       <!-- 班费扇形图 -->
       <el-col :span="8" class="clear-padding">
         <div id="fund"></div>
@@ -543,10 +546,6 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.mt--10 {
-  margin-top: -20px;
-}
-
 .main {
   width: 100%;
   height: 100%;
@@ -580,13 +579,13 @@ onMounted(() => {
 }
 
 .slider {
-  width: 800px;
+  width: 100%;
 }
 
 /* 呜啦啦基金会 */
 #fund {
-  min-height: 300px;
   min-width: 400px;
+  min-height: 300px;
   box-sizing: border-box;
   background-color: white;
   border-radius: 10px;
@@ -597,8 +596,8 @@ onMounted(() => {
 
 /* 员工考核表 */
 #assessment {
-  min-height: 300px;
   min-width: 400px;
+  min-height: 300px;
   background-color: white;
   padding: 40px 20px 20px 20px;
   box-sizing: border-box;
@@ -609,11 +608,12 @@ onMounted(() => {
 
 /* 进度条 */
 .progress-project {
-  width: 400px;
-  height: 210px;
+  min-width: 400px;
+  min-height: 210px;
   display: flex;
   flex-direction: column;
   gap: 40px;
+  justify-content: space-around;
   align-items: center;
   padding: 20px;
   margin-left: -12px;
@@ -712,17 +712,15 @@ onMounted(() => {
   padding: 0 !important;
 }
 
-/* 动态标题 */
-#title {
-  width: 200px;
-  height: 100px;
-}
 
 /* 动态数据 */
 #dynamicData {
-  width: 800px;
-  height: 350px;
+  min-width: 800px;
+  min-height: 300px;
   padding-top: 20px;
   box-sizing: border-box;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.12);
 }
 </style>

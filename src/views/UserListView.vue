@@ -8,7 +8,7 @@
     </div>
 
     <el-table v-if="userListData" :data="userListData" border style="width: 100%" fit>
-        <el-table-column label="用户ID" align="center" width="80px">
+        <el-table-column label="用户ID" align="center" width="100px">
             <template #default="scope">
                 <el-tag size="small" type="warning">{{ scope.row.userId }}</el-tag>
             </template>
@@ -29,11 +29,13 @@
                 <el-tag type="success">{{ scope.row.phoneNumber }}</el-tag>
             </template>
         </el-table-column>
-        <el-table-column label="操作" width="200" align='center'>
+        <el-table-column label="操作" width="340" align='center'>
             <template #default="scope">
                 <el-button type="danger" size="small" @click="addRoles(scope.row); dialogFormVisibleAdd = true">添加角色
                 </el-button>
                 <el-button type="danger" size="small" @click="getUserId(scope.row); dialogFormVisibleDelete = true">删除角色
+                </el-button>
+                <el-button type="danger" size="small" @click="getUserId(scope.row); dialogFormisiblGeroup = true">添加项目组
                 </el-button>
             </template>
         </el-table-column>
@@ -83,6 +85,27 @@
         </template>
     </el-dialog>
 
+    <el-dialog v-model="dialogFormisiblGeroup" title="删除用户角色">
+        <el-form :model="form">
+            <el-form-item label="用户昵称" :label-width="formLabelWidth">
+                <el-input v-model="form.userName" size="small" autocomplete="off" readonly='readonly' />
+            </el-form-item>
+            <el-form-item label="项目组" :label-width="formLabelWidth">
+                <el-select v-model="form.rolesId" class="m-2" placeholder="请选择要项目组" size="small">
+                    <el-option v-for="item in userRolesList" :key="item.id" :label="item.roleName" :value="item.id"
+                        size="small" />
+                </el-select>
+            </el-form-item>
+        </el-form>
+        <template #footer>
+            <span class="dialog-footer">
+                <el-button @click="dialogFormisiblGeroup = false">取消</el-button>
+                <el-button type="primary" @click="dialogFormVisibleDelete = false; deleteUserRole()">
+                    确认添加
+                </el-button>
+            </span>
+        </template>
+    </el-dialog>
     <div class="pagination">
         <el-pagination v-model:currentPage="pageNum" v-model:page-size="pageSize" :page-sizes="[5, 10, 20, 30, 40]"
             :small="small" :disabled="disabled" :background="background"
@@ -111,7 +134,7 @@ const handleCurrentChange = async (val: number) => {
     pageNum.value = val
 }
 const getUserList = (pageSize?: number, pageNum?: number) => {
-    label.value = '用户爱好' 
+    label.value = '用户爱好'
     axios.getUserListApi({
         pageNum: pageNum,
         pageSize: pageSize
@@ -136,7 +159,7 @@ let label = ref('');
     let userList = await axios.getUserListApi({})
     userListData.value = userList.data.list;
     total.value = userList.data.total
-    label.value = '用户爱好' 
+    label.value = '用户爱好'
 })();
 // 获取用户角色ID
 (async function () {
@@ -160,11 +183,11 @@ interface User {
 }
 const dialogFormVisibleAdd = ref(false)
 const dialogFormVisibleDelete = ref(false)
-
+const dialogFormisiblGeroup = ref(false)
 const form = reactive({
     userId: 0,
     rolesId: null,
-    userName:'用户昵称'
+    userName: '用户昵称'
 })
 const addRoles = (row: User) => {
     form.userId = row.userId

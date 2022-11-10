@@ -84,6 +84,14 @@ const handleSizeChange = (val: number) => {
 const handleCurrentChange = (val: number) => {
     pageNum.value = val
 }
+const to=function(id:number){
+    router.push({
+        name:'roleEditing',
+        query:{
+          id
+    }}
+    )
+}
 </script>
 <template>
     <div class="select">
@@ -116,7 +124,7 @@ const handleCurrentChange = (val: number) => {
             <el-table-column label="操作" align="center">
                 <template #default="scope" align="center">
                     <el-button size="small" @click="queryPermissionList(scope.row)">查看权限详情</el-button>
-                    <el-button size="small" @click="router.push('roleEditing')">设置角色权限</el-button>
+                    <el-button size="small" @click="to(scope.row.id)">设置角色权限</el-button>
                     <el-button size="small" type="danger"
                         @click="handleDelete(scope.$index, scope.row); centerDialogVisible = true">删除
                     </el-button>
