@@ -142,7 +142,6 @@ const checkChange=function(data:PermissionVO,isChecked: boolean){
     width: 200px;
 }
 .lable{
-    /* display: inline-block; */
     font-size: 16px;
     font-weight: 600;
     color: rgb(145, 137, 137);

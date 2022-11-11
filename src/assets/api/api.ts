@@ -225,7 +225,7 @@ export default {
      *  "userId": 151, //用户id
         "deptId": 4 //部门(组) 
     * **/
-        addUserDept(payload = {}) {
+        addUserDeptApi(payload = {}) {
         return axios.post('/user/dept/add', payload)
     },
     /**
@@ -233,14 +233,14 @@ export default {
     * userId": 151, 
      "deptId": 2 // 部门(组）id
     * **/
-    deleteUserDept(payload = {}) {
+    deleteUserDeptApi(payload = {}) {
         return axios.post('/user/dept/delete ', payload)
     },
     /**
     *获取用户所在的组列表
     *   "userId": 151, 
     * **/
-    getUserDeptList(payload = {}) {
+    getUserDeptListApi(payload = {}) {
         return axios.post('/user/dept/list ', payload)
     }
 }
