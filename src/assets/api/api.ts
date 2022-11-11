@@ -1,31 +1,8 @@
 import axios from "./http";
+import type{ UserList,UserRegister } from "@/types/User";
+import type{ UpdatePermission } from "@/types/Permission";
+import type{ CreateLeave,ExamineUserLeave } from "@/types/Leave";
 //用户
-interface userRegister {
-    username: string;
-    password: string
-    avatarName?: string
-    phoneNumber: string
-}
-
-interface userList {
-    pageNum?: number,
-    pageSize?: number
-}
-interface createLeave {
-    userId: string;
-    reason: string;
-    startTime: string;
-    endTime: string;
-}
-interface examineUserLeave {
-    id: number,
-    auditStatus: number
-}
-interface updatePermission {
-    id: number
-    permissionName: string
-    pid: number
-}
 export default {
     /**
     * 登录接口**/
@@ -45,7 +22,7 @@ export default {
     /**
      * @description  * 请假申请接口** 
  * **/
-    createLeaveApi(payload: createLeave) {
+    createLeaveApi(payload: CreateLeave) {
         return axios.post('/user/leave/create', payload)
     },
     /**
@@ -54,13 +31,13 @@ export default {
      * "password":  //密码，6-20位之间
      *  avatarName": //昵称，1-12位之间
      *  "phoneNumber":  //手机号*/
-    registerApi(payload: userRegister) {
+    registerApi(payload: UserRegister) {
         return axios.post('/user/register', payload)
     },
     /**
      * 获取用户列表接口
      * **/
-    getUserListApi(payload: userList) {
+    getUserListApi(payload: UserList) {
         return axios.post('/user/list', payload)
     },
     /**
@@ -93,7 +70,7 @@ export default {
      * params: "id": ", //id  必填
      * params: "permissionName": "新修改的权限名称", //权限名称 必填
      * params: "pid": 如果是0 为最外层父级，不为0 则为子级   必填**/
-    updatePermissionApi(payload: updatePermission) {
+    updatePermissionApi(payload: UpdatePermission) {
         return axios.post('/permission/update', payload)
     },
     /**
@@ -107,7 +84,7 @@ export default {
   * params: id:
   * params: auditStatus:
   * **/
-    examineUserLeaveApi(payload: examineUserLeave) {
+    examineUserLeaveApi(payload: ExamineUserLeave) {
         return axios.post('/user/leave/examine', payload)
     },
     /**
@@ -225,7 +202,7 @@ export default {
      *  "userId": 151, //用户id
         "deptId": 4 //部门(组) 
     * **/
-        addUserDept(payload = {}) {
+        addUserDeptApi(payload = {}) {
         return axios.post('/user/dept/add', payload)
     },
     /**
@@ -233,14 +210,14 @@ export default {
     * userId": 151, 
      "deptId": 2 // 部门(组）id
     * **/
-    deleteUserDept(payload = {}) {
+    deleteUserDeptApi(payload = {}) {
         return axios.post('/user/dept/delete ', payload)
     },
     /**
     *获取用户所在的组列表
     *   "userId": 151, 
     * **/
-    getUserDeptList(payload = {}) {
+    getUserDeptListApi(payload = {}) {
         return axios.post('/user/dept/list ', payload)
     }
 }

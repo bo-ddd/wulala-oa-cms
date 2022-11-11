@@ -11,7 +11,7 @@ interface Parent {
     name: string,
     targetPath: string,
     childrenList: Reason[],
-    requiresAuth:boolean
+    requiresAuth: boolean
 }
 
 interface Reason {
@@ -29,6 +29,12 @@ let requiresAuthList = [
         requiresAuth: true
     },
     {
+        id: 202,
+        name: '离职列表',
+        targetPath: '/dimissionList',
+        requiresAuth: true
+    },
+    {
         id: 301,
         name: '请假审批',
         targetPath: '/leave',
@@ -38,6 +44,24 @@ let requiresAuthList = [
         id: 304,
         name: '日报列表',
         targetPath: '/dailyList',
+        requiresAuth: true
+    },
+    {
+        id: 305,
+        name: '离职审批',
+        targetPath: '/dimissionApproval',
+        requiresAuth: true
+    },
+    {
+        id: 401,
+        name: '发布任务',
+        targetPath: '/publishTask',
+        requiresAuth: true
+    },
+    {
+        id: 501,
+        name: '发布消息',
+        targetPath: '/publishMessage',
         requiresAuth: true
     },
     {
@@ -93,7 +117,7 @@ let sidebarList: Parent[] = [
         childrenList: [
             {
                 id: 302,
-                name: '提交申请',
+                name: '请假申请',
                 targetPath: '/submitApplication',
                 requiresAuth: false
             },
@@ -102,21 +126,27 @@ let sidebarList: Parent[] = [
                 name: '提交日报',
                 targetPath: '/submitDaily',
                 requiresAuth: false
+            },
+            {
+                id: 306,
+                name: '离职申请',
+                targetPath: '/dimissionApplication',
+                requiresAuth: false
             }
         ]
     },
     {
         id: 4,
-        icon: 'Stamp',
-        name: '审核管理',
+        icon: 'Document',
+        name: '任务管理',
         targetPath: '',
-        childrenList: [],
-        requiresAuth: true
+        requiresAuth: true, 
+        childrenList:[]
     },
     {
         id: 5,
-        icon: 'TrendCharts',
-        name: '绩效管理',
+        icon: 'Message',
+        name: '信息管理',
         targetPath: '',
         childrenList: [],
         requiresAuth: true
@@ -154,7 +184,6 @@ childrenList.forEach(item => {
         parent.childrenList.push(item)
     }
 })
-sidebarList=sidebarList.filter(item=>!item.requiresAuth||item.childrenList.length)
+sidebarList = sidebarList.filter(item => !item.requiresAuth || item.childrenList.length)
 
 export default sidebarList
-

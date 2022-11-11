@@ -7,7 +7,7 @@
         <el-button class="ml-10" type="danger" size="small" @click="getUserList()">重置</el-button>
     </div>
 
-    <el-table v-if="userListData" :data="userListData" border style="width: 100%" fit>
+    <el-table :data="userListData" border style="width: 100%" fit>
         <el-table-column label="用户ID" align="center" width="100px">
             <template #default="scope">
                 <el-tag size="small" type="warning">{{ scope.row.userId }}</el-tag>
