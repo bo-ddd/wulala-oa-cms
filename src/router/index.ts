@@ -50,6 +50,15 @@ const router = createRouter({
             requiresAuth: false
           }
         },
+        {//离职申请页面;
+          path: "/dimissionApplication",
+          name: "dimissionApplication",
+          component: () => import("../views/DimissionApplication.vue"),
+          meta: {
+            label: "离职申请",
+            requiresAuth: false
+          }
+        },
         {//个人中心页面;
           path: "/mine",
           name: "mine",
@@ -162,6 +171,24 @@ let dynamicRoutes = [
     component: () => import("../views/Department.vue"),
     meta: {
       label: "部门管理",
+      requiresAuth: true
+    }
+  },
+  {//离职审批页面;
+    path: "/dimissionApproval",
+    name: "dimissionApproval",
+    component: () => import("../views/DimissionApproval.vue"),
+    meta: {
+      label: "离职审批",
+      requiresAuth: true
+    }
+  },
+  {//离职列表页面;
+    path: "/dimissionList",
+    name: "dimissionList",
+    component: () => import("../views/DimissionList.vue"),
+    meta: {
+      label: "离职列表",
       requiresAuth: true
     }
   }
