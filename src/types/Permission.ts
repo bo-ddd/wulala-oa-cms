@@ -3,3 +3,8 @@ export interface Permission {
     permissionName: string;
     pid: number;
 }
+export interface UpdatePermission {
+    id: number
+    permissionName: string
+    pid: number
+}
