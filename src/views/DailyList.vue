@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import axios from '@/assets/api/api'
-import { data } from 'dom7';
 import { ref,reactive, toRef, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
@@ -25,7 +24,7 @@ function updateTime(time: Date) {
 }
 
 let router = useRouter()
-let leave = reactive<User[]>([]);
+let daily = reactive<User[]>([]);
 //页面的条数
 let pageSize = ref(10);
 //总条数
@@ -36,17 +35,17 @@ let pageNum = ref(1);
 let title = ref();
 const small = ref(false);
 const disabled = ref(false);
-const getLeaveListApi = async function () {
-  let leaveData = await axios.getArticleListApi({
+const getDailyListApi = async function () {
+  let dailyData = await axios.getArticleListApi({
     pageSize: pageSize.value,
     pageNum: pageNum.value
   })
-  total.value = leaveData.data.total;
+  total.value = dailyData.data.total;
   //渲染列表的数据
-  title.value = leaveData.data.list[0].title
+  title.value = dailyData.data.list[0].title
   //获取列表数据
-  leave.length=0;
-  Object.assign(leave,leaveData.data.list)
+  daily.length=0;
+  Object.assign(daily,dailyData.data.list)
 
 
 }
@@ -57,7 +56,7 @@ const getLeaveListApi = async function () {
 const totalDailyList=reactive<User[]>([]);
 
 const getTotalList=async ()=>{
- await getLeaveListApi()
+ await getDailyListApi()
  let totalList=await axios.getArticleListApi({
   pageSize:total.value
  })
@@ -86,13 +85,13 @@ const formatData=async(date:string)=>{
 
 const handleSizeChange = (val: number) => {
   pageSize.value = val
-  getLeaveListApi()
+  getDailyListApi()
 }
 
 const handleCurrentChange = (val: number) => {
   console.log(`current page: ${val}`);
   pageNum.value = val
-  getLeaveListApi()
+  getDailyListApi()
 }
 
 const handleEdit = async (row: User,id :number) => {
