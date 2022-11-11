@@ -119,20 +119,7 @@ const open = (id: number) => {
         })
 }
 
-// 查询权限
-const userSearch = async (input: number) => {
-    axios.permissionUserListApi({
-        userId: input
-    }).then(res => {
-        if (res.status == 1) {
-            permissionList = res.data
-            console.log('-----查询成功----------');
-            console.log(res.data);
-        } else {
-            alert('查询失败')
-        }
-    })
-}
+
 // 添加权限
 const addPermission = async (permissionNameAdd: string) => {
     await axios.addPermissionApi({
