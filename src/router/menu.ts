@@ -111,7 +111,7 @@ let sidebarList: Parent[] = [
         childrenList: [
             {
                 id: 302,
-                name: '提交申请',
+                name: '请假申请',
                 targetPath: '/submitApplication',
                 requiresAuth: false
             },

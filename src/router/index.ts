@@ -37,7 +37,7 @@ const router = createRouter({
           name: "submitApplication",
           component: () => import("../views/SubmitApplication.vue"),
           meta: {
-            label: "提交申请",
+            label: "请假申请",
             requiresAuth: false
           },
         },

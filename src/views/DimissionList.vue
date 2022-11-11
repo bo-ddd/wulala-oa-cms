@@ -7,8 +7,10 @@ const tableData = [
     {
         department: "市场部",
         entryDate: '2016-05-03',
-        leaveDate:'2019-05-03',
+        leaveDate: '2019-05-03',
         name: '熊大',
+        reason: '待遇不理想',
+        phone: '18226588562',
         state: 'California',
         city: 'San Francisco',
         address: '3650 21st St, San Francisco',
@@ -40,8 +42,10 @@ const tableData = [
     {
         department: "技术部",
         entryDate: '2016-05-03',
-        leaveDate:'2019-05-03',
+        leaveDate: '2019-05-03',
         name: '熊二',
+        reason: '夫妻两地分居',
+        phone: '18226588562',
         state: 'California',
         city: 'San Francisco',
         address: '3650 21st St, San Francisco',
@@ -73,8 +77,10 @@ const tableData = [
     {
         department: "客服部",
         entryDate: '2016-05-04',
-        leaveDate:'2018-06-15',
+        leaveDate: '2018-06-15',
         name: '张三',
+        reason: '离家太远',
+        phone: '18226588562',
         state: 'California',
         city: 'San Francisco',
         address: '3650 21st St, San Francisco',
@@ -106,8 +112,10 @@ const tableData = [
     {
         department: "财务部",
         entryDate: '2016-05-03',
-        leaveDate:'2019-05-03',
+        leaveDate: '2019-05-03',
         name: '李四',
+        reason: '工作压力太大',
+        phone: '18226588562',
         state: 'California',
         city: 'San Francisco',
         address: '3650 21st St, San Francisco',
@@ -139,8 +147,10 @@ const tableData = [
     {
         department: "人事部",
         entryDate: '2016-05-03',
-        leaveDate:'2019-05-03',
+        leaveDate: '2019-05-03',
         name: '王五',
+        reason: '职业前景不理想',
+        phone: '18226588562',
         state: 'California',
         city: 'San Francisco',
         address: '3650 21st St, San Francisco',
@@ -172,8 +182,10 @@ const tableData = [
     {
         department: "后勤部",
         entryDate: '2016-05-03',
-        leaveDate:'2019-05-03',
+        leaveDate: '2019-05-03',
         name: '赵六',
+        reason: '工作压力大',
+        phone: '18226588562',
         state: 'California',
         city: 'San Francisco',
         address: '3650 21st St, San Francisco',
@@ -205,8 +217,10 @@ const tableData = [
     {
         department: "师资部",
         entryDate: '2016-05-03',
-        leaveDate:'2019-05-03',
+        leaveDate: '2019-05-03',
         name: '小七',
+        reason: '待遇不理想',
+        phone: '18226588562',
         state: 'California',
         city: 'San Francisco',
         address: '3650 21st St, San Francisco',
@@ -236,6 +250,19 @@ const tableData = [
         ],
     },
 ]
+
+interface User {
+  date: string
+  name: string
+  address: string
+}
+
+const handleEdit = (index: number, row: User) => {
+  console.log(index, row)
+}
+const handleDelete = (index: number, row: User) => {
+  console.log(index, row)
+}
 </script>
 
 <template>
@@ -259,10 +286,35 @@ const tableData = [
             </template>
         </el-table-column>
         <el-table-column label="部门" prop="department" />
-        <el-table-column label="姓名" prop="name" />
-        <el-table-column label="入职日期" prop="entryDate" />
-        <el-table-column label="离职日期" prop="leaveDate" />
-        <el-table-column label="离职原因" prop="date" />
+        <el-table-column label="姓名">
+            <template #default="scope">
+                <el-popover effect="light" trigger="hover" placement="top" width="auto">
+                    <template #default>
+                        <div>姓名: {{ scope.row.name }}</div>
+                        <div>电话: {{ scope.row.phone }}</div>
+                    </template>
+                    <template #reference>
+                        <el-tag>{{ scope.row.name }}</el-tag>
+                    </template>
+                </el-popover>
+            </template>
+        </el-table-column>
+        <el-table-column label="入职日期" sortable prop="entryDate" />
+        <el-table-column label="离职日期" sortable prop="leaveDate" />
+        <el-table-column label="离职原因" prop="reason" />
+        <el-table-column label="Operations">
+      <template #default="scope">
+        <el-button size="small" @click="handleEdit(scope.$index, scope.row)"
+          >Edit</el-button
+        >
+        <el-button
+          size="small"
+          type="danger"
+          @click="handleDelete(scope.$index, scope.row)"
+          >Delete</el-button
+        >
+      </template>
+    </el-table-column>
     </el-table>
 </template>
 
