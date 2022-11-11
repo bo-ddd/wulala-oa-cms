@@ -60,11 +60,10 @@ let requiresAuthList = [
     },
     {
         id: 604,
-        name: '角色编辑',
-        targetPath: '/roleEditing',
+        name: '部门管理',
+        targetPath: '/department',
         requiresAuth: true
     }
-
 ]
 
 

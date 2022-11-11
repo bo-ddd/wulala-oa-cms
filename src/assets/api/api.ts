@@ -165,7 +165,7 @@ export default {
   *查询某角色所拥有的权限接口
   * params  roleId": number
   * **/
-  queryRolePermissionListApi(payload = {}) {
+    queryRolePermissionListApi(payload = {}) {
         return axios.post('/role/permission/list', payload)
     },
     /**
@@ -191,5 +191,56 @@ export default {
     getArticleListApi(payload = {}) {
         return axios.post('/article/list', payload)
     },
-
+    /**
+    *增加部门
+    * "name": "呜啦啦oa项目组" 
+    * **/
+    createDeptApi(payload = {}) {
+        return axios.post('/dept/create', payload)
+    },
+    /**
+    *删除部门
+    *  "id": 1 
+    * **/
+    deleteDeptApi(payload = {}) {
+        return axios.post('/dept/delete', payload)
+    },
+    /**
+    *修改部门
+    *  "id": 1 
+    * **/
+    updateDeptApi(payload = {}) {
+        return axios.post('/dept/update', payload)
+    },
+    /**
+    *获取部门列表
+    *   "id": 2, 
+    "name": "oa项目组" 
+    * **/
+    getDeptList(payload = {}) {
+        return axios.post('/dept/list', payload)
+    },
+    /**
+    *给用户添加组
+     *  "userId": 151, //用户id
+        "deptId": 4 //部门(组) 
+    * **/
+        addUserDept(payload = {}) {
+        return axios.post('/user/dept/add', payload)
+    },
+    /**
+    *删除用户对应的组
+    * userId": 151, 
+     "deptId": 2 // 部门(组）id
+    * **/
+    deleteUserDept(payload = {}) {
+        return axios.post('/user/dept/delete ', payload)
+    },
+    /**
+    *获取用户所在的组列表
+    *   "userId": 151, 
+    * **/
+    getUserDeptList(payload = {}) {
+        return axios.post('/user/dept/list ', payload)
+    }
 }

@@ -155,6 +155,15 @@ let dynamicRoutes = [
       label: "日报详情",
       requiresAuth: true
     },
+  },
+  {//部门管理页面;
+    path: "/department",
+    name: "department",
+    component: () => import("../views/Department.vue"),
+    meta: {
+      label: "部门管理",
+      requiresAuth: true
+    }
   }
 ];
 
