@@ -3,9 +3,9 @@ import { ref, reactive, watch, type Ref } from 'vue'
 import axios from '@/assets/api/api'
 import { ElMessage, ElMessageBox, ElTree } from 'element-plus'
 
-const treeRef = ref<InstanceType<typeof ElTree>>()
-const newPermissionName = ref();
-const permissionNameAdd = ref();
+let treeRef = ref<InstanceType<typeof ElTree>>()
+let newPermissionName = ref();
+let permissionNameAdd = ref();
 let permissionListPid = ref();
 let permissionList = reactive<Permission1[]>([]);
 interface Permission1 {
