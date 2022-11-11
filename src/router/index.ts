@@ -191,6 +191,15 @@ let dynamicRoutes = [
       label: "离职列表",
       requiresAuth: true
     }
+  },
+  {//发布任务页面;
+    path: "/publishTask",
+    name: "publishTask",
+    component: () => import("../views/PublishTask.vue"),
+    meta: {
+      label: "发布任务",
+      requiresAuth: true
+    }
   }
 ];
 

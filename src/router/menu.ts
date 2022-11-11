@@ -53,6 +53,12 @@ let requiresAuthList = [
         requiresAuth: true
     },
     {
+        id: 401,
+        name: '发布任务',
+        targetPath: '/publishTask',
+        requiresAuth: true
+    },
+    {
         id: 601,
         name: '权限列表',
         targetPath: '/rightManagement',
@@ -125,11 +131,11 @@ let sidebarList: Parent[] = [
     },
     {
         id: 4,
-        icon: 'Stamp',
-        name: '审核管理',
+        icon: 'Document',
+        name: '任务管理',
         targetPath: '',
-        childrenList: [],
-        requiresAuth: true
+        requiresAuth: true, 
+        childrenList:[]
     },
     {
         id: 5,
