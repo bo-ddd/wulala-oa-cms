@@ -85,6 +85,15 @@ const router = createRouter({
             label: "修改资料",
             requiresAuth: false
           }
+        },
+        {//我的消息页面;
+          path: "/message",
+          name: "message",
+          component: () => import("../views/Message.vue"),
+          meta: {
+            label: "我的消息",
+            requiresAuth: false
+          }
         }
       ]
     },
@@ -198,6 +207,15 @@ let dynamicRoutes = [
     component: () => import("../views/PublishTask.vue"),
     meta: {
       label: "发布任务",
+      requiresAuth: true
+    }
+  },
+  {//发布消息页面;
+    path: "/publishMessage",
+    name: "publishMessage",
+    component: () => import("../views/PublishMessage.vue"),
+    meta: {
+      label: "发布消息",
       requiresAuth: true
     }
   }

@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
-const parentBorder = ref(false)
-const childBorder = ref(false)
+//离职列表数据;
 const tableData = [
     {
         department: "市场部",
@@ -251,22 +250,26 @@ const tableData = [
     },
 ]
 
+
 interface User {
   date: string
   name: string
   address: string
 }
 
+//编辑按钮的点击事件;
 const handleEdit = (index: number, row: User) => {
   console.log(index, row)
 }
+
+//删除按钮的点击事件;
 const handleDelete = (index: number, row: User) => {
   console.log(index, row)
 }
 </script>
 
 <template>
-    <el-table :data="tableData" :border="parentBorder" style="width: 100%">
+    <el-table :data="tableData" style="width: 100%">
         <el-table-column type="expand">
             <template #default="props">
                 <div m="4">
@@ -274,8 +277,8 @@ const handleDelete = (index: number, row: User) => {
                     <p m="t-0 b-2">City: {{ props.row.city }}</p>
                     <p m="t-0 b-2">Address: {{ props.row.address }}</p>
                     <p m="t-0 b-2">Zip: {{ props.row.zip }}</p>
-                    <h3>Family</h3>
-                    <el-table :data="props.row.family" :border="childBorder">
+                    <h3>家庭信息</h3>
+                    <el-table :data="props.row.family">
                         <el-table-column label="Name" prop="name" />
                         <el-table-column label="State" prop="state" />
                         <el-table-column label="City" prop="city" />
@@ -287,31 +290,21 @@ const handleDelete = (index: number, row: User) => {
         </el-table-column>
         <el-table-column label="部门" prop="department" />
         <el-table-column label="姓名">
-            <template #default="scope">
-                <el-popover effect="light" trigger="hover" placement="top" width="auto">
-                    <template #default>
-                        <div>姓名: {{ scope.row.name }}</div>
-                        <div>电话: {{ scope.row.phone }}</div>
-                    </template>
-                    <template #reference>
-                        <el-tag>{{ scope.row.name }}</el-tag>
-                    </template>
-                </el-popover>
-            </template>
+            <el-tag size="small">姓名</el-tag>
         </el-table-column>
         <el-table-column label="入职日期" sortable prop="entryDate" />
         <el-table-column label="离职日期" sortable prop="leaveDate" />
         <el-table-column label="离职原因" prop="reason" />
-        <el-table-column label="Operations">
+        <el-table-column label="操作">
       <template #default="scope">
         <el-button size="small" @click="handleEdit(scope.$index, scope.row)"
-          >Edit</el-button
+          >编辑</el-button
         >
         <el-button
           size="small"
           type="danger"
           @click="handleDelete(scope.$index, scope.row)"
-          >Delete</el-button
+          >删除</el-button
         >
       </template>
     </el-table-column>
