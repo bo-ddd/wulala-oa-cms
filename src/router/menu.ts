@@ -11,7 +11,7 @@ interface Parent {
     name: string,
     targetPath: string,
     childrenList: Reason[],
-    requiresAuth:boolean
+    requiresAuth: boolean
 }
 
 interface Reason {
@@ -29,6 +29,12 @@ let requiresAuthList = [
         requiresAuth: true
     },
     {
+        id: 202,
+        name: '离职列表',
+        targetPath: '/dimissionList',
+        requiresAuth: true
+    },
+    {
         id: 301,
         name: '请假审批',
         targetPath: '/leave',
@@ -38,6 +44,12 @@ let requiresAuthList = [
         id: 304,
         name: '日报列表',
         targetPath: '/dailyList',
+        requiresAuth: true
+    },
+    {
+        id: 305,
+        name: '离职审批',
+        targetPath: '/dimissionApproval',
         requiresAuth: true
     },
     {
@@ -102,6 +114,12 @@ let sidebarList: Parent[] = [
                 name: '提交日报',
                 targetPath: '/submitDaily',
                 requiresAuth: false
+            },
+            {
+                id: 306,
+                name: '离职申请',
+                targetPath: '/dimissionApplication',
+                requiresAuth: false
             }
         ]
     },
@@ -154,7 +172,7 @@ childrenList.forEach(item => {
         parent.childrenList.push(item)
     }
 })
-sidebarList=sidebarList.filter(item=>!item.requiresAuth||item.childrenList.length)
+sidebarList = sidebarList.filter(item => !item.requiresAuth || item.childrenList.length)
 
 export default sidebarList
 
