@@ -6,11 +6,16 @@ let route = useRoute()
 console.log(route);
 let myId = route.query.id;
 let leave = ref();
+let total = ref();
 const getLeaveListApi = async function () {
-    let leaveData = await axios.getArticleListApi({})
+    
+    let DetailData = await axios.getArticleListApi()
+    total.value = DetailData.data.total;
     //渲染列表的数据
-    leave.value = leaveData.data.list
-    console.log(leave.value);
+    let dailyDetail = await axios.getArticleListApi({
+        pageSize:total.value
+    })
+    leave.value = dailyDetail.data.list
 }
 getLeaveListApi()
 
@@ -21,6 +26,7 @@ getLeaveListApi()
     <div class="body">
         <div class="content">
             <div class="content_l clearfix" v-for="item in leave">
+
                 <template v-if="item.id == myId">
                     <h3> {{ item.title }} </h3>
                     <p class="deeppink">{{ item.avatarName }}</p>

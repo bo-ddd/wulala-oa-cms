@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import axios from '@/assets/api/api'
-import { ref } from 'vue'
+import { data } from 'dom7';
+import { ref,reactive, toRef, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
 interface User {
@@ -16,14 +17,15 @@ interface User {
 function updateTime(time: Date) {
   let date = new Date(time);
   let year = date.getFullYear();
-  let mounth = date.getMonth() + 1;
-  let day = date.getUTCDate();
+  let mounth = date.getMonth() + 1>=10? date.getMonth() + 1:'0'+date.getMonth() + 1;
+  let day = date.getDate()>=10? date.getDate():'0'+date.getDate();
   let hour = date.getHours();
   // console.log(hour);  
   return `${ year }-${ mounth }-${ day }`;
 }
+
 let router = useRouter()
-let leave = ref();
+let leave = reactive<User[]>([]);
 //页面的条数
 let pageSize = ref(10);
 //总条数
@@ -39,13 +41,48 @@ const getLeaveListApi = async function () {
     pageSize: pageSize.value,
     pageNum: pageNum.value
   })
-  
   total.value = leaveData.data.total;
   //渲染列表的数据
-  leave.value = leaveData.data.list;
   title.value = leaveData.data.list[0].title
+  //获取列表数据
+  leave.length=0;
+  Object.assign(leave,leaveData.data.list)
+
+
 }
-getLeaveListApi()
+//默认显示十条数据;
+// getLeaveListApi()
+
+//总条数;
+const totalDailyList=reactive<User[]>([]);
+
+const getTotalList=async ()=>{
+ await getLeaveListApi()
+ let totalList=await axios.getArticleListApi({
+  pageSize:total.value
+ })
+ totalDailyList.length=0
+ Object.assign(totalDailyList,totalList.data.list)
+}
+
+
+//默认当天的数据
+let value2 = ref(updateTime(new Date()));
+
+const AfterFilterData = reactive<User[]>([]);
+let flag=true;   
+
+//筛选数据结构；    
+const formatData=async(date:string)=>{
+ await getTotalList();
+ let time = flag? value2.value: updateTime(new Date(value2.value));
+ flag=false;
+ let AfterFilterList= totalDailyList.filter((item:User)=>time == item.createdAt.slice(0,10))
+ AfterFilterData.length=0
+  Object.assign(AfterFilterData,AfterFilterList)       
+}
+
+  formatData(value2.value);
 
 const handleSizeChange = (val: number) => {
   pageSize.value = val
@@ -67,15 +104,10 @@ const handleEdit = async (row: User,id :number) => {
     }
   })
 }
-
-let value2 = ref('');
-function fn(val : any){
-  console.log(val);
-}
+  
 </script>
 
 <template>
-    <h1 class="title">{{ title }}</h1>
     
     <div class="block">
       <el-date-picker
@@ -83,14 +115,13 @@ function fn(val : any){
         type="date"
         placeholder="选择日期"
         format="YYYY-MM-DD"
-        value-format="YYYY-MM-DD"
-        @change="fn(value2)"
+        @change="formatData(value2)"
       />
     </div>
 
-  <el-table :data="leave" style="width: 100%" >
-    <el-table-column label="编号">
-      <template #default="scope">
+  <el-table :data="AfterFilterData" style="width: 100%" >
+    <el-table-column label="编号" >
+      <template #default="scope" >
         <div style="display: flex; align-items: center;justify-content: center;">
           <span style="margin-left: 10px">{{ scope.row.id }}</span>
         </div>
@@ -134,7 +165,6 @@ function fn(val : any){
 
       </template>
     </el-table-column>
-
   </el-table>
 
   <div class="demo-pagination-block">
