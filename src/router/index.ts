@@ -37,7 +37,7 @@ const router = createRouter({
           name: "submitApplication",
           component: () => import("../views/SubmitApplication.vue"),
           meta: {
-            label: "提交申请",
+            label: "请假申请",
             requiresAuth: false
           },
         },
@@ -47,6 +47,15 @@ const router = createRouter({
           component: () => import("../views/SubmitDaily.vue"),
           meta: {
             label: "提交日报",
+            requiresAuth: false
+          }
+        },
+        {//离职申请页面;
+          path: "/dimissionApplication",
+          name: "dimissionApplication",
+          component: () => import("../views/DimissionApplication.vue"),
+          meta: {
+            label: "离职申请",
             requiresAuth: false
           }
         },
@@ -74,6 +83,15 @@ const router = createRouter({
           component: () => import("../views/UpdataUserInfo.vue"),
           meta: {
             label: "修改资料",
+            requiresAuth: false
+          }
+        },
+        {//我的消息页面;
+          path: "/message",
+          name: "message",
+          component: () => import("../views/Message.vue"),
+          meta: {
+            label: "我的消息",
             requiresAuth: false
           }
         }
@@ -162,6 +180,42 @@ let dynamicRoutes = [
     component: () => import("../views/Department.vue"),
     meta: {
       label: "部门管理",
+      requiresAuth: true
+    }
+  },
+  {//离职审批页面;
+    path: "/dimissionApproval",
+    name: "dimissionApproval",
+    component: () => import("../views/DimissionApproval.vue"),
+    meta: {
+      label: "离职审批",
+      requiresAuth: true
+    }
+  },
+  {//离职列表页面;
+    path: "/dimissionList",
+    name: "dimissionList",
+    component: () => import("../views/DimissionList.vue"),
+    meta: {
+      label: "离职列表",
+      requiresAuth: true
+    }
+  },
+  {//发布任务页面;
+    path: "/publishTask",
+    name: "publishTask",
+    component: () => import("../views/PublishTask.vue"),
+    meta: {
+      label: "发布任务",
+      requiresAuth: true
+    }
+  },
+  {//发布消息页面;
+    path: "/publishMessage",
+    name: "publishMessage",
+    component: () => import("../views/PublishMessage.vue"),
+    meta: {
+      label: "发布消息",
       requiresAuth: true
     }
   }

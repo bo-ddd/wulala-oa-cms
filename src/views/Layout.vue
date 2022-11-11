@@ -125,6 +125,12 @@ const dropDownList = [
     },
     {
         id: 2,
+        name: '我的消息',
+        targetPath: '/message',
+        childrenList: []
+    },
+    {
+        id: 3,
         name: '退出登录',
         targetPath: '/',
         childrenList: []
