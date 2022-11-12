@@ -2,8 +2,16 @@
 
     <div class="ipt">
         <span class="label">查询用户角色：</span>
-        <el-input v-model="input" size="small" placeholder="请输入用户ID" clearable />
-        <el-button class="ml-10" type="danger" size="small" @click="userSearch(input)">搜索</el-button>
+        <el-input v-model="rolesInput" size="small" placeholder="请输入用户ID" clearable />
+        <el-button class="ml-10" type="danger" size="small" @click="searchUserRoles(rolesInput)">搜索</el-button>
+        <el-button class="ml-10" type="danger" size="small" @click="getUserList()">重置</el-button>
+    </div>
+
+    <div class="ipt">
+        <span class="label">查询用户部门：</span>
+        <el-input v-model="departmentInput" size="small" placeholder="请输入用户ID" clearable />
+        <el-button class="ml-10" type="danger" size="small" @click="searchUserDepartment(departmentInput)">查询
+        </el-button>
         <el-button class="ml-10" type="danger" size="small" @click="getUserList()">重置</el-button>
     </div>
 
@@ -22,6 +30,7 @@
             <template #default="scope">
                 <div size="small" type="danger">{{ scope.row.roles ? showRoleName(scope.row.roles) : scope.row.hobby }}
                 </div>
+
             </template>
         </el-table-column>
         <el-table-column label="联系方式" width="180" align="center">
@@ -29,13 +38,15 @@
                 <el-tag type="success">{{ scope.row.phoneNumber }}</el-tag>
             </template>
         </el-table-column>
-        <el-table-column label="操作" width="320" align='center'>
+        <el-table-column label="操作" width="400" align='center'>
             <template #default="scope">
-                <el-button type="danger" size="small" @click="addRoles(scope.row); dialogFormVisibleAdd = true">添加角色
+                <el-button type="success" size="small" @click="addRoles(scope.row); dialogFormVisibleAdd = true">添加角色
                 </el-button>
                 <el-button type="danger" size="small" @click="getUserId(scope.row); dialogFormVisibleDelete = true">删除角色
                 </el-button>
-                <el-button type="danger" size="small" @click="getUserId(scope.row); dialogFormisiblGeroup = true">添加部门
+                <el-button type="success" size="small" @click="getUserId(scope.row); dialogFormisiblGeroup = true">添加部门
+                </el-button>
+                <el-button type="danger" size="small" @click="getUserId(scope.row); dialogFormisiblDelete = true">删除部门
                 </el-button>
             </template>
         </el-table-column>
@@ -85,14 +96,14 @@
         </template>
     </el-dialog>
 
-    <el-dialog v-model="dialogFormisiblGeroup" title="删除用户角色">
+    <el-dialog v-model="dialogFormisiblGeroup" title="添加用户部门">
         <el-form :model="form">
             <el-form-item label="用户昵称" :label-width="formLabelWidth">
                 <el-input v-model="form.userName" size="small" autocomplete="off" readonly='readonly' />
             </el-form-item>
             <el-form-item label="项目组" :label-width="formLabelWidth">
-                <el-select v-model="form.rolesId" class="m-2" placeholder="请选择要项目组" size="small">
-                    <el-option v-for="item in userRolesList" :key="item.id" :label="item.roleName" :value="item.id"
+                <el-select v-model="form.deptId" class="m-2" placeholder="请选择要添加项目组" size="small">
+                    <el-option v-for="item in departmentList" :key="item.id" :label="item.name" :value="item.id"
                         size="small" />
                 </el-select>
             </el-form-item>
@@ -100,12 +111,35 @@
         <template #footer>
             <span class="dialog-footer">
                 <el-button @click="dialogFormisiblGeroup = false">取消</el-button>
-                <el-button type="primary" @click="dialogFormVisibleDelete = false; deleteUserRole()">
+                <el-button type="primary" @click="dialogFormisiblGeroup = false; addDepartment(form.userId)">
                     确认添加
                 </el-button>
             </span>
         </template>
     </el-dialog>
+
+    <el-dialog v-model="dialogFormisiblDelete" title="删除用户部门">
+        <el-form :model="form">
+            <el-form-item label="用户昵称" :label-width="formLabelWidth">
+                <el-input v-model="form.userName" size="small" autocomplete="off" readonly='readonly' />
+            </el-form-item>
+            <el-form-item label="项目组" :label-width="formLabelWidth">
+                <el-select v-model="form.deptId" class="m-2" placeholder="请选择要删除的项目组" size="small">
+                    <el-option v-for="item in userDepartmentList" :key="item.deptId" :label="item.deptName"
+                        :value="item.deptId" size="small" />
+                </el-select>
+            </el-form-item>
+        </el-form>
+        <template #footer>
+            <span class="dialog-footer">
+                <el-button @click="dialogFormisiblDelete = false">取消</el-button>
+                <el-button type="primary" @click="dialogFormisiblDelete = false; removeUserDepartment(form.userId)">
+                    确认删除
+                </el-button>
+            </span>
+        </template>
+    </el-dialog>
+
     <div class="pagination">
         <el-pagination v-model:currentPage="pageNum" v-model:page-size="pageSize" :page-sizes="[5, 10, 20, 30, 40]"
             :small="small" :disabled="disabled" :background="background"
@@ -122,6 +156,7 @@ import { ElMessage } from 'element-plus'
 const small = ref(false)
 const background = ref(true)
 const disabled = ref(false)
+const formLabelWidth = '140px'
 
 const handleSizeChange = async (val: number) => {
     console.log(`每页${val}条信息`);
@@ -143,18 +178,22 @@ const getUserList = (pageSize?: number, pageNum?: number) => {
             userListData.value = res.data.list;
         }
     })
-    input.value = '';
+    rolesInput.value = '';
+    departmentInput.value = '';
 }
-const input = ref();
-let pageNum = ref(1);
-let pageSize = ref(10);
-let total = ref();
-let userListData = ref();
-let roleList = ref();
-let userRolesList = ref();
-let addUserId = ref();
-let addRoleId = ref();
-let label = ref('');
+const rolesInput = ref();
+const departmentInput = ref();
+const departmentList = ref();
+const userDepartmentList = ref();
+const userInfo = ref();
+const pageNum = ref(1);
+const pageSize = ref(10);
+const total = ref();
+const userListData = ref();
+const roleList = ref();
+const userRolesList = ref();
+const label = ref('');
+
 (async function () {
     let userList = await axios.getUserListApi({})
     userListData.value = userList.data.list;
@@ -181,10 +220,15 @@ interface User {
     sex: number
     userId: number
 }
-const dialogFormVisibleAdd = ref(false)
-const dialogFormVisibleDelete = ref(false)
-const dialogFormisiblGeroup = ref(false)
+
+const dialogFormVisibleAdd = ref(false);
+const dialogFormVisibleDelete = ref(false);
+const dialogFormisiblGeroup = ref(false);
+const dialogFormisiblDelete = ref(false);
+
 const form = reactive({
+    deptId: 0,
+    depName: null,
     userId: 0,
     rolesId: null,
     userName: '用户昵称'
@@ -263,6 +307,7 @@ const getUserId = async (row: User) => {
         userId: row.userId
     })
     if (res.status == 1) {
+        userInfo.value = res.data
         userRolesList.value = res.data.roles
     }
     form.userId = row.userId
@@ -281,7 +326,7 @@ const deleteUserRole = async () => {
     }
 }
 // 查询用户权限
-const userSearch = async (id: any) => {
+const searchUserRoles = async (id: any) => {
     label.value = '用户角色'
     let res = await axios.queryUserInfoApi({
         userId: id
@@ -296,9 +341,63 @@ const userSearch = async (id: any) => {
     }
 }
 
+// 查询用户部门
+const searchUserDepartment = async (id: number) => {
+    await axios.getUserDeptListApi({
+        userId: id
+    }).then(res => {
+        if (res.status == 1) {
+            userListData.value.length = 0
+            Object.assign(userListData.value, res.data)
+            // userListData.value.push(res.data.deptName)
+            userDepartmentList.value = res.data
+            console.log(userListData);
+            console.log(res.data);
 
-const formLabelWidth = '140px'
+        }
+    })
+}
 
+// 给用户添加部门
+const getDepartmentId = async () => {
+    await axios.getDeptList({}).then(res => {
+        if (res.status == 1) {
+            form.deptId = res.data.id
+            form.depName = res.data.name
+            departmentList.value = res.data
+        }
+    })
+}
+
+
+getDepartmentId();
+const addDepartment = async (userId: number) => {
+    getDepartmentId();
+    await axios.addUserDeptApi({
+        userId: form.userId,
+        deptId: form.deptId || 0
+    }).then(res => {
+        if (res.status == 1) {
+            addSuccess();
+        } else {
+            addError();
+        }
+    })
+}
+
+// 删除用户部门
+const removeUserDepartment = async (userId: number) => {
+    await axios.deleteUserDeptApi({
+        userId: userId,
+        deptId: form.deptId
+    }).then(res => {
+        if (res.status == 1) {
+            deleteSuccess();
+        } else {
+            deleteError();
+        }
+    })
+}
 </script>
 
 <style scoped>
