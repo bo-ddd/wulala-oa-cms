@@ -59,6 +59,12 @@ let requiresAuthList = [
         requiresAuth: true
     },
     {
+        id: 501,
+        name: '发布消息',
+        targetPath: '/publishMessage',
+        requiresAuth: true
+    },
+    {
         id: 601,
         name: '权限列表',
         targetPath: '/rightManagement',
@@ -111,7 +117,7 @@ let sidebarList: Parent[] = [
         childrenList: [
             {
                 id: 302,
-                name: '提交申请',
+                name: '请假申请',
                 targetPath: '/submitApplication',
                 requiresAuth: false
             },
@@ -139,8 +145,8 @@ let sidebarList: Parent[] = [
     },
     {
         id: 5,
-        icon: 'TrendCharts',
-        name: '绩效管理',
+        icon: 'Message',
+        name: '信息管理',
         targetPath: '',
         childrenList: [],
         requiresAuth: true
@@ -181,4 +187,3 @@ childrenList.forEach(item => {
 sidebarList = sidebarList.filter(item => !item.requiresAuth || item.childrenList.length)
 
 export default sidebarList
-

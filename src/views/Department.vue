@@ -97,7 +97,6 @@ const dialogFormVisibleUpdate = ref(false)
 
 // 删除部门
 const open = (id: number) => {
-    console.log(id);
     ElMessageBox.confirm(
         '确定要删除该部门吗？',
         '警告',
