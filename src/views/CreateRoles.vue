@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import axios from '@/assets/api/api';
 import { useRouter } from 'vue-router';
-import { ElMessage, formatter } from 'element-plus'
 import { ref, reactive } from 'vue'
 import type PermissionVO from "../types/PermissionVO";
-// import type{ Permission } from "../types/Permission";
-// let isChecked=ref(false) ;
+
 let router = useRouter()
 let dataList = ref()
 let permissionIds = reactive<number[]>([])
@@ -99,7 +97,7 @@ const checkChange=function(data:PermissionVO,isChecked: boolean){
 </script>
 <template>
     <el-form :inline="true" :model="Role" class="demo-form-inline">
-        <el-form-item label="角色名称:" cla  ss="lable">
+        <el-form-item label="角色名称:" class="lable">
             <el-input v-model="Role.roleName" placeholder="请输入新增角色名称" size="small" />
         </el-form-item>
         <el-form-item label="所属部门:" class="lable">
