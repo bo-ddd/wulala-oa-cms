@@ -11,7 +11,7 @@ const $http = axios.create({
 $http.interceptors.request.use(function (config) {
   // 在发送请求之前做些什么
   //作用一：统一设置请求头信息
-  // 作用二： 给所有的接口加一些公共的弹层
+  // 作用二： 给所有的接口加一些公共的弹层  
   // console.log(config);
   if (config.headers) {
     config.headers.token =sessionStorage.getItem('token');

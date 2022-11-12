@@ -309,7 +309,6 @@ const getUserId = async (row: User) => {
     if (res.status == 1) {
         userInfo.value = res.data
         userRolesList.value = res.data.roles
-        searchUserDepartment(row.userId);
     }
     form.userId = row.userId
     form.userName = row.avatarName
