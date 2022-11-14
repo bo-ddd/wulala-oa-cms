@@ -21,19 +21,24 @@
                 <el-tag size="small" type="warning">{{ scope.row.userId }}</el-tag>
             </template>
         </el-table-column>
-        <el-table-column label="用户昵称" width="200" align="center">
+        <el-table-column label="用户昵称"  align="center">
             <template #default="scope">
                 <el-tag size="small">{{ scope.row.avatarName }}</el-tag>
             </template>
         </el-table-column>
-        <el-table-column :label=label align="center">
+        <!-- <el-table-column :label=label align="center">
             <template #default="scope">
                 <div size="small" type="danger">{{ scope.row.roles ? showRoleName(scope.row.roles) : scope.row.hobby }}
                 </div>
-
+            </template>
+        </el-table-column> -->
+        <el-table-column v-if="label" :label=label align="center">
+            <template #default="scope">
+                <div size="small" type="danger">{{ scope.row.deptName ? scope.row.deptName : showRoleName(scope.row.roles) }}
+                </div>
             </template>
         </el-table-column>
-        <el-table-column label="联系方式" width="180" align="center">
+        <el-table-column label="联系方式" align="center">
             <template #default="scope">
                 <el-tag type="success">{{ scope.row.phoneNumber }}</el-tag>
             </template>
@@ -169,7 +174,7 @@ const handleCurrentChange = async (val: number) => {
     pageNum.value = val
 }
 const getUserList = (pageSize?: number, pageNum?: number) => {
-    label.value = '用户爱好'
+    label.value = ''
     axios.getUserListApi({
         pageNum: pageNum,
         pageSize: pageSize
@@ -185,20 +190,20 @@ const rolesInput = ref();
 const departmentInput = ref();
 const departmentList = ref();
 const userDepartmentList = ref();
+const userListData = ref();
+const roleList = ref();
+const userRolesList = ref();
 const userInfo = ref();
 const pageNum = ref(1);
 const pageSize = ref(10);
 const total = ref();
-const userListData = ref();
-const roleList = ref();
-const userRolesList = ref();
+
 const label = ref('');
 
 (async function () {
     let userList = await axios.getUserListApi({})
     userListData.value = userList.data.list;
     total.value = userList.data.total
-    label.value = '用户爱好'
 })();
 // 获取用户角色ID
 (async function () {
@@ -282,6 +287,13 @@ const addError = () => {
         type: 'error',
     })
 }
+const addWarning = () => {
+    ElMessage({
+        showClose: true,
+        message: '该用户已在该部门,不能重复添加',
+        type: 'warning',
+    })
+}
 const deleteSuccess = () => {
     ElMessage({
         showClose: true,
@@ -296,6 +308,7 @@ const deleteError = () => {
         type: 'error',
     })
 }
+
 interface User {
     userId: number
     avatarName: string
@@ -303,6 +316,7 @@ interface User {
 }
 // 删除用户角色
 const getUserId = async (row: User) => {
+    queryUserDepartment(row.userId)
     let res = await axios.queryUserInfoApi({
         userId: row.userId
     })
@@ -325,8 +339,8 @@ const deleteUserRole = async () => {
         deleteError();
     }
 }
-// 查询用户权限
-const searchUserRoles = async (id: any) => {
+// 查询用户角色
+const searchUserRoles = async (id: number) => {
     label.value = '用户角色'
     let res = await axios.queryUserInfoApi({
         userId: id
@@ -341,22 +355,31 @@ const searchUserRoles = async (id: any) => {
     }
 }
 
-// 查询用户部门
-const searchUserDepartment = async (id: number) => {
+// 获取用户部门
+const queryUserDepartment = async (id: number) => {
     await axios.getUserDeptListApi({
         userId: id
     }).then(res => {
         if (res.status == 1) {
-            userListData.value.length = 0
-            Object.assign(userListData.value, res.data)
-            // userListData.value.push(res.data.deptName)
             userDepartmentList.value = res.data
-            console.log(userListData);
-            console.log(res.data);
-
         }
     })
 }
+// 查询用户部门
+const searchUserDepartment = async (id: number) => {
+    label.value = '用户部门'
+    await axios.getUserDeptListApi({
+        userId: id
+    }).then(async res => {
+        if (res.status == 1) {
+            let userData = (await axios.queryUserInfoApi({ userId: id })).data
+            userListData.value.length = 0
+            Object.assign(userData, ...(res.data))
+            userListData.value.push(userData)
+        }
+    })
+}
+
 
 // 给用户添加部门
 const getDepartmentId = async () => {
@@ -379,6 +402,8 @@ const addDepartment = async (userId: number) => {
     }).then(res => {
         if (res.status == 1) {
             addSuccess();
+        } else if (res.status == 8801) {
+            addWarning();
         } else {
             addError();
         }
@@ -397,6 +422,7 @@ const removeUserDepartment = async (userId: number) => {
             deleteError();
         }
     })
+    form.deptId = null
 }
 </script>
 
