@@ -2,6 +2,7 @@ import axios from "./http";
 import type{ UserList,UserRegister } from "@/types/User";
 import type{ UpdatePermission } from "@/types/Permission";
 import type{ CreateLeave,ExamineUserLeave } from "@/types/Leave";
+import type{ CreatedTask } from "@/types/Task";
 //用户
 export default {
     /**
@@ -219,5 +220,82 @@ export default {
     * **/
     getUserDeptListApi(payload = {}) {
         return axios.post('/user/dept/list ', payload)
-    }
+    },
+    /**
+    *创建任务
+    * "taskName":  //任务名称
+     "description": //任务描述
+     "level" //任务等级 0: 普通 1: 紧急
+     "sort" //排序
+    * **/
+    createTaskApi(payload : CreatedTask) {
+        return axios.post('/task/create', payload)
+    },
+    /**
+    *获取任务列表
+    * "taskName" //任务名称
+    * **/
+      getTaskListApi(payload = {}) {
+        return axios.post('/task/list', payload)
+    },
+    /**
+    *修改任务列表
+    * "id": 1,
+      "description": "abc",描述
+      "level": 1, 紧急程度
+      "sort": 2   排序
+    * **/
+      updateTaskApi(payload = {}) {
+        return axios.post('/task/update', payload)
+    },
+    /**
+    * 删除任务
+    * "id": 1,
+    * **/
+      deleteTaskApi(payload = {}) {
+        return axios.post('/task/delete', payload)
+    },
+    
+     /**
+    * 查询我发布的消息
+    * 
+    * **/
+      queryMessageListApi(payload = {}) {
+        return axios.post('/message/list', payload)
+    },
+    /**
+    * 发送消息
+    * 
+    * **/
+     sendMessageApi(payload = {}) {
+        return axios.post('/message/send', payload)
+    },
+    /**
+    * 修改消息
+    * 
+    * **/
+     updateMessageApi(payload = {}) {
+        return axios.post('/message/update', payload)
+    },
+    /**
+    * 新增消息通知
+    * 
+    * **/
+     createMessageApi(payload = {}) {
+        return axios.post('/message/create', payload)
+    },
+    /**
+    * 设置消息状态为已读
+    * 
+    * **/
+     setStatusMessageApi(payload = {}) {
+        return axios.post('/user/message/status/set', payload)
+    },
+    /**
+    * 获取我的消息列表
+    * 
+    * **/
+     getUserMessageApi(payload = {}) {
+        return axios.post('/user/message/list', payload)
+    },
 }

@@ -46,8 +46,6 @@ const getDailyListApi = async function () {
   //获取列表数据
   daily.length=0;
   Object.assign(daily,dailyData.data.list)
-
-
 }
 //默认显示十条数据;
 // getLeaveListApi()
