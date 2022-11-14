@@ -3,7 +3,7 @@ import { ref, computed, reactive, h } from 'vue'
 import axios from "@/assets/api/api";
 import { ElMessage } from 'element-plus'
 import { useRouter } from "vue-router";
-import type{ Role } from "../types/Role";
+import type { Role } from "../types/Role";
 let router = useRouter()
 const selectValue = ref('')
 const centerDialogVisible = ref(false)
@@ -24,7 +24,7 @@ let getRoleList = async function () {
 
     list.length = 0
     // 把返回的数据深拷贝一份，把拷贝后的数据在tablie列表渲染，区分开select 和table
-    list.push(...JSON.parse(JSON.stringify(resData))); 
+    list.push(...JSON.parse(JSON.stringify(resData)));
     console.log(resData);
 }
 
@@ -84,12 +84,13 @@ const handleSizeChange = (val: number) => {
 const handleCurrentChange = (val: number) => {
     pageNum.value = val
 }
-const to=function(id:number){
+const to = function (id: number) {
     router.push({
-        name:'roleEditing',
-        query:{
-          id
-    }}
+        name: 'roleEditing',
+        query: {
+            id
+        }
+    }
     )
 }
 </script>
@@ -97,7 +98,7 @@ const to=function(id:number){
     <div class="select">
         <div style="display: inline-block;">
             <span style="" class='lable' align="center">查询角色：</span>
-            <el-select v-model="selectValue" filterable  placeholder="请搜索"  size="small" @change="handleChange">
+            <el-select v-model="selectValue" filterable placeholder="请搜索" size="small" @change="handleChange">
                 <el-option v-for="item in resData" :key="item.id" :label="item.roleName" :value="item.id" />
             </el-select>
         </div>
@@ -108,17 +109,15 @@ const to=function(id:number){
             <el-table-column label="id" width="240px" align="center">
                 <template #default="scope" align="center">
                     <div align="center">
-                        <span style="margin-left: 10px">{{scope.row.id }}</span>
+                        <span style="margin-left: 10px">{{ scope.row.id }}</span>
                     </div>
                 </template>
             </el-table-column>
             <el-table-column label="角色名称" align="center">
                 <template #default="scope" align="center">
-                    <el-popover effect="light" trigger="hover" placement="top" width="auto">
-                        <template #reference align="center">
-                            <el-tag>{{ scope.row.roleName }}</el-tag>
-                        </template>
-                    </el-popover>
+
+                    <el-tag>{{ scope.row.roleName }}</el-tag>
+
                 </template>
             </el-table-column>
             <el-table-column label="操作" align="center">
@@ -150,7 +149,7 @@ const to=function(id:number){
         </template>
     </el-dialog>
     <!-- //查看角色权限 -->
-    <el-dialog v-model="dialogFormVisible" title="查看当前角色权限"  width="30%" align-center>
+    <el-dialog v-model="dialogFormVisible" title="查看当前角色权限" width="30%" align-center>
         <el-table :data="permissionList" style="width: 100%" align="center">
             <el-table-column prop="permissionId" label="权限Id" align="center" />
             <el-table-column prop="permissionName" label="权限名称" align="center" />
@@ -176,10 +175,12 @@ const to=function(id:number){
 .demo-pagination-block .demonstration {
     margin-bottom: 16px;
 }
-:deep(.el-dialog){
+
+:deep(.el-dialog) {
     width: 600px;
 }
-.lable{
+
+.lable {
     display: inline-block;
     font-size: 15px;
     font-weight: 600;

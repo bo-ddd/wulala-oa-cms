@@ -249,10 +249,53 @@ export default {
         return axios.post('/task/update', payload)
     },
     /**
-    *删除任务
+    * 删除任务
     * "id": 1,
     * **/
       deleteTaskApi(payload = {}) {
         return axios.post('/task/delete', payload)
+    },
+    
+     /**
+    * 查询我发布的消息
+    * 
+    * **/
+      queryMessageListApi(payload = {}) {
+        return axios.post('/message/list', payload)
+    },
+    /**
+    * 发送消息
+    * 
+    * **/
+     sendMessageApi(payload = {}) {
+        return axios.post('/message/send', payload)
+    },
+    /**
+    * 修改消息
+    * 
+    * **/
+     updateMessageApi(payload = {}) {
+        return axios.post('/message/update', payload)
+    },
+    /**
+    * 新增消息通知
+    * 
+    * **/
+     createMessageApi(payload = {}) {
+        return axios.post('/message/create', payload)
+    },
+    /**
+    * 设置消息状态为已读
+    * 
+    * **/
+     setStatusMessageApi(payload = {}) {
+        return axios.post('/user/message/status/set', payload)
+    },
+    /**
+    * 获取我的消息列表
+    * 
+    * **/
+     getUserMessageApi(payload = {}) {
+        return axios.post('/user/message/list', payload)
     },
 }

@@ -59,7 +59,7 @@ const searchTask = async function () {
 let getTaskList = async function () {
     let res = await axios.getTaskListApi({
         pageNum: pageNum.value,
-        pageSize: pageSize.value,   
+        pageSize: pageSize.value,
     })
     let data = res.data.list;
     total.value = res.data.total;
@@ -71,17 +71,6 @@ let getTaskList = async function () {
 
 }
 getTaskList()
-//点击修改按钮
-const updateTask = (index: number, row: Task) => {
-    isCreated.value = false;
-    dialogFormVisible.value = true;
-    console.log(index, row)
-    title.value = '修改任务'
-    form.id = row.id
-    form.taskName = row.taskName
-    form.description = row.description;
-    form.level = row.level
-}
 
 //确定删除
 const deleteTask = (index: number, row: Task) => {
@@ -119,11 +108,26 @@ const creatTask = function () {
     title.value = '新建任务'
     initFormData();
 }
- //初始化
-const initFormData = function(){
+//初始化
+const initFormData = function () {
     form.taskName = '';
     form.description = '';
-    form.level = 0;
+    form.level = 0;  
+}
+const updateTaskDuplicate=function(row:Task){
+    form.id=row.id;
+    form.description=row.description;
+    form.taskName=row.taskName;
+    form.level=row.level
+}
+//点击修改按钮
+const updateTask = (index: number, row: Task) => {
+    isCreated.value = false;
+    dialogFormVisible.value = true;
+    console.log(index, row)
+    title.value = '修改任务'
+    updateTaskDuplicate(row)
+   
 }
 //是新增
 const submitTaskWithCreate = async function () {
@@ -132,22 +136,22 @@ const submitTaskWithCreate = async function () {
         level: form.level,
         description: form.description,
     })
-    if(res.status==1){
+    if (res.status == 1) {
         initFormData();
         getTaskList()
-        dialogFormVisible.value=false;
+        dialogFormVisible.value = false;
     }
 }
 //是修改
-const submitTaskWithEdit =async function () {
+const submitTaskWithEdit = async function () {
     await axios.updateTaskApi({
         id: form.id,
         taskName: form.taskName,
         description: form.description,
         level: form.level,
     })
-     getTaskList()
-    dialogFormVisible.value=false;
+    getTaskList()
+    dialogFormVisible.value = false;
 }
 //判断是新增还是修改
 const submitTask = function () {
@@ -242,7 +246,7 @@ const taskLevelName = function (level: number | string) {
     <el-dialog v-model="dialogFormVisible" :title="title">
         <el-form :model="form">
             <el-form-item label="任务Id" :label-width="formLabelWidth" v-if="!isCreated">
-                <el-input v-model="form.id" autocomplete="off" />
+                <el-input v-model="form.id" disabled autocomplete="off" />
             </el-form-item>
             <el-form-item label="任务名称" :label-width="formLabelWidth">
                 <el-input v-model="form.taskName" autocomplete="off" />
@@ -251,7 +255,11 @@ const taskLevelName = function (level: number | string) {
                 <el-input v-model="form.description" autocomplete="off" />
             </el-form-item>
             <el-form-item label="任务等级" :label-width="formLabelWidth">
-                <el-input v-model="form.level" autocomplete="off" />
+                <el-radio-group v-model="form.level">
+                    <el-radio :label="0">普通</el-radio>
+                    <el-radio :label="1">紧急</el-radio>
+                </el-radio-group>
+                <!-- <el-input v-model="form.level" autocomplete="off" /> -->
             </el-form-item>
 
         </el-form>
@@ -265,6 +273,7 @@ const taskLevelName = function (level: number | string) {
             </span>
         </template>
     </el-dialog>
+   
 </template>
 
 <style scoped>
