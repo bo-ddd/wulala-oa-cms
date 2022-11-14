@@ -140,8 +140,8 @@ let sidebarList: Parent[] = [
         icon: 'Document',
         name: '任务管理',
         targetPath: '',
-        requiresAuth: true, 
-        childrenList:[]
+        requiresAuth: true,
+        childrenList: []
     },
     {
         id: 5,
@@ -176,7 +176,6 @@ userPremissionList.value.forEach(Premission => {
         childrenList.push(reason)
     }
 })
-
 
 childrenList.forEach(item => {
     let parent = sidebarList.find(key => key.id == Number(String(item.id)[0]));

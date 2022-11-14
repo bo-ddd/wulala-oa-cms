@@ -2,6 +2,8 @@
 import { ref, reactive } from 'vue'
 import axios from '../assets/api/api'
 import type { FormInstance, FormRules } from 'element-plus'
+import { UploadFilled } from '@element-plus/icons-vue';
+const active=ref<number>(0)
 const ruleFormRef = ref<FormInstance>()
 const ruleForm = reactive({
   id: 0,
@@ -67,9 +69,10 @@ const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
   await formEl.validate((valid, fields) => {
     if (valid) {
-      console.log('submit!')
+      //控制步骤条;
+      active.value=1
     } else {
-      console.log('error submit!', fields)
+      console.log('提交失败')
     }
   })
 }
@@ -80,10 +83,15 @@ const resetForm = (formEl: FormInstance | undefined) => {
 </script>
 
 <template>
-  <div class="main">
+  <el-steps :active="active" finish-status="success" align-center class="mt-20 mb-20">
+    <el-step title="填写申请" />
+    <el-step title="审批结果" />
+    <el-step title="离职交接" />
+  </el-steps>
+  <div class="form" v-if="active == 0">
     <h3>离职申请</h3>
     <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" label-width="120px" size="small"
-      class="demo-ruleForm mt-24">
+      class="demo-ruleForm mt-24" hide-required-asterisk>
       <el-form-item label="用户ID">
         <el-input v-model="ruleForm.id" disabled />
       </el-form-item>
@@ -111,18 +119,38 @@ const resetForm = (formEl: FormInstance | undefined) => {
       <el-form-item label="离职原因" prop="desc" required>
         <el-input v-model="ruleForm.desc" type="textarea" />
       </el-form-item>
+      <el-form-item label="附件">
+        <el-upload class="upload-demo" drag action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
+          multiple>
+          <el-icon class="el-icon--upload">
+            <upload-filled />
+          </el-icon>
+          <div class="el-upload__text">
+            拖拽上传 <em>点击上传</em>
+          </div>
+          <template #tip>
+            <div class="el-upload__tip">
+              jpg/png files with a size less than 500kb
+            </div>
+          </template>
+        </el-upload>
+      </el-form-item>
+
       <el-form-item>
         <el-button type="danger" @click="submitForm(ruleFormRef)">提交申请</el-button>
         <el-button @click="resetForm(ruleFormRef)">重置</el-button>
       </el-form-item>
     </el-form>
   </div>
+  <div class="process" v-if="active == 1">
+   
+  </div>
 </template>
 
 
 
 <style scoped>
-.main {
+.form {
   width: 80%;
   margin: 0 auto;
   background-color: white;
