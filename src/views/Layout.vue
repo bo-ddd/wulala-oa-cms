@@ -121,7 +121,6 @@ const dropDownList = [
         name: '个人中心',
         targetPath: '/mine',
         childrenList: []
-
     },
     {
         id: 2,
@@ -131,6 +130,12 @@ const dropDownList = [
     },
     {
         id: 3,
+        name: '我的审核',
+        targetPath: '/auditStatus',
+        childrenList: []
+    },
+    {
+        id: 4,
         name: '退出登录',
         targetPath: '/',
         childrenList: []

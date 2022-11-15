@@ -94,7 +94,16 @@ const router = createRouter({
             label: "我的消息",
             requiresAuth: false
           }
-        }
+        },
+        {//审核状态页面;
+          path: "/auditStatus",
+          name: "auditStatus",
+          component: () => import("../views/AuditStatus.vue"),
+          meta: {
+            label: "我的审批",
+            requiresAuth: false
+          }
+        },
       ]
     },
   ],
@@ -207,6 +216,15 @@ let dynamicRoutes = [
     component: () => import("../views/PublishTask.vue"),
     meta: {
       label: "发布任务",
+      requiresAuth: true
+    }
+  },
+  {//任务列表页面;
+    path: "/taskList",
+    name: "taskList",
+    component: () => import("../views/TaskList.vue"),
+    meta: {
+      label: "任务列表",
       requiresAuth: true
     }
   },

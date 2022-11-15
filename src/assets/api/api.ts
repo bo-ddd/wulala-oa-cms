@@ -255,7 +255,36 @@ export default {
       deleteTaskApi(payload = {}) {
         return axios.post('/task/delete', payload)
     },
-    
+     /**
+    * 获取用户任务列表
+    * 
+    * **/
+      getUserTaskListApi(payload = {}) {
+        return axios.post('/user/task/list', payload)
+    },
+     /**
+    * 发布任务
+    * "userId": 152,
+      "taskId": 2
+    * **/
+      publishTaskApi(payload = {}) {
+        return axios.post('/task/publish', payload)
+    },
+     /**
+    * 修改我的任务状态
+    * "taskId": 2,
+      "status": 1 //0: 未开始 1：进行中 2：已完成 3 已过期
+    * **/
+      setUserTaskStatusApi(payload = {}) {
+        return axios.post('/user/task/status/set', payload)
+    },
+     /**
+    * 查询组中所有的用户
+    * "deptId": 2    部门id
+    * **/
+      queryUserMembersApi(payload = {}) {
+        return axios.post('/user/dept/members', payload)
+    },
      /**
     * 查询我发布的消息
     * 
@@ -298,4 +327,5 @@ export default {
      getUserMessageApi(payload = {}) {
         return axios.post('/user/message/list', payload)
     },
+   
 }

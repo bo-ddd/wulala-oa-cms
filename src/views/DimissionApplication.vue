@@ -3,10 +3,11 @@ import { ref, reactive } from 'vue'
 import axios from '../assets/api/api'
 import type { FormInstance, FormRules } from 'element-plus'
 import { UploadFilled } from '@element-plus/icons-vue';
-const active=ref<number>(0)
+import { useRouter } from 'vue-router';
+import { ElMessage, ElMessageBox } from 'element-plus'
+const router = useRouter()
 const ruleFormRef = ref<FormInstance>()
 const ruleForm = reactive({
-  id: 0,
   name: '',
   department: '',
   post: '',
@@ -46,7 +47,6 @@ ruleForm.applicationTime = formatDate(new Date());
 //获取当前用户的信息, 部门/职位;
 const getUserInfo = async () => {
   let userInfo = await axios.queryUserInfoApi();
-  ruleForm.id = userInfo.data.userId;
   ruleForm.name = userInfo.data.avatarName;
   ruleForm.post = userInfo.data.roles[0].roleName;
 }
@@ -69,8 +69,31 @@ const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
   await formEl.validate((valid, fields) => {
     if (valid) {
-      //控制步骤条;
-      active.value=1
+      //确认消息弹出框
+      ElMessageBox.confirm(
+        '您确定提交离职申请吗？',
+        '提示',
+        {
+          confirmButtonText: '确认',
+          cancelButtonText: '取消',
+          type: 'warning',
+        }
+      )
+        .then(() => {
+          ElMessage({
+            type: 'success',
+            message: '提交成功',
+          })
+          //调用提交按钮;
+          //跳转到查看审核状态页面;
+          router.push('auditStatus')
+        })
+        .catch(() => {
+          ElMessage({
+            type: 'info',
+            message: '已取消申请',
+          })
+        })
     } else {
       console.log('提交失败')
     }
@@ -80,33 +103,29 @@ const resetForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return
   formEl.resetFields()
 }
+
+
 </script>
 
 <template>
-  <el-steps :active="active" finish-status="success" align-center class="mt-20 mb-20">
-    <el-step title="填写申请" />
-    <el-step title="审批结果" />
-    <el-step title="离职交接" />
-  </el-steps>
-  <div class="form" v-if="active == 0">
+  <div class="form">
     <h3>离职申请</h3>
     <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" label-width="120px" size="small"
       class="demo-ruleForm mt-24" hide-required-asterisk>
-      <el-form-item label="用户ID">
-        <el-input v-model="ruleForm.id" disabled />
-      </el-form-item>
-      <el-form-item label="姓名">
-        <el-input v-model="ruleForm.name" disabled />
-      </el-form-item>
-      <el-form-item label="所在部门">
-        <el-input v-model="ruleForm.department" disabled />
-      </el-form-item>
-      <el-form-item label="所在职位">
-        <el-input v-model="ruleForm.post" disabled />
-      </el-form-item>
-      <el-form-item label="申请时间">
-        <el-date-picker v-model="ruleForm.applicationTime" type="date" placeholder="" disabled />
-      </el-form-item>
+      <template class="grid">
+        <el-form-item label="姓名">
+          <el-input v-model="ruleForm.name" disabled />
+        </el-form-item>
+        <el-form-item label="申请时间">
+          <el-date-picker v-model="ruleForm.applicationTime" type="date" placeholder="" disabled />
+        </el-form-item>
+        <el-form-item label="所在部门">
+          <el-input v-model="ruleForm.department" disabled />
+        </el-form-item>
+        <el-form-item label="所在职位">
+          <el-input v-model="ruleForm.post" disabled />
+        </el-form-item>
+      </template>
       <el-form-item label="任职时间" prop="duration" required>
         <el-date-picker v-model="ruleForm.duration" type="daterange" range-separator="至" start-placeholder="入职日期"
           end-placeholder="离职日期" />
@@ -135,15 +154,11 @@ const resetForm = (formEl: FormInstance | undefined) => {
           </template>
         </el-upload>
       </el-form-item>
-
       <el-form-item>
         <el-button type="danger" @click="submitForm(ruleFormRef)">提交申请</el-button>
         <el-button @click="resetForm(ruleFormRef)">重置</el-button>
       </el-form-item>
     </el-form>
-  </div>
-  <div class="process" v-if="active == 1">
-   
   </div>
 </template>
 
@@ -168,5 +183,10 @@ const resetForm = (formEl: FormInstance | undefined) => {
 
 :deep(.el-textarea__inner) {
   width: 400px
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
 }
 </style>
