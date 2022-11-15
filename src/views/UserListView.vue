@@ -9,9 +9,15 @@
 
     <div class="ipt">
         <span class="label">查询用户部门：</span>
-        <el-input v-model="departmentInput" size="small" placeholder="请输入用户ID" clearable />
-        <el-button class="ml-10" type="danger" size="small" @click="searchUserDepartment(departmentInput)">查询
+        <!-- <el-input v-model="departmentInput" size="small" placeholder="请输入用户ID" clearable /> -->
+
+        <el-select v-model="form.userId" size="small" filterable placeholder="请输入用户昵称" clearable>
+            <el-option v-for="item in userListData" :key="item.userId" :label="item.avatarName" :value="item.userId" />
+        </el-select>
+
+        <el-button class="ml-10" type="danger" size="small" @click="searchUserDepartment(form.userId)">查询
         </el-button>
+
         <el-button class="ml-10" type="danger" size="small" @click="getUserList()">重置</el-button>
     </div>
 
@@ -21,7 +27,7 @@
                 <el-tag size="small" type="warning">{{ scope.row.userId }}</el-tag>
             </template>
         </el-table-column>
-        <el-table-column label="用户昵称"  align="center">
+        <el-table-column label="用户昵称" align="center">
             <template #default="scope">
                 <el-tag size="small">{{ scope.row.avatarName }}</el-tag>
             </template>
@@ -34,7 +40,9 @@
         </el-table-column> -->
         <el-table-column v-if="label" :label=label align="center">
             <template #default="scope">
-                <div size="small" type="danger">{{ scope.row.deptName ? scope.row.deptName : showRoleName(scope.row.roles) }}
+                <div size="small" type="danger">{{ scope.row._rawValue ? showDeptName(scope.row._rawValue) :
+                        showRoleName(scope.row.roles)
+                }}
                 </div>
             </template>
         </el-table-column>
@@ -45,11 +53,11 @@
         </el-table-column>
         <el-table-column label="操作" width="400" align='center'>
             <template #default="scope">
-                <el-button type="success" size="small" @click="addRoles(scope.row); dialogFormVisibleAdd = true">添加角色
+                <el-button type="primary" size="small" @click="addRoles(scope.row); dialogFormVisibleAdd = true">添加角色
                 </el-button>
                 <el-button type="danger" size="small" @click="getUserId(scope.row); dialogFormVisibleDelete = true">删除角色
                 </el-button>
-                <el-button type="success" size="small" @click="getUserId(scope.row); dialogFormisiblGeroup = true">添加部门
+                <el-button type="primary" size="small" @click="getUserId(scope.row); dialogFormisiblGeroup = true">添加部门
                 </el-button>
                 <el-button type="danger" size="small" @click="getUserId(scope.row); dialogFormisiblDelete = true">删除部门
                 </el-button>
@@ -194,6 +202,8 @@ const userListData = ref();
 const roleList = ref();
 const userRolesList = ref();
 const userInfo = ref();
+const userName = ref('');
+const userNameList = ref();
 const pageNum = ref(1);
 const pageSize = ref(10);
 const total = ref();
@@ -204,6 +214,7 @@ const label = ref('');
     let userList = await axios.getUserListApi({})
     userListData.value = userList.data.list;
     total.value = userList.data.total
+    userNameList.value = userList.data.list
 })();
 // 获取用户角色ID
 (async function () {
@@ -248,6 +259,14 @@ const showRoleName = function (roleList: any) {
     let str = '';
     roleList.forEach(item => {
         str += `${item.roleName},`
+    })
+    return str.substring(0, str.length - 1);
+}
+const showDeptName = function (deptList: any) {
+    if (!Array.isArray(deptList)) return;
+    let str = '';
+    deptList.forEach(item => {
+        str += `${item.deptName},`
     })
     return str.substring(0, str.length - 1);
 }
@@ -366,6 +385,7 @@ const queryUserDepartment = async (id: number) => {
     })
 }
 // 查询用户部门
+let deptNameList = ref([]);
 const searchUserDepartment = async (id: number) => {
     label.value = '用户部门'
     await axios.getUserDeptListApi({
@@ -374,7 +394,8 @@ const searchUserDepartment = async (id: number) => {
         if (res.status == 1) {
             let userData = (await axios.queryUserInfoApi({ userId: id })).data
             userListData.value.length = 0
-            Object.assign(userData, ...(res.data))
+            deptNameList.value = res.data
+            Object.assign(userData, deptNameList)
             userListData.value.push(userData)
         }
     })
