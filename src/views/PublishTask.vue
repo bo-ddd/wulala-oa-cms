@@ -115,7 +115,10 @@ const initFormData = function () {
     form.level = 0;  
 }
 const updateTaskDuplicate=function(row:Task){
-
+    form.id=row.id;
+    form.description=row.description;
+    form.taskName=row.taskName;
+    form.level=row.level
 }
 //点击修改按钮
 const updateTask = (index: number, row: Task) => {
@@ -243,7 +246,7 @@ const taskLevelName = function (level: number | string) {
     <el-dialog v-model="dialogFormVisible" :title="title">
         <el-form :model="form">
             <el-form-item label="任务Id" :label-width="formLabelWidth" v-if="!isCreated">
-                <el-input v-model="form.id" autocomplete="off" />
+                <el-input v-model="form.id" disabled autocomplete="off" />
             </el-form-item>
             <el-form-item label="任务名称" :label-width="formLabelWidth">
                 <el-input v-model="form.taskName" autocomplete="off" />

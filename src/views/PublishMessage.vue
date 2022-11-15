@@ -42,7 +42,7 @@
   let year = ruleForm.date.getFullYear();
   let mounth = ruleForm.date.getMonth() + 1;
   let day = ruleForm.date.getUTCDate();
-  let time = `${ year }-${ mounth }-${ day }日报`;
+  let timeTitle = `${ year }-${ mounth }-${ day }日报`;
   
   const rules = reactive<FormRules>({
     date1: [
@@ -81,7 +81,7 @@
         console.log('submit!');
         alert("提交成功")
         let createArticle = await axios.createArticleApi({
-          title : time,
+          title : timeTitle,
           content : ruleForm.desc
         });
         console.log('-----lll-----');
