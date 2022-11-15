@@ -59,6 +59,12 @@ let requiresAuthList = [
         requiresAuth: true
     },
     {
+        id: 402,
+        name: '任务列表',
+        targetPath: '/taskList',
+        requiresAuth: true
+    },
+    {
         id: 501,
         name: '发布消息',
         targetPath: '/publishMessage',
@@ -176,6 +182,7 @@ userPremissionList.value.forEach(Premission => {
         childrenList.push(reason)
     }
 })
+ childrenList=[...new Set(childrenList)]
 
 childrenList.forEach(item => {
     let parent = sidebarList.find(key => key.id == Number(String(item.id)[0]));
