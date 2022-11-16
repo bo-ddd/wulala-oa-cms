@@ -5,6 +5,8 @@ import type { FormInstance, FormRules } from 'element-plus'
 import { UploadFilled } from '@element-plus/icons-vue';
 import { useRouter } from 'vue-router';
 import { ElMessage, ElMessageBox } from 'element-plus'
+// import {useDimissionFormStore} from '../stores/DimissionForm'
+// const dimissionFormStore=useDimissionFormStore()
 const router = useRouter()
 const ruleFormRef = ref<FormInstance>()
 const ruleForm = reactive({
@@ -84,7 +86,10 @@ const submitForm = async (formEl: FormInstance | undefined) => {
             type: 'success',
             message: '提交成功',
           })
-          //调用提交按钮;
+          //调用提交接口;
+          //将离职申请表单存储到store中;
+          localStorage.setItem('dimissionForm',JSON.stringify(ruleForm))
+          // dimissionFormStore.setdimissionFormInfo(ruleForm)
           //跳转到查看审核状态页面;
           router.push('auditStatus')
         })
@@ -136,7 +141,7 @@ const resetForm = (formEl: FormInstance | undefined) => {
         </el-select>
       </el-form-item>
       <el-form-item label="离职原因" prop="desc" required>
-        <el-input v-model="ruleForm.desc" type="textarea" />
+        <el-input v-model="ruleForm.desc" type="textarea" resize='none'/>
       </el-form-item>
       <el-form-item label="附件">
         <el-upload class="upload-demo" drag action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
