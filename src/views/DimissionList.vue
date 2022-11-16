@@ -19,15 +19,49 @@ const handleCurrentChange = (val: number) => {
 interface TableData {
     id: number
     userId: number
+    department: string,
+    postName: string,
     avatarName: string | null
     applyTime: string
     quitTime: string
     reason: string
-    status: number
+    status: string
 }
-let tableData = reactive<TableData[]>([])
+const tableData = reactive<TableData[]>([])
 
-//获取离职列表总数据;
+enum StateCode {
+    审核中 = 0,
+    审核已通过,
+    审核未通过
+}
+
+enum tagType {
+    '' = 0,
+    success,
+    danger,
+}
+
+//获取用户的所在部门名称;
+const getUserDeptName = async (userId: number) => {
+    let userDeptList = await axios.getUserDeptListApi({ userId });
+    let deptName = '';
+    userDeptList.data.forEach((item: { deptName: string }) => {
+        deptName += item.deptName
+    })
+    return deptName;
+}
+
+// //获取用户的职位名称;
+const getUserPost = async (userId: number) => {
+    let userInfo = await axios.queryUserInfoApi({ userId });
+    let userPost = ''
+    userInfo.data.roles.forEach((item: { roleName: string }) => {
+        userPost += item.roleName;
+    })
+    return userPost;
+}
+
+//获取离职列表数据;
 const getUserQuitList = async () => {
     let { data } = await axios.getQuitListApi({
         pageSize: pageSize.value,
@@ -36,27 +70,25 @@ const getUserQuitList = async () => {
     total.value = data.total;
     tableData.length = 0;
     Object.assign(tableData, data.list)
-    tableData.forEach(item => {
-        item.applyTime = handleTimeFormat(item.applyTime)
-        item.quitTime = handleTimeFormat(item.quitTime)
+    tableData.forEach(async (item) => {
+        item.applyTime = handleTimeFormat(item.applyTime) //申请时间
+        item.quitTime = handleTimeFormat(item.quitTime) //离职时间
+        item.status = StateCode[Number(item.status)]  //审核状态
+        item.department = await getUserDeptName(item.userId) //部门名称
+        item.postName = await getUserPost(item.userId) //职位名称
     })
 }
 getUserQuitList()
 
-//处理时间数据;
+//处理时间数据格式Api;
 const handleTimeFormat = (Time: string) => {
     return Time.substring(0, 10)
 }
 
 
-//编辑按钮的点击事件;
+//审核按钮的点击事件;
 const handleEdit = (index: number, row: TableData) => {
     console.log(index, row)
-}
-
-//删除按钮的点击事件;   
-const handleDelete = (index: number, row: TableData) => {
-    //调用删除接口; 
 }
 </script>
 
@@ -68,13 +100,20 @@ const handleDelete = (index: number, row: TableData) => {
                 <el-tag size="small">{{ scope.row.avatarName }}</el-tag>
             </template>
         </el-table-column>
+        <el-table-column label="部门" sortable prop="department" align="center" />
+        <el-table-column label="职位" sortable prop="postName" align="center" />
         <el-table-column label="申请日期" sortable prop="applyTime" align="center" />
         <el-table-column label="离职日期" sortable prop="quitTime" align="center" />
         <el-table-column label="离职原因" prop="reason" align="center" />
+        <el-table-column label="审核状态" prop="status" align="center">
+            <template #default="scope">
+                <el-tag :type="tagType[Number(StateCode[scope.row.status])]" size="small">{{ scope.row.status }}
+                </el-tag>
+            </template>
+        </el-table-column>
         <el-table-column label="操作" align="center">
             <template #default="scope">
-                <el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                <el-button size="small" type="danger" @click="handleEdit(scope.$index, scope.row)">审核</el-button>
             </template>
         </el-table-column>
     </el-table>
