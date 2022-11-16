@@ -236,6 +236,15 @@ let dynamicRoutes = [
       label: "发布消息",
       requiresAuth: true
     }
+  },
+  {//用户详情页面;
+    path: "/userDetail",
+    name: "userDetail",
+    component: () => import("../views/UserDetail.vue"),
+    meta: {
+      label: "用户详情",
+      requiresAuth: true
+    }
   }
 ];
 
