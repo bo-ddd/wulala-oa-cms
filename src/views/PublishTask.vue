@@ -4,16 +4,24 @@ import { reactive, ref } from "vue";
 import type { Task } from "../types/Task";
 let dialogFormVisible = ref(false)
 let userTaskList = reactive<Task[]>([])
-let taskStatus = ref(1)
+let taskStatus = ref(0)
 let taskId = ref(0)
-let rowTaskId = ref(0)
-let taskReception = ref([])
+const pageNum = ref(1)
+const pageSize = ref(5)
+const total = ref()
+const disabled = ref(false)
 
 //封装用户任务列表
 const getUserTaskList = async function () {
-    let res = await axios.getUserTaskListApi()
+    let res = await axios.getUserTaskListApi({
+        pageNum: pageNum.value,
+        pageSize: pageSize.value
+    })
     if (res.status == 1) {
         console.log(res);
+        total.value = res.data.total;
+        pageSize.value = res.data.pageSize;
+        pageNum.value = res.data.pageNum;
         userTaskList.length = 0
         userTaskList.push(...res.data.list)
         console.log(userTaskList);
@@ -24,14 +32,17 @@ const getUserTaskList = async function () {
 }
 getUserTaskList()
 
-const deleteTask = (index: number, row: Task) => {
-    console.log(index, row)
-}
+// const deleteTask = (index: number, row: Task) => {
+//     console.log(index, row)
+// }
+//点击任务状态按钮
 const updateTask = (row: Task) => {
     console.log(row)
+    taskStatus.value = row.level;
+    taskId.value = row.taskId;
     dialogFormVisible.value = true;
-
 }
+//状态弹层确定
 const submitTaskStatus = async function () {
     let res = await axios.setUserTaskStatusApi({
         taskId: taskId.value,
@@ -42,10 +53,11 @@ const submitTaskStatus = async function () {
         getUserTaskList()
     }
 }
-
+//处理等级
 const taskLevelName = function (level: number | string) {
     return level == 0 ? '普通' : "紧急"
 }
+///处理任务状态
 const taskStatusName = function (status: number | string) {
     switch (status) {
         case 0:
@@ -58,22 +70,21 @@ const taskStatusName = function (status: number | string) {
             return "已过期";
     }
 }
-const clickSelection = function (row: any) {
-    rowTaskId.value = row[0].id
-    console.log(rowTaskId.value); //当前行任务id
+const handleSizeChange = (val: number) => {
+    console.log(`一页有${val} `)
+    pageSize.value = val
+    getUserTaskList()
+
 }
-
-const taskRecipient = function (val: any) {
-    taskReception.value = val
-    console.log('-----任务接收人----');
-    console.log(taskReception.value);
-
+const handleCurrentChange = (val: number) => {
+    console.log(`当前几页 :${val}`)
+    pageNum.value = val
+    getUserTaskList()
 }
 </script>
 <template>
-  
-    <el-table :data="userTaskList" style="width: 100%" class="mb-10" @select='clickSelection'>
-        <el-table-column type="selection" width="55" />
+
+    <el-table :data="userTaskList" style="width: 100%" class="mb-10">
         <el-table-column label="任务Id" align="center">
             <template #default="scope" align="center">
                 <div>{{ scope.row.id }}</div>
@@ -107,10 +118,15 @@ const taskRecipient = function (val: any) {
         <el-table-column label="操作" align="center" width="200">
             <template #default="scope">
                 <el-button size="small" @click="updateTask(scope.row)" type="danger">任务状态</el-button>
-                <el-button size="small" type="danger" plain @click="deleteTask(scope.$index, scope.row)">删除</el-button>
+                <!-- <el-button size="small" type="danger" plain @click="deleteTask(scope.$index, scope.row)">删除</el-button> -->
             </template>
         </el-table-column>
     </el-table>
+    <div class="demo-pagination-block">
+        <el-pagination v-model:current-page="pageNum" v-model:page-size="pageSize" :page-sizes="[5, 10, 15, 20]"
+            :disabled="disabled" layout="total, sizes, prev, pager, next, jumper" :total="total"
+            @size-change="handleSizeChange" @current-change="handleCurrentChange" />
+    </div>
     <el-dialog v-model="dialogFormVisible" title="任务状态">
         <el-radio-group v-model="taskStatus" align="center">
             <el-radio :label="0">未开始</el-radio>
@@ -129,7 +145,7 @@ const taskRecipient = function (val: any) {
     </el-dialog>
 
 </template>
-<style>
+<style scoped>
 .el-dialog__body {
     align-items: center;
 }

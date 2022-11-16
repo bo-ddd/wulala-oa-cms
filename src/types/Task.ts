@@ -7,6 +7,7 @@ export interface CreatedTask{
 export interface Task {
     avatarName: string
     createdAt?: string
+    taskId:number,
     id: number,
     taskName: string,
     description: string,
