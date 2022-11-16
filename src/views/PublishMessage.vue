@@ -1,9 +1,18 @@
 <template>
+
+<div style="display: inline-block" class="mb-10">
+        <el-select v-model="deptValue" clearable placeholder="用户所在分组" size="small" @change="groupChange">
+            <el-option v-for="(group, index) in deptList" :key="index" :label="group.deptName" :value="group.deptId" />
+        </el-select>
+        <el-select v-model="deptMembersValue" multiple placeholder="任务接收人" style="width: 240px" size="small" class="ml-10">
+            <el-option v-for="(item, index) in deptMembersList" :key="index" :label="item.avatarName"
+                :value="item.userId" />
+        </el-select>
+        <el-button type="danger" round class="ml-10" size="small" @click="clickPublishTask">确定发布</el-button>
+    </div>
+
     <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" label-width="120px" class="demo-ruleForm" :size="formSize"
       status-icon>
-      · <el-form-item label="用户名称" prop="name">
-        <el-input v-model="ruleForm.name" readonly="readonly"/>
-      </el-form-item>
   
       <div class="demo-datetime-picker">
         <div class="block">
@@ -24,11 +33,12 @@
   <script lang="ts" setup>
   import { reactive, ref,} from 'vue'
   import type { FormInstance, FormRules } from 'element-plus'
+  import { useStore } from "@/stores/nav";
   import axios from '@/assets/api/api'
   import MyEditor from '@/components/MyEditor.vue'
-
-  
-
+  let deptList = ref([])
+  let deptId = ref(0)
+  let UserStore = useStore()
   const formSize = ref('default')
   const ruleFormRef = ref<FormInstance>()
   const ruleForm = reactive({
@@ -39,10 +49,23 @@
     type: [],
   })
   
-  let year = ruleForm.date.getFullYear();
-  let mounth = ruleForm.date.getMonth() + 1;
-  let day = ruleForm.date.getUTCDate();
-  let timeTitle = `${ year }-${ mounth }-${ day }日报`;
+  const getUserDeptList = async function () {
+    let res = await axios.getUserDeptListApi({
+        userId: UserStore.userId
+    })
+    if (res.status == 1) {
+        res.data.forEach((dept: any) => {
+            deptId.value=dept.deptId
+        })
+        console.log(deptId.value);  ///当前组id
+        deptList.push(...res.data)
+    }
+}
+
+  // let year = ruleForm.date.getFullYear();
+  // let mounth = ruleForm.date.getMonth() + 1;
+  // let day = ruleForm.date.getUTCDate();
+  // let timeTitle = `${ year }-${ mounth }-${ day }`;
   
   const rules = reactive<FormRules>({
     date1: [
@@ -66,13 +89,13 @@
     ],
   });
   
-  const getsunmit = async ()=>{
-    let userId = await axios.queryUserInfoApi({});
-    ruleForm.id = userId.data.userId
-    ruleForm.name = userId.data.avatarName
-  }
+  // const getsunmit = async ()=>{
+  //   let userId = await axios.queryUserInfoApi({});
+  //   ruleForm.id = userId.data.userId
+  //   ruleForm.name = userId.data.avatarName
+  // }
 
-  getsunmit()
+  // getsunmit()
   const submitForm = (formEl: FormInstance | undefined) => {
     console.log(ruleForm.desc);
     if (!formEl) return
@@ -101,19 +124,10 @@
   
   </script>
   <style scoped>
-  .text-center {
-    text-align: center;
-  }
-  .el-input{
-  width: 60%;
-  }
-  .el-textarea{
-    width: 60%;
-  }
+
   .demo-datetime-picker .block {
     padding: 30px 0;
     width: 900px;
-    text-align: center;
     border-right: solid 1px var(--el-border-color);
     flex: 1;
   }
