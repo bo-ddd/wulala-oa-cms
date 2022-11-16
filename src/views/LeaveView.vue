@@ -85,7 +85,7 @@ const handleCurrentChange = (val: number) => {
 <template>
   <el-table :data="leave" style="width: 100%">
 
-    <el-table-column label="编号">
+    <el-table-column label="编号" width="100">
       <template #default="scope">
         <div style="display: flex; align-items: center;justify-content: center;">
           <span style="margin-left: 10px">{{ scope.row.userId }}</span>
@@ -93,7 +93,7 @@ const handleCurrentChange = (val: number) => {
       </template>
     </el-table-column>
 
-    <el-table-column label="申请人">
+    <el-table-column label="申请人" >
       <template #default="scope">
         <el-popover effect="light" trigger="hover" placement="top" width="auto">
           <template #default>
@@ -122,7 +122,7 @@ const handleCurrentChange = (val: number) => {
       </template>
     </el-table-column>
 
-    <el-table-column label="时长">
+    <el-table-column label="时长" >
       <template #default="scope">
         <div style="display: flex; align-items: center;justify-content: center;">
           <span style="margin-left: 10px">{{ date(scope.row.startTime,scope.row.endTime) }}</span>
