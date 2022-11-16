@@ -5,8 +5,6 @@ import type { FormInstance, FormRules } from 'element-plus'
 import { UploadFilled } from '@element-plus/icons-vue';
 import { useRouter } from 'vue-router';
 import { ElMessage, ElMessageBox } from 'element-plus'
-// import {useDimissionFormStore} from '../stores/DimissionForm'
-// const dimissionFormStore=useDimissionFormStore()
 const router = useRouter()
 const ruleFormRef = ref<FormInstance>()
 const ruleForm = reactive({
@@ -16,7 +14,7 @@ const ruleForm = reactive({
   applicationTime: '',
   duration: '',
   quitType: '主动离职',
-  desc: ''
+  reason: ''
 })
 const rules = reactive<FormRules>({
   duration: [
@@ -26,7 +24,7 @@ const rules = reactive<FormRules>({
       trigger: 'blur'
     }
   ],
-  desc: [
+  reason: [
     {
       required: true,
       message: '离职原因不能为空',
@@ -35,7 +33,7 @@ const rules = reactive<FormRules>({
   ]
 })
 //处理时间戳=>YY-MM-DD;
-const formatDate = (time: Date) => {
+const formatDate = (time: Date | string) => {
   let year = new Date(time).getFullYear();
   let month = new Date(time).getMonth() + 1;
   let date = new Date(time).getDate();
@@ -47,20 +45,22 @@ const formatDate = (time: Date) => {
 ruleForm.applicationTime = formatDate(new Date());
 
 //获取当前用户的信息, 部门/职位;
+const userId = ref<number>()
 const getUserInfo = async () => {
   let userInfo = await axios.queryUserInfoApi();
   ruleForm.name = userInfo.data.avatarName;
   ruleForm.post = userInfo.data.roles[0].roleName;
+  userId.value = userInfo.data.userId as number;
+  getUserDeptList(userId.value)
 }
 getUserInfo()
 
 
 //获取当前用户的所在部门列表;//暂时还不能用;
-const getUserDeptList = async () => {
-  let userDeptList = await axios.getUserDeptListApi({ userId: 152 });
+const getUserDeptList = async (userId: number) => {
+  let userDeptList = await axios.getUserDeptListApi({ userId });
   ruleForm.department = userDeptList.data[0].deptName;
 }
-getUserDeptList()
 
 
 //离职类型;
@@ -81,15 +81,23 @@ const submitForm = async (formEl: FormInstance | undefined) => {
           type: 'warning',
         }
       )
-        .then(() => {
-          ElMessage({
-            type: 'success',
-            message: '提交成功',
-          })
+        .then(async () => {
           //调用提交接口;
+          let quitTime = formatDate(ruleForm.duration[1]);
+          await axios.userQuitApplyApi({
+            userId: userId.value,
+            quitTime,
+            reason: ruleForm.reason
+          }).then(res => {
+            ElMessage({
+              type: 'success',
+              message: '提交成功',
+            })
+          }, error => {
+            ElMessage.error('提交失败')
+          })
           //将离职申请表单存储到store中;
-          localStorage.setItem('dimissionForm',JSON.stringify(ruleForm))
-          // dimissionFormStore.setdimissionFormInfo(ruleForm)
+          localStorage.setItem('dimissionForm', JSON.stringify(ruleForm))
           //跳转到查看审核状态页面;
           router.push('auditStatus')
         })
@@ -100,7 +108,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
           })
         })
     } else {
-      console.log('提交失败')
+      ElMessage.error('提交失败')
     }
   })
 }
@@ -140,8 +148,8 @@ const resetForm = (formEl: FormInstance | undefined) => {
           <el-option v-for="item in quitType" :key="item" :label="item" :value="item" />
         </el-select>
       </el-form-item>
-      <el-form-item label="离职原因" prop="desc" required>
-        <el-input v-model="ruleForm.desc" type="textarea" resize='none'/>
+      <el-form-item label="离职原因" prop="reason" required>
+        <el-input v-model="ruleForm.reason" type="textarea" resize='none' />
       </el-form-item>
       <el-form-item label="附件">
         <el-upload class="upload-demo" drag action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
