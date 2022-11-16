@@ -1,8 +1,8 @@
 import axios from "./http";
-import type{ UserList,UserRegister } from "@/types/User";
-import type{ UpdatePermission } from "@/types/Permission";
-import type{ CreateLeave,ExamineUserLeave } from "@/types/Leave";
-import type{ CreatedTask } from "@/types/Task";
+import type { UserList, UserRegister } from "@/types/User";
+import type { UpdatePermission } from "@/types/Permission";
+import type { CreateLeave, ExamineUserLeave } from "@/types/Leave";
+import type { CreatedTask } from "@/types/Task";
 //用户
 export default {
     /**
@@ -203,7 +203,7 @@ export default {
      *  "userId": 151, //用户id
         "deptId": 4 //部门(组) 
     * **/
-        addUserDeptApi(payload = {}) {
+    addUserDeptApi(payload = {}) {
         return axios.post('/user/dept/add', payload)
     },
     /**
@@ -228,14 +228,14 @@ export default {
      "level" //任务等级 0: 普通 1: 紧急
      "sort" //排序
     * **/
-    createTaskApi(payload : CreatedTask) {
+    createTaskApi(payload: CreatedTask) {
         return axios.post('/task/create', payload)
     },
     /**
     *获取任务列表
     * "taskName" //任务名称
     * **/
-      getTaskListApi(payload = {}) {
+    getTaskListApi(payload = {}) {
         return axios.post('/task/list', payload)
     },
     /**
@@ -245,87 +245,102 @@ export default {
       "level": 1, 紧急程度
       "sort": 2   排序
     * **/
-      updateTaskApi(payload = {}) {
+    updateTaskApi(payload = {}) {
         return axios.post('/task/update', payload)
     },
     /**
     * 删除任务
     * "id": 1,
     * **/
-      deleteTaskApi(payload = {}) {
+    deleteTaskApi(payload = {}) {
         return axios.post('/task/delete', payload)
     },
-     /**
-    * 获取用户任务列表
-    * 
-    * **/
-      getUserTaskListApi(payload = {}) {
+    /**
+   * 获取用户任务列表
+   * 
+   * **/
+    getUserTaskListApi(payload = {}) {
         return axios.post('/user/task/list', payload)
     },
-     /**
-    * 发布任务
-    * "userId": 152,
-      "taskId": 2
-    * **/
-      publishTaskApi(payload = {}) {
+    /**
+   * 发布任务
+   * "userId": 152,
+     "taskId": 2
+   * **/
+    publishTaskApi(payload = {}) {
         return axios.post('/task/publish', payload)
     },
-     /**
-    * 修改我的任务状态
-    * "taskId": 2,
-      "status": 1 //0: 未开始 1：进行中 2：已完成 3 已过期
-    * **/
-      setUserTaskStatusApi(payload = {}) {
+    /**
+   * 修改我的任务状态
+   * "taskId": 2,
+     "status": 1 //0: 未开始 1：进行中 2：已完成 3 已过期
+   * **/
+    setUserTaskStatusApi(payload = {}) {
         return axios.post('/user/task/status/set', payload)
     },
-     /**
-    * 查询组中所有的用户
-    * "deptId": 2    部门id
-    * **/
-      queryUserMembersApi(payload = {}) {
+    /**
+   * 查询组中所有的用户
+   * "deptId": 2    部门id
+   * **/
+    queryUserMembersApi(payload = {}) {
         return axios.post('/user/dept/members', payload)
     },
-     /**
-    * 查询我发布的消息
-    * 
-    * **/
-      queryMessageListApi(payload = {}) {
+    /**
+   * 查询我发布的消息
+   * 
+   * **/
+    queryMessageListApi(payload = {}) {
         return axios.post('/message/list', payload)
     },
     /**
     * 发送消息
     * 
     * **/
-     sendMessageApi(payload = {}) {
+    sendMessageApi(payload = {}) {
         return axios.post('/message/send', payload)
     },
     /**
     * 修改消息
     * 
     * **/
-     updateMessageApi(payload = {}) {
+    updateMessageApi(payload = {}) {
         return axios.post('/message/update', payload)
     },
     /**
     * 新增消息通知
     * 
     * **/
-     createMessageApi(payload = {}) {
+    createMessageApi(payload = {}) {
         return axios.post('/message/create', payload)
     },
     /**
     * 设置消息状态为已读
     * 
     * **/
-     setStatusMessageApi(payload = {}) {
+    setStatusMessageApi(payload = {}) {
         return axios.post('/user/message/status/set', payload)
     },
     /**
     * 获取我的消息列表
     * 
     * **/
-     getUserMessageApi(payload = {}) {
+    getUserMessageApi(payload = {}) {
         return axios.post('/user/message/list', payload)
     },
-   
+    /**
+    * 离职申请
+    * "userId": number
+    "quitTime": string
+    "reason": string
+    * **/
+    userQuitApplyApi(payload = {}) {
+        return axios.post('/user/quit/apply', payload)
+    },
+    /**
+    * 获取离职员工列表
+    * **/
+    getQuitListApi(payload = {}) {
+        return axios.post('/user/quit/list', payload)
+    },
+
 }
