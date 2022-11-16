@@ -97,7 +97,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
             ElMessage.error('提交失败')
           })
           //将离职申请表单存储到store中;
-          localStorage.setItem('dimissionForm', JSON.stringify(ruleForm))
+          // localStorage.setItem('dimissionForm', JSON.stringify(ruleForm))
           //跳转到查看审核状态页面;
           router.push('auditStatus')
         })

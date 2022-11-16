@@ -13,8 +13,10 @@ export const useDimissionFormStore = defineStore('dimissionForm', () => {
     let dimissionFormInfo = reactive<DimissionFormInfo[]>([]);
     const setdimissionFormInfo = () => {
         dimissionFormInfo.length = 0;
-        let ruleForm=localStorage.getItem('dimissionForm') as string;
-        dimissionFormInfo.push(JSON.parse(ruleForm))
+        if (localStorage.getItem('dimissionForm')) {
+            let ruleForm = localStorage.getItem('dimissionForm') as string;
+            dimissionFormInfo.push(JSON.parse(ruleForm))
+        }
     }
     return { dimissionFormInfo, setdimissionFormInfo }
 })

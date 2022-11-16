@@ -1,21 +1,21 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue';
-import { useDimissionFormStore } from '@/stores/DimissionForm';
-import { storeToRefs } from 'pinia';
-const dimissionFormStore = useDimissionFormStore()
-dimissionFormStore.setdimissionFormInfo()
-const { dimissionFormInfo } = storeToRefs(dimissionFormStore)
+// import { useDimissionFormStore } from '@/stores/DimissionForm';
+// import { storeToRefs } from 'pinia';
+// const dimissionFormStore = useDimissionFormStore()
+// dimissionFormStore.setdimissionFormInfo()
+// const { dimissionFormInfo } = storeToRefs(dimissionFormStore)
 
 const tableData = reactive([
     {
         class: '离职申请',
-        name: '',
-        applicationTime: '',
+        name: '马格烜',
+        applicationTime: '2022-11-16',
         status: ''
     }
 ])
-tableData[0].name = dimissionFormInfo.value[0].name;
-tableData[0].applicationTime = dimissionFormInfo.value[0].applicationTime;
+// tableData[0].name = dimissionFormInfo.value[0].name;
+// tableData[0].applicationTime = dimissionFormInfo.value[0].applicationTime;
 
 enum StateCode {
     审核中 = 0,
@@ -26,7 +26,6 @@ enum tagType {
     '' = 0,
     success,
     danger,
-
 }
 tableData[0].status = StateCode[0]
 //查看申请的点击事件;
@@ -67,7 +66,7 @@ const formLabelWidth = '140px';
             </el-table-column>
         </el-table>
     </div>
-    <el-dialog v-model="dialogFormVisible" title="离职申请表">
+    <!-- <el-dialog v-model="dialogFormVisible" title="离职申请表">
         <el-form :model="dimissionFormInfo[0]" hide-required-asterisk disabled size="small" label-width="120px">
             <el-form-item label="申请人">
                 <el-input v-model="dimissionFormInfo[0].name" />
@@ -89,7 +88,7 @@ const formLabelWidth = '140px';
                 <el-select v-model="dimissionFormInfo[0].quitType" class="m-2" />
             </el-form-item>
             <el-form-item label="离职原因">
-                <el-input v-model="dimissionFormInfo[0].desc" type="textarea" resize='none'/>
+                <el-input v-model="dimissionFormInfo[0].desc" type="textarea" resize='none' />
             </el-form-item>
         </el-form>
         <template #footer>
@@ -100,7 +99,7 @@ const formLabelWidth = '140px';
                 </el-button>
             </span>
         </template>
-    </el-dialog>
+    </el-dialog> -->
 </template>
 
 
