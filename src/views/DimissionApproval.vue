@@ -1,5 +1,6 @@
 <script setup lang="ts">
-
+import { ref, reactive } from 'vue'
+import axios from '../assets/api/api'
 </script>
 
 <template>
