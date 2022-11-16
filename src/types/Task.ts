@@ -14,5 +14,5 @@ export interface Task {
     sort?: number,
     userId: number,
     senderAvatarName?:string,
-    status?:number
+    status?:number,
 }

@@ -35,7 +35,7 @@ $http.interceptors.response.use(function (response) {
  if(response.data.status==404){
     alert('错误，请稍后再试')
   }else if(response.data.status==401){
-     router.push('/')
+     router.push('/login')
   }
   return response.data;
 }, function (error) {
