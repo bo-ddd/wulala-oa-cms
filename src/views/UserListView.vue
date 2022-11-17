@@ -1,21 +1,25 @@
 <template>
 
-    <div class="ipt">
-        <span class="label">查询用户角色：</span>
-        <el-input v-model="rolesInput" size="small" placeholder="请输入用户ID" clearable />
-        <el-button class="ml-10" type="danger" size="small" @click="searchUserRoles(rolesInput)">搜索</el-button>
+    <!-- <div class="ipt">
+        <span class="label">查询用户：</span>
+        <el-select v-model="form.userId" size="small" filterable placeholder="请输入用户ID" clearable>
+            <el-option v-for="item in userNameList" :key="item.userId" :label="item.avatarName" :value="item.userId" />
+        </el-select>
+        <el-button class="ml-10" type="danger" size="small" @click="searchUserRoles(form.userId)">搜索</el-button>
         <el-button class="ml-10" type="danger" size="small" @click="getUserList()">重置</el-button>
-    </div>
+    </div> -->
 
     <div class="ipt">
-        <span class="label">查询用户部门：</span>
+        <span class="label">查询部门用户：</span>
         <!-- <el-input v-model="departmentInput" size="small" placeholder="请输入用户ID" clearable /> -->
 
-        <el-select v-model="form.userId" size="small" filterable placeholder="请输入用户昵称" clearable>
-            <el-option v-for="item in userListData" :key="item.userId" :label="item.avatarName" :value="item.userId" />
+        <el-select v-model="form.deptId" size="small" filterable placeholder="请输入部门名称" clearable>
+            <el-option v-for="item in departmentList" :key="item.id" :label="item.name" :value="item.id" />
         </el-select>
 
-        <el-button class="ml-10" type="danger" size="small" @click="searchUserDepartment(form.userId)">查询
+        <!-- <el-button class="ml-10" type="danger" size="small" @click="searchUserDepartment(form.userId)">查询 
+        </el-button> -->
+        <el-button class="ml-10" type="danger" size="small" @click="queryDeptUser(form.deptId)">查询成员
         </el-button>
 
         <el-button class="ml-10" type="danger" size="small" @click="getUserList()">重置</el-button>
@@ -46,21 +50,40 @@
                 </div>
             </template>
         </el-table-column>
+        <el-table-column v-if="label" :label=label align="center">
+            <template #default="scope">
+                <div size="small" type="danger">{{ scope.row.roles ? showDeptName(scope.row.roles) :
+                        showRoleName(scope.row._rawValue)
+                }}
+                </div>
+            </template>
+        </el-table-column>
         <el-table-column label="联系方式" align="center">
             <template #default="scope">
                 <el-tag type="success">{{ scope.row.phoneNumber }}</el-tag>
             </template>
         </el-table-column>
-        <el-table-column label="操作" width="400" align='center'>
+        <el-table-column label="操作" align='center'>
             <template #default="scope">
-                <el-button type="primary" size="small" @click="addRoles(scope.row); dialogFormVisibleAdd = true">添加角色
+                <!-- <el-select v-model="form.userOperationId" class="m-2" placeholder="请选操作" size="small">
+                    <el-option v-for="item in operation" :key="item.id" :label="item.name" :value="item.id"
+                        @onclick="item.function(scope.row)" />
+                </el-select> -->
+                <a class="touserdetail" @click="toUserDetail()">用户详情</a>
+                <a class="roles-add" @click="getUserId(scope.row); dialogFormVisibleAdd = true">添加角色</a>
+                <a class="roles-delete" @click="getUserId(scope.row); dialogFormVisibleDelete = true">删除角色</a>
+                <a class="geroup-add" @click="getUserId(scope.row); dialogFormisiblGeroup = true">添加部门</a>
+                <a class="geroup-delete" @click="getUserId(scope.row); dialogFormisiblDelete = true">删除部门</a>
+                <!-- <el-button type="primary" size="small" @click="toUserDetail();">用户详情
                 </el-button>
+                 <el-button type="primary" size="small" @click="addRoles(scope.row); dialogFormVisibleAdd = true">添加角色
+                </el-button> 
                 <el-button type="danger" size="small" @click="getUserId(scope.row); dialogFormVisibleDelete = true">删除角色
                 </el-button>
                 <el-button type="primary" size="small" @click="getUserId(scope.row); dialogFormisiblGeroup = true">添加部门
                 </el-button>
                 <el-button type="danger" size="small" @click="getUserId(scope.row); dialogFormisiblDelete = true">删除部门
-                </el-button>
+                </el-button> -->
             </template>
         </el-table-column>
     </el-table>
@@ -162,15 +185,53 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, type Ref } from 'vue'
+import { ref, reactive } from 'vue'
 import axios from '@/assets/api/api'
 import { ElMessage } from 'element-plus'
-
+import { useRouter } from 'vue-router';
+const selectIndex = ref(0)
+const operation = [
+    {
+        id: 1,
+        name: '用户详情',
+        function: (row: User) => {
+            toUserDetail()
+        }
+    }, {
+        id: 2,
+        name: '添加角色',
+        function: (row: User) => {
+            getUserId(row)
+        },
+    }, {
+        id: 3,
+        name: '删除角色',
+        function: (row: User) => {
+            getUserId(row)
+        }
+    }, {
+        id: 4,
+        name: '添加部门',
+        function: (row: User) => {
+            getUserId(row)
+        }
+    }, {
+        id: 5,
+        name: '删除部门',
+        function: (row: User) => {
+            getUserId(row)
+        }
+    },
+]
 const small = ref(false)
 const background = ref(true)
 const disabled = ref(false)
 const formLabelWidth = '140px'
+const router = useRouter();
 
+const toUserDetail = () => {
+    router.push('userDetail')
+}
 const handleSizeChange = async (val: number) => {
     console.log(`每页${val}条信息`);
     await getUserList(pageSize.value, pageNum.value)
@@ -223,7 +284,6 @@ const label = ref('');
 })()
 
 
-
 interface User {
     address: string
     avatarImg: string | null
@@ -237,22 +297,20 @@ interface User {
     userId: number
 }
 
-const dialogFormVisibleAdd = ref(false);
-const dialogFormVisibleDelete = ref(false);
-const dialogFormisiblGeroup = ref(false);
-const dialogFormisiblDelete = ref(false);
+let dialogFormVisibleAdd = ref(false);
+let dialogFormVisibleDelete = ref(false);
+let dialogFormisiblGeroup = ref(false);
+let dialogFormisiblDelete = ref(false);
 
 const form = reactive({
     deptId: 0,
     depName: null,
     userId: 0,
     rolesId: null,
+    userOperationId: null,
     userName: '用户昵称'
 })
-const addRoles = (row: User) => {
-    form.userId = row.userId
-    form.userName = row.avatarName
-}
+
 
 const showRoleName = function (roleList: any) {
     if (!Array.isArray(roleList)) return;
@@ -333,6 +391,10 @@ interface User {
     avatarName: string
     phoneNumber: string
 }
+const addRoles = (row: User) => {
+    form.userId = row.userId
+    form.userName = row.avatarName
+}
 // 删除用户角色
 const getUserId = async (row: User) => {
     queryUserDepartment(row.userId)
@@ -345,6 +407,7 @@ const getUserId = async (row: User) => {
     }
     form.userId = row.userId
     form.userName = row.avatarName
+    // form.userOperationId = row.userId
 }
 const deleteUserRole = async () => {
     let res = await axios.deleteUserRoleApi({
@@ -374,6 +437,7 @@ const searchUserRoles = async (id: number) => {
     }
 }
 
+
 // 获取用户部门
 const queryUserDepartment = async (id: number) => {
     await axios.getUserDeptListApi({
@@ -382,6 +446,18 @@ const queryUserDepartment = async (id: number) => {
         if (res.status == 1) {
             userDepartmentList.value = res.data
         }
+    })
+}
+// 查询部门用户
+const queryDeptUser = async (id: number) => {
+    await axios.queryUserMembersApi({
+        deptId: id
+    }).then(res => {
+        console.log(res.data);
+        userListData.value.length = 0
+        res.data.forEach((item: any) => {
+            userListData.value.push(item)
+        });
     })
 }
 // 查询用户部门
@@ -464,7 +540,29 @@ const removeUserDepartment = async (userId: number) => {
     margin-left: 20px;
 }
 
+a {
+    margin: 0 5px;
+    text-decoration: none;
+}
 
+a:hover {
+    color: black;
+    text-decoration: underline;
+}
+
+.touserdetail {
+    color: darkturquoise;
+}
+
+.roles-add,
+.geroup-add {
+    color: crimson;
+}
+
+.roles-delete,
+.geroup-delete {
+    color: green;
+}
 
 :deep(.el-pagination) {
     margin-top: 20px;
