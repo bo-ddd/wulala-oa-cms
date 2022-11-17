@@ -20,6 +20,12 @@ const pageNum = ref(1)
 const pageSize = ref(10)
 const disabled = ref(false)
 const total = ref()
+let taskList = reactive<Task[]>([])
+const searchTaskName = ref('')
+let dialogFormVisible = ref(false)
+let dialogTaskVisible = ref(false)
+const formLabelWidth = '140px'
+let title = ref<string>()
 
 const handleSizeChange = (val: number) => {
     console.log(`一页有${val} `)
@@ -31,12 +37,6 @@ const handleCurrentChange = (val: number) => {
     pageNum.value = val
     getTaskList()
 }
-let taskList = reactive<Task[]>([])
-const searchTaskName = ref('')
-let dialogFormVisible = ref(false)
-let dialogTaskVisible = ref(false)
-const formLabelWidth = '140px'
-let title = ref<string>()
 
 let form = reactive({
     taskName: '',
@@ -159,7 +159,6 @@ const initFormData = function () {
 
 }
 const updateTaskDuplicate = function (row: Task) {
-    form.level = row.level;
     form.id = row.id;
     form.description = row.description;
     form.taskName = row.taskName;
@@ -219,7 +218,6 @@ const clickPublishTask = function (row: Task) {
     console.log(row);
     rowTaskId.value = row.id
     console.log(rowTaskId.value);
-
     dialogTaskVisible.value = true;
 
 }
@@ -236,6 +234,7 @@ const submitPublishTask = function () {
     publishTask()
     initFormData()
 }
+
 </script>
 <template>
     <div class="search mb-10">
@@ -286,7 +285,7 @@ const submitPublishTask = function () {
         </el-table-column>
         <el-table-column label="操作" align="center" width="300">
             <template #default="scope">
-                <el-button size="small" @click="clickPublishTask(scope.row)" type="danger" plain>发布消息</el-button>
+                <el-button size="small" @click="clickPublishTask(scope.row)" type="danger" plain>发布任务</el-button>
                 <el-button size="small" @click="updateTask(scope.$index, scope.row)" type="danger">编辑</el-button>
                 <el-button size="small" type="danger" plain @click="deleteTask(scope.$index, scope.row)">删除</el-button>
             </template>
@@ -348,7 +347,6 @@ const submitPublishTask = function () {
             </span>
         </template>
     </el-dialog>
-
 </template>
 
 <style scoped>

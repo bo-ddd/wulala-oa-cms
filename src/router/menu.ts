@@ -47,19 +47,7 @@ let requiresAuthList = [
         requiresAuth: true
     },
     {
-        id: 305,
-        name: '离职审批',
-        targetPath: '/dimissionApproval',
-        requiresAuth: true
-    },
-    {
         id: 401,
-        name: '发布任务',
-        targetPath: '/publishTask',
-        requiresAuth: true
-    },
-    {
-        id: 402,
         name: '任务列表',
         targetPath: '/taskList',
         requiresAuth: true
