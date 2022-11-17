@@ -14,12 +14,18 @@ const total = ref(0)
 //每页显示条数改变时的回调;
 const handleSizeChange = (val: number) => {
     pageSize.value = val
-    getUserQuitList()
+    getUserQuitList({
+        pageSize: pageSize.value,
+        pageNum: currentPage.value
+    })
 }
 //改变页数时的回调;
 const handleCurrentChange = (val: number) => {
     currentPage.value = val
-    getUserQuitList()
+    getUserQuitList({
+        pageSize: pageSize.value,
+        pageNum: currentPage.value
+    })
 }
 
 interface TableData {
@@ -36,9 +42,9 @@ interface TableData {
 const tableData = reactive<TableData[]>([])
 
 enum StateCode {
-    待审核 = 0,
-    审核通过,
-    拒绝
+    '待审核' = 0,
+    '审核通过',
+    '拒绝'
 }
 
 enum tagType {
@@ -67,12 +73,18 @@ const getUserPost = async (userId: number) => {
     return userPost;
 }
 
+interface UserQuitListParam {
+    avatarName?: string,
+    status?: number,
+    applyStartTime?: string,
+    applyEndTime?: string,
+    pageSize: number,
+    pageNum: number
+
+}
 //获取离职列表数据;
-const getUserQuitList = async () => {
-    let { data } = await axios.getQuitListApi({
-        pageSize: pageSize.value,
-        pageNum: currentPage.value
-    })
+const getUserQuitList = async (param: UserQuitListParam) => {
+    let { data } = await axios.getQuitListApi(param)
     total.value = data.total;
     tableData.length = 0;
     Object.assign(tableData, data.list)
@@ -83,7 +95,10 @@ const getUserQuitList = async () => {
         item.postName = await getUserPost(item.userId) //职位名称
     })
 }
-getUserQuitList()
+getUserQuitList({
+    pageSize: pageSize.value,
+    pageNum: currentPage.value
+})
 
 //处理时间数据格式Api;
 const handleTimeFormat = (Time: string) => {
@@ -155,7 +170,10 @@ const submitForm = async (formEl: FormInstance | undefined) => {
                     ElMessage.error('审批失败')
                 })
                 dialogFormVisible.value = false;
-                getUserQuitList()
+                getUserQuitList({
+                    pageSize: pageSize.value,
+                    pageNum: currentPage.value
+                })
             }).catch(() => {
                 ElMessage({
                     type: 'info',
@@ -167,19 +185,67 @@ const submitForm = async (formEl: FormInstance | undefined) => {
         }
     })
 }
+//查询选项;
+const queryOption: any = reactive({
+    avatarName: '',
+    status: '',
+    duration: '',
+})
+
+//获取-审核状态-查询列表;
+const StateCodeString = ['待审核', '审核通过', '拒绝'];
+
+//获取-用户昵称-查询列表;
+const userAvatarNameList = reactive<string[]>([])
+const getUserAvatarNameList = async () => {
+    const { data } = await axios.getUserListApi({});
+    const res = await axios.getUserListApi({
+        pageSize: data.total
+    })
+    userAvatarNameList.length = 0;
+    res.data.list.forEach((item: { avatarName: string }) => {
+        userAvatarNameList.push(item.avatarName)
+    })
+}
+getUserAvatarNameList()
+
+//查询数据;
+const queryDimissionInfo = () => {
+    getUserQuitList({
+        avatarName: queryOption.avatarName, //姓名
+        status: Number(StateCode[queryOption.status]), //审核状态
+        applyStartTime: queryOption.duration[0],  //开始时间
+        applyEndTime: queryOption.duration[1], //结束时间
+        pageSize: pageSize.value,
+        pageNum: currentPage.value
+    })
+}
+
+
 
 </script>
 
 <template>
-    <el-table :data="tableData" style="width: 100%">
+    <div class="flex-options">
+        <el-select v-model="queryOption.avatarName" placeholder="请输入姓名" size="small">
+            <el-option v-for="item in userAvatarNameList" :key="item" :label="item" :value="item" />
+        </el-select>
+        <el-select v-model="queryOption.status" placeholder="请输入审核状态" size="small">
+            <el-option v-for="item in StateCodeString" :key="item" :label="item" :value="item" />
+        </el-select>
+        <el-date-picker v-model="queryOption.duration" type="daterange" range-separator="至" start-placeholder="开始时间"
+            end-placeholder="结束时间" size="small" />
+        <el-button size="small" type="danger" @click="queryDimissionInfo">查询</el-button>
+    </div>
+    <el-table :data="tableData" style="width: 100%" class="mt-24">
         <el-table-column label="ID" prop="id" align="center" />
         <el-table-column label="姓名" align="center">
             <template #default="scope">
                 <el-tag size="small">{{ scope.row.avatarName }}</el-tag>
             </template>
         </el-table-column>
-        <el-table-column label="部门" sortable prop="department" align="center" />
-        <el-table-column label="职位" sortable prop="postName" align="center" />
+        <el-table-column label="部门" prop="department" align="center" />
+        <el-table-column label="职位" prop="postName" align="center" />
         <el-table-column label="申请日期" sortable prop="applyTime" align="center" />
         <el-table-column label="离职日期" sortable prop="quitTime" align="center" />
         <el-table-column label="离职原因" prop="reason" align="center" />
@@ -198,7 +264,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     </el-table>
     <el-pagination v-model:currentPage="currentPage" v-model:page-size="pageSize" :page-sizes="[5, 10, 20, 30, 40]"
         :background="true" layout="total, sizes, prev, pager, next, jumper" :total="total"
-        @size-change="handleSizeChange" @current-change="handleCurrentChange" />
+        @size-change="handleSizeChange" @current-change="handleCurrentChange" class="mt-24" />
 
     <el-dialog v-model="dialogFormVisible" title="审核处理">
         <el-form ref="approvalFormRef" :model="approvalForm" hide-required-asterisk size="small" label-width="120px"
@@ -238,5 +304,15 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 /* 弹出框中的文本域 */
 :deep(.el-textarea__inner) {
     width: 80%
+}
+
+:deep(.el-input__inner) {
+    width: 100px
+}
+
+.flex-options {
+    display: flex;
+    width: 50%;
+    gap: 12px;
 }
 </style>
