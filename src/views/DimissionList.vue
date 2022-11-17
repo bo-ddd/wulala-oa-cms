@@ -94,6 +94,7 @@ const handleTimeFormat = (Time: string) => {
 //审核按钮的点击事件;
 const handleEdit = (index: number, row: TableData) => {
     dialogFormVisible.value = true
+    approvalForm.id = row.id
 }
 //审核按钮的状态;
 const buttonStatus = ref(false)
@@ -103,10 +104,12 @@ const formLabelWidth = '140px';
 const approvalFormRef = ref<FormInstance>()
 
 interface ApprovalForm {
+    id: number;
     operation: string;
     suggestion: string;
 }
 const approvalForm = reactive<ApprovalForm>({
+    id: 0,
     operation: '',
     suggestion: ''
 })
@@ -140,8 +143,9 @@ const submitForm = async (formEl: FormInstance | undefined) => {
                 }
             ).then(async () => {
                 //调用提交接口;
-                await axios.userQuitApplyApi({
-
+                await axios.quitUserExamineApi({
+                    id: approvalForm.id,
+                    status: approvalForm.operation
                 }).then(res => {
                     ElMessage({
                         type: 'success',
@@ -151,6 +155,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
                     ElMessage.error('审批失败')
                 })
                 dialogFormVisible.value = false;
+                getUserQuitList()
             }).catch(() => {
                 ElMessage({
                     type: 'info',
@@ -200,8 +205,8 @@ const submitForm = async (formEl: FormInstance | undefined) => {
             :rule="rules">
             <el-form-item label="审核操作" prop="operation">
                 <el-radio-group v-model="approvalForm.operation">
-                    <el-radio label="1">通过</el-radio>
-                    <el-radio label="2">拒绝</el-radio>
+                    <el-radio :label="1">通过</el-radio>
+                    <el-radio :label="2">拒绝</el-radio>
                 </el-radio-group>
             </el-form-item>
             <el-form-item label="审核意见" prop="suggestion">

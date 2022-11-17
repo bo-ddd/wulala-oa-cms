@@ -130,8 +130,8 @@ const dropDownList = [
     },
     {
         id: 3,
-        name: '我的审核',
-        targetPath: '/auditStatus',
+        name: '我的任务',
+        targetPath: '/task',
         childrenList: []
     },
     {
