@@ -342,5 +342,13 @@ export default {
     getQuitListApi(payload = {}) {
         return axios.post('/user/quit/list', payload)
     },
+    /**
+    * 离职审核
+    * "id": number, //离职id
+      "status": number //0: 待审核 1： 审核通过 2： 拒绝
+    * **/
+     quitUserExamineApi(payload = {}) {
+        return axios.post('/user/quit/examine', payload)
+    },
 
 }

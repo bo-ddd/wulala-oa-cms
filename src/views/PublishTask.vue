@@ -58,18 +58,18 @@ const taskLevelName = function (level: number | string) {
     return level == 0 ? '普通' : "紧急"
 }
 ///处理任务状态
-const taskStatusName = function (status: number | string) {
-    switch (status) {
-        case 0:
-            return "未开始";
-        case 1:
-            return "进行中";
-        case 2:
-            return "已完成";
-        case 3:
-            return "已过期";
-    }
-}
+// const taskStatusName = function (status: number | string) {
+//     switch (status) {
+//         case 0:
+//             return "未开始";
+//         case 1:
+//             return "进行中";
+//         case 2:
+//             return "已完成";
+//         case 3:
+//             return "已过期";
+//     }
+// }
 const handleSizeChange = (val: number) => {
     console.log(`一页有${val} `)
     pageSize.value = val
@@ -80,6 +80,19 @@ const handleCurrentChange = (val: number) => {
     console.log(`当前几页 :${val}`)
     pageNum.value = val
     getUserTaskList()
+}
+enum StateCode {
+    未开始 = 0,
+    进行中,
+    已完成,
+    已过期
+}
+
+enum tagType {
+    '' = 0,
+    warning=1,
+    success,
+    danger,
 }
 </script>
 <template>
@@ -112,7 +125,7 @@ const handleCurrentChange = (val: number) => {
         </el-table-column>
         <el-table-column label="任务状态" align="center">
             <template #default="scope" align="center">
-                <el-tag>{{ taskStatusName(scope.row.status) }}</el-tag>
+                <el-tag :type="tagType[scope.row.status]">{{ StateCode[scope.row.status] }}</el-tag>
             </template>
         </el-table-column>
         <el-table-column label="操作" align="center" width="200">
