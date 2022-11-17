@@ -69,7 +69,7 @@
                     <el-option v-for="item in operation" :key="item.id" :label="item.name" :value="item.id"
                         @onclick="item.function(scope.row)" />
                 </el-select> -->
-                <a class="touserdetail" @click="toUserDetail()">用户详情</a>
+                <a class="touserdetail" @click="toUserDetail(scope.row.userId)">用户详情</a>
                 <a class="roles-add" @click="getUserId(scope.row); dialogFormVisibleAdd = true">添加角色</a>
                 <a class="roles-delete" @click="getUserId(scope.row); dialogFormVisibleDelete = true">删除角色</a>
                 <a class="geroup-add" @click="getUserId(scope.row); dialogFormisiblGeroup = true">添加部门</a>
@@ -195,7 +195,7 @@ const operation = [
         id: 1,
         name: '用户详情',
         function: (row: User) => {
-            toUserDetail()
+            toUserDetail(row.userId)
         }
     }, {
         id: 2,
@@ -229,8 +229,15 @@ const disabled = ref(false)
 const formLabelWidth = '140px'
 const router = useRouter();
 
-const toUserDetail = () => {
-    router.push('userDetail')
+const toUserDetail = (id: number) => {
+    console.log(id);
+    
+    router.push({
+        name: 'userDetail',
+        query: {
+            id
+        }
+    })
 }
 const handleSizeChange = async (val: number) => {
     console.log(`每页${val}条信息`);
@@ -297,10 +304,10 @@ interface User {
     userId: number
 }
 
-let dialogFormVisibleAdd = ref(false);
-let dialogFormVisibleDelete = ref(false);
-let dialogFormisiblGeroup = ref(false);
-let dialogFormisiblDelete = ref(false);
+const dialogFormVisibleAdd = ref(false);
+const dialogFormVisibleDelete = ref(false);
+const dialogFormisiblGeroup = ref(false);
+const dialogFormisiblDelete = ref(false);
 
 const form = reactive({
     deptId: 0,
