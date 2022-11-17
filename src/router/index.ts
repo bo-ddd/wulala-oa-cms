@@ -202,15 +202,6 @@ let dynamicRoutes = [
       requiresAuth: true
     }
   },
-  {//发布任务页面;
-    path: "/publishTask",
-    name: "publishTask",
-    component: () => import("../views/PublishTask.vue"),
-    meta: {
-      label: "发布任务",
-      requiresAuth: true
-    }
-  },
   {//任务列表页面;
     path: "/taskList",
     name: "taskList",
