@@ -141,29 +141,30 @@ const resetForm = (formEl: FormInstance | undefined) => {
     formEl.resetFields()
 }
 //通知申请人审核结果功能;
-const applicantId=ref(0);
+const applicantId = ref(0);
 //创建消息api;
-const createMessage = async (text:string) => {
-    let {data} = await axios.createMessageApi({
+const createMessage = async (text: string) => {
+    let { data } = await axios.createMessageApi({
         content: text
     })
-    return data.msgId
+    return data.id
 }
 //发送消息;
-const sentMessage= (text:string)=>{
+const sentMessage = async (text: string) => {
     axios.sendMessageApi({
-        userId:applicantId.value,
-        msgId: createMessage(text)
+        userId: applicantId.value,
+        msgId: await createMessage(text)
     })
 }
 
+//完后审核，提交表单;
 const submitForm = async (formEl: FormInstance | undefined) => {
     if (!formEl) return
     await formEl.validate((valid, fields) => {
         if (valid) {
             //确认消息弹出框
             ElMessageBox.confirm(
-                '您确定提交离职申请吗？',
+                '您确定要提交审核吗？',
                 '提示',
                 {
                     confirmButtonText: '确认',
@@ -181,7 +182,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
                         message: '审批成功',
                     })
                     //发送消息给离职申请人;
-                     approvalForm.operation=='1'? sentMessage('您的申请已通过'):sentMessage('您的申请被拒绝');
+                    approvalForm.operation == '1' ? sentMessage('您的申请已通过') : sentMessage('您的申请被拒绝');
                 }, error => {
                     ElMessage.error('审批失败')
                 })
@@ -321,6 +322,7 @@ const queryDimissionInfo = () => {
 :deep(.el-input__inner) {
     width: 100px
 }
+
 .flex-options {
     display: flex;
     width: 50%;
