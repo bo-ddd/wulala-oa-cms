@@ -143,6 +143,23 @@ const resetForm = (formEl: FormInstance | undefined) => {
     if (!formEl) return
     formEl.resetFields()
 }
+const createMessage = async () => {
+    let res = await axios.createMessageApi({
+        content: "小飞棍来喽"
+    })
+    console.log(res)
+}
+const queryMessage = async () => {
+    let { data } = await axios.queryMessageListApi({});
+    console.log('data.list')
+    console.log(data.list)
+}
+const sentMessage = () => {
+    createMessage()
+    queryMessage()
+}
+
+
 const submitForm = async (formEl: FormInstance | undefined) => {
     if (!formEl) return
     await formEl.validate((valid, fields) => {
@@ -166,6 +183,8 @@ const submitForm = async (formEl: FormInstance | undefined) => {
                         type: 'success',
                         message: '审批成功',
                     })
+                    //发送消息给离职申请人;
+                    sentMessage()
                 }, error => {
                     ElMessage.error('审批失败')
                 })
@@ -227,7 +246,7 @@ const queryDimissionInfo = () => {
 
 <template>
     <div class="flex-options">
-        <el-select v-model="queryOption.avatarName" placeholder="请输入姓名" size="small">
+        <el-select v-model="queryOption.avatarName" placeholder="请输入姓名" filterable size="small">
             <el-option v-for="item in userAvatarNameList" :key="item" :label="item" :value="item" />
         </el-select>
         <el-select v-model="queryOption.status" placeholder="请输入审核状态" size="small">
