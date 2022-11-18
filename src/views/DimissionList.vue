@@ -9,8 +9,6 @@ const currentPage = ref(1) //当前是第几页;
 const pageSize = ref(10)  //每页显示的条数;
 const total = ref(0)
 
-
-
 //每页显示条数改变时的回调;
 const handleSizeChange = (val: number) => {
     pageSize.value = val
@@ -72,7 +70,7 @@ const getUserPost = async (userId: number) => {
     })
     return userPost;
 }
-
+//查询参数的类型;
 interface UserQuitListParam {
     avatarName?: string,
     status?: number,
@@ -85,6 +83,7 @@ interface UserQuitListParam {
 //获取离职列表数据;
 const getUserQuitList = async (param: UserQuitListParam) => {
     let { data } = await axios.getQuitListApi(param)
+    console.log(data.list)
     total.value = data.total;
     tableData.length = 0;
     Object.assign(tableData, data.list)
@@ -95,6 +94,7 @@ const getUserQuitList = async (param: UserQuitListParam) => {
         item.postName = await getUserPost(item.userId) //职位名称
     })
 }
+//刷新页面，初始化数据列表;
 getUserQuitList({
     pageSize: pageSize.value,
     pageNum: currentPage.value
@@ -105,17 +105,14 @@ const handleTimeFormat = (Time: string) => {
     return Time.substring(0, 10)
 }
 
-
 //审核按钮的点击事件;
 const handleEdit = (index: number, row: TableData) => {
     dialogFormVisible.value = true
     approvalForm.id = row.id
+    applicantId.value = row.userId
 }
-//审核按钮的状态;
-const buttonStatus = ref(false)
 //审核按钮弹层;
 const dialogFormVisible = ref(false)
-const formLabelWidth = '140px';
 const approvalFormRef = ref<FormInstance>()
 
 interface ApprovalForm {
@@ -143,22 +140,22 @@ const resetForm = (formEl: FormInstance | undefined) => {
     if (!formEl) return
     formEl.resetFields()
 }
-const createMessage = async () => {
-    let res = await axios.createMessageApi({
-        content: "小飞棍来喽"
+//通知申请人审核结果功能;
+const applicantId=ref(0);
+//创建消息api;
+const createMessage = async (text:string) => {
+    let {data} = await axios.createMessageApi({
+        content: text
     })
-    console.log(res)
+    return data.msgId
 }
-const queryMessage = async () => {
-    let { data } = await axios.queryMessageListApi({});
-    console.log('data.list')
-    console.log(data.list)
+//发送消息;
+const sentMessage= (text:string)=>{
+    axios.sendMessageApi({
+        userId:applicantId.value,
+        msgId: createMessage(text)
+    })
 }
-const sentMessage = () => {
-    createMessage()
-    queryMessage()
-}
-
 
 const submitForm = async (formEl: FormInstance | undefined) => {
     if (!formEl) return
@@ -184,7 +181,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
                         message: '审批成功',
                     })
                     //发送消息给离职申请人;
-                    sentMessage()
+                     approvalForm.operation=='1'? sentMessage('您的申请已通过'):sentMessage('您的申请被拒绝');
                 }, error => {
                     ElMessage.error('审批失败')
                 })
@@ -239,9 +236,6 @@ const queryDimissionInfo = () => {
         pageNum: currentPage.value
     })
 }
-
-
-
 </script>
 
 <template>
@@ -310,7 +304,6 @@ const queryDimissionInfo = () => {
     </el-dialog>
 </template>
 
-
 <style scoped>
 .demo-pagination-block+.demo-pagination-block {
     margin-top: 10px;
@@ -328,7 +321,6 @@ const queryDimissionInfo = () => {
 :deep(.el-input__inner) {
     width: 100px
 }
-
 .flex-options {
     display: flex;
     width: 50%;
