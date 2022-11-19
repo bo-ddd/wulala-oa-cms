@@ -12,18 +12,12 @@ const total = ref(0)
 //每页显示条数改变时的回调;
 const handleSizeChange = (val: number) => {
     pageSize.value = val
-    getUserQuitList({
-        pageSize: pageSize.value,
-        pageNum: currentPage.value
-    })
+    queryDimissionInfo()
 }
 //改变页数时的回调;
 const handleCurrentChange = (val: number) => {
     currentPage.value = val
-    getUserQuitList({
-        pageSize: pageSize.value,
-        pageNum: currentPage.value
-    })
+    queryDimissionInfo()
 }
 
 interface TableData {
@@ -35,6 +29,7 @@ interface TableData {
     applyTime: string
     quitTime: string
     reason: string
+    enclosure: string
     status: number
 }
 const tableData = reactive<TableData[]>([])
@@ -237,6 +232,7 @@ const queryDimissionInfo = () => {
         pageNum: currentPage.value
     })
 }
+
 </script>
 
 <template>
@@ -263,6 +259,13 @@ const queryDimissionInfo = () => {
         <el-table-column label="申请日期" sortable prop="applyTime" align="center" />
         <el-table-column label="离职日期" sortable prop="quitTime" align="center" />
         <el-table-column label="离职原因" prop="reason" align="center" />
+        <el-table-column label="附件" prop="enclosure" align="center">
+            <template #default="scope">
+                <el-link :type="scope.row.enclosure ? 'primary' : 'info'" :href="scope.row.enclosure"
+                    :disabled="scope.row.status != 0 || !scope.row.enclosure">
+                    {{ scope.row.enclosure ? '查看' : '无' }}</el-link>
+            </template>
+        </el-table-column>
         <el-table-column label="审核状态" prop="status" align="center">
             <template #default="scope">
                 <el-tag :type="tagType[scope.row.status]" size="small">{{ StateCode[scope.row.status] }}
@@ -276,10 +279,11 @@ const queryDimissionInfo = () => {
             </template>
         </el-table-column>
     </el-table>
+    <!-- 分页 -->
     <el-pagination v-model:currentPage="currentPage" v-model:page-size="pageSize" :page-sizes="[5, 10, 20, 30, 40]"
         :background="true" layout="total, sizes, prev, pager, next, jumper" :total="total"
         @size-change="handleSizeChange" @current-change="handleCurrentChange" class="mt-24" />
-
+    <!-- 弹框 -->
     <el-dialog v-model="dialogFormVisible" title="审核处理">
         <el-form ref="approvalFormRef" :model="approvalForm" hide-required-asterisk size="small" label-width="120px"
             :rule="rules">

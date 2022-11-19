@@ -2,9 +2,9 @@
 import { ref, reactive } from 'vue'
 import axios from '../assets/api/api'
 import type { FormInstance, FormRules } from 'element-plus'
-import { UploadFilled } from '@element-plus/icons-vue';
 import { useRouter } from 'vue-router';
 import { ElMessage, ElMessageBox } from 'element-plus'
+import type { UploadProps, UploadUserFile } from 'element-plus'
 const router = useRouter()
 const ruleFormRef = ref<FormInstance>()
 const ruleForm = reactive({
@@ -14,7 +14,8 @@ const ruleForm = reactive({
   applicationTime: '',
   duration: '',
   quitType: '主动离职',
-  reason: ''
+  reason: '',
+  enclosure: ''
 })
 const rules = reactive<FormRules>({
   duration: [
@@ -87,7 +88,8 @@ const submitForm = async (formEl: FormInstance | undefined) => {
           await axios.userQuitApplyApi({
             userId: userId.value,
             quitTime,
-            reason: ruleForm.reason
+            reason: ruleForm.reason,
+            enclosure: ruleForm.enclosure
           }).then(res => {
             ElMessage({
               type: 'success',
@@ -114,7 +116,35 @@ const resetForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return
   formEl.resetFields()
 }
+//上传附件;
+const fileList = ref<UploadUserFile[]>([])
 
+const handleRemove: UploadProps['onRemove'] = (file, uploadFiles) => {
+  console.log(file, uploadFiles)
+}
+
+const handlePreview: UploadProps['onPreview'] = (uploadFile) => {
+  console.log(uploadFile)
+}
+
+const handleExceed: UploadProps['onExceed'] = (files, uploadFiles) => {
+  ElMessage.warning(
+    `您选择了${files.length} 文件，已超过最大上传数量`
+  )
+}
+
+const beforeRemove: UploadProps['beforeRemove'] = (uploadFile, uploadFiles) => {
+  return ElMessageBox.confirm(
+    `确定取消上传 ${uploadFile.name} ?`
+  ).then(
+    () => true,
+    () => false
+  )
+}
+
+const handleSuccessUpload = (response: any) => {
+  ruleForm.enclosure = response.data.url
+}
 
 </script>
 
@@ -149,23 +179,21 @@ const resetForm = (formEl: FormInstance | undefined) => {
       <el-form-item label="离职原因" prop="reason" required>
         <el-input v-model="ruleForm.reason" type="textarea" resize='none' />
       </el-form-item>
-      <el-form-item label="附件" >
-        <el-upload action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15" class="upload-demo" drag
-          multiple>
-          <el-icon class="el-icon--upload">
-            <upload-filled />
-          </el-icon>
-          <div class="el-upload__text">
-            拖拽上传 <em>点击上传</em>
-          </div>
+
+      <el-form-item label="附件">
+        <el-upload v-model:file-list="fileList" class="upload-demo" multiple :on-preview="handlePreview"
+          action="/api/upload/enclosure" :on-remove="handleRemove" :before-remove="beforeRemove" :limit="1"
+          :on-exceed="handleExceed" :on-success="handleSuccessUpload">
+          <el-button type="danger">点击上传</el-button>
           <template #tip>
             <div class="el-upload__tip">
-              jpg/png files with a size less than 500kb
+              jpg/png 格式文件不能超过 500KB
             </div>
           </template>
         </el-upload>
       </el-form-item>
-      <el-form-item>
+
+      <el-form-item class="mt-20">
         <el-button type="danger" @click="submitForm(ruleFormRef)">提交申请</el-button>
         <el-button @click="resetForm(ruleFormRef)">重置</el-button>
       </el-form-item>
@@ -199,5 +227,8 @@ const resetForm = (formEl: FormInstance | undefined) => {
 .grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
+}
+.el-upload__tip {
+  color: rgb(155, 151, 151)
 }
 </style>
