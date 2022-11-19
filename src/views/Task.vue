@@ -2,20 +2,34 @@
 import axios from "@/assets/api/api";
 import { reactive, ref } from "vue";
 import type { Task } from "../types/Task";
+import { useStore } from "../stores/nav";
+import { storeToRefs } from "pinia";
+let userStore=useStore()
+// const {}=storeToRefs(userStore)
+
 let dialogFormVisible = ref(false)
 let userTaskList = reactive<Task[]>([])
 let taskStatus = ref(0)
-let taskId = ref(0)
+let taskId = ref(0) 
+let userId = ref(0) 
 const pageNum = ref(1)
 const pageSize = ref(5)
 const total = ref()
 const disabled = ref(false)
 
+const queryUserInfo=async function(){
+   let res= await axios.queryUserInfoApi()
+   if(res.status==1){
+      console.log(res);
+      userId.value=res.data.userId
+   }
+}
 //封装用户任务列表
 const getUserTaskList = async function () {
     let res = await axios.getUserTaskListApi({
         pageNum: pageNum.value,
-        pageSize: pageSize.value
+        pageSize: pageSize.value,
+        status:null
     })
     if (res.status == 1) {
         console.log(res);
@@ -31,10 +45,9 @@ const getUserTaskList = async function () {
     }
 }
 getUserTaskList()
+queryUserInfo()
 
-// const deleteTask = (index: number, row: Task) => {
-//     console.log(index, row)
-// }
+
 //点击任务状态按钮
 const updateTask = (row: Task) => {
     console.log(row)
@@ -93,13 +106,37 @@ enum tagType {
     success,
     danger,
 }
+const formInline = reactive({
+  user: '',
+  region: '',
+})
+
+const queryTask = () => {
+    getUserTaskList()
+}
+const viewDetails = (index: number, row: Task) => {
+    console.log(index, row)
+}
 </script>
 <template>
-
+ <el-form :inline="true" :model="formInline" class="demo-form-inline">
+    <el-form-item label="查询">
+      <el-input v-model="formInline.user" placeholder="发布人/优先级/状态查询" size="small"/>
+    </el-form-item>
+    <el-form-item>
+      <el-button @click="queryTask" type="danger" size="small">查询</el-button>
+    </el-form-item>
+  </el-form>
     <el-table :data="userTaskList" style="width: 100%" class="mb-10">
         <el-table-column label="任务Id" align="center">
             <template #default="scope" align="center">
                 <div>{{ scope.row.id }}</div>
+            </template>
+        </el-table-column>
+       
+        <el-table-column label="领取人" align="center">
+            <template #default="scope" align="center">
+                <el-tag>{{ scope.row.receiveAvatarName }}</el-tag>
             </template>
         </el-table-column>
         <el-table-column label="任务名称" align="center">
@@ -112,16 +149,17 @@ enum tagType {
                 <div>{{ scope.row.description }}</div>
             </template>
         </el-table-column>
-        <el-table-column label="等级" align="center">
-            <template #default="scope" align="center">
-                <div>{{ taskLevelName(scope.row.level) }}</div>
-            </template>
-        </el-table-column>
         <el-table-column label="发布人" align="center">
             <template #default="scope" align="center">
                 <el-tag>{{ scope.row.senderAvatarName }}</el-tag>
             </template>
         </el-table-column>
+        <el-table-column label="等级" align="center">
+            <template #default="scope" align="center">
+                <div>{{ taskLevelName(scope.row.level) }}</div>
+            </template>
+        </el-table-column>
+        
         <el-table-column label="任务状态" align="center">
             <template #default="scope" align="center">
                 <el-tag :type="tagType[scope.row.status]">{{ StateCode[scope.row.status] }}</el-tag>
@@ -129,8 +167,8 @@ enum tagType {
         </el-table-column>
         <el-table-column label="操作" align="center" width="200">
             <template #default="scope">
-                <!-- <el-button size="small" type="danger" plain @click="deleteTask(scope.$index, scope.row)">接收任务</el-button> -->
-                <el-button size="small" @click="updateTask(scope.row)" type="danger">任务状态</el-button>
+                <el-button size="small" @click="updateTask(scope.row)" type="danger" v-if="scope.row.receiveUserId==userId">任务状态</el-button>
+                <el-button size="small" type="danger"  @click="viewDetails(scope.$index, scope.row)">查看详情</el-button>
             </template>
         </el-table-column>
     </el-table>

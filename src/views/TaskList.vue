@@ -105,7 +105,18 @@ const publishTask = function () {
             })
             )
             Promise.all(userArr).then(res => {
-                console.log('成功')
+                if(res[0].status==1){
+                    ElMessage({
+                    message: '发布成功',
+                    type: 'success',
+                })
+                dialogTaskVisible.value=false;
+                }else{
+                    ElMessage({
+                        message: res[0].msg,
+                        type: 'warning',
+                    })
+                }
             })
         })
     }
@@ -213,7 +224,7 @@ const taskRecipient = function (val: any) {
     console.log(taskReception.value);
 
 }
-//点击确定发布
+//点击发布
 const clickPublishTask = function (row: Task) {
     console.log(row);
     rowTaskId.value = row.id
@@ -333,9 +344,9 @@ const submitPublishTask = function () {
             </el-select>
         </el-form-item>
         <el-form-item label="接收人">
-            <el-select v-model="deptMembersValue" multiple  placeholder="请选择接收人" @change="taskRecipient">
-                <el-option  v-for="(item, index) in deptMembersList" :key="index" :label="item.avatarName"
-                    :value="item.userId"  />
+            <el-select v-model="deptMembersValue" multiple placeholder="请选择接收人" @change="taskRecipient">
+                <el-option v-for="(item, index) in deptMembersList" :key="index" :label="item.avatarName"
+                    :value="item.userId" />
             </el-select>
         </el-form-item>
         <template #footer>
