@@ -378,7 +378,7 @@ const submitPublishTask = function () {
 }
 
 .el-input {
-    width: 300px;
+    width: 200px;
 }
 
 .dialog-footer button:first-child {
