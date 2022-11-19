@@ -13,13 +13,13 @@
         <span class="label">查询部门用户：</span>
         <!-- <el-input v-model="departmentInput" size="small" placeholder="请输入用户ID" clearable /> -->
 
-        <el-select v-model="form.deptId" size="small" filterable placeholder="请输入部门名称" clearable>
+        <el-select v-model="form.searchDepId" size="small" filterable placeholder="请输入部门名称" clearable>
             <el-option v-for="item in departmentList" :key="item.id" :label="item.name" :value="item.id" />
         </el-select>
 
         <!-- <el-button class="ml-10" type="danger" size="small" @click="searchUserDepartment(form.userId)">查询 
         </el-button> -->
-        <el-button class="ml-10" type="danger" size="small" @click="queryDeptUser(form.deptId)">查询成员
+        <el-button class="ml-10" type="danger" size="small" @click="queryDeptUser(form.searchDepId)">查询成员
         </el-button>
 
         <el-button class="ml-10" type="danger" size="small" @click="getUserList()">重置</el-button>
@@ -103,7 +103,7 @@
         <template #footer>
             <span class="dialog-footer">
                 <el-button @click="dialogFormVisibleAdd = false">取消</el-button>
-                <el-button type="primary" @click="dialogFormVisibleAdd = false; addUserRole(form.userId, form.rolesId)">
+                <el-button type="primary" @click="dialogFormVisibleAdd = false; addUserRole(form.userId)">
                     确认添加
                 </el-button>
             </span>
@@ -147,7 +147,7 @@
         <template #footer>
             <span class="dialog-footer">
                 <el-button @click="dialogFormisiblGeroup = false">取消</el-button>
-                <el-button type="primary" @click="dialogFormisiblGeroup = false; addDepartment(form.userId)">
+                <el-button type="primary" @click="dialogFormisiblGeroup = false; addDepartment()">
                     确认添加
                 </el-button>
             </span>
@@ -189,40 +189,7 @@ import { ref, reactive } from 'vue'
 import axios from '@/assets/api/api'
 import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router';
-const selectIndex = ref(0)
-const operation = [
-    {
-        id: 1,
-        name: '用户详情',
-        function: (row: User) => {
-            toUserDetail(row.userId)
-        }
-    }, {
-        id: 2,
-        name: '添加角色',
-        function: (row: User) => {
-            getUserId(row)
-        },
-    }, {
-        id: 3,
-        name: '删除角色',
-        function: (row: User) => {
-            getUserId(row)
-        }
-    }, {
-        id: 4,
-        name: '添加部门',
-        function: (row: User) => {
-            getUserId(row)
-        }
-    }, {
-        id: 5,
-        name: '删除部门',
-        function: (row: User) => {
-            getUserId(row)
-        }
-    },
-]
+
 const small = ref(false)
 const background = ref(true)
 const disabled = ref(false)
@@ -231,7 +198,7 @@ const router = useRouter();
 
 const toUserDetail = (id: number) => {
     console.log(id);
-    
+
     router.push({
         name: 'userDetail',
         query: {
@@ -311,10 +278,10 @@ const dialogFormisiblDelete = ref(false);
 
 const form = reactive({
     deptId: 0,
-    depName: null,
+    depName: '',
+    searchDepId: null,
     userId: 0,
     rolesId: null,
-    userOperationId: null,
     userName: '用户昵称'
 })
 
@@ -336,10 +303,10 @@ const showDeptName = function (deptList: any) {
     return str.substring(0, str.length - 1);
 }
 // 添加用户角色
-const addUserRole = async (addUserId: number, addRoleId: number) => {
+const addUserRole = async (addUserId: number) => {
     let res = await axios.addUserRoleApi({
         userId: addUserId,
-        roleId: addRoleId
+        roleId: form.rolesId
     })
     if (res.status == 1) {
         // userSearch(addUserId)
@@ -414,7 +381,6 @@ const getUserId = async (row: User) => {
     }
     form.userId = row.userId
     form.userName = row.avatarName
-    // form.userOperationId = row.userId
 }
 const deleteUserRole = async () => {
     let res = await axios.deleteUserRoleApi({
@@ -428,23 +394,6 @@ const deleteUserRole = async () => {
         deleteError();
     }
 }
-// 查询用户角色
-const searchUserRoles = async (id: number) => {
-    label.value = '用户角色'
-    let res = await axios.queryUserInfoApi({
-        userId: id
-    })
-    if (res.status == 1) {
-        console.log('-----查询成功----------');
-        console.log(res.data);
-        userListData.value.length = 0
-        userListData.value.push(res.data)
-    } else {
-        upError();
-    }
-}
-
-
 // 获取用户部门
 const queryUserDepartment = async (id: number) => {
     await axios.getUserDeptListApi({
@@ -490,6 +439,7 @@ const getDepartmentId = async () => {
     await axios.getDeptList({}).then(res => {
         if (res.status == 1) {
             form.deptId = res.data.id
+            form.searchDepId = res.data.id
             form.depName = res.data.name
             departmentList.value = res.data
         }
@@ -498,7 +448,7 @@ const getDepartmentId = async () => {
 
 
 getDepartmentId();
-const addDepartment = async (userId: number) => {
+const addDepartment = async () => {
     getDepartmentId();
     await axios.addUserDeptApi({
         userId: form.userId,
@@ -512,6 +462,7 @@ const addDepartment = async (userId: number) => {
             addError();
         }
     })
+    form.depName = ''
 }
 
 // 删除用户部门
@@ -526,7 +477,7 @@ const removeUserDepartment = async (userId: number) => {
             deleteError();
         }
     })
-    form.deptId = null
+    form.depName = ''
 }
 </script>
 

@@ -149,8 +149,8 @@ const resetForm = (formEl: FormInstance | undefined) => {
       <el-form-item label="离职原因" prop="reason" required>
         <el-input v-model="ruleForm.reason" type="textarea" resize='none' />
       </el-form-item>
-      <el-form-item label="附件">
-        <el-upload class="upload-demo" drag action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
+      <el-form-item label="附件" >
+        <el-upload action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15" class="upload-demo" drag
           multiple>
           <el-icon class="el-icon--upload">
             <upload-filled />

@@ -156,9 +156,14 @@ const dialogFormVisibleDelete = ref(false)
     </div>
 
     <el-table :data="departmentList" border style="width: 100%" fit>
+        <el-table-column label="部门ID" width="200px" align="center">
+            <template #default="scope">
+                <el-tag size="small" type="warning">{{ scope.row.id }}</el-tag>
+            </template>
+        </el-table-column>
         <el-table-column label="部门名称" align="center">
             <template #default="scope">
-                <el-tag size="small" type="warning">{{ scope.row.name }}</el-tag>
+                <el-tag size="small" >{{ scope.row.name }}</el-tag>
             </template>
         </el-table-column>
         <el-table-column label="操作" width="320" align='center'>
@@ -178,8 +183,8 @@ const dialogFormVisibleDelete = ref(false)
             <el-form-item label="当前部门名称" :label-width="formLabelWidth">
                 <el-input v-model="form.name" size="small" autocomplete="off" readonly='readonly' />
             </el-form-item>
-            <el-form-item label="新的权限名称" :label-width="formLabelWidth">
-                <el-input v-model="newDepartmentName" size="small" placeholder="请输入新的权限名称" clearable />
+            <el-form-item label="新的部门名称" :label-width="formLabelWidth">
+                <el-input v-model="newDepartmentName" size="small" placeholder="请输入新的部门名称" clearable />
             </el-form-item>
         </el-form>
         <template #footer>
