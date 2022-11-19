@@ -12,18 +12,12 @@ const total = ref(0)
 //每页显示条数改变时的回调;
 const handleSizeChange = (val: number) => {
     pageSize.value = val
-    getUserQuitList({
-        pageSize: pageSize.value,
-        pageNum: currentPage.value
-    })
+    queryDimissionInfo()
 }
 //改变页数时的回调;
 const handleCurrentChange = (val: number) => {
     currentPage.value = val
-    getUserQuitList({
-        pageSize: pageSize.value,
-        pageNum: currentPage.value
-    })
+    queryDimissionInfo()
 }
 
 interface TableData {
