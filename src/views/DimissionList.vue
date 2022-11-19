@@ -238,8 +238,6 @@ const queryDimissionInfo = () => {
         pageNum: currentPage.value
     })
 }
-//附件;
-const enclosureDisabledStatus = ref(false)
 
 </script>
 
