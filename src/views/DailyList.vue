@@ -93,7 +93,6 @@ const handleCurrentChange = (val: number) => {
 }
 
 const handleEdit = async (row: User,id :number) => {
-  console.log(row);
   router.push({
     name:'dailyDetail',
     query:{
