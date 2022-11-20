@@ -42,9 +42,9 @@ const router = createRouter({
           },
         },
         {//提交日报编辑页面;
-          path: "/submitDaily",
-          name: "submitDaily",
-          component: () => import("../views/SubmitDaily.vue"),
+          path: "/createDaily",
+          name: "createDaily",
+          component: () => import("../views/CreateDaily.vue"),
           meta: {
             label: "提交日报",
             requiresAuth: false
@@ -103,8 +103,7 @@ const router = createRouter({
             label: "我的任务",
             requiresAuth: false
           }
-        },
-
+        }
       ]
     },
   ],
@@ -131,9 +130,9 @@ let dynamicRoutes = [
     }
   },
   {//日报列表页面;
-    path: "/dailyList",
-    name: "dailyList",
-    component: () => import("../views/DailyList.vue"),
+    path: "/daily",
+    name: "daily",
+    component: () => import("../views/Daily.vue"),
     meta: {
       label: "日报列表",
       requiresAuth: true

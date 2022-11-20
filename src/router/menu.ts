@@ -43,7 +43,7 @@ let requiresAuthList = [
     {
         id: 304,
         name: '日报列表',
-        targetPath: '/dailyList',
+        targetPath: '/daily',
         requiresAuth: true
     },
     {
@@ -118,7 +118,7 @@ let sidebarList: Parent[] = [
             {
                 id: 303,
                 name: '提交日报',
-                targetPath: '/submitDaily',
+                targetPath: '/createDaily',
                 requiresAuth: false
             },
             {
