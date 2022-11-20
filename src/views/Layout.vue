@@ -130,8 +130,8 @@ const dropDownList = [
     },
     {
         id: 3,
-        name: '我的审核',
-        targetPath: '/auditStatus',
+        name: '我的任务',
+        targetPath: '/task',
         childrenList: []
     },
     {
@@ -191,14 +191,6 @@ function to(path: string) {
     activeItem.value = '/'
 }
 
-//侧边栏下拉功能;
-const handleOpen = (key: string, keyPath: string[]) => {
-    console.log(key, keyPath)
-}
-const handleClose = (key: string, keyPath: string[]) => {
-    console.log(key, keyPath)
-}
-
 
 let userInfo = reactive({
     avatarName: '',
@@ -228,8 +220,7 @@ const defaultAvatarImg = 'https://img.ixintu.com/download/jpg/20200815/18ae76680
                 <!-- 动态渲染侧边栏列表 -->
                 <el-row class="tac sidebar-list">
                     <el-col :span="1">
-                        <el-menu router :default-active="activeItem" unique-opened @open="handleOpen"
-                            @close="handleClose">
+                        <el-menu router :default-active="activeItem" unique-opened >
                             <div v-for="(item, index) in sidebarList">
                                 <el-menu-item :index="item.targetPath" :key="index" v-if="!item.childrenList.length">
                                     <el-icon>

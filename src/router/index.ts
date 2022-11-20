@@ -95,15 +95,16 @@ const router = createRouter({
             requiresAuth: false
           }
         },
-        {//审核状态页面;
-          path: "/auditStatus",
-          name: "auditStatus",
-          component: () => import("../views/AuditStatus.vue"),
+        {//我的任务页面;
+          path: "/task",
+          name: "task",
+          component: () => import("../views/Task.vue"),
           meta: {
-            label: "我的审批",
+            label: "我的任务",
             requiresAuth: false
           }
         },
+
       ]
     },
   ],
@@ -192,30 +193,12 @@ let dynamicRoutes = [
       requiresAuth: true
     }
   },
-  {//离职审批页面;
-    path: "/dimissionApproval",
-    name: "dimissionApproval",
-    component: () => import("../views/DimissionApproval.vue"),
-    meta: {
-      label: "离职审批",
-      requiresAuth: true
-    }
-  },
   {//离职列表页面;
     path: "/dimissionList",
     name: "dimissionList",
     component: () => import("../views/DimissionList.vue"),
     meta: {
       label: "离职列表",
-      requiresAuth: true
-    }
-  },
-  {//发布任务页面;
-    path: "/publishTask",
-    name: "publishTask",
-    component: () => import("../views/PublishTask.vue"),
-    meta: {
-      label: "发布任务",
       requiresAuth: true
     }
   },
@@ -234,6 +217,15 @@ let dynamicRoutes = [
     component: () => import("../views/PublishMessage.vue"),
     meta: {
       label: "发布消息",
+      requiresAuth: true
+    }
+  },
+  {//用户详情页面;
+    path: "/userDetail",
+    name: "userDetail",
+    component: () => import("../views/UserDetail.vue"),
+    meta: {
+      label: "用户详情",
       requiresAuth: true
     }
   }
