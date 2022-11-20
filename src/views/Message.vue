@@ -17,7 +17,7 @@ const handleDelete = (index: number, row: User) => {
 }
 let getUserMessageList = ref()
 const getUserMessage = async () => {
-   let asd = await axios.getUserMessageApi({})
+   let asd = await axios.queryMessageListApi({})
    console.log(asd);
 }
 getUserMessage()
