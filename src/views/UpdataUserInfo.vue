@@ -17,7 +17,7 @@ const ruleFormRef = ref<FormInstance>()
 
 interface RuleForm {
     avatarName: string;
-    birthday:  Date | number|null;
+    birthday: Date | number | null;
     hobby: string;
     personalSignature: string;
     phoneNumber: string;
@@ -27,7 +27,7 @@ interface RuleForm {
 }
 
 
-const ruleForm = reactive<RuleForm>({})
+const ruleForm = reactive({} as RuleForm)
 
 //form表单校验规则
 const rules = reactive<FormRules>({
@@ -70,7 +70,7 @@ const rules = reactive<FormRules>({
         { required: true, message: '请输入您的手机号', trigger: 'blur' },
         { min: 11, max: 11, message: '请输入正确的手机号码', trigger: 'blur' },
     ],
-    address:[
+    address: [
         { required: true, message: '请输入您的家庭住址', trigger: 'blur' },
         { min: 0, max: 30, message: '长度不能超过30个字符', trigger: 'blur' },
     ]
@@ -81,12 +81,12 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     await formEl.validate((valid, fields) => {
         if (valid) {
             ruleForm.sex = ruleForm.sex == "男" ? 1 : 0;
-            if(!ruleForm.birthday){
-                ruleForm.birthday=null
-            }else{
+            if (!ruleForm.birthday) {
+                ruleForm.birthday = null
+            } else {
                 ruleForm.birthday = new Date(ruleForm.birthday).valueOf();
             }
-            
+
             axios.updateUserInfoApi(ruleForm).then(res => {
                 ElMessage({
                     message: '修改成功',
@@ -135,16 +135,16 @@ const options = Array.from({ length: 10000 }).map((_, idx) => ({
             </el-form-item>
             <el-form-item label="性别" prop="sex" class="mt-20">
                 <el-radio-group v-model="ruleForm.sex" size="small">
-                    <el-radio label="男"/>
-                    <el-radio label="女"/>
+                    <el-radio label="男" />
+                    <el-radio label="女" />
                 </el-radio-group>
             </el-form-item>
 
             <el-form-item label="生日" required class="birthday-label mt-20">
                 <el-col :span="11">
                     <el-form-item prop="birthday">
-                        <el-date-picker v-model="ruleForm.birthday" type="date" size="small" label="Pick a date" placeholder="选择日期"
-                         />
+                        <el-date-picker v-model="ruleForm.birthday" type="date" size="small" label="Pick a date"
+                            placeholder="选择日期" />
                     </el-form-item>
                 </el-col>
             </el-form-item>
@@ -164,21 +164,6 @@ const options = Array.from({ length: 10000 }).map((_, idx) => ({
             <el-form-item label="个性签名" prop="personalSignatrue" class="mt-20">
                 <el-input v-model="ruleForm.personalSignature" type="text" size="small" placeholder="非必填项" />
             </el-form-item>
-
-
-            <!-- <el-form-item label="标签(非必选)" prop="tags" class="mt-20">
-                <el-checkbox-group v-model="">
-                    <el-checkbox label="夜猫子协会常任理事" name="tags" />
-                    <el-checkbox label="顶级外卖鉴赏师" name="tags" />
-                    <el-checkbox label="秃头选拔赛形象大使" name="tags" />
-                    <el-checkbox label="互联网冲浪金牌选手" name="tags" />
-                    <el-checkbox label="退役熬夜选手" name="tags" />
-                    <el-checkbox label="P图竞赛金奖获得者" name="tags" />
-                    <el-checkbox label="花式作死冠军" name="tags" />
-                    <el-checkbox label="魔芋爽" name="tags" />
-                </el-checkbox-group>
-            </el-form-item> -->
-
             <el-form-item>
                 <el-button type="danger" @click="submitForm(ruleFormRef)" size="small">确认</el-button>
                 <el-button @click="resetForm(ruleFormRef)" size="small">重置</el-button>
@@ -188,7 +173,7 @@ const options = Array.from({ length: 10000 }).map((_, idx) => ({
 </template>
 
 <style scoped>
-:deep(.el-input){
-    width:200px
+:deep(.el-input) {
+    width: 200px
 }
 </style>

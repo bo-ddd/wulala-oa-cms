@@ -94,14 +94,14 @@ function imgToBase64(url: string, outputFormat?: string | null) {
 
 
 //图片移动事件
-function imgMoving(data) {
+function imgMoving(data:any) {
     //获取图片距离外边框的尺寸
     console.log(data)
     
 }
 
 //裁剪框移动事件
-function cropMoving(data) {
+function cropMoving(data:any) {
     //获取裁剪框的距离外边框的距离
     console.log(data)
 }
@@ -109,7 +109,7 @@ function cropMoving(data) {
 
 
 //返回图片加载的状态，success/error
-function imgLoad(data) {
+function imgLoad(data:any) {
     console.log(data)
 }
 
@@ -117,7 +117,7 @@ function imgLoad(data) {
 //realTime实时预览事件
 const previewHtml: Ref = ref('')
 const previewRadius: Ref = ref('')
-function realTime(obj) {
+function realTime(obj:any) {
     previewRadius.value = obj.w;
     previewHtml.value = obj.html
 }
