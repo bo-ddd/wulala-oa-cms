@@ -3,16 +3,16 @@ import axios from "@/assets/api/api";
 import { reactive, ref } from "vue";
 import type { Task, QueryTask } from "../types/Task";
 import { useStore } from "../stores/nav";
-let userStore=useStore()
+let userStore = useStore()
 
 let dialogFormVisible = ref(false)
 let dialogDetailsVisible = ref(false)
 let userTaskList = reactive<Task[]>([])
 let taskStatus = ref(0)
 let taskId = ref(0)
-let myself=ref()
-let arrList=ref()
-let allUsers=ref()
+let myself = ref()
+let arrList = ref()
+let allUsers = ref()
 const pageNum = ref(1)
 const pageSize = ref(5)
 const total = ref()
@@ -40,34 +40,19 @@ const getUserTaskList = async function (params: QueryTask) {
     }
 }
 //获取用户列表
-const getUserList=async function(){
-  let res=await axios.getUserListApi({
-    pageSize:2147483647   //int类型最大值
-  })
-  if(res.status==1){
-    console.log(res);
-     let arr=res.data.list
-    //  for (let i = 0; i<arr.length; i++) {
-    //   let item=arr[i]
-    //   if(item.userId==userStore.userId){
-    //     break 
-    // }
-    // // arr.unshift(item)
-    // // console.log(arr);
-    //  }
-    myself.value=arr.filter((item: any)=>item.userId==userStore.userId)
-    allUsers.value=arr.filter((item: any)=>item.userId!=userStore.userId)
-    console.log(allUsers.value);
+const getUserList = async function () {
+    let res = await axios.getUserListApi({
+        pageSize: 2147483647   //int类型最大值
+    })
+    if (res.status == 1) {
+        console.log(res);
+        let arr = res.data.list
+        myself.value = arr.filter((item: any) => item.userId == userStore.userId)
+        allUsers.value = arr.filter((item: any) => item.userId != userStore.userId)
+        console.log(allUsers.value);
+        allUsers.value.unshift(myself.value[0])
 
-    allUsers.value.unshift(myself.value[0])
-    // console.log(allUsers.value);
-    
-    // console.log(arrList.value);9
-    // arr.unshift(arrlist)
-    // console.log(arr);
-    
-    
-  }
+    }
 }
 //刚进页面调用户任务列表接口
 getUserTaskList({
@@ -99,27 +84,16 @@ const submitTaskStatus = async function () {
 const taskLevelName = function (level: number | string) {
     return level == 0 ? '普通' : "紧急"
 }
-///处理任务状态
-// const taskStatusName = function (status: number | string) {
-//     switch (status) {
-//         case 0:
-//             return "未开始";
-//         case 1:
-//             return "进行中";
-//         case 2:
-//             return "已完成";
-//         case 3:
-//             return "已过期";
-//     }
-// }
+//分页
 const handleSizeChange = (val: number) => {
     console.log(`一页有${val} `)
     pageSize.value = val
     getUserTaskList({
         pageNum: pageNum.value,
         pageSize: pageSize.value,
-        status: Number(StateCode[searchForm.status]),
-        level: searchForm.level == '普通' ? 0 : searchForm.level == '紧急' ? 1 : null,
+        // status: Number(StateCode[searchForm.status]),
+        status: searchForm.status,
+        level: searchForm.level == 1 ? 0 : searchForm.level == 2 ? 1 : null,
         userId: searchForm.userId
     })
 }
@@ -129,8 +103,8 @@ const handleCurrentChange = (val: number) => {
     getUserTaskList({
         pageNum: pageNum.value,
         pageSize: pageSize.value,
-        status: Number(StateCode[searchForm.status]),
-        level: searchForm.level == '普通' ? 0 : searchForm.level == '紧急' ? 1 : null,
+        status: searchForm.status,
+        level: searchForm.level == 1 ? 0 : searchForm.level == 2 ? 1 : null,
         userId: searchForm.userId
     })
 }
@@ -153,8 +127,8 @@ const queryTask = () => {
     getUserTaskList({
         pageNum: pageNum.value,
         pageSize: pageSize.value,
-        status: Number(StateCode[searchForm.status]),
-        level: searchForm.level == '普通' ? 0 : searchForm.level == '紧急' ? 1 : null,
+        status: searchForm.status,
+        level: searchForm.level == 1 ? 0 : searchForm.level == 2 ? 1 : null,
         userId: searchForm.userId
     })
 }
@@ -162,63 +136,65 @@ const viewDetails = (index: number, row: Task) => {
     console.log(index, row)
     dialogDetailsVisible.value = true;
 }
-const options = [
-  {
-    value: 'Option1',
-    label: 'Option1',
-  },
-  {
-    value: 'Option2',
-    label: 'Option2',
-  },
-  {
-    value: 'Option3',
-    label: 'Option3',
-  },
-  {
-    value: 'Option4',
-    label: 'Option4',
-  },
-  {
-    value: 'Option5',
-    label: 'Option5',
-  },
+const levelList = [
+    {
+        value: 1,
+        label: '普通',
+    },
+    {
+        value: 2,
+        label: '紧急',
+    },
+]
+const statusList = [
+    {
+        value: 0,
+        label: '未开始',
+    },
+    {
+        value: 1,
+        label: '进行中',
+    },
+    {
+        value: 2,
+        label: '已完成',
+    },
+    {
+        value: 3,
+        label: '已过期',
+    },
 ]
 
 </script>
 <template>
     <el-form :inline="true" :model="searchForm" class="demo-form-inline">
-        <el-form-item label="用户列表">
-            <el-select v-model="searchForm.userId" placeholder="Activity zone">
-                <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
+        <el-form-item label="执行人">
+            <el-select v-model="searchForm.userId" placeholder="请选择接收人">
+                <el-option v-for="item in allUsers" :key="item.userId" :label="item.avatarName" :value="item.userId" />
+                <!-- <el-option v-for="item in allUsers" :key="item.userId" :label="item.label" :value="item.userId">
+                    <span style="float: left">{{ item.label }}</span>
+                    <span style="
+                    float: right;
+                    color: var(--el-text-color-secondary);
+                     font-size: 13px;">{{ item.userId }}</span>
+                </el-option> -->
             </el-select>
         </el-form-item>
         <el-form-item label="紧急程度">
             <el-select v-model="searchForm.level" placeholder="按紧急程度查询">
-                <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
+                <el-option v-for="item in levelList" :key="item.value" :label="item.label" :value="item.value" />
             </el-select>
         </el-form-item>
         <el-form-item label='任务状态'>
             <el-select v-model="searchForm.status" placeholder="按任务状态查询">
-                <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
+                <el-option v-for="status in statusList" :key="status.value" :label="status.label"
+                    :value="status.value" />
             </el-select>
         </el-form-item>
         <el-form-item>
             <el-button @click="queryTask" type="danger" size="small">查询</el-button>
         </el-form-item>
     </el-form>
-    <!-- <el-form-item label="用户">
-      <el-input v-model="searchForm.userId" placeholder="请选择要查询的用户" size="small"/>
-    </el-form-item>
-    <el-form-item label="任务状态">
-      <el-input v-model="searchForm.status" placeholder="按任务状态查询" size="small"/>
-    </el-form-item>
-    <el-form-item label="紧急程度">
-      <el-input v-model="searchForm.level" placeholder="按紧急程度查询" size="small"/>
-    </el-form-item>
-    <el-form-item>
-      <el-button @click="queryTask" type="danger" size="small">查询</el-button>
-    </el-form-item> -->
     <el-table :data="userTaskList" style="width: 100%" class="mb-10">
         <el-table-column label="任务Id" align="center">
             <template #default="scope" align="center">

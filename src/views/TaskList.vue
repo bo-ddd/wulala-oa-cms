@@ -16,7 +16,7 @@ let deptList = reactive<Dept[]>([])
 let deptMembersList = reactive<DeptMember[]>([])
 let taskReception = ref([])
 let deptId = ref(0)
-let userId = ref(0)
+let btnDisabled = ref(false)
 //分页
 const pageNum = ref(1)
 const pageSize = ref(10)
@@ -124,21 +124,20 @@ const publishTask = function () {
     }
 
 }
+//领取任务接口
+const receivePublishTask=async function(params:any){
+   let res= await axios.publishTaskApi(params)
+     if(res.status==1){
+        console.log(res);
+        btnDisabled.value=true;
+     }
+}
 /// 生成消息接口
 const createMessage = async function (content: { content: string; }) {
     let res = await axios.createMessageApi(content)
     if (res.status == 1) {
         console.log(res);
-        ElMessage({
-            type: 'success',
-            message: '领取成功',
-        })
-    } else {
-        ElMessage({
-            message: '领取失败',
-            type: 'warning',
-        })
-    }
+    } 
 }
 getTaskList()
 getUserDeptList()
@@ -262,14 +261,24 @@ const groupChange = function (val: number) {
 const submitPublishTask = function () {
     publishTask()
     initFormData()
+    // createMessage({
+    //     content: '您已成功发布一条任务，快来领取吧'
+    // })
 }
 //领取任务
 const receiveTask = function (row: Task) {
+    console.log(row);
+    
+    receivePublishTask({
+        userId:userStore.userId,
+        taskId:row.id
+    })
     createMessage({
         content: '您已成功领取一条任务，快去完成吧'
     })
 
 }
+
 </script>
 <template>
     <div class="search mb-10">
@@ -293,11 +302,11 @@ const receiveTask = function (row: Task) {
                 <div>{{ scope.row.id }}</div>
             </template>
         </el-table-column>
-        <el-table-column label="任务序号" align="center">
+        <!-- <el-table-column label="任务序号" align="center">
             <template #default="scope" align="center">
                 <span style="margin-left: 10px">{{ scope.row.id }}</span>
             </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column label="任务名称" align="center">
             <template #default="scope" align="center">
                 <div>{{ scope.row.taskName }}</div>
@@ -321,7 +330,7 @@ const receiveTask = function (row: Task) {
         <el-table-column label="操作" align="center" width="300">
             <template #default="scope">
                 <el-button size="small" @click="receiveTask(scope.row)" type="danger" plain
-                    v-if="scope.row.userId != userStore.userId">领取任务</el-button>
+                    v-if="scope.row.userId != userStore.userId" :disabled='btnDisabled'>领取任务</el-button>
                 <el-button size="small" @click="clickPublishTask(scope.row)" type="danger" plain
                     v-if="scope.row.userId == userStore.userId">发布任务</el-button>
                 <el-button size="small" @click="updateTask(scope.$index, scope.row)" type="danger">编辑</el-button>
