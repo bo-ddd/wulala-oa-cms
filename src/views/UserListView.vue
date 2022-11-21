@@ -383,7 +383,7 @@ const queryDeptUser = async (id: number | null) => {
     }).then(res => {
         console.log(res.data);
         userListData.value.length = 0
-        res.data.forEach((item: any) => {
+        res.data.forEach((item: User) => {
             userListData.value.push(item)
         });
     })
