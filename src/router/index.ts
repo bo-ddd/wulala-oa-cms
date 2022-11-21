@@ -228,7 +228,7 @@ let dynamicRoutes = [
       requiresAuth: true
     }
   },
-  {//用户详情页面;
+  {//创建用户页面;
     path: "/createUserAccount",
     name: "createUserAccount",
     component: () => import("../views/CreateUserAccount.vue"),
