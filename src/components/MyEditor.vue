@@ -50,14 +50,22 @@ const emits = function(){
 </script>  
 
 <template>
-    <div style="border: 1px solid #ccc">
+    <div id="editor-wrapper" style="border: 1px solid #ccc">
+
+     <div id="toolbar-container">
+
       <Toolbar
         style="border-bottom: 1px solid #ccc"
         :editor="editorRef"
         :defaultConfig="toolbarConfig"
         :mode="mode"
       />
-      <Editor
+
+     </div>
+
+      <div id="editor-container">
+
+        <Editor
         style="height: 500px; overflow-y: hidden;"
         :value="prop.modelValue"
         :defaultConfig="editorConfig"
@@ -65,5 +73,15 @@ const emits = function(){
         @onChange="handleChange"
         @onCreated="handleCreated"
       />
+
+      </div>
+
     </div>
+
 </template>
+<style>
+  #editor—wrapper {
+    border: 1px solid #ccc;
+  }
+  #toolbar-container { width: 800px; }
+</style>

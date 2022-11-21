@@ -1,27 +1,11 @@
 <template>
-
-    <!-- <div class="ipt">
-        <span class="label">查询用户：</span>
-        <el-select v-model="form.userId" size="small" filterable placeholder="请输入用户ID" clearable>
-            <el-option v-for="item in userNameList" :key="item.userId" :label="item.avatarName" :value="item.userId" />
-        </el-select>
-        <el-button class="ml-10" type="danger" size="small" @click="searchUserRoles(form.userId)">搜索</el-button>
-        <el-button class="ml-10" type="danger" size="small" @click="getUserList()">重置</el-button>
-    </div> -->
-
     <div class="ipt">
         <span class="label">查询部门用户：</span>
-        <!-- <el-input v-model="departmentInput" size="small" placeholder="请输入用户ID" clearable /> -->
-
-        <el-select v-model="form.searchDepId" size="small" filterable placeholder="请输入部门名称" clearable>
+        <el-select v-model="form.searchDepId" size="small" placeholder="请选择部门" clearable>
             <el-option v-for="item in departmentList" :key="item.id" :label="item.name" :value="item.id" />
         </el-select>
-
-        <!-- <el-button class="ml-10" type="danger" size="small" @click="searchUserDepartment(form.userId)">查询 
-        </el-button> -->
-        <el-button class="ml-10" type="danger" size="small" @click="queryDeptUser(form.searchDepId)">查询成员
+        <el-button class="ml-10" type="danger" size="small" @click="queryDeptUser(form.searchDepId)"> 查询成员
         </el-button>
-
         <el-button class="ml-10" type="danger" size="small" @click="getUserList()">重置</el-button>
     </div>
 
@@ -36,12 +20,6 @@
                 <el-tag size="small">{{ scope.row.avatarName }}</el-tag>
             </template>
         </el-table-column>
-        <!-- <el-table-column :label=label align="center">
-            <template #default="scope">
-                <div size="small" type="danger">{{ scope.row.roles ? showRoleName(scope.row.roles) : scope.row.hobby }}
-                </div>
-            </template>
-        </el-table-column> -->
         <el-table-column v-if="label" :label=label align="center">
             <template #default="scope">
                 <div size="small" type="danger">{{ scope.row._rawValue ? showDeptName(scope.row._rawValue) :
@@ -65,25 +43,11 @@
         </el-table-column>
         <el-table-column label="操作" align='center'>
             <template #default="scope">
-                <!-- <el-select v-model="form.userOperationId" class="m-2" placeholder="请选操作" size="small">
-                    <el-option v-for="item in operation" :key="item.id" :label="item.name" :value="item.id"
-                        @onclick="item.function(scope.row)" />
-                </el-select> -->
                 <a class="touserdetail" @click="toUserDetail(scope.row.userId)">用户详情</a>
                 <a class="roles-add" @click="getUserId(scope.row); dialogFormVisibleAdd = true">添加角色</a>
                 <a class="roles-delete" @click="getUserId(scope.row); dialogFormVisibleDelete = true">删除角色</a>
                 <a class="geroup-add" @click="getUserId(scope.row); dialogFormisiblGeroup = true">添加部门</a>
                 <a class="geroup-delete" @click="getUserId(scope.row); dialogFormisiblDelete = true">删除部门</a>
-                <!-- <el-button type="primary" size="small" @click="toUserDetail();">用户详情
-                </el-button>
-                 <el-button type="primary" size="small" @click="addRoles(scope.row); dialogFormVisibleAdd = true">添加角色
-                </el-button> 
-                <el-button type="danger" size="small" @click="getUserId(scope.row); dialogFormVisibleDelete = true">删除角色
-                </el-button>
-                <el-button type="primary" size="small" @click="getUserId(scope.row); dialogFormisiblGeroup = true">添加部门
-                </el-button>
-                <el-button type="danger" size="small" @click="getUserId(scope.row); dialogFormisiblDelete = true">删除部门
-                </el-button> -->
             </template>
         </el-table-column>
     </el-table>
@@ -276,7 +240,15 @@ const dialogFormVisibleDelete = ref(false);
 const dialogFormisiblGeroup = ref(false);
 const dialogFormisiblDelete = ref(false);
 
-const form = reactive({
+interface Form {
+    deptId: number | null,
+    depName: string,
+    searchDepId: number | null,
+    userId: number,
+    rolesId: number | null,
+    userName: string
+}
+const form = reactive<Form>({
     deptId: 0,
     depName: '',
     searchDepId: null,
@@ -405,34 +377,17 @@ const queryUserDepartment = async (id: number) => {
     })
 }
 // 查询部门用户
-const queryDeptUser = async (id: number) => {
+const queryDeptUser = async (id: number | null) => {
     await axios.queryUserMembersApi({
         deptId: id
     }).then(res => {
         console.log(res.data);
         userListData.value.length = 0
-        res.data.forEach((item: any) => {
+        res.data.forEach((item: User) => {
             userListData.value.push(item)
         });
     })
 }
-// 查询用户部门
-let deptNameList = ref([]);
-const searchUserDepartment = async (id: number) => {
-    label.value = '用户部门'
-    await axios.getUserDeptListApi({
-        userId: id
-    }).then(async res => {
-        if (res.status == 1) {
-            let userData = (await axios.queryUserInfoApi({ userId: id })).data
-            userListData.value.length = 0
-            deptNameList.value = res.data
-            Object.assign(userData, deptNameList)
-            userListData.value.push(userData)
-        }
-    })
-}
-
 
 // 给用户添加部门
 const getDepartmentId = async () => {
@@ -452,7 +407,7 @@ const addDepartment = async () => {
     getDepartmentId();
     await axios.addUserDeptApi({
         userId: form.userId,
-        deptId: form.deptId || 0
+        deptId: form.deptId
     }).then(res => {
         if (res.status == 1) {
             addSuccess();
@@ -462,7 +417,6 @@ const addDepartment = async () => {
             addError();
         }
     })
-    form.depName = ''
 }
 
 // 删除用户部门
@@ -476,8 +430,8 @@ const removeUserDepartment = async (userId: number) => {
         } else {
             deleteError();
         }
+        form.deptId = null
     })
-    form.depName = ''
 }
 </script>
 

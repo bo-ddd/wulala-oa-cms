@@ -2,14 +2,12 @@
     <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" label-width="120px" class="demo-ruleForm" size='small'
         status-icon hide-required-asterisk>
         <template class="flex-row">
-            <el-form-item label="标题" prop="title">
+            <el-form-item label="标题:" prop="title">
                 <el-input v-model="ruleForm.title" class="input-width" size="small" placeholder="日报标题" />
             </el-form-item>
-            <el-form-item>
-                <el-button type="danger" size="small" @click="submitForm(ruleFormRef)">提交</el-button>
-            </el-form-item>
+                <el-button class="submitBtn" type="danger" size="small" @click="submitForm(ruleFormRef)">提交</el-button>
         </template>
-        <el-form-item label="内容" prop="content" class="box">
+        <el-form-item label="内容:" prop="content" class="box">
             <MyEditor v-model="ruleForm.content" class="size-editor"></MyEditor>
         </el-form-item>
     </el-form>
@@ -103,61 +101,16 @@ const submitForm = (formEl: FormInstance | undefined) => {
 
 </script>
 <style scoped>
-.text-center {
-    text-align: center;
+:deep(.el-form-item__label){
+    font-size: 15px;
+    font-weight: 700;
 }
-
-.el-input {
-    width: 60%;
+.submitBtn{
+    margin-left: 20px;
 }
-
-.el-textarea {
-    width: 60%;
-}
-
-.demo-datetime-picker .block {
-    padding: 30px 0;
-    width: 900px;
-    text-align: center;
-    border-right: solid 1px var(--el-border-color);
-    flex: 1;
-}
-
-.demo-datetime-picker .block:last-child {
-    border-right: none;
-}
-
-.demo-datetime-picker .demonstration {
-    display: block;
-    color: var(--el-text-color-secondary);
-    font-size: 14px;
-    margin-bottom: 20px;
-}
-
-
-
-.size-editor {
-    width: 100%;
-    height: 300px;
-
-}
-
-.size-editor::-webkit-scrollbar {
-    display: none;
-}
-
-:deep(.w-e-text-container) {
-    background-color: blanchedalmond;
-}
-
-:deep(.w-e-bar) {
-    background-color: #ece9e5;
-}
-
 .flex-row {
     display: flex;
 }
-
 .input-width {
     width: 300px;
 }

@@ -1,22 +1,21 @@
 
 <script setup lang="ts">
-import { ref, type Ref, reactive, toRefs } from 'vue'
+import { ref, type Ref, reactive, toRefs } from 'vue';
 import { useRouter } from 'vue-router';
 import type { TabsPaneContext } from 'element-plus'
 import { ElMessage } from 'element-plus';
-import { StarFilled } from '@element-plus/icons-vue'
-import { EditPen } from '@element-plus/icons-vue'
-import axios from '../assets/api/api'
+import { StarFilled, EditPen } from '@element-plus/icons-vue';
+import axios from '../assets/api/api';
 const router = useRouter();
 const activeName = ref('first')
 const handleClick = (tab: TabsPaneContext, event: Event) => {
     console.log(tab, event)
 }
 const disabled: Ref = ref(true);
-let age=ref<number|null>()
-let birthday=ref<string|null>()
-let userInfo = reactive<UserInfo>({});
-//用户头像自适应功能;
+let age = ref<number | null>()
+let birthday = ref<string | null>()
+let userInfo = reactive({} as UserInfo);
+//用户头像自适应功能;s
 const state = reactive({
     fit: 'fill',
     url: 'https://img.ixintu.com/download/jpg/20200815/18ae766809ff27de6b7a942d7ea4111c_512_512.jpg!bg',
@@ -35,23 +34,23 @@ function openInput() {
     disabled.value = false;
 }
 function closeInput() {
-   
+
     axios.updateUserInfoApi({
-        userId:userInfo.userId,
-        sex:userInfo.sex,
-        birthday:new Date(userInfo.birthday).getTime(), 
-        hobby:userInfo.hobby,
-        personalSignature:userInfo.personalSignature
-    }).then(res=>{
+        userId: userInfo.userId,
+        sex: userInfo.sex,
+        birthday: new Date(userInfo.birthday).getTime(),
+        hobby: userInfo.hobby,
+        personalSignature: userInfo.personalSignature
+    }).then(res => {
         ElMessage({
-                    message: '修改成功',
-                    type: 'success',
-                })
+            message: '修改成功',
+            type: 'success',
+        })
         disabled.value = true;
     })
 }
 
-function toBlur(){
+function toBlur() {
     disabled.value = true;
 }
 
@@ -68,16 +67,16 @@ function leaveStatus() {
 
 //刷新页面，调用用户信息接口，渲染个人页面数据
 
-interface UserInfo{
-    avatarImg:string;
-    avatarName:string;
-    birthday:string|null;
-    hobby:string;
-    personalSignature:string;
-    phoneNumber:string;
-    sex:number|string;
-    userId:number;
-    address:string;
+interface UserInfo {
+    avatarImg: string;
+    avatarName: string;
+    birthday: string | Date;
+    hobby: string;
+    personalSignature: string;
+    phoneNumber: string;
+    sex: number | string;
+    userId: number;
+    address: string;
 }
 
 
@@ -85,20 +84,20 @@ interface UserInfo{
 (async () => {
     let data = (await axios.queryUserInfoApi({})).data;
     Object.assign(userInfo, data);
-    if(!userInfo.personalSignature){
-        userInfo.personalSignature='这个人很懒，什么都没留下！';
+    if (!userInfo.personalSignature) {
+        userInfo.personalSignature = '这个人很懒，什么都没留下！';
     };
-    if(!userInfo.birthday){
-        birthday.value=null
-        age.value=null
-    }else{
-        let year=new Date(userInfo.birthday).getFullYear();
-        let month=new Date(userInfo.birthday).getMonth()+1;
-        let date=new Date(userInfo.birthday).getDate();
-        let months=month>=10? month:'0'+month;
-        let dates=date>=10? date:'0'+date;
-        birthday.value=year+'-'+months+'-'+dates;
-        age.value=Math.floor((Date.now()-new Date(userInfo.birthday).valueOf())/1000/60/60/24/365) ;
+    if (!userInfo.birthday) {
+        birthday.value = null
+        age.value = null
+    } else {
+        let year = new Date(userInfo.birthday).getFullYear();
+        let month = new Date(userInfo.birthday).getMonth() + 1;
+        let date = new Date(userInfo.birthday).getDate();
+        let months = month >= 10 ? month : '0' + month;
+        let dates = date >= 10 ? date : '0' + date;
+        birthday.value = year + '-' + months + '-' + dates;
+        age.value = Math.floor((Date.now() - new Date(userInfo.birthday).valueOf()) / 1000 / 60 / 60 / 24 / 365);
     }
 })();
 
@@ -114,7 +113,8 @@ interface UserInfo{
                             <div class="block">
                                 <span class="title">{{ fit }}</span>
                                 <div class="box" @mouseover="enterStatus" @mouseout="leaveStatus">
-                                    <el-avatar shape="circle" :size="100" :fit="fit" :src="userInfo.avatarImg||state.url" />
+                                    <el-avatar shape="circle" :size="100" :fit="fit"
+                                        :src="userInfo.avatarImg || state.url" />
                                     <div class="beforeEnter" :class="{ blur: isOver }">
                                         <el-button size="small" text bg link round @click="to('updataAvatar')">修改头像
                                         </el-button>
@@ -131,11 +131,11 @@ interface UserInfo{
                                 </div>
                             </el-header>
                             <el-main class="bottom-main flex-box">
-                                <el-input class="input" v-model="userInfo.personalSignature" maxlength="30" placeholder="个性签名" clearable
-                                    show-word-limit type="text" :disabled="disabled" @blur="closeInput" size="small" 
-                                    @keyup.enter="toBlur" />
+                                <el-input class="input" v-model="userInfo.personalSignature" maxlength="30"
+                                    placeholder="个性签名" clearable show-word-limit type="text" :disabled="disabled"
+                                    @blur="closeInput" size="small" @keyup.enter="toBlur" />
                                 <el-button @click="openInput" type="danger" :icon="EditPen" circle size="large" link />
-                                
+
                             </el-main>
                         </el-container>
                     </el-main>
@@ -150,23 +150,23 @@ interface UserInfo{
                 </el-divider>
                 <el-descriptions title="基础信息" class="mt-20">
                     <template #extra>
-                        <el-button type="danger" text bg @click="to('/updataUserInfo')" size="small" >
+                        <el-button type="danger" text bg @click="to('/updataUserInfo')" size="small">
                             <el-icon>
                                 <EditPen />
-                            </el-icon>编辑资料  
+                            </el-icon>编辑资料
                         </el-button>
                     </template>
-                    <el-descriptions-item label="性别">{{ userInfo.sex==1?"男":"女" }}</el-descriptions-item>
-                    <el-descriptions-item label="年龄">{{ age||'— —' }}</el-descriptions-item>
-                    <el-descriptions-item label="生日">{{ birthday||'— —' }}</el-descriptions-item>
+                    <el-descriptions-item label="性别">{{ userInfo.sex == 1 ? "男" : "女" }}</el-descriptions-item>
+                    <el-descriptions-item label="年龄">{{ age || '— —' }}</el-descriptions-item>
+                    <el-descriptions-item label="生日">{{ birthday || '— —' }}</el-descriptions-item>
                     <el-descriptions-item label="标签">
                         <el-tag size="small">萌新</el-tag>
                     </el-descriptions-item>
                     <el-descriptions-item label="个人爱好">
-                        {{ userInfo.hobby||'— —' }}
+                        {{ userInfo.hobby || '— —' }}
                     </el-descriptions-item>
                     <el-descriptions-item label="详细地址">
-                        {{ userInfo.address||'— —' }}
+                        {{ userInfo.address || '— —' }}
                     </el-descriptions-item>
                 </el-descriptions>
             </el-tab-pane>
@@ -262,7 +262,7 @@ interface UserInfo{
     position: relative;
 }
 
-:deep(.el-input){
-    width:200px;
+:deep(.el-input) {
+    width: 200px;
 }
 </style>
