@@ -205,7 +205,7 @@ const queryOption: any = reactive({
 })
 
 //获取-审核状态-查询列表;
-const StateCodeString = ['待审核', '审核通过', '拒绝'];
+const StateCodeString = ['全部', '待审核', '审核通过', '拒绝'];
 
 //获取-用户昵称-查询列表;
 const userAvatarNameList = reactive<string[]>([])
@@ -223,6 +223,8 @@ getUserAvatarNameList()
 
 //查询数据;
 const queryDimissionInfo = () => {
+    console.log(Number(StateCode[queryOption.status]))
+    
     getUserQuitList({
         avatarName: queryOption.avatarName, //姓名
         status: Number(StateCode[queryOption.status]), //审核状态
@@ -231,6 +233,10 @@ const queryDimissionInfo = () => {
         pageSize: pageSize.value,
         pageNum: currentPage.value
     })
+}
+
+const isApprover=()=>{
+    
 }
 
 </script>
@@ -272,7 +278,7 @@ const queryDimissionInfo = () => {
                 </el-tag>
             </template>
         </el-table-column>
-        <el-table-column label="操作" align="center">
+        <el-table-column label="操作" align="center" v-if="true">
             <template #default="scope">
                 <el-button size="small" type="danger" @click="handleEdit(scope.$index, scope.row)"
                     :disabled="scope.row.status != 0">{{ scope.row.status != 0 ? '已审核' : '审核' }}</el-button>

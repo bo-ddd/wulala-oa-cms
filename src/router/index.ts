@@ -227,6 +227,15 @@ let dynamicRoutes = [
       label: "用户详情",
       requiresAuth: true
     }
+  },
+  {//用户详情页面;
+    path: "/createUserAccount",
+    name: "createUserAccount",
+    component: () => import("../views/CreateUserAccount.vue"),
+    meta: {
+      label: "创建用户",
+      requiresAuth: true
+    }
   }
 ];
 
