@@ -115,7 +115,7 @@ const queryDailyDetail = () => {
         <el-table-column label="创建日期" sortable prop="createdAt" align="center" />
         <el-table-column label="操作" align="center">
             <template #default="scope">
-                <el-button size="small" type="danger" @click="handleEdit(scope.$index, scope.row)">查阅</el-button>
+                <a class="detail" size="small" type="danger" @click="handleEdit(scope.$index, scope.row)">查看详情</a>
             </template>
         </el-table-column>
 
@@ -130,11 +130,16 @@ const queryDailyDetail = () => {
 .demo-pagination-block+.demo-pagination-block {
     margin-top: 10px;
 }
-
+.detail{
+    color: coral;
+}
+a:hover{
+color: red;
+cursor: pointer;
+}
 .demo-pagination-block .demonstration {
     margin-bottom: 16px;
 }
-
 .flex-options {
     display: flex;
     width: 50%;
