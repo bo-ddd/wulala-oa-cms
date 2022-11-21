@@ -7,7 +7,11 @@
         <el-button class="ml-10" type="danger" size="small" @click="queryDeptUser(form.searchDepId)"> 查询成员
         </el-button>
         <el-button class="ml-10" type="danger" size="small" @click="getUserList()">重置</el-button>
+        <span class="creat-user">
+            <el-button class="ml-10" type="danger" size="small" @click="toCreateUser()">创建用户</el-button>
+        </span>
     </div>
+
 
     <el-table :data="userListData" border style="width: 100%" fit>
         <el-table-column label="用户ID" align="center" width="100px">
@@ -161,14 +165,15 @@ const formLabelWidth = '140px'
 const router = useRouter();
 
 const toUserDetail = (id: number) => {
-    console.log(id);
-
     router.push({
         name: 'userDetail',
         query: {
             id
         }
     })
+}
+const toCreateUser = () =>{
+    router.push('createUserAccount')
 }
 const handleSizeChange = async (val: number) => {
     console.log(`每页${val}条信息`);
@@ -453,6 +458,7 @@ const removeUserDepartment = async (userId: number) => {
 }
 
 a {
+    cursor: pointer;
     margin: 0 5px;
     text-decoration: none;
 }
@@ -475,7 +481,9 @@ a:hover {
 .geroup-delete {
     color: green;
 }
-
+.creat-user{
+    float: right;
+}
 :deep(.el-pagination) {
     margin-top: 20px;
 }

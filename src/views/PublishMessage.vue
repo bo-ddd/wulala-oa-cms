@@ -7,17 +7,14 @@
     <el-select v-model="deptMembersValue" multiple placeholder="谁接收消息" style="width: 240px" size="small" class="ml-10">
       <el-option v-for="(item, index) in deptMembersList" :key="index" :label="item.avatarName" :value="item.userId" />
     </el-select>
-    <!-- <el-button type="danger" round class="ml-10" size="small" @click="clickPublishTask">确定发送</el-button> -->
+    <el-button class="submitBtn" type="danger" size="small" @click="submitForm(ruleFormRef)">发送消息</el-button>
   </div>
 
   <el-form ref="ruleFormRef" :model="ruleForm" label-width="120px" class="demo-ruleForm" :size="formSize" status-icon>
 
     <MyEditor v-model="ruleForm.desc"></MyEditor>
 
-    <el-form-item>
-      <el-button type="primary" @click="submitForm(ruleFormRef)">提交</el-button>
-      <el-button @click="resetForm(ruleFormRef)">取消</el-button>
-    </el-form-item>
+   
   </el-form>
 </template>
   
@@ -41,6 +38,7 @@ const ruleForm = reactive({
   type: [],
 })
 
+//获取用户所在哪个组
 const getUserDeptList = async function () {
   let res = await axios.getUserDeptListApi({
     userId: UserStore.userId
@@ -53,14 +51,12 @@ const getUserDeptList = async function () {
   }
 }
 
+//查询当前组都有谁
 const queryUserMembers = async function () {
   let res = await axios.queryUserMembersApi({
     deptId: deptId.value
   })
-  console.log(deptId);
-
   if (res.status == 1) {
-    console.log(res);
     deptMembersList.push(...res.data)
   }
 }
@@ -71,22 +67,35 @@ const asd = function (val: number) {
 }
 getUserDeptList()
 
-const submitForm = (formEl: FormInstance | undefined) => {
-  console.log(ruleForm.desc);
-  if (!formEl) return
-  formEl.validate(async (valid, fields) => {
-    if (valid) {
-      alert("提交成功")
-      let createArticle = await axios.createMessageApi({
+//创建消息方法
+const createMessage = async function () {
+  let createMessage = await axios.createMessageApi({
         content: ruleForm.desc
-      });
-    } else {
-      console.log('error submit!', fields)
-      alert('提交错误')
-      formEl.resetFields()
-    }
-  })
+      })
 }
+//发送消息方法
+const sendMessage = async function () {
+  let sendMessage = await axios.sendMessageApi({})
+}
+
+
+
+// const submitForm = (formEl: FormInstance | undefined) => {
+//   console.log(ruleForm.desc);
+//   if (!formEl) return
+//   formEl.validate(async (valid, fields) => {
+//     if (valid) {
+//       alert("提交成功")
+//       let createArticle = await axios.createMessageApi({
+//         content: ruleForm.desc
+//       });
+//     } else {
+//       console.log('error submit!', fields)
+//       alert('提交错误')
+//       formEl.resetFields()
+//     }
+//   })
+// }
 
 const resetForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return
@@ -112,6 +121,8 @@ const resetForm = (formEl: FormInstance | undefined) => {
   font-size: 14px;
   margin-bottom: 20px;
 }
-
+.submitBtn{
+    margin-left: 20px;
+}
 </style>
   
