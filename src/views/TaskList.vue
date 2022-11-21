@@ -6,7 +6,8 @@ import type { Dept, DeptMember } from "../types/Dept";
 import { ElMessage, ElMessageBox } from 'element-plus'
 import type { Task } from "../types/Task";
 import { useStore } from "@/stores/nav";
-let UserStore = useStore()
+
+let userStore = useStore()
 let isCreated = ref(true);
 let rowTaskId = ref(0)
 const deptValue = ref()
@@ -15,6 +16,7 @@ let deptList = reactive<Dept[]>([])
 let deptMembersList = reactive<DeptMember[]>([])
 let taskReception = ref([])
 let deptId = ref(0)
+let userId = ref(0)
 //分页
 const pageNum = ref(1)
 const pageSize = ref(10)
@@ -84,7 +86,7 @@ const queryUserMembers = async function () {
 //获取用户所在的组列表
 const getUserDeptList = async function () {
     let res = await axios.getUserDeptListApi({
-        userId: UserStore.userId
+        userId: userStore.userId
     })
     if (res.status == 1) {
         res.data.forEach((dept: any) => {
@@ -105,13 +107,13 @@ const publishTask = function () {
             })
             )
             Promise.all(userArr).then(res => {
-                if(res[0].status==1){
+                if (res[0].status == 1) {
                     ElMessage({
-                    message: '发布成功',
-                    type: 'success',
-                })
-                dialogTaskVisible.value=false;
-                }else{
+                        message: '发布成功',
+                        type: 'success',
+                    })
+                    dialogTaskVisible.value = false;
+                } else {
                     ElMessage({
                         message: res[0].msg,
                         type: 'warning',
@@ -121,6 +123,22 @@ const publishTask = function () {
         })
     }
 
+}
+/// 生成消息接口
+const createMessage = async function (content: { content: string; }) {
+    let res = await axios.createMessageApi(content)
+    if (res.status == 1) {
+        console.log(res);
+        ElMessage({
+            type: 'success',
+            message: '领取成功',
+        })
+    } else {
+        ElMessage({
+            message: '领取失败',
+            type: 'warning',
+        })
+    }
 }
 getTaskList()
 getUserDeptList()
@@ -245,7 +263,13 @@ const submitPublishTask = function () {
     publishTask()
     initFormData()
 }
+//领取任务
+const receiveTask = function (row: Task) {
+    createMessage({
+        content: '您已成功领取一条任务，快去完成吧'
+    })
 
+}
 </script>
 <template>
     <div class="search mb-10">
@@ -296,9 +320,13 @@ const submitPublishTask = function () {
         </el-table-column>
         <el-table-column label="操作" align="center" width="300">
             <template #default="scope">
-                <el-button size="small" @click="clickPublishTask(scope.row)" type="danger" plain>发布任务</el-button>
+                <el-button size="small" @click="receiveTask(scope.row)" type="danger" plain
+                    v-if="scope.row.userId != userStore.userId">领取任务</el-button>
+                <el-button size="small" @click="clickPublishTask(scope.row)" type="danger" plain
+                    v-if="scope.row.userId == userStore.userId">发布任务</el-button>
                 <el-button size="small" @click="updateTask(scope.$index, scope.row)" type="danger">编辑</el-button>
-                <el-button size="small" type="danger" plain @click="deleteTask(scope.$index, scope.row)">删除</el-button>
+                <el-button size="small" type="danger" plain @click="deleteTask(scope.$index, scope.row)"
+                    v-if="scope.row.userId == userStore.userId">删除</el-button>
             </template>
         </el-table-column>
     </el-table>
