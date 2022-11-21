@@ -100,14 +100,10 @@ const handleTimeFormat = (Time: string) => {
 }
 
 //审核按钮的点击事件;
-const handleEdit = async(index: number, row: TableData) => {
+const handleEdit = async (index: number, row: TableData) => {
     dialogFormVisible.value = true
     approvalForm.id = row.id
     applicantId.value = row.userId
-    
-    isApprover(row.userId)
-    
-  
 
 }
 //审核按钮弹层;
@@ -244,10 +240,20 @@ const isApprover = async (applicationUserId: number) => {
     //获取申请人的资料;
     const { data } = await axios.queryUserInfoApi({})
     const userId = data.userId
-    // if (userId == applicationUserId) return false;
+
+    // 如果申请人与登录人是同一用户, 没有权限;
     //获取所在的部门ID;
-    const {data:UserDeptInfo}=await axios.getUserDeptListApi({userId});
-    const {data:applicationUserDeptInfo}=await axios.getUserDeptListApi({userId:applicationUserId})
+    const { data: UserDeptInfo } = await axios.getUserDeptListApi({ userId });
+    const { data: applicationUserDeptInfo } = await axios.getUserDeptListApi({ userId: applicationUserId })
+    //如果申请人与登录人的部门不相同，没有权限;
+
+    if (UserDeptInfo[0].deptId != applicationUserDeptInfo[0].deptId) {
+        return false
+    } else if (userId == applicationUserId) {
+        return false
+    } else {
+        return true
+    }
 }
 
 </script>

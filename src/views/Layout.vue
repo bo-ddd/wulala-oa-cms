@@ -129,12 +129,6 @@ const dropDownList = [
         childrenList: []
     },
     {
-        id: 3,
-        name: '我的任务',
-        targetPath: '/task',
-        childrenList: []
-    },
-    {
         id: 4,
         name: '退出登录',
         targetPath: '/',
