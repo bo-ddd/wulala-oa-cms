@@ -12,14 +12,12 @@ interface Permission1 {
     id: number,
     permissionName: string,
     pid: number,
-    // label: string,
     children: Permission1[]
 }
 interface Permission2 {
     id: number,
     permissionName: string,
     pid: number,
-    // label: string,
 }
 let permissionId = ref();
 let permissionList2: Ref<Permission2[]> = ref([]);
@@ -44,8 +42,8 @@ const getPermissionList = async () => {
     await axios.getPermissionListApi({}).then(res => {
         if (res.status === 1) {
             permissionList2.value = res.data;
-            console.log('权限列表');
             Object.assign(permissionList, formatData(res.data))
+            console.log(permissionList);
             permissionListPid.value = formDataPid(res.data)
         }
     })
@@ -162,7 +160,6 @@ const edit = (data: Tree) => {
     console.log(data);
     form.permissionNameId = data.id
     form.permissionName = data.permissionName
-    console.log(form.permissionNameId);
 }
 
 // 删除权限
@@ -175,7 +172,7 @@ interface Tree {
     id: number,
     permissionName: string,
     pid: number,
-    children?: Tree[]
+    children: Tree[]
 }
 
 const defaultProps = {
@@ -185,15 +182,20 @@ const defaultProps = {
 }
 
 const searchValue = ref();
-const handleNodeClick = (data: Tree) => {
-    console.log(data)
-}
 
 watch(searchValue, (val) => {
     treeRef.value!.filter(val)
 })
 
-const filterNode = (value: string, data: Tree) => {
+interface Data{
+    id:any;
+    permissionName:any;
+    pid:any
+}
+const filterNode = (value: string, data: Data) => {
+    console.log(value);
+    console.log(data);
+    
     if (!value) return true
     return data.permissionName.includes(value)
 }
@@ -214,14 +216,12 @@ const formLabelWidth = '140px'
     <div class="ipt">
         <div class="example-block">
             <span class="example-demonstration">查询权限：</span>
-            <!-- <el-cascader class="searchIpt" size="small" v-model="searchValue" :options="permissionList"
-                :props="defaultProps" clearable /> -->
 
             <el-input size="small" v-model="searchValue" placeholder="请输入相关权限名称" clearable />
         </div>
     </div>
 
-    <el-tree :data="permissionList" node-key="id" :expand-on-click-node="true" @click="handleNodeClick"
+    <el-tree :data="permissionList" node-key="id" :expand-on-click-node="true" 
         :props="defaultProps" ref="treeRef" :default-expand-all="false" :filter-node-method="filterNode" accordion>
         <template #default="{ node, data }">
             <span class="custom-tree-node">
