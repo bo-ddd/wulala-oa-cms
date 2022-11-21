@@ -78,7 +78,6 @@ interface UserQuitListParam {
 //获取离职列表数据;
 const getUserQuitList = async (param: UserQuitListParam) => {
     let { data } = await axios.getQuitListApi(param)
-    console.log(data.list)
     total.value = data.total;
     tableData.length = 0;
     Object.assign(tableData, data.list)
@@ -101,10 +100,15 @@ const handleTimeFormat = (Time: string) => {
 }
 
 //审核按钮的点击事件;
-const handleEdit = (index: number, row: TableData) => {
+const handleEdit = async(index: number, row: TableData) => {
     dialogFormVisible.value = true
     approvalForm.id = row.id
     applicantId.value = row.userId
+    
+    isApprover(row.userId)
+    
+  
+
 }
 //审核按钮弹层;
 const dialogFormVisible = ref(false)
@@ -205,14 +209,13 @@ const queryOption: any = reactive({
 })
 
 //获取-审核状态-查询列表;
-const StateCodeString = ['待审核', '审核通过', '拒绝'];
+const StateCodeString = ['全部', '待审核', '审核通过', '拒绝'];
 
 //获取-用户昵称-查询列表;
 const userAvatarNameList = reactive<string[]>([])
 const getUserAvatarNameList = async () => {
-    const { data } = await axios.getUserListApi({});
     const res = await axios.getUserListApi({
-        pageSize: data.total
+        pageSize: 2147483647
     })
     userAvatarNameList.length = 0;
     res.data.list.forEach((item: { avatarName: string }) => {
@@ -223,6 +226,8 @@ getUserAvatarNameList()
 
 //查询数据;
 const queryDimissionInfo = () => {
+    console.log(Number(StateCode[queryOption.status]))
+
     getUserQuitList({
         avatarName: queryOption.avatarName, //姓名
         status: Number(StateCode[queryOption.status]), //审核状态
@@ -231,6 +236,18 @@ const queryDimissionInfo = () => {
         pageSize: pageSize.value,
         pageNum: currentPage.value
     })
+}
+
+// 判断是否有权限审核;
+const isApprover = async (applicationUserId: number) => {
+    // 对比申请人与当前用户的上下级关系
+    //获取申请人的资料;
+    const { data } = await axios.queryUserInfoApi({})
+    const userId = data.userId
+    // if (userId == applicationUserId) return false;
+    //获取所在的部门ID;
+    const {data:UserDeptInfo}=await axios.getUserDeptListApi({userId});
+    const {data:applicationUserDeptInfo}=await axios.getUserDeptListApi({userId:applicationUserId})
 }
 
 </script>
@@ -275,7 +292,9 @@ const queryDimissionInfo = () => {
         <el-table-column label="操作" align="center">
             <template #default="scope">
                 <el-button size="small" type="danger" @click="handleEdit(scope.$index, scope.row)"
-                    :disabled="scope.row.status != 0">{{ scope.row.status != 0 ? '已审核' : '审核' }}</el-button>
+                    :disabled="scope.row.status != 0">
+                    {{ scope.row.status != 0 ? '已审核' : '审核' }}
+                </el-button>
             </template>
         </el-table-column>
     </el-table>
