@@ -241,7 +241,7 @@ const dialogFormisiblGeroup = ref(false);
 const dialogFormisiblDelete = ref(false);
 
 interface Form {
-    deptId: number,
+    deptId: number | null,
     depName: string,
     searchDepId: number | null,
     userId: number,
@@ -407,7 +407,7 @@ const addDepartment = async () => {
     getDepartmentId();
     await axios.addUserDeptApi({
         userId: form.userId,
-        deptId: form.deptId || 0
+        deptId: form.deptId
     }).then(res => {
         if (res.status == 1) {
             addSuccess();
@@ -417,7 +417,6 @@ const addDepartment = async () => {
             addError();
         }
     })
-    form.depName = ''
 }
 
 // 删除用户部门
@@ -431,8 +430,8 @@ const removeUserDepartment = async (userId: number) => {
         } else {
             deleteError();
         }
+        form.deptId = null
     })
-    form.depName = ''
 }
 </script>
 
