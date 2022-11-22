@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { reactive, ref, onMounted } from 'vue'
 import { useRouter } from "vue-router";
-import type { FormInstance } from 'element-plus'
+import type{  FormInstance } from 'element-plus'
 import axios from '@/assets/api/api';
 const ruleFormRef = ref<FormInstance>();
 let router = useRouter()
@@ -11,6 +11,8 @@ const ruleForm = reactive({
     username: '',
     password: '',
 })
+
+
 const validateUsername = (rule: any, value: any, callback: any) => {
     if (value === '') {
         callback(new Error('请输入您的用户名'))

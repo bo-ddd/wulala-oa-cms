@@ -3,6 +3,13 @@ import type { UserList, UserRegister } from "@/types/User";
 import type { UpdatePermission } from "@/types/Permission";
 import type { CreateLeave, ExamineUserLeave } from "@/types/Leave";
 import type { CreatedTask } from "@/types/Task";
+
+interface Result {
+    status: number;
+    data: any;
+    msg: string;
+  }
+
 //用户
 export default {
     /**
@@ -262,12 +269,15 @@ export default {
     getUserTaskListApi(payload = {}) {
         return axios.post('/user/task/list', payload)
     },
+
+    
+ 
     /**
    * 发布任务
    * "userId": 152,
      "taskId": 2
    * **/
-    publishTaskApi(payload = {}) {
+    publishTaskApi(payload = {}): Promise<Result> {
         return axios.post('/task/publish', payload)
     },
     /**

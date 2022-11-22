@@ -11,7 +11,6 @@ let userTaskList = reactive<Task[]>([])
 let taskStatus = ref(0)
 let taskId = ref(0)
 let myself = ref()
-let arrList = ref()
 let allUsers = ref()
 const pageNum = ref(1)
 const pageSize = ref(5)
@@ -35,7 +34,7 @@ const getUserTaskList = async function (params: QueryTask) {
         userTaskList.push(...res.data.list)
         console.log(userTaskList);
         userTaskList.forEach(item => {
-            taskId.value = item.id
+            taskId.value = item.id 
         })
     }
 }
@@ -47,8 +46,8 @@ const getUserList = async function () {
     if (res.status == 1) {
         console.log(res);
         let arr = res.data.list
-        myself.value = arr.filter((item: any) => item.userId == userStore.userId)
-        allUsers.value = arr.filter((item: any) => item.userId != userStore.userId)
+        myself.value = arr.filter((item: any) => item.userId == userStore.userId);
+        allUsers.value = arr.filter((item: any) => item.userId != userStore.userId);
         console.log(allUsers.value);
         allUsers.value.unshift(myself.value[0])
 
@@ -82,7 +81,7 @@ const submitTaskStatus = async function () {
 }
 //处理等级
 const taskLevelName = function (level: number | string) {
-    return level == 0 ? '普通' : "紧急"
+    return level == 0 ? '普通' : "紧急";
 }
 //分页
 const handleSizeChange = (val: number) => {
@@ -122,7 +121,6 @@ enum tagType {
     danger,
 }
 
-
 const queryTask = () => {
     getUserTaskList({
         pageNum: pageNum.value,
@@ -135,6 +133,10 @@ const queryTask = () => {
 const viewDetails = (index: number, row: Task) => {
     console.log(index, row)
     dialogDetailsVisible.value = true;
+}
+//查看详情弹层确定按钮
+const DetailsSubmit=function(){
+    
 }
 const levelList = [
     {
@@ -171,13 +173,6 @@ const statusList = [
         <el-form-item label="执行人">
             <el-select v-model="searchForm.userId" placeholder="请选择接收人">
                 <el-option v-for="item in allUsers" :key="item.userId" :label="item.avatarName" :value="item.userId" />
-                <!-- <el-option v-for="item in allUsers" :key="item.userId" :label="item.label" :value="item.userId">
-                    <span style="float: left">{{ item.label }}</span>
-                    <span style="
-                    float: right;
-                    color: var(--el-text-color-secondary);
-                     font-size: 13px;">{{ item.userId }}</span>
-                </el-option> -->
             </el-select>
         </el-form-item>
         <el-form-item label="紧急程度">
@@ -246,6 +241,8 @@ const statusList = [
             :disabled="disabled" layout="total, sizes, prev, pager, next, jumper" :total="total"
             @size-change="handleSizeChange" @current-change="handleCurrentChange" />
     </div>
+ 
+  <!-- 状态弹层 -->
     <el-dialog v-model="dialogFormVisible" title="任务状态">
         <el-radio-group v-model="taskStatus" align="center">
             <el-radio :label="0">未开始</el-radio>
@@ -267,8 +264,8 @@ const statusList = [
         <div> 这是查看详情</div>
         <template #footer>
             <span class="dialog-footer">
-                <el-button @click="dialogFormVisible = false">取消</el-button>
-                <el-button type="primary" @click="submitTaskStatus">
+                <el-button @click="dialogDetailsVisible = false">取消</el-button>
+                <el-button type="danger" @click="DetailsSubmit">
                     确定
                 </el-button>
             </span>
