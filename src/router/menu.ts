@@ -48,7 +48,7 @@ let requiresAuthList = [
     },
     {
         id: 401,
-        name: '任务列表',
+        name: '任务平台',
         targetPath: '/taskList',
         requiresAuth: true
     },
@@ -135,7 +135,14 @@ let sidebarList: Parent[] = [
         name: '任务管理',
         targetPath: '',
         requiresAuth: true,
-        childrenList: []
+        childrenList: [
+            {
+                id: 401,
+                name: '用户任务',
+                targetPath: '/task',
+                requiresAuth: false
+            },
+        ]
     },
     {
         id: 5,
