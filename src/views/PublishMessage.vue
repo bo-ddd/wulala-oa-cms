@@ -7,7 +7,7 @@
     <el-select v-model="deptMembersValue" multiple placeholder="谁接收消息" style="width: 240px" size="small" class="ml-10">
       <el-option v-for="(item, index) in deptMembersList" :key="index" :label="item.avatarName" :value="item.userId" />
     </el-select>
-    <el-button class="submitBtn" type="danger" size="small" @click="submitForm(ruleFormRef)">发送消息</el-button>
+    <!-- <el-button class="submitBtn" type="danger" size="small" @click="submitForm(ruleFormRef)">发送消息</el-button> -->
   </div>
 
   <el-form ref="ruleFormRef" :model="ruleForm" label-width="120px" class="demo-ruleForm" :size="formSize" status-icon>
