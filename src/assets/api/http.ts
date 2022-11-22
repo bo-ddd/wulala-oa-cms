@@ -1,8 +1,10 @@
 import axios from "axios";
 import {useRouter  } from "vue-router";
 let router= useRouter()
+console.log(import.meta.env.MODE)
+
 const $http = axios.create({
-  baseURL: '/api',
+  baseURL: import.meta.env.MODE=='production'? 'http://8.131.89.181:8080':'/api',
   timeout: 5000,   //如果接口5秒钟都没有返回，则axios会自动帮我们做失败的处理
   headers: { 'Content-Type': 'application/json' }  // 发送服务端之前，axios设置请求头信息
 });
