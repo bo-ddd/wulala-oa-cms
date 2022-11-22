@@ -3,13 +3,7 @@ import { reactive, ref, type Ref } from 'vue'
 import { useRouter } from 'vue-router';
 import { genFileId } from 'element-plus'
 import type { UploadInstance, UploadProps, UploadRawFile, UploadUserFile } from 'element-plus'
-import 'vue-cropper/dist/index.css';
 import { ArrowLeft } from '@element-plus/icons-vue';
-import { VueCropper } from 'vue-cropper';
-
-
-
-console.log(VueCropper)
 
 const router = useRouter()
 function to(name: string) {
