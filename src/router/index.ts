@@ -95,12 +95,12 @@ const router = createRouter({
             requiresAuth: false
           }
         },
-        {//我的任务页面;
+        {//用户任务列表页面;
           path: "/task",
           name: "task",
           component: () => import("../views/Task.vue"),
           meta: {
-            label: "我的任务",
+            label: "用户任务",
             requiresAuth: false
           }
         }
@@ -206,7 +206,7 @@ let dynamicRoutes = [
     name: "taskList",
     component: () => import("../views/TaskList.vue"),
     meta: {
-      label: "任务列表",
+      label: "任务平台",
       requiresAuth: true
     }
   },

@@ -187,12 +187,8 @@ watch(searchValue, (val) => {
     treeRef.value!.filter(val)
 })
 
-interface Data{
-    id:any;
-    permissionName:any;
-    pid:any
-}
-const filterNode = (value: string, data: Data) => {
+
+const filterNode = (value: string, data: Tree) => {
     console.log(value);
     console.log(data);
     
