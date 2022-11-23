@@ -63,10 +63,6 @@ const RolePermissionList = reactive<{ id: number, label: string }[]>([]);
   })
 })();
 
-
-
-
-
 //------------------3.角色权限复显功能--------------------
 const treeRef = ref();
 //获取修改前的id列表;
@@ -199,32 +195,32 @@ const submit = function () {
   }
 }
 
-
-
 </script>
 
 <template>
   <div>
-    <el-page-header :icon="ArrowLeft" title="返回" @back="router.push('Roles')" />
+    <el-page-header :icon="ArrowLeft" title="返回" @back="router.push('Roles')" > 
+      <template #content>
+            <span class="font-600 mr-3"> 设置角色权限 </span>
+        </template>
+    </el-page-header>
     <div class="top-list mt-24">
-      <el-select v-model="value" filterable placeholder="请输入角色名称" @change="getUserPermission" size="small">
+      <el-select v-model="value" filterable placeholder="请输入角色名称" @change="getUserPermission">
         <el-option v-for="item in roleList" :key="item.id" :label="item.roleName" :value="item.roleName" />
       </el-select>
-      <el-button type="danger" size="small" @click="setCheckedNodes">查询权限</el-button>
-      <el-button type="danger" size="small" @click="submit">确认修改</el-button>
+      <el-button @click="setCheckedNodes">查询权限</el-button>
+      <el-button type="danger" @click="submit">确认修改</el-button>
     </div>
-    <div class="custom-tree-node-container mt-24 scroll-bar">
-      <el-tree :data="formatData" ref="treeRef" node-key="id" default-expand-all :show-checkbox="checkedStatus"
-        :default-checked-keys="defaultCheckedKeys" check-on-click-node :expand-on-click-node="false"
-        :props="{ label: 'permissionName' }" />
-
-    </div>
+      <div class="custom-tree-node-container mt-24 scroll-bar">
+        <el-tree :data="formatData" ref="treeRef" node-key="id" default-expand-all :show-checkbox="checkedStatus"
+          :default-checked-keys="defaultCheckedKeys" check-on-click-node :expand-on-click-node="false"
+          :props="{ label: 'permissionName' }" />
+      </div>
   </div>
 
 </template>
 
 <style scoped>
-
 :deep(.el-input) {
   width: 200px
 }
@@ -254,8 +250,10 @@ const submit = function () {
 }
 
 .scroll-bar {
-  height: 500px;
+  height: 100%;
   overflow-y: scroll;
+  padding: 20px;
+  background-color: white;
 }
 
 .scroll-bar::-webkit-scrollbar {

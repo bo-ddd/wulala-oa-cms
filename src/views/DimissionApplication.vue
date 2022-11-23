@@ -4,7 +4,9 @@ import axios from '../assets/api/api'
 import type { FormInstance, FormRules } from 'element-plus'
 import { useRouter } from 'vue-router';
 import { ElMessage, ElMessageBox } from 'element-plus'
-import type { UploadProps, UploadUserFile } from 'element-plus'
+import type { UploadProps } from 'element-plus'
+import { Plus } from '@element-plus/icons-vue'
+
 const router = useRouter()
 const ruleFormRef = ref<FormInstance>()
 const ruleForm = reactive({
@@ -22,7 +24,7 @@ const rules = reactive<FormRules>({
     {
       required: true,
       message: '请选择一个时间',
-      trigger: 'blur'
+      trigger: 'change'
     }
   ],
   reason: [
@@ -117,34 +119,24 @@ const resetForm = (formEl: FormInstance | undefined) => {
   formEl.resetFields()
 }
 //上传附件;
-const fileList = ref<UploadUserFile[]>([])
-
-const handleExceed: UploadProps['onExceed'] = (files, uploadFiles) => {
-  ElMessage.warning(
-    `您选择了${files.length} 文件，已超过最大上传数量`
-  )
-}
-
-const beforeRemove: UploadProps['beforeRemove'] = (uploadFile, uploadFiles) => {
-  return ElMessageBox.confirm(
-    `确定取消上传 ${uploadFile.name} ?`
-  ).then(
-    () => true,
-    () => false
-  )
-}
-
-const handleSuccessUpload = (response: any) => {
+const handleSuccessUpload: UploadProps['onSuccess'] = (response) => {
   ruleForm.enclosure = response.data.url
 }
-
+//校验上传文件大小;
+const beforeUpload: UploadProps['beforeUpload'] = (rawFile) => {
+  if (rawFile.size / 1024 / 1024 > 1) {
+    ElMessage.error('文件大小不能超过 1MB!')
+    return false
+  }
+  return true
+}
 </script>
 
 <template>
   <div class="form">
     <h3>离职申请</h3>
-    <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" label-width="120px" size="small"
-      class="demo-ruleForm mt-24" hide-required-asterisk>
+    <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" label-width="120px" class="demo-ruleForm mt-20"
+      hide-required-asterisk>
       <template class="grid">
         <el-form-item label="姓名">
           <el-input v-model="ruleForm.name" disabled />
@@ -152,10 +144,10 @@ const handleSuccessUpload = (response: any) => {
         <el-form-item label="申请时间">
           <el-date-picker v-model="ruleForm.applicationTime" type="date" placeholder="" disabled />
         </el-form-item>
-        <el-form-item label="所在部门">
+        <el-form-item label="所在部门" class="mt-20">
           <el-input v-model="ruleForm.department" disabled />
         </el-form-item>
-        <el-form-item label="所在职位">
+        <el-form-item label="所在职位" class="mt-20">
           <el-input v-model="ruleForm.post" disabled />
         </el-form-item>
       </template>
@@ -173,39 +165,38 @@ const handleSuccessUpload = (response: any) => {
       </el-form-item>
 
       <el-form-item label="附件">
-        <el-upload v-model:file-list="fileList" class="upload-demo" multiple 
-          action="/api/upload/enclosure"  :before-remove="beforeRemove" :limit="1"
-          :on-exceed="handleExceed" :on-success="handleSuccessUpload">
-          <el-button type="danger">点击上传</el-button>
+        <el-upload class="avatar-uploader" action="/api/upload/enclosure" :before-upload="beforeUpload"
+          :on-success="handleSuccessUpload">
+          <img v-if="ruleForm.enclosure" :src="ruleForm.enclosure" class="avatar" />
+          <el-icon v-else class="avatar-uploader-icon">
+            <Plus />
+          </el-icon>
           <template #tip>
             <div class="el-upload__tip">
-              jpg/png 格式文件不能超过 500KB
+              jpg/png 格式文件不能超过 1M
             </div>
           </template>
         </el-upload>
       </el-form-item>
-
-      <el-form-item class="mt-20">
+      <div class="mt-20 position-btn">
         <el-button type="danger" @click="submitForm(ruleFormRef)">提交申请</el-button>
         <el-button @click="resetForm(ruleFormRef)">重置</el-button>
-      </el-form-item>
+      </div>
     </el-form>
   </div>
 </template>
 
-
-
 <style scoped>
 .form {
-  width: 80%;
+  width: 100%;
   margin: 0 auto;
   background-color: white;
-  padding: 10px;
   box-sizing: border-box;
+  padding: 10px;
 }
 
 :deep(.el-input) {
-  width: 120px
+  width: 200px
 }
 
 :deep(.el-input__wrapper) {
@@ -220,7 +211,52 @@ const handleSuccessUpload = (response: any) => {
   display: grid;
   grid-template-columns: 1fr 1fr;
 }
+
 .el-upload__tip {
   color: rgb(155, 151, 151)
+}
+
+/* 上传附件 */
+.avatar-uploader .avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
+}
+
+.avatar-uploader .el-upload {
+  border: 1px dashed var(--el-border-color);
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: var(--el-transition-duration-fast);
+}
+
+.avatar-uploader .el-upload:hover {
+  border-color: var(--el-color-primary);
+}
+
+.el-icon.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  text-align: center;
+}
+
+.demo-ruleForm {
+  width: 60%;
+  margin: 40px auto;
+  margin-top: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
+}
+
+.position-btn {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
 }
 </style>
