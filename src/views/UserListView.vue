@@ -176,12 +176,10 @@ const toCreateUser = () =>{
     router.push('createUserAccount')
 }
 const handleSizeChange = async (val: number) => {
-    console.log(`每页${val}条信息`);
     await getUserList(pageSize.value, pageNum.value)
     pageSize.value = val
 }
 const handleCurrentChange = async (val: number) => {
-    console.log(`这是第${val}页`)
     await getUserList(pageSize.value, pageNum.value)
     pageNum.value = val
 }
@@ -386,7 +384,6 @@ const queryDeptUser = async (id: number | null) => {
     await axios.queryUserMembersApi({
         deptId: id
     }).then(res => {
-        console.log(res.data);
         userListData.value.length = 0
         res.data.forEach((item: User) => {
             userListData.value.push(item)

@@ -74,12 +74,10 @@ const addDepartment = async (departmentAdd: string) => {
 
 // 修改部门名称
 const edit = (data: DepartmentData) => {
-    console.log(data);
     form.id = data.id
     form.name = data.name
 }
 const updateDepartment = async (departmentId: number) => {
-    console.log(departmentId);
 
     await axios.updateDeptApi({
         id: departmentId,
@@ -132,7 +130,6 @@ const open = (id: number) => {
 }
 const removeDepartment = async (departmentId: number) => {
     open(departmentId)
-    console.log(departmentId);
     
 }
 const dialogFormVisibleDelete = ref(false)

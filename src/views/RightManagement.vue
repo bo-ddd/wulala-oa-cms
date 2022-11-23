@@ -43,7 +43,6 @@ const getPermissionList = async () => {
         if (res.status === 1) {
             permissionList2.value = res.data;
             Object.assign(permissionList, formatData(res.data))
-            console.log(permissionList);
             permissionListPid.value = formDataPid(res.data)
         }
     })
@@ -157,14 +156,12 @@ const form = reactive({
 const dialogFormVisible = ref(false)
 // 修改权限
 const edit = (data: Tree) => {
-    console.log(data);
     form.permissionNameId = data.id
     form.permissionName = data.permissionName
 }
 
 // 删除权限
 const remove = (node: Node, id: number) => {
-    console.log(id);
     open(id)
 }
 
