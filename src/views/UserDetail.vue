@@ -3,20 +3,26 @@
 
 <template>
     <div>
-        <el-button @click="backUserList()" size="small" type="success">返回</el-button>
+        <el-page-header @click="backUserList()" title="返回" :icon="ArrowLeft">
+            <template #content>
+                <span class="page-header text-large font-700 mr-3"> 用户详情 </span>
+            </template>
+        </el-page-header>
     </div>
-    <el-descriptions title="用户信息" direction="horizontal" :column="2" size="large" border>
+    <el-descriptions direction="horizontal" :column="2" size="large" border>
         <el-descriptions-item label="用户ID" align="center" width="150px">
-            <el-tag size="small"> {{ userInfoData.userId }} </el-tag>
+            <div>{{ userInfoData.userId }}</div>
         </el-descriptions-item>
-        <el-descriptions-item label="用户昵称" align="center" width="150px">{{ userInfoData.avatarName }}</el-descriptions-item>
+        <el-descriptions-item label="用户昵称" align="center" width="150px">
+            <el-tag size="small"> {{ userInfoData.avatarName }}</el-tag>
+        </el-descriptions-item>
         <el-descriptions-item label="用户职位" align="center">
-            <el-tag size="small">{{ showRoleName(userInfoData.roles) }}</el-tag>
+            {{ showRoleName(userInfoData.roles) }}
         </el-descriptions-item>
         <el-descriptions-item label="任务进度" align="center">{{ }}</el-descriptions-item>
         <el-descriptions-item label="所在部门" align="center">{{ showDeptName(userInfoData.values) }}</el-descriptions-item>
         <el-descriptions-item label="联系方式" align="center">
-            <el-tag size="small">{{ userInfoData.phoneNumber }}</el-tag>
+            <el-tag size="small" type="success">{{ userInfoData.phoneNumber }}</el-tag>
         </el-descriptions-item>
         <el-descriptions-item label="详细地址" align="center">{{ userInfoData.address ? userInfoData.address : '该用户暂未填写地址'
         }}
@@ -27,7 +33,8 @@
 <script setup lang="ts">
 import axios from '@/assets/api/api'
 import { reactive } from 'vue';
-import { useRoute,useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
+import { ArrowLeft } from '@element-plus/icons-vue'
 const route = useRoute();
 const router = useRouter();
 const backUserList = () => {
@@ -46,7 +53,7 @@ interface User {
     roles: []
     sex: number
     userId: number
-    values:[]
+    values: []
 }
 const showRoleName = function (roleList: any) {
     if (!Array.isArray(roleList)) return;
@@ -64,15 +71,15 @@ const showDeptName = function (deptList: any) {
     })
     return str.substring(0, str.length - 1);
 };
-    // (async function () {
-    //     await axios.queryUserInfoApi({
-    //         userId: id
-    //     }).then(res => {
-    //         if (res.status == 1) {
-    //             Object.assign(userInfoData, res.data)
-    //         }
-    //     })
-    // })()
+// (async function () {
+//     await axios.queryUserInfoApi({
+//         userId: id
+//     }).then(res => {
+//         if (res.status == 1) {
+//             Object.assign(userInfoData, res.data)
+//         }
+//     })
+// })()
 
 let deptNameList = reactive([]);
 
@@ -91,7 +98,7 @@ let deptNameList = reactive([]);
 </script>
 
 <style scoped>
-:deep(.el-button){
-    float: right;
+:deep(.el-page-header) {
+    padding: 20px 0;
 }
 </style>
