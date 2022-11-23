@@ -65,7 +65,7 @@ let date = (startTime1 : number , endTime1 : number) =>{
   let endTime = new Date(endTime1).getTime()
   let timeStamp = endTime - starTime
   // let duration = timeStamp/1000/60/60%24
-  return timeStamp/1000/60/60/24*24;
+  return Math.ceil(timeStamp/1000/60/60/24*24);
 };
 
 const handleSizeChange = (val: number) => {
@@ -178,8 +178,8 @@ const handleCurrentChange = (val: number) => {
     <el-table-column label="操作">
       <template #default="scope">
         <div class="btn" v-if="scope.row.auditStatus == 0">
-          <el-button size="small" @click="handleEdit(scope.$index , scope.row)">通过</el-button>
-          <el-button size="small" type="danger" @click="handleDelete(scope.$index , scope.row)">不通过</el-button>
+          <el-link type="success"  @click="handleEdit(scope.$index , scope.row)">通过</el-link>
+          <el-link type="danger" @click="handleDelete(scope.$index , scope.row)">不通过</el-link>
         </div>
 
         <div v-else-if="scope.row.auditStatus == 1 || scope.row.auditStatus == 2">
@@ -192,7 +192,7 @@ const handleCurrentChange = (val: number) => {
   <div class="demo-pagination-block">
     <el-pagination v-model:pageNum="pageNum" v-model:page-size="pageSize" :page-sizes="[5, 10, 15, 20]" :small="small"
       :disabled="disabled" background layout="total, sizes, prev, pager, next, jumper" :total="total"
-      @size-change="handleSizeChange" @current-change="handleCurrentChange" />
+      @size-change="handleSizeChange" @current-change="handleCurrentChange" class="mt-20"/>
   </div>
 
 </template>
@@ -209,6 +209,9 @@ const handleCurrentChange = (val: number) => {
   height: 500px;
   background-color: aqua;
 }
-
+.btn{
+  display: flex;
+  justify-content: space-around;
+}
 
 </style>

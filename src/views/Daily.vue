@@ -115,7 +115,7 @@ const queryDailyDetail = () => {
         <el-table-column label="创建日期" sortable prop="createdAt" align="center" />
         <el-table-column label="操作" align="center">
             <template #default="scope">
-                <a class="detail" size="small" type="danger" @click="handleEdit(scope.$index, scope.row)">查看详情</a>
+                <el-link class="detail" type="danger" @click="handleEdit(scope.$index, scope.row)">查看详情</el-link>
             </template>
         </el-table-column>
 
