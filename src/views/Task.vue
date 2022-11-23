@@ -4,6 +4,7 @@ import { reactive, ref } from "vue";
 import type { Task, QueryTask } from "../types/Task";
 import { useStore } from "../stores/nav";
 let userStore = useStore()
+const labelPosition = ref('right')
 
 let dialogFormVisible = ref(false)
 let dialogDetailsVisible = ref(false)
@@ -13,9 +14,10 @@ let taskId = ref(0)
 let myself = ref()
 let allUsers = ref()
 const pageNum = ref(1)
-const pageSize = ref(5)
+const pageSize = ref(10)
 const total = ref()
 const disabled = ref(false)
+const percentage = ref()  //百分比
 
 const searchForm: any = reactive({
     userId: '',
@@ -34,7 +36,7 @@ const getUserTaskList = async function (params: QueryTask) {
         userTaskList.push(...res.data.list)
         console.log(userTaskList);
         userTaskList.forEach(item => {
-            taskId.value = item.id 
+            taskId.value = item.id
         })
     }
 }
@@ -44,11 +46,9 @@ const getUserList = async function () {
         pageSize: 2147483647   //int类型最大值
     })
     if (res.status == 1) {
-        console.log(res);
         let arr = res.data.list
         myself.value = arr.filter((item: any) => item.userId == userStore.userId);
         allUsers.value = arr.filter((item: any) => item.userId != userStore.userId);
-        console.log(allUsers.value);
         allUsers.value.unshift(myself.value[0])
 
     }
@@ -90,7 +90,6 @@ const handleSizeChange = (val: number) => {
     getUserTaskList({
         pageNum: pageNum.value,
         pageSize: pageSize.value,
-        // status: Number(StateCode[searchForm.status]),
         status: searchForm.status,
         level: searchForm.level == 1 ? 0 : searchForm.level == 2 ? 1 : null,
         userId: searchForm.userId
@@ -130,13 +129,13 @@ const queryTask = () => {
         userId: searchForm.userId
     })
 }
-const viewDetails = (index: number, row: Task) => {
-    console.log(index, row)
+const viewDetails = (row: Task) => {
     dialogDetailsVisible.value = true;
+    
 }
 //查看详情弹层确定按钮
-const DetailsSubmit=function(){
-    
+const DetailsSubmit = function () {
+
 }
 const levelList = [
     {
@@ -167,6 +166,11 @@ const statusList = [
     },
 ]
 
+const formLabelAlign = reactive({
+    name: '',
+    region: '',
+    type: '',
+})
 </script>
 <template>
     <el-form :inline="true" :model="searchForm" class="demo-form-inline">
@@ -187,7 +191,7 @@ const statusList = [
             </el-select>
         </el-form-item>
         <el-form-item>
-            <el-button @click="queryTask" type="danger" size="small">查询</el-button>
+            <el-button @click="queryTask" type="danger">查询</el-button>
         </el-form-item>
     </el-form>
     <el-table :data="userTaskList" style="width: 100%" class="mb-10">
@@ -209,7 +213,8 @@ const statusList = [
         </el-table-column>
         <el-table-column label="描述" align="center">
             <template #default="scope" align="center">
-                <div>{{ scope.row.description }}</div>
+                <div v-if="scope.row.description">{{ scope.row.description }}</div>
+                <div v-else class="noDesc">暂无描述…</div>
             </template>
         </el-table-column>
         <el-table-column label="发布人" align="center">
@@ -229,10 +234,12 @@ const statusList = [
             </template>
         </el-table-column>
         <el-table-column label="操作" align="center" width="200">
-            <template #default="scope">
-                <el-button size="small" @click="updateTask(scope.row)" type="danger"
-                    v-if="scope.row.receiveUserId == userStore.userId">任务状态</el-button>
-                <el-button size="small" type="danger" @click="viewDetails(scope.$index, scope.row)">查看详情</el-button>
+            <template #default="scope" align="center">
+                <span class="flex-row">
+                    <el-link type="warning" @click="updateTask(scope.row)"
+                        v-if="scope.row.receiveUserId == userStore.userId">任务状态</el-link>
+                    <el-link type="danger" @click="viewDetails(scope.row)">查看详情</el-link>
+                </span>
             </template>
         </el-table-column>
     </el-table>
@@ -241,8 +248,8 @@ const statusList = [
             :disabled="disabled" layout="total, sizes, prev, pager, next, jumper" :total="total"
             @size-change="handleSizeChange" @current-change="handleCurrentChange" />
     </div>
- 
-  <!-- 状态弹层 -->
+
+    <!-- 状态弹层 -->
     <el-dialog v-model="dialogFormVisible" title="任务状态">
         <el-radio-group v-model="taskStatus" align="center">
             <el-radio :label="0">未开始</el-radio>
@@ -261,7 +268,19 @@ const statusList = [
     </el-dialog>
     <!-- //查看详情弹层 -->
     <el-dialog v-model="dialogDetailsVisible" title="查看当前详情">
-        <div> 这是查看详情</div>
+        <el-form :label-position="labelPosition" label-width="100px" :model="formLabelAlign" style="max-width: 460px">
+            <el-form-item label="任务名称">
+                <el-input v-model="formLabelAlign.name" />
+            </el-form-item>
+            <el-form-item label="任务描述">
+                <el-input v-model="formLabelAlign.region" />
+            </el-form-item>
+            <el-form-item label="任务进度">
+                <div class="demo-progress">
+                    <el-progress :text-inside="true" :stroke-width="22" :percentage="percentage" status="warning" />
+                </div>
+            </el-form-item>
+        </el-form>
         <template #footer>
             <span class="dialog-footer">
                 <el-button @click="dialogDetailsVisible = false">取消</el-button>
@@ -280,5 +299,27 @@ const statusList = [
 
 .el-input__wrapper {
     width: 200px;
+}
+
+.el-link {
+    margin-right: 8px;
+}
+
+.el-link .el-icon--right.el-icon {
+    vertical-align: text-bottom;
+}
+
+.noDesc {
+    font-size: 10px;
+    color: #ccc;
+}
+
+.flex-row {
+    display: flex;
+    justify-content: space-around;
+}
+.demo-progress .el-progress--line {
+  margin-bottom: 15px;
+  width: 350px;
 }
 </style>

@@ -16,7 +16,6 @@ let deptList = reactive<Dept[]>([])
 let deptMembersList = reactive<DeptMember[]>([])
 let taskReception = ref([])
 let deptId = ref(0)
-let btnDisabled = ref(false)
 //分页
 const pageNum = ref(1)
 const pageSize = ref(10)
@@ -66,7 +65,6 @@ let getTaskList = async function () {
     total.value = res.data.total;
     pageSize.value = res.data.pageSize;
     pageNum.value = res.data.pageNum;
-    console.log(data);
     taskList.length = 0;
     taskList.push(...data)
 
@@ -77,10 +75,8 @@ const queryUserMembers = async function () {
         deptId: deptId.value
     })
     if (res.status == 1) {
-        console.log(res);
         deptMembersList.length = 0;
         deptMembersList.push(...res.data)
-        console.log(deptMembersList)
     }
 }
 //获取用户所在的组列表
@@ -92,7 +88,6 @@ const getUserDeptList = async function () {
         res.data.forEach((dept: any) => {
             deptId.value = dept.deptId
         })
-        console.log(deptId.value);  ///当前组id
         deptList.push(...res.data)
     }
 }
@@ -150,15 +145,11 @@ const receivePublishTask = async function (params: any) {
 /// 生成消息接口
 const createMessage = async function (content: { content: string; }) {
     let res = await axios.createMessageApi(content)
-    if (res.status == 1) {
-        console.log(res);
-    }
 }
 getTaskList()
 getUserDeptList()
 //确定删除
-const deleteTask = (index: number, row: Task) => {
-    console.log(index, row)
+const deleteTask = (row: Task) => {
     ElMessageBox.confirm(
         '是否确定删除此任务?',
         '删除任务',
@@ -219,7 +210,6 @@ const updateTaskDuplicate = function (row: Task) {
 const updateTask = (index: number, row: Task) => {
     isCreated.value = false;
     dialogFormVisible.value = true;
-    console.log(index, row)
     title.value = '修改任务'
     updateTaskDuplicate(row)
 
@@ -260,13 +250,10 @@ const taskLevelName = function (level: number | string) {
 //点击任务接收人获取id
 const taskRecipient = function (val: any) {
     taskReception.value = val
-    console.log('-----任务接收人----');
-    console.log(taskReception.value);
 
 }
 //点击发布任务按钮
 const clickPublishTask = function (row: Task) {
-    console.log(row);
     rowTaskId.value = row.id
     console.log(rowTaskId.value);
     dialogTaskVisible.value = true;
@@ -274,10 +261,7 @@ const clickPublishTask = function (row: Task) {
 }
 //用户所在分组
 const groupChange = function (val: number) {
-    console.log(val);
     deptId.value = val
-    console.log(deptId.value);
-
     queryUserMembers()
 }
 //点击发布消息弹层确定
@@ -296,19 +280,20 @@ const receiveTask = function (row: Task) {
 </script>
 <template>
     <div class="search mb-10">
-        <el-input v-model="searchTaskName" placeholder="输入名称搜索" size="small" />
-        <el-button type="danger" class="ml-10" plain size="small" @click="searchTask">
-            <el-icon>
+        <el-input v-model="searchTaskName" placeholder="输入名称搜索"  />
+        <el-button type="danger" class="ml-10" plain  @click="searchTask">
+            <el-icon  >
                 <Search />
             </el-icon>
             <span>搜索</span>
         </el-button>
-        <el-button type="danger" size="small" @click="creatTask">
+            <el-button type="danger" @click="creatTask">
             <el-icon>
                 <Plus />
             </el-icon>
             <span>新增</span>
         </el-button>
+        
     </div>
     <el-table :data="taskList" style="width: 100%" class="mb-10">
         <el-table-column label="任务Id" align="center">
@@ -323,7 +308,8 @@ const receiveTask = function (row: Task) {
         </el-table-column>
         <el-table-column label="描述" align="center">
             <template #default="scope" align="center">
-                <div>{{ scope.row.description }}</div>
+                <div v-if="scope.row.description">{{ scope.row.description }}</div>
+                <div v-else class="noDesc">暂无描述…</div>
             </template>
         </el-table-column>
         <el-table-column label="等级" align="center">
@@ -336,15 +322,14 @@ const receiveTask = function (row: Task) {
                 <el-tag>{{ scope.row.avatarName }}</el-tag>
             </template>
         </el-table-column>
-        <el-table-column label="操作" width="300">
+        <el-table-column label="操作" align="center" width="200">
             <template #default="scope" align="center">
-                <el-button size="small" @click="receiveTask(scope.row)" type="danger" plain
-                    v-if="scope.row.userId != userStore.userId">领取任务</el-button>
-                <el-button size="small" @click="clickPublishTask(scope.row)" type="danger" plain
-                    v-if="scope.row.userId == userStore.userId">发布任务</el-button>
-                <el-button size="small" @click="updateTask(scope.$index, scope.row)" type="danger">编辑</el-button>
-                <el-button size="small" type="danger" plain @click="deleteTask(scope.$index, scope.row)"
-                    v-if="scope.row.userId == userStore.userId">删除</el-button>
+                <span class="flex-row">
+                <el-link type="success"  @click="receiveTask(scope.row)" v-if="scope.row.userId != userStore.userId">领取任务</el-link>
+                <el-link type="primary"  @click="clickPublishTask(scope.row)"  v-if="scope.row.userId == userStore.userId">发布任务</el-link>
+                <el-link type="warning" @click="updateTask(scope.$index, scope.row)" >编辑</el-link>
+                <el-link type="info" @click="deleteTask(scope.row)"  v-if="scope.row.userId == userStore.userId">删除</el-link>
+                </span>
             </template>
         </el-table-column>
     </el-table>
@@ -437,5 +422,22 @@ const receiveTask = function (row: Task) {
 
 .demo-pagination-block .demonstration {
     margin-bottom: 16px;
+}
+.el-pager{
+    margin: 0 4px;
+}
+.el-link {
+  margin-right: 8px;
+}
+.el-link .el-icon--right.el-icon {
+  vertical-align: text-bottom;
+}
+.noDesc{
+    font-size: 10px;
+    color:#ccc;
+}
+.flex-row{
+    display: flex;
+    justify-content: space-between;
 }
 </style>
