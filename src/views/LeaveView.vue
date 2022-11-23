@@ -85,7 +85,7 @@ const handleCurrentChange = (val: number) => {
     <el-table-column label="编号" width="100">
       <template #default="scope">
         <div style="display: flex; align-items: center;justify-content: center;">
-          <span style="margin-left: 10px">{{ scope.row.userId }}</span>
+          <span>{{ scope.row.userId }}</span>
         </div>
       </template>
     </el-table-column>
@@ -106,7 +106,7 @@ const handleCurrentChange = (val: number) => {
     <el-table-column label="开始时间">
       <template #default="scope">
         <div style="display: flex; align-items: center;justify-content: center;">
-          <span style="margin-left: 10px">{{ updateTime(scope.row.startTime) }}</span>
+          <span>{{ updateTime(scope.row.startTime) }}</span>
         </div>
       </template>
     </el-table-column>
@@ -114,7 +114,7 @@ const handleCurrentChange = (val: number) => {
     <el-table-column label="结束时间">
       <template #default="scope">
         <div style="display: flex; align-items: center;justify-content: center;">
-          <span style="margin-left: 10px">{{ updateTime(scope.row.endTime) }}</span>
+          <span>{{ updateTime(scope.row.endTime) }}</span>
         </div>
       </template>
     </el-table-column>
@@ -122,7 +122,7 @@ const handleCurrentChange = (val: number) => {
     <el-table-column label="时长" >
       <template #default="scope">
         <div style="display: flex; align-items: center;justify-content: center;">
-          <span style="margin-left: 10px">{{ date(scope.row.startTime,scope.row.endTime) }}</span>
+          <span>{{ date(scope.row.startTime,scope.row.endTime) }}</span>
         </div>
       </template>
     </el-table-column>
@@ -130,15 +130,15 @@ const handleCurrentChange = (val: number) => {
     <el-table-column label="休假状态">
       <template #default="scope">
         <div style="display: flex; align-items: center;justify-content: center;" v-if="scope.row.leaveStatus == 0">
-          <span style="margin-left: 10px">未开始</span>
+          <span>未开始</span>
         </div>
 
         <div style="display: flex; align-items: center;justify-content: center;" v-if="scope.row.leaveStatus == 1">
-          <span style="margin-left: 10px">已开始</span>
+          <span>已开始</span>
         </div>
 
         <div style="display: flex; align-items: center;justify-content: center;" v-if="scope.row.leaveStatus == 2">
-          <span style="margin-left: 10px">已结束</span>
+          <span>已结束</span>
         </div>
       </template>
     </el-table-column>
@@ -146,7 +146,7 @@ const handleCurrentChange = (val: number) => {
     <el-table-column label="请假原因">
       <template #default="scope">
         <div style="display: flex; align-items: center;justify-content: center;">
-          <span style="margin-left: 10px">{{ scope.row.reason }}</span>
+          <span>{{ scope.row.reason }}</span>
         </div>
       </template>
     </el-table-column>
@@ -154,15 +154,15 @@ const handleCurrentChange = (val: number) => {
     <el-table-column label="状态">
       <template #default="scope">
         <div style="display: flex; align-items: center;justify-content: center;" v-if="scope.row.auditStatus == 0">
-          <span style="margin-left: 10px">待审核</span>
+          <span>待审核</span>
         </div>
 
         <div style="display: flex; align-items: center;justify-content: center;" v-if="scope.row.auditStatus == 1">
-          <span style="margin-left: 10px">审核通过</span>
+          <span>审核通过</span>
         </div>
 
         <div style="display: flex; align-items: center;justify-content: center;" v-if="scope.row.auditStatus == 2">
-          <span style="margin-left: 10px">审核不通过</span>
+          <span>审核不通过</span>
         </div>
       </template>
     </el-table-column>
@@ -170,7 +170,7 @@ const handleCurrentChange = (val: number) => {
     <el-table-column label="联系方式">
       <template #default="scope">
         <div style="display: flex; align-items: center;justify-content: center;">
-          <span style="margin-left: 10px">{{ scope.row.userInfo.phoneNumber }}</span>
+          <span>{{ scope.row.userInfo.phoneNumber }}</span>
         </div>
       </template>
     </el-table-column>
@@ -211,7 +211,7 @@ const handleCurrentChange = (val: number) => {
 }
 .btn{
   display: flex;
-  justify-content: space-around;
+  justify-content: space-evenly;
 }
 
 </style>
