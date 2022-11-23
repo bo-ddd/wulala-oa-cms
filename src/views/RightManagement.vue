@@ -103,17 +103,17 @@ const open = (id: number) => {
                 ElMessage({
                     showClose: true,
                     type: 'error',
-                    message: '有子权限所以不能被删除',
+                    message: '有子权限不能被删除',
                 })
             }
         })
     }).catch(() => {
-            ElMessage({
-                showClose: true,
-                type: 'error',
-                message: '已取消删除'
-            })
+        ElMessage({
+            showClose: true,
+            type: 'info',
+            message: '已取消删除'
         })
+    })
 }
 
 
@@ -196,48 +196,48 @@ const formLabelWidth = '140px'
 
     <div class="ipt-add">
         <span class="label label-add">添加权限：</span>
-        <el-input v-model="permissionNameAdd" size="small" placeholder="请输入权限名称" clearable />
-        <el-select v-model="permissionId" class="parentId m-2" placeholder="请选择挂载到？" size="small" clearable>
+        <el-input v-model="permissionNameAdd" placeholder="请输入权限名称" clearable />
+        <el-select v-model="permissionId" class="parentId m-2" placeholder="请选择挂载到？" clearable>
             <el-option v-for="item in permissionList2" :key="item.id" :label="item.permissionName" :value="item.id" />
         </el-select>
-        <el-button class="ml-10" type="danger" size="small" @click="addPermission(permissionNameAdd)">添加
+        <el-button class="ml-10" type="danger" @click="addPermission(permissionNameAdd)">添加
         </el-button>
     </div>
     <div class="ipt">
         <div class="example-block">
             <span class="example-demonstration">查询权限：</span>
 
-            <el-input size="small" v-model="searchValue" placeholder="请输入相关权限名称" clearable />
+            <el-input v-model="searchValue" placeholder="请输入相关权限名称" clearable />
         </div>
     </div>
-
-    <el-tree :data="permissionList" node-key="id" :expand-on-click-node="true" 
-        :props="defaultProps" ref="treeRef" :default-expand-all="false" :filter-node-method="filterNode" accordion>
-        <template #default="{ node, data }">
-            <span class="custom-tree-node">
-                <span>{{ node.label }}</span>
-                <span class="btn">
-                    <el-button class="ml-10" type="danger" size="small" @click="edit(data); dialogFormVisible = true">修改
-                    </el-button>
-                    <el-button class="ml-10" type="danger" size="small" @click="remove(node, data.id)">删除
-                    </el-button>
+    <div class="tree">
+        <el-tree :data="permissionList" node-key="id" :expand-on-click-node="true" :props="defaultProps" ref="treeRef"
+            :default-expand-all="false" :filter-node-method="filterNode" accordion>
+            <template #default="{ node, data }">
+                <span class="custom-tree-node">
+                    <span>{{ node.label }}</span>
+                    <span class="btn">
+                        <el-link class="ml-10" type="danger" @click="edit(data); dialogFormVisible = true">修改</el-link>
+                        <el-link class="ml-10" type="info" @click="remove(node, data.id)">删除</el-link>
+                    </span>
                 </span>
-            </span>
-        </template>
-    </el-tree>
+            </template>
+        </el-tree>
+    </div>
+
 
     <el-dialog v-model="dialogFormVisible" title="修改权限">
         <el-form :model="form">
             <el-form-item label="当前权限名称" :label-width="formLabelWidth">
-                <el-input v-model="form.permissionName" size="small" autocomplete="off" readonly='readonly' />
+                <el-input v-model="form.permissionName" autocomplete="off" readonly='readonly' />
             </el-form-item>
             <el-form-item label="新的权限名称" :label-width="formLabelWidth">
-                <el-input v-model="newPermissionName" size="small" placeholder="请输入新的权限名称" clearable />
+                <el-input v-model="newPermissionName" placeholder="请输入新的权限名称" clearable />
             </el-form-item>
             <el-form-item label="挂载" :label-width="formLabelWidth">
-                <el-select v-model="permissionId" class="m-2" placeholder="请选择需要挂载到？" size="small" clearable>
+                <el-select v-model="permissionId" class="m-2" placeholder="请选择需要挂载到？" clearable>
                     <el-option v-for="item in permissionList2" :key="item.id" :label="item.permissionName"
-                        :value="item.id" size="small" />
+                        :value="item.id" />
                 </el-select>
             </el-form-item>
         </el-form>
@@ -282,7 +282,11 @@ const formLabelWidth = '140px'
     color: rgb(145, 137, 137);
     font-weight: 600;
 }
-
+.tree{
+    padding: 15px;
+    background-color: white;
+    border-radius: 10px;
+}
 :deep(.el-pagination) {
     margin-top: 20px;
 }

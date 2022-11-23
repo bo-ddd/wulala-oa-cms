@@ -1,11 +1,11 @@
 <template>
   <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" label-width="120px" class="demo-ruleForm" :size="formSize"
     status-icon>
-    · <el-form-item label="用户名称" prop="name">
-      <el-input v-model="ruleForm.name" readonly="readonly"/>
+     <el-form-item label="用户名称" prop="name">
+      <el-input v-model="ruleForm.name" readonly="readonly" />
     </el-form-item>
 
-    <div class="demo-datetime-picker">
+    <!-- <div class="demo-datetime-picker">
       <div class="block">
         <span class="demonstration">开始时间</span>
         <el-date-picker v-model="ruleForm.date1" type="datetime" placeholder="选择开始时间" />
@@ -15,13 +15,20 @@
         <span class="demonstration">结束时间</span>
         <el-date-picker v-model="ruleForm.date2" type="datetime" placeholder="选择结束时间" :shortcuts="shortcuts" />
       </div>
+    </div> -->
+
+    <div class="block">
+      <el-form-item class="warp" label="用户名称" prop="name">
+      <el-date-picker v-model="ruleForm.dateValue" type="datetimerange" range-separator="To" start-placeholder="开始时间"
+        end-placeholder="结束时间" />
+      </el-form-item>
     </div>
 
     <el-form-item label="请假理由" prop="desc">
       <el-input v-model="ruleForm.desc" type="textarea" />
     </el-form-item>
     <el-form-item>
-      <el-button type="primary" @click="submitForm(ruleFormRef)">提交</el-button>
+      <el-button type="danger" @click="submitForm(ruleFormRef)">提交</el-button>
       <el-button @click="resetForm(ruleFormRef)">取消</el-button>
     </el-form-item>
   </el-form>
@@ -59,10 +66,9 @@ const formSize = ref('default')
 const ruleFormRef = ref<FormInstance>()
 
 const ruleForm = reactive({
-  name:'',
+  name: '',
   id: '',
-  date1: '',
-  date2: '',
+  dateValue: '',
   type: [],
   desc: '',
 })
@@ -101,7 +107,7 @@ const rules = reactive<FormRules>({
   ],
 });
 
-const getsunmit = async ()=>{
+const getsunmit = async () => {
   let userId = await axios.queryUserInfoApi({});
   ruleForm.id = userId.data.userId
   ruleForm.name = userId.data.avatarName
@@ -116,8 +122,8 @@ const submitForm = (formEl: FormInstance | undefined) => {
       let userInfo = await axios.createLeaveApi({
         userId: ruleForm.id,
         reason: ruleForm.desc,
-        startTime: ruleForm.date1,
-        endTime: ruleForm.date2,
+        startTime: ruleForm.dateValue[0],
+        endTime: ruleForm.dateValue[1],
       });
       formEl.resetFields()
     } else {
@@ -126,7 +132,6 @@ const submitForm = (formEl: FormInstance | undefined) => {
       formEl.resetFields()
     }
   })
-
 }
 
 const resetForm = (formEl: FormInstance | undefined) => {
@@ -141,34 +146,23 @@ const resetForm = (formEl: FormInstance | undefined) => {
 }
 
 
-.demo-datetime-picker {
-  display: flex;
-  width: 60%;
-  padding: 0;
-  margin-left: 80px;
-  flex-wrap: wrap;  
-}
-.el-input{
-width: 60%;
-}
-.el-textarea{
+
+.el-input {
   width: 60%;
 }
-.demo-datetime-picker .block {
-  padding: 30px 0;
-  text-align: center;
-  border-right: solid 1px var(--el-border-color);
-  flex: 1;
+
+.el-textarea {
+  width: 60%;
 }
 
-.demo-datetime-picker .block:last-child {
-  border-right: none;
+:deep(.el-textarea__inner) {
+  height: 300px;
 }
-
-.demo-datetime-picker .demonstration {
-  display: block;
-  color: var(--el-text-color-secondary);
-  font-size: 14px;
+.block{
+  margin-left:0px ;
   margin-bottom: 20px;
+}
+.warp{
+  width: 40%;
 }
 </style>

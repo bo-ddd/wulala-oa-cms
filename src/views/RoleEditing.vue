@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onMounted, reactive, ref } from 'vue'
+import { reactive, ref } from 'vue'
 import axios from "../assets/api/api"
 import { ElTree, ElMessage } from 'element-plus'
 import type Node from 'element-plus/es/components/tree/src/model/node'
@@ -10,8 +10,6 @@ const roleId = ref<number>()
 const defaultCheckedKeys = reactive<number[]>([])
 const router = useRouter()
 const route = useRoute()
-console.log('---------------Route.query----------------')
-console.log(route.query.id)
 
 //------------------1.处理数据结构，为无限极结构--------------------
 interface PermissionList {
@@ -60,8 +58,6 @@ const RolePermissionList = reactive<{ id: number, label: string }[]>([]);
   // -----------------拿到角色ID--------------
   roleList.forEach(item => {
     if (item.id == Number(route.query.id)) {
-      console.log('----item.id----')
-      console.log(item.id)
       value.value = item.roleName
     }
   })
@@ -95,7 +91,6 @@ const getUserPermission = async () => {
   let { data } = await axios.queryRolePermissionListApi({
     roleId: roleId.value
   })
-  console.log(data)
   //清空上一次的数据;
   beforeUpdateIdList.length = 0; //存放修改前的id;
   RolePermissionList.length = 0  //复显操作;
@@ -106,7 +101,6 @@ const getUserPermission = async () => {
       RolePermissionList.push({ id: item.permissionId, label: item.permissionName })
     })
   }
-  console.log('执行完毕')
 }
 //控制禁选;
 const checkedStatus = ref(false);
@@ -160,10 +154,6 @@ const submit = function () {
         axios.addPermissionRoleApi({
           roleId: roleId.value,
           permissionId: item
-        }).then(res => {
-          console.log(res)
-        }).catch(error => {
-          console.log(error)
         })
       })
     )
@@ -190,10 +180,6 @@ const submit = function () {
         axios.deletePermissionRoleApi({
           roleId: roleId.value,
           permissionId: item
-        }).then(res => {
-          console.log(res)
-        }).catch(error => {
-          console.log(error)
         })
       })
     )
