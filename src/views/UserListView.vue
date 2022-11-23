@@ -47,7 +47,7 @@
         </el-table-column>
         <el-table-column label="操作" align='center'>
             <template #default="scope">
-                <el-link type="info" @click="toUserDetail(scope.row.userId)">用户详情</el-link>
+                <el-link type="primary" @click="toUserDetail(scope.row.userId)">用户详情</el-link>
                 <el-link type="danger" @click="getUserId(scope.row); dialogFormVisibleAdd = true">添加角色</el-link>
                 <el-link type="info" @click="getUserId(scope.row); dialogFormVisibleDelete = true">删除角色</el-link>
                 <el-link type="danger" @click="getUserId(scope.row); dialogFormisiblGeroup = true">添加部门</el-link>
@@ -188,10 +188,12 @@ const getUserList = (pageSize?: number, pageNum?: number) => {
     }).then(res => {
         if (res.status === 1) {
             userListData.value = res.data.list;
+            total.value = res.data.total
         }
     })
     rolesInput.value = '';
     departmentInput.value = '';
+    form.searchDepId = null
 }
 const rolesInput = ref();
 const departmentInput = ref();
@@ -385,6 +387,7 @@ const queryDeptUser = async (id: number | null) => {
         res.data.forEach((item: User) => {
             userListData.value.push(item)
         });
+        total.value = userListData.value.length
     })
 }
 
