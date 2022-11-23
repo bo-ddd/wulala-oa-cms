@@ -10,15 +10,12 @@ interface User {
 }
 
 const handleEdit = (index: number, row: User) => {
-  console.log(index, row)
 }
 const handleDelete = (index: number, row: User) => {
-  console.log(index, row)
 }
 let getUserMessageList = ref()
 const getUserMessage = async () => {
    let asd = await axios.queryMessageListApi({})
-   console.log(asd);
 }
 getUserMessage()
 </script>
@@ -91,10 +88,6 @@ getUserMessage()
     </el-table-column>
   </el-table>
 </template>
-
-
-
-
 
 <style scoped>
 

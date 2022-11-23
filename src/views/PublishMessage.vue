@@ -44,8 +44,6 @@ const getUserDeptList = async function () {
   let res = await axios.getUserDeptListApi({
     userId: UserStore.userId
   })
-  console.log("---------------------");
-  
   
   if (res.status == 1) {
     res.data.forEach((dept: any) => {
