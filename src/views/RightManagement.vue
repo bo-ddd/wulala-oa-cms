@@ -203,14 +203,14 @@ const formLabelWidth = '140px'
         <el-button class="ml-10" type="danger" @click="addPermission(permissionNameAdd)">添加
         </el-button>
     </div>
-    <div class="ipt">
+    <div class="ipt mt-20">
         <div class="example-block">
             <span class="example-demonstration">查询权限：</span>
 
             <el-input v-model="searchValue" placeholder="请输入相关权限名称" clearable />
         </div>
     </div>
-    <div class="tree">
+    <div class="tree mt-20">
         <el-tree :data="permissionList" node-key="id" :expand-on-click-node="true" :props="defaultProps" ref="treeRef"
             :default-expand-all="false" :filter-node-method="filterNode" accordion>
             <template #default="{ node, data }">
@@ -255,7 +255,7 @@ const formLabelWidth = '140px'
 <style scoped>
 .ipt,
 .ipt-add {
-    padding: 10px 0;
+    /* padding: 10px 0; */
     display: flex;
     align-items: center;
 }

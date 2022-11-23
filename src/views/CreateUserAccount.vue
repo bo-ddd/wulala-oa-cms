@@ -120,7 +120,7 @@ const submitForm = (formEl: FormInstance | undefined) => {
 <template>
     <div class="logon">
         <h3>创建用户</h3>
-        <div class="box" :style="{ boxShadow: '--el-box-shadow-dark' }">
+        <div class="box mt-20" :style="{ boxShadow: '--el-box-shadow-dark' }">
             <el-form ref="ruleFormRef" :model="ruleForm" status-icon :rules="rules" class="demo-ruleForm">
                 <el-form-item class="username" prop="username">
                     <el-input v-model="ruleForm.username" type="text" placeholder="请输入用户名" clearable />
@@ -163,20 +163,9 @@ const submitForm = (formEl: FormInstance | undefined) => {
 </template>
 
 <style scoped>
-/* .logon {
-    display: flex;
-    align-items: center;
-    height: 100%;
-    background-repeat: no-repeat;
-    background-size: cover;
-} */
-
 .box {
-    /* background-color: rgba(251, 203, 203, .4); */
-    /* margin: 0 auto; */
     border-radius: 12px;
     width: 360px;
-    /* padding: 20px 0; */
 }
 
 .username,
@@ -189,9 +178,9 @@ const submitForm = (formEl: FormInstance | undefined) => {
     padding: 20px 30px;
 }
 
-h3 {
-    padding: 10px 0;
-}
+/* h3 {
+    padding: 20px 0;
+} */
 
 :deep(.el-form-item) {
     margin: 0;
