@@ -33,10 +33,7 @@ $http.interceptors.response.use(function (response) {
   //作用2: 根据不同的状态码，提示不同的信息
   //作用3：改变接口的返回数据类型
   // console.log('-----响应啦');
-  console.log(response.data);
- if(response.data.status==404){
-    alert('错误，请稍后再试')
-  }else if(response.data.status==401){
+if(response.data.status==401){
      router.push('/login')
   }
   return response.data;

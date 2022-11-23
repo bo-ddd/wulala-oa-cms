@@ -195,7 +195,7 @@ const dialogFormVisibleDelete = ref(false)
 <style scoped>
 .ipt,
 .ipt-add {
-    padding: 10px 0;
+    padding: 20px 0;
     display: flex;
     align-items: center;
 }

@@ -40,7 +40,6 @@ const to = function (name: string) {
     router.push(name)
 }
 const submitForm = (formEl: FormInstance | undefined) => {
-
     if (!formEl) return
     formEl.validate(async (valid) => {
         if (valid) {
@@ -48,7 +47,6 @@ const submitForm = (formEl: FormInstance | undefined) => {
                 username: ruleForm.username,
                 password: ruleForm.password,
             }).then(res => {
-                console.log(res);
                 if (res.status == 1) {
                     sessionStorage.setItem("token", res.data.token);// 吧后端返回的token 存到了本地
                     to('home')
@@ -68,7 +66,6 @@ onMounted(() => {
     document.onkeydown = function (e) {
         let key = e.key;
         if (key == "Enter") {
-            console.log(ruleFormRef)
             submitForm(ruleFormRef.value); //ref对象在js中需要value才能获取到
         }
     };
