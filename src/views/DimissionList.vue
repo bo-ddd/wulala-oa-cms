@@ -255,6 +255,14 @@ const isApprover = async (applicationUserId: number) => {
     }
 }
 
+//查看附件弹框;
+const dialogFormVisibleEnclosure = ref(false);
+const enclosureUrl = ref<string>('');
+const getEnclosureUrl = (imgUrl: string) => {
+    dialogFormVisibleEnclosure.value = true;
+    enclosureUrl.value = imgUrl
+}
+
 </script>
 
 <template>
@@ -269,7 +277,7 @@ const isApprover = async (applicationUserId: number) => {
             end-placeholder="结束时间" />
         <el-button type="danger" @click="queryDimissionInfo">查询</el-button>
     </div>
-    <el-table :data="tableData" style="width: 100%" class="mt-24">
+    <el-table :data="tableData" style="width: 100%" class="mt-20">
         <el-table-column label="ID" prop="id" align="center" />
         <el-table-column label="姓名" align="center">
             <template #default="scope">
@@ -283,11 +291,13 @@ const isApprover = async (applicationUserId: number) => {
         <el-table-column label="离职原因" prop="reason" align="center" />
         <el-table-column label="附件" prop="enclosure" align="center">
             <template #default="scope">
-                <el-link :type="scope.row.enclosure ? 'primary' : 'info'" :href="scope.row.enclosure"
-                    :disabled="scope.row.status != 0 || !scope.row.enclosure">
-                    {{ scope.row.enclosure ? '查看' : '无' }}</el-link>
+                <el-link :type="scope.row.enclosure ? 'primary' : 'info'"
+                    :disabled="scope.row.status != 0 || !scope.row.enclosure"
+                    @click="getEnclosureUrl(scope.row.enclosure)">
+                    {{ scope.row.enclosure ? '查看' : '无' }}
+                </el-link>
 
-                
+
             </template>
         </el-table-column>
         <el-table-column label="审核状态" prop="status" align="center">
@@ -298,11 +308,7 @@ const isApprover = async (applicationUserId: number) => {
         </el-table-column>
         <el-table-column label="操作" align="center">
             <template #default="scope">
-                <!-- <el-button type="danger" @click="handleEdit(scope.$index, scope.row)"
-                    :disabled="scope.row.status != 0">
-                    {{ scope.row.status != 0 ? '已审核' : '审核' }}
-                </el-button> -->
-                <el-link type="danger" @click="handleEdit(scope.$index, scope.row)" :disabled="scope.row.status != 0">
+                <el-link type="danger" class="font-bold" @click="handleEdit(scope.$index, scope.row)" :disabled="scope.row.status != 0">
                     {{ scope.row.status != 0 ? '已审核' : '审核' }}
                 </el-link>
             </template>
@@ -311,11 +317,10 @@ const isApprover = async (applicationUserId: number) => {
     <!-- 分页 -->
     <el-pagination v-model:currentPage="currentPage" v-model:page-size="pageSize" :page-sizes="[5, 10, 20, 30, 40]"
         :background="true" layout="total, sizes, prev, pager, next, jumper" :total="total"
-        @size-change="handleSizeChange" @current-change="handleCurrentChange" class="mt-24" />
-    <!-- 弹框 -->
+        @size-change="handleSizeChange" @current-change="handleCurrentChange" class="mt-20" />
+    <!-- 审核弹框 -->
     <el-dialog v-model="dialogFormVisible" title="审核处理">
-        <el-form ref="approvalFormRef" :model="approvalForm" hide-required-asterisk label-width="120px"
-            :rule="rules">
+        <el-form ref="approvalFormRef" :model="approvalForm" hide-required-asterisk label-width="120px" :rule="rules">
             <el-form-item label="审核操作" prop="operation">
                 <el-radio-group v-model="approvalForm.operation">
                     <el-radio :label="1">通过</el-radio>
@@ -334,7 +339,20 @@ const isApprover = async (applicationUserId: number) => {
                 </el-button>
             </span>
         </template>
+    </el-dialog>
 
+    <!-- 查看附件弹框 -->
+    <el-dialog v-model="dialogFormVisibleEnclosure" title="附件详情">
+        <div class="flex-center">
+            <img :src="enclosureUrl" class="size-enclosure" alt="附件图片">
+        </div>
+            <template #footer>
+                <span class="dialog-footer">
+                    <el-link type="danger" :href="enclosureUrl" class="size-btn_download">
+                        下载附件
+                    </el-link>
+                </span>
+            </template>
     </el-dialog>
 </template>
 
@@ -361,4 +379,27 @@ const isApprover = async (applicationUserId: number) => {
     width: 50%;
     gap: 12px;
 }
+
+.size-enclosure {
+    width: 200px;
+}
+
+.flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.size-btn_download{
+   padding:6px 8px;
+   color:white;
+   background-color: #F56C6C;
+   border-radius:3px;
+}
+.size-btn_download:hover{
+    background-color: rgba(245, 108, 108, 0.8);
+}
+.font-bold{
+    font-weight:bold;
+}
+
 </style>
