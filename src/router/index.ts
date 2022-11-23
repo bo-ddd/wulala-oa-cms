@@ -46,7 +46,7 @@ const router = createRouter({
           name: "createDaily",
           component: () => import("../views/CreateDaily.vue"),
           meta: {
-            label: "提交日报",
+            label: "填写日报",
             requiresAuth: false
           }
         },

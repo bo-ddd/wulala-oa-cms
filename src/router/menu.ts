@@ -35,49 +35,49 @@ let requiresAuthList = [
         requiresAuth: true
     },
     {
-        id: 301,
+        id: 401,
         name: '请假审批',
         targetPath: '/leave',
         requiresAuth: true
     },
     {
-        id: 304,
+        id: 404,
         name: '日报列表',
         targetPath: '/daily',
         requiresAuth: true
     },
     {
-        id: 401,
+        id: 501,
         name: '任务平台',
         targetPath: '/taskList',
         requiresAuth: true
     },
     {
-        id: 501,
+        id: 601,
         name: '发布消息',
         targetPath: '/publishMessage',
         requiresAuth: true
     },
     {
-        id: 601,
+        id: 701,
         name: '权限列表',
         targetPath: '/rightManagement',
         requiresAuth: true
     },
     {
-        id: 602,
+        id: 702,
         name: '角色管理',
         targetPath: '/roles',
         requiresAuth: true
     },
     {
-        id: 603,
+        id: 703,
         name: '新增角色',
         targetPath: '/createRoles',
         requiresAuth: true
     },
     {
-        id: 604,
+        id: 704,
         name: '部门管理',
         targetPath: '/department',
         requiresAuth: true
@@ -104,25 +104,35 @@ let sidebarList: Parent[] = [
     },
     {
         id: 3,
+        icon: 'Platform',
+        name: '日常工作',
+        targetPath: '',
+        childrenList: [
+            {
+                id: 301,
+                name: '填写日报',
+                targetPath: '/createDaily',
+                requiresAuth: false
+            }
+        ],
+        requiresAuth: true
+    },
+    {
+        id: 4,
         icon: 'Checked',
         name: '流程审批',
         targetPath: '',
         requiresAuth: true,
         childrenList: [
             {
-                id: 302,
+                id: 402,
                 name: '请假申请',
                 targetPath: '/submitApplication',
                 requiresAuth: false
             },
+            
             {
-                id: 303,
-                name: '提交日报',
-                targetPath: '/createDaily',
-                requiresAuth: false
-            },
-            {
-                id: 306,
+                id: 406,
                 name: '离职申请',
                 targetPath: '/dimissionApplication',
                 requiresAuth: false
@@ -130,14 +140,14 @@ let sidebarList: Parent[] = [
         ]
     },
     {
-        id: 4,
+        id: 5,
         icon: 'Document',
         name: '任务管理',
         targetPath: '',
         requiresAuth: true,
         childrenList: [
             {
-                id: 401,
+                id: 501,
                 name: '用户任务',
                 targetPath: '/task',
                 requiresAuth: false
@@ -145,7 +155,7 @@ let sidebarList: Parent[] = [
         ]
     },
     {
-        id: 5,
+        id: 6,
         icon: 'Message',
         name: '信息管理',
         targetPath: '',
@@ -153,7 +163,7 @@ let sidebarList: Parent[] = [
         requiresAuth: true
     },
     {
-        id: 6,
+        id: 7,
         icon: 'Key',
         name: '权限管理',
         targetPath: '',
@@ -161,7 +171,7 @@ let sidebarList: Parent[] = [
         requiresAuth: true
     },
     {
-        id: 7,
+        id: 8,
         icon: 'Tools',
         name: '设置',
         targetPath: '',

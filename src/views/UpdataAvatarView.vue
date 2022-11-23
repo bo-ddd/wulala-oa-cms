@@ -87,27 +87,6 @@ function imgToBase64(url: string, outputFormat?: string | null) {
 };
 
 
-//图片移动事件
-function imgMoving(data:any) {
-    //获取图片距离外边框的尺寸
-    console.log(data)
-    
-}
-
-//裁剪框移动事件
-function cropMoving(data:any) {
-    //获取裁剪框的距离外边框的距离
-    console.log(data)
-}
-
-
-
-//返回图片加载的状态，success/error
-function imgLoad(data:any) {
-    console.log(data)
-}
-
-
 //realTime实时预览事件
 const previewHtml: Ref = ref('')
 const previewRadius: Ref = ref('')
@@ -137,8 +116,7 @@ function realTime(obj:any) {
 
             <!-- 裁剪框 -->
             <div class="cropper " v-if="option.img">
-                <vueCropper ref="cropper" @img-moving="imgMoving" @crop-moving="cropMoving"
-                    @img-load="imgLoad" @real-time="realTime" info canScale autoCrop
+                <vueCropper ref="cropper" @real-time="realTime" info canScale autoCrop
                     canMoveBox fixed fixedBox centerBox :fixedNumber="option.fixedNumber" :img="option.img"
                     :outputSize="option.size" :outputType="option.outputType">
                 </vueCropper>
