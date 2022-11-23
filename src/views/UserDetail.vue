@@ -2,12 +2,14 @@
 
 
 <template>
+    <div>
+        <el-button @click="backUserList()" size="small" type="success">返回</el-button>
+    </div>
     <el-descriptions title="用户信息" direction="horizontal" :column="2" size="large" border>
         <el-descriptions-item label="用户ID" align="center" width="150px">
             <el-tag size="small"> {{ userInfoData.userId }} </el-tag>
         </el-descriptions-item>
         <el-descriptions-item label="用户昵称" align="center" width="150px">{{ userInfoData.avatarName }}</el-descriptions-item>
-
         <el-descriptions-item label="用户职位" align="center">
             <el-tag size="small">{{ showRoleName(userInfoData.roles) }}</el-tag>
         </el-descriptions-item>
@@ -25,8 +27,12 @@
 <script setup lang="ts">
 import axios from '@/assets/api/api'
 import { reactive } from 'vue';
-import { useRoute } from 'vue-router'
+import { useRoute,useRouter } from 'vue-router'
 const route = useRoute();
+const router = useRouter();
+const backUserList = () => {
+    router.push('userList')
+}
 const userInfoData = reactive({} as User);
 let id = route.query.id
 interface User {
@@ -86,5 +92,7 @@ let deptNameList = reactive([]);
 </script>
 
 <style scoped>
-
+:deep(.el-button){
+    float: right;
+}
 </style>

@@ -188,10 +188,7 @@ watch(searchValue, (val) => {
 })
 
 
-const filterNode = (value: string, data: Tree) => {
-    console.log(value);
-    console.log(data);
-    
+const filterNode = (value: string, data: any) => {
     if (!value) return true
     return data.permissionName.includes(value)
 }
