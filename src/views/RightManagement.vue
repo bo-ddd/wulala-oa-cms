@@ -218,7 +218,7 @@ const formLabelWidth = '140px'
                     <span>{{ node.label }}</span>
                     <span class="btn">
                         <el-link class="ml-10" type="danger" @click="edit(data); dialogFormVisible = true">修改</el-link>
-                        <el-link class="ml-10" type="success" @click="remove(node, data.id)">删除</el-link>
+                        <el-link class="ml-10" type="info" @click="remove(node, data.id)">删除</el-link>
                     </span>
                 </span>
             </template>

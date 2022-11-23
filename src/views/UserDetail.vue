@@ -11,7 +11,7 @@
     </div>
     <el-descriptions direction="horizontal" :column="2" size="large" border>
         <el-descriptions-item label="用户ID" align="center" width="150px">
-            <el-tag size="small" type="warning"> {{ userInfoData.userId }} </el-tag>
+            <div>{{ userInfoData.userId }}</div>
         </el-descriptions-item>
         <el-descriptions-item label="用户昵称" align="center" width="150px">
             <el-tag size="small"> {{ userInfoData.avatarName }}</el-tag>

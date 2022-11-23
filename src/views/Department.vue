@@ -155,7 +155,7 @@ const dialogFormVisibleDelete = ref(false)
     <el-table :data="departmentList" border style="width: 100%" fit>
         <el-table-column label="部门ID" width="200px" align="center">
             <template #default="scope">
-                <el-tag type="warning">{{ scope.row.id }}</el-tag>
+                <div>{{ scope.row.id }}</div>
             </template>
         </el-table-column>
         <el-table-column label="部门名称" align="center">
@@ -166,7 +166,7 @@ const dialogFormVisibleDelete = ref(false)
         <el-table-column label="操作" width="320" align='center'>
             <template #default="scope">
                 <el-link type="danger" @click="edit(scope.row); dialogFormVisibleUpdate = true">修改部门名称</el-link>
-                <el-link type="success" @click="removeDepartment(scope.row.id); dialogFormVisibleDelete = true">删除部门
+                <el-link type="info" @click="removeDepartment(scope.row.id); dialogFormVisibleDelete = true">删除部门
                 </el-link>
             </template>
         </el-table-column>

@@ -8,110 +8,6 @@ import {//顶部导航栏下拉效果;
     ArrowDown
 } from '@element-plus/icons-vue';
 import sidebarList from '../router/menu';
-//侧边栏导航列表;
-// const sidebarList = [
-//     {
-//         id: '1',
-//         icon: 'HomeFilled',
-//         name: '首页',
-//         targetPath: '/home',
-//         childrenList: []
-//     },
-//     {
-//         id: '2',
-//         icon: 'UserFilled',
-//         name: '员工管理',
-//         targetPath:'',
-//         childrenList: [
-//             {
-//                 id: '201',
-//                 name: '员工列表',
-//                 targetPath: '/userList'
-//             }
-//         ]
-//     },
-//     {
-//         id: '3',
-//         icon: 'Checked',
-//         name: '流程审批',
-//         targetPath:'',
-//         childrenList: [
-//             {
-//                 id: '301',
-//                 name: '请假审批',
-//                 targetPath: '/leave'
-//             },
-//             {
-//                 id: '302',
-//                 name: '提交申请',
-//                 targetPath: '/submitApplication'
-//             },
-//             {
-//                 id: '303',
-//                 name: '提交日报',
-//                 targetPath: '/submitDaily'
-//             },
-//             {
-//                 id: '304',
-//                 name: '日报列表',
-//                 targetPath: '/dailyList'
-//             }
-//         ]
-//     },
-//     {
-//         id: '4',
-//         icon: 'Stamp',
-//         name: '审核管理',
-//         targetPath: '',
-//         childrenList: []
-//     },
-//     {
-//         id: '5',
-//         icon: 'TrendCharts',
-//         name: '绩效管理',
-//         targetPath: '',
-//         childrenList: []
-//     },
-//     {
-//         id: '6',
-//         icon: 'Key',
-//         name: '权限管理',
-//         targetPath:'',
-//         childrenList: [
-//             {
-//                 id: '601',
-//                 name: '权限列表',
-//                 targetPath: '/rightManagement'
-//             },
-//             {
-//                 id: '602',
-//                 name: '角色管理',
-//                 targetPath: '/roles'
-//             },
-//             {
-//                 id: '603',
-//                 name: '新增角色',
-//                 targetPath: '/createRoles'
-//             },
-//             {
-//                 id: '604',
-//                 name: '角色编辑',
-//                 targetPath: '/roleEditing'
-//             }
-//         ]
-//     },
-//     {
-//         id: '7',
-//         icon: 'Tools',
-//         name: '设置',
-//         targetPath: '',
-//         childrenList: []
-//     },
-// ]
-
-
-
-
 
 //右上角个人中心列表;
 
@@ -258,11 +154,9 @@ const defaultAvatarImg = 'https://img.ixintu.com/download/jpg/20200815/18ae76680
                         <div class="mine">
 
                             <el-avatar :src="userInfo.avatarImg || defaultAvatarImg" />
-
-                            <div class="no-shrink">{{ userInfo.avatarName }}</div>
-                            <el-col :span="8">
                                 <el-dropdown trigger="click">
-                                    <span class="el-dropdown-link">
+                                    <span class="el-dropdown-link flex-col">
+                                        <span class="no-shrink">{{ userInfo.avatarName }}</span>
                                         <el-icon class="el-icon--right">
                                             <arrow-down />
                                         </el-icon>
@@ -276,7 +170,7 @@ const defaultAvatarImg = 'https://img.ixintu.com/download/jpg/20200815/18ae76680
                                         </el-dropdown-menu>
                                     </template>
                                 </el-dropdown>
-                            </el-col>
+                           
                         </div>
                     </div>
                 </el-header>
@@ -426,5 +320,8 @@ const defaultAvatarImg = 'https://img.ixintu.com/download/jpg/20200815/18ae76680
 
 .el-main::-webkit-scrollbar {
     display: none;
+}
+.flex-col{
+    display: flex;
 }
 </style>

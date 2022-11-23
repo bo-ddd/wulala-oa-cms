@@ -69,14 +69,11 @@ let date = (startTime1 : number , endTime1 : number) =>{
 };
 
 const handleSizeChange = (val: number) => {
-  console.log(`${val} items per page`);
   pageSize.value = val
-  console.log(pageSize);
   getLeaveListApi()
 }
 
 const handleCurrentChange = (val: number) => {
-  console.log(`current page: ${val}`);
   pageNum.value = val
   getLeaveListApi()
 }

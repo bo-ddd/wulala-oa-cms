@@ -222,7 +222,6 @@ getUserAvatarNameList()
 
 //查询数据;
 const queryDimissionInfo = () => {
-    console.log(Number(StateCode[queryOption.status]))
 
     getUserQuitList({
         avatarName: queryOption.avatarName, //姓名

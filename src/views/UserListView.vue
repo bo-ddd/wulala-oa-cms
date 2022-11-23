@@ -16,7 +16,7 @@
     <el-table :data="userListData" border style="width: 100%" fit>
         <el-table-column label="用户ID" align="center" width="100px">
             <template #default="scope">
-                <el-tag type="warning">{{ scope.row.userId }}</el-tag>
+                <div>{{ scope.row.userId }}</div>
             </template>
         </el-table-column>
         <el-table-column label="用户昵称" align="center">
@@ -49,9 +49,9 @@
             <template #default="scope">
                 <el-link type="info" @click="toUserDetail(scope.row.userId)">用户详情</el-link>
                 <el-link type="danger" @click="getUserId(scope.row); dialogFormVisibleAdd = true">添加角色</el-link>
-                <el-link type="success" @click="getUserId(scope.row); dialogFormVisibleDelete = true">删除角色</el-link>
+                <el-link type="info" @click="getUserId(scope.row); dialogFormVisibleDelete = true">删除角色</el-link>
                 <el-link type="danger" @click="getUserId(scope.row); dialogFormisiblGeroup = true">添加部门</el-link>
-                <el-link type="success" @click="getUserId(scope.row); dialogFormisiblDelete = true">删除部门</el-link>
+                <el-link type="info" @click="getUserId(scope.row); dialogFormisiblDelete = true">删除部门</el-link>
             </template>
         </el-table-column>
     </el-table>
