@@ -85,7 +85,6 @@ let deptNameList = reactive([]);
             deptNameList.values = res.data
             Object.assign(userData, deptNameList)
             Object.assign(userInfoData, userData)
-            console.log(userInfoData);
         }
     })
 })()
