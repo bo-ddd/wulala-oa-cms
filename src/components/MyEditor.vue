@@ -11,9 +11,6 @@ let emit = defineEmits(['update:modelValue'])
 const emits = function(){
   emit('update:modelValue',prop.modelValue)
 }
-    // defineEmits<{
-    //   "update:modelValue" , modelValue
-    // }>()
 
     // 编辑器实例，必须用 shallowRef
     const editorRef = shallowRef()
@@ -45,8 +42,6 @@ const emits = function(){
     const handleChange = (editor:any) => { 
       emit('update:modelValue',editor.children[0].children[0].text)
     }
-
-   
 </script>  
 
 <template>
@@ -79,9 +74,4 @@ const emits = function(){
     </div>
 
 </template>
-<style>
-  #editor—wrapper {
-    border: 1px solid #ccc;
-  }
-  #toolbar-container { width: 800px; }
-</style>
+

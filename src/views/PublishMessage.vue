@@ -37,12 +37,16 @@ const ruleForm = reactive({
   desc: '',
   type: [],
 })
+console.log(UserStore.userId);
 
 //获取用户所在哪个组
 const getUserDeptList = async function () {
   let res = await axios.getUserDeptListApi({
     userId: UserStore.userId
   })
+  console.log("---------------------");
+  
+  
   if (res.status == 1) {
     res.data.forEach((dept: any) => {
       deptId.value = dept.deptId
