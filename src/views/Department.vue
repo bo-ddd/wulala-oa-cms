@@ -123,14 +123,14 @@ const open = (id: number) => {
     }).catch(() => {
         ElMessage({
             showClose: true,
-            type: 'error',
+            type: 'info',
             message: '已取消删除'
         })
     })
 }
 const removeDepartment = async (departmentId: number) => {
     open(departmentId)
-    
+
 }
 const dialogFormVisibleDelete = ref(false)
 
@@ -147,29 +147,27 @@ const dialogFormVisibleDelete = ref(false)
 <template>
     <div class="ipt-add">
         <span class="label label-add">添加部门：</span>
-        <el-input v-model="departmentAdd" size="small" placeholder="请输入部门名称" clearable />
-        <el-button class="ml-10" type="danger" size="small" @click="addDepartment(departmentAdd)">添加
+        <el-input v-model="departmentAdd" placeholder="请输入部门名称" clearable />
+        <el-button class="ml-10" type="danger" @click="addDepartment(departmentAdd)">添加
         </el-button>
     </div>
 
     <el-table :data="departmentList" border style="width: 100%" fit>
         <el-table-column label="部门ID" width="200px" align="center">
             <template #default="scope">
-                <el-tag size="small" type="warning">{{ scope.row.id }}</el-tag>
+                <el-tag type="warning">{{ scope.row.id }}</el-tag>
             </template>
         </el-table-column>
         <el-table-column label="部门名称" align="center">
             <template #default="scope">
-                <el-tag size="small" >{{ scope.row.name }}</el-tag>
+                <el-tag>{{ scope.row.name }}</el-tag>
             </template>
         </el-table-column>
         <el-table-column label="操作" width="320" align='center'>
             <template #default="scope">
-                <el-button type="danger" size="small" @click="edit(scope.row); dialogFormVisibleUpdate = true">修改部门名称
-                </el-button>
-                <el-button type="danger" size="small"
-                    @click="removeDepartment(scope.row.id); dialogFormVisibleDelete = true">删除部门
-                </el-button>
+                <el-link type="danger" @click="edit(scope.row); dialogFormVisibleUpdate = true">修改部门名称</el-link>
+                <el-link type="success" @click="removeDepartment(scope.row.id); dialogFormVisibleDelete = true">删除部门
+                </el-link>
             </template>
         </el-table-column>
     </el-table>
@@ -178,10 +176,10 @@ const dialogFormVisibleDelete = ref(false)
     <el-dialog v-model="dialogFormVisibleUpdate" title="修改部门名称">
         <el-form :model="form">
             <el-form-item label="当前部门名称" :label-width="formLabelWidth">
-                <el-input v-model="form.name" size="small" autocomplete="off" readonly='readonly' />
+                <el-input v-model="form.name" autocomplete="off" readonly='readonly' />
             </el-form-item>
             <el-form-item label="新的部门名称" :label-width="formLabelWidth">
-                <el-input v-model="newDepartmentName" size="small" placeholder="请输入新的部门名称" clearable />
+                <el-input v-model="newDepartmentName" placeholder="请输入新的部门名称" clearable />
             </el-form-item>
         </el-form>
         <template #footer>
@@ -223,6 +221,12 @@ const dialogFormVisibleDelete = ref(false)
 .example-demonstration {
     color: rgb(145, 137, 137);
     font-weight: 600;
+}
+
+a {
+    cursor: pointer;
+    margin: 0 5px;
+    text-decoration: none;
 }
 
 :deep(.el-pagination) {

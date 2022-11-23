@@ -1,14 +1,14 @@
 <template>
     <div class="ipt">
         <span class="label">查询部门用户：</span>
-        <el-select v-model="form.searchDepId" size="small" placeholder="请选择部门" clearable>
+        <el-select v-model="form.searchDepId" placeholder="请选择部门" clearable>
             <el-option v-for="item in departmentList" :key="item.id" :label="item.name" :value="item.id" />
         </el-select>
-        <el-button class="ml-10" type="danger" size="small" @click="queryDeptUser(form.searchDepId)"> 查询成员
+        <el-button class="ml-10" type="danger" @click="queryDeptUser(form.searchDepId)"> 查询成员
         </el-button>
-        <el-button class="ml-10" type="danger" size="small" @click="getUserList()">重置</el-button>
+        <el-button class="ml-10" type="default" @click="getUserList()">重置</el-button>
         <span class="creat-user">
-            <el-button class="ml-10" type="danger" size="small" @click="toCreateUser()">创建用户</el-button>
+            <el-button class="ml-10" type="danger" @click="toCreateUser()">创建用户</el-button>
         </span>
     </div>
 
@@ -16,17 +16,17 @@
     <el-table :data="userListData" border style="width: 100%" fit>
         <el-table-column label="用户ID" align="center" width="100px">
             <template #default="scope">
-                <el-tag size="small" type="warning">{{ scope.row.userId }}</el-tag>
+                <el-tag type="warning">{{ scope.row.userId }}</el-tag>
             </template>
         </el-table-column>
         <el-table-column label="用户昵称" align="center">
             <template #default="scope">
-                <el-tag size="small">{{ scope.row.avatarName }}</el-tag>
+                <el-tag>{{ scope.row.avatarName }}</el-tag>
             </template>
         </el-table-column>
         <el-table-column v-if="label" :label=label align="center">
             <template #default="scope">
-                <div size="small" type="danger">{{ scope.row._rawValue ? showDeptName(scope.row._rawValue) :
+                <div type="danger">{{ scope.row._rawValue ? showDeptName(scope.row._rawValue) :
                         showRoleName(scope.row.roles)
                 }}
                 </div>
@@ -34,7 +34,7 @@
         </el-table-column>
         <el-table-column v-if="label" :label=label align="center">
             <template #default="scope">
-                <div size="small" type="danger">{{ scope.row.roles ? showDeptName(scope.row.roles) :
+                <div type="danger">{{ scope.row.roles ? showDeptName(scope.row.roles) :
                         showRoleName(scope.row._rawValue)
                 }}
                 </div>
@@ -47,11 +47,11 @@
         </el-table-column>
         <el-table-column label="操作" align='center'>
             <template #default="scope">
-                <a class="touserdetail" @click="toUserDetail(scope.row.userId)">用户详情</a>
-                <a class="roles-add" @click="getUserId(scope.row); dialogFormVisibleAdd = true">添加角色</a>
-                <a class="roles-delete" @click="getUserId(scope.row); dialogFormVisibleDelete = true">删除角色</a>
-                <a class="geroup-add" @click="getUserId(scope.row); dialogFormisiblGeroup = true">添加部门</a>
-                <a class="geroup-delete" @click="getUserId(scope.row); dialogFormisiblDelete = true">删除部门</a>
+                <el-link type="info" @click="toUserDetail(scope.row.userId)">用户详情</el-link>
+                <el-link type="danger" @click="getUserId(scope.row); dialogFormVisibleAdd = true">添加角色</el-link>
+                <el-link type="success" @click="getUserId(scope.row); dialogFormVisibleDelete = true">删除角色</el-link>
+                <el-link type="danger" @click="getUserId(scope.row); dialogFormisiblGeroup = true">添加部门</el-link>
+                <el-link type="success" @click="getUserId(scope.row); dialogFormisiblDelete = true">删除部门</el-link>
             </template>
         </el-table-column>
     </el-table>
@@ -59,12 +59,11 @@
     <el-dialog v-model="dialogFormVisibleAdd" title="添加角色">
         <el-form :model="form">
             <el-form-item label="用户昵称" :label-width="formLabelWidth">
-                <el-input v-model="form.userName" size="small" autocomplete="off" readonly='readonly' />
+                <el-input v-model="form.userName" autocomplete="off" readonly='readonly' />
             </el-form-item>
             <el-form-item label="角色名称" :label-width="formLabelWidth">
-                <el-select v-model="form.rolesId" class="m-2" placeholder="请选择角色" size="small">
-                    <el-option v-for="item in roleList" :key="item.id" :label="item.roleName" :value="item.id"
-                        size="small" />
+                <el-select v-model="form.rolesId" class="m-2" placeholder="请选择角色">
+                    <el-option v-for="item in roleList" :key="item.id" :label="item.roleName" :value="item.id" />
                 </el-select>
             </el-form-item>
         </el-form>
@@ -81,12 +80,11 @@
     <el-dialog v-model="dialogFormVisibleDelete" title="删除用户角色">
         <el-form :model="form">
             <el-form-item label="用户昵称" :label-width="formLabelWidth">
-                <el-input v-model="form.userName" size="small" autocomplete="off" readonly='readonly' />
+                <el-input v-model="form.userName" autocomplete="off" readonly='readonly' />
             </el-form-item>
             <el-form-item label="角色名称" :label-width="formLabelWidth">
-                <el-select v-model="form.rolesId" class="m-2" placeholder="请选择要删除的角色" size="small">
-                    <el-option v-for="item in userRolesList" :key="item.id" :label="item.roleName" :value="item.id"
-                        size="small" />
+                <el-select v-model="form.rolesId" class="m-2" placeholder="请选择要删除的角色">
+                    <el-option v-for="item in userRolesList" :key="item.id" :label="item.roleName" :value="item.id" />
                 </el-select>
             </el-form-item>
         </el-form>
@@ -103,12 +101,11 @@
     <el-dialog v-model="dialogFormisiblGeroup" title="添加用户部门">
         <el-form :model="form">
             <el-form-item label="用户昵称" :label-width="formLabelWidth">
-                <el-input v-model="form.userName" size="small" autocomplete="off" readonly='readonly' />
+                <el-input v-model="form.userName" autocomplete="off" readonly='readonly' />
             </el-form-item>
             <el-form-item label="项目组" :label-width="formLabelWidth">
-                <el-select v-model="form.deptId" class="m-2" placeholder="请选择要添加项目组" size="small">
-                    <el-option v-for="item in departmentList" :key="item.id" :label="item.name" :value="item.id"
-                        size="small" />
+                <el-select v-model="form.deptId" class="m-2" placeholder="请选择要添加项目组">
+                    <el-option v-for="item in departmentList" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
             </el-form-item>
         </el-form>
@@ -125,12 +122,12 @@
     <el-dialog v-model="dialogFormisiblDelete" title="删除用户部门">
         <el-form :model="form">
             <el-form-item label="用户昵称" :label-width="formLabelWidth">
-                <el-input v-model="form.userName" size="small" autocomplete="off" readonly='readonly' />
+                <el-input v-model="form.userName" autocomplete="off" readonly='readonly' />
             </el-form-item>
             <el-form-item label="项目组" :label-width="formLabelWidth">
-                <el-select v-model="form.deptId" class="m-2" placeholder="请选择要删除的项目组" size="small">
+                <el-select v-model="form.deptId" class="m-2" placeholder="请选择要删除的项目组">
                     <el-option v-for="item in userDepartmentList" :key="item.deptId" :label="item.deptName"
-                        :value="item.deptId" size="small" />
+                        :value="item.deptId" />
                 </el-select>
             </el-form-item>
         </el-form>
@@ -172,7 +169,7 @@ const toUserDetail = (id: number) => {
         }
     })
 }
-const toCreateUser = () =>{
+const toCreateUser = () => {
     router.push('createUserAccount')
 }
 const handleSizeChange = async (val: number) => {
@@ -460,10 +457,7 @@ a {
     text-decoration: none;
 }
 
-a:hover {
-    color: black;
-    text-decoration: underline;
-}
+
 
 .touserdetail {
     color: darkturquoise;
@@ -478,9 +472,11 @@ a:hover {
 .geroup-delete {
     color: green;
 }
-.creat-user{
+
+.creat-user {
     float: right;
 }
+
 :deep(.el-pagination) {
     margin-top: 20px;
 }
