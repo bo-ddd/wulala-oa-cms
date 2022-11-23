@@ -259,21 +259,21 @@ const isApprover = async (applicationUserId: number) => {
 
 <template>
     <div class="flex-options">
-        <el-select v-model="queryOption.avatarName" placeholder="请输入姓名" filterable size="small">
+        <el-select v-model="queryOption.avatarName" placeholder="请输入姓名" filterable>
             <el-option v-for="item in userAvatarNameList" :key="item" :label="item" :value="item" />
         </el-select>
-        <el-select v-model="queryOption.status" placeholder="请输入审核状态" size="small">
+        <el-select v-model="queryOption.status" placeholder="请输入审核状态">
             <el-option v-for="item in StateCodeString" :key="item" :label="item" :value="item" />
         </el-select>
         <el-date-picker v-model="queryOption.duration" type="daterange" range-separator="至" start-placeholder="开始时间"
-            end-placeholder="结束时间" size="small" />
-        <el-button size="small" type="danger" @click="queryDimissionInfo">查询</el-button>
+            end-placeholder="结束时间" />
+        <el-button type="danger" @click="queryDimissionInfo">查询</el-button>
     </div>
     <el-table :data="tableData" style="width: 100%" class="mt-24">
         <el-table-column label="ID" prop="id" align="center" />
         <el-table-column label="姓名" align="center">
             <template #default="scope">
-                <el-tag size="small">{{ scope.row.avatarName }}</el-tag>
+                <el-tag>{{ scope.row.avatarName }}</el-tag>
             </template>
         </el-table-column>
         <el-table-column label="部门" prop="department" align="center" />
@@ -286,20 +286,25 @@ const isApprover = async (applicationUserId: number) => {
                 <el-link :type="scope.row.enclosure ? 'primary' : 'info'" :href="scope.row.enclosure"
                     :disabled="scope.row.status != 0 || !scope.row.enclosure">
                     {{ scope.row.enclosure ? '查看' : '无' }}</el-link>
+
+                
             </template>
         </el-table-column>
         <el-table-column label="审核状态" prop="status" align="center">
             <template #default="scope">
-                <el-tag :type="tagType[scope.row.status]" size="small">{{ StateCode[scope.row.status] }}
+                <el-tag :type="tagType[scope.row.status]">{{ StateCode[scope.row.status] }}
                 </el-tag>
             </template>
         </el-table-column>
         <el-table-column label="操作" align="center">
             <template #default="scope">
-                <el-button size="small" type="danger" @click="handleEdit(scope.$index, scope.row)"
+                <!-- <el-button type="danger" @click="handleEdit(scope.$index, scope.row)"
                     :disabled="scope.row.status != 0">
                     {{ scope.row.status != 0 ? '已审核' : '审核' }}
-                </el-button>
+                </el-button> -->
+                <el-link type="danger" @click="handleEdit(scope.$index, scope.row)" :disabled="scope.row.status != 0">
+                    {{ scope.row.status != 0 ? '已审核' : '审核' }}
+                </el-link>
             </template>
         </el-table-column>
     </el-table>
@@ -309,7 +314,7 @@ const isApprover = async (applicationUserId: number) => {
         @size-change="handleSizeChange" @current-change="handleCurrentChange" class="mt-24" />
     <!-- 弹框 -->
     <el-dialog v-model="dialogFormVisible" title="审核处理">
-        <el-form ref="approvalFormRef" :model="approvalForm" hide-required-asterisk size="small" label-width="120px"
+        <el-form ref="approvalFormRef" :model="approvalForm" hide-required-asterisk label-width="120px"
             :rule="rules">
             <el-form-item label="审核操作" prop="operation">
                 <el-radio-group v-model="approvalForm.operation">
@@ -323,8 +328,8 @@ const isApprover = async (applicationUserId: number) => {
         </el-form>
         <template #footer>
             <span class="dialog-footer">
-                <el-button size="small" @click="resetForm(approvalFormRef)">重置</el-button>
-                <el-button size="small" type="danger" @click="submitForm(approvalFormRef)">
+                <el-button @click="resetForm(approvalFormRef)">重置</el-button>
+                <el-button type="danger" @click="submitForm(approvalFormRef)">
                     确认
                 </el-button>
             </span>
