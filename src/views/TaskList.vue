@@ -279,7 +279,7 @@ const receiveTask = function (row: Task) {
 
 </script>
 <template>
-    <div class="search mb-10">
+    <div class="search">
         <el-input v-model="searchTaskName" placeholder="输入名称搜索"  />
         <el-button type="danger" class="ml-10" plain  @click="searchTask">
             <el-icon  >
@@ -295,7 +295,7 @@ const receiveTask = function (row: Task) {
         </el-button>
         
     </div>
-    <el-table :data="taskList" style="width: 100%" class="mb-10">
+    <el-table :data="taskList" style="width: 100%" class="mt-20">
         <el-table-column label="任务Id" align="center">
             <template #default="scope" align="center">
                 <div>{{ scope.row.id }}</div>
@@ -333,7 +333,7 @@ const receiveTask = function (row: Task) {
             </template>
         </el-table-column>
     </el-table>
-    <div class="demo-pagination-block">
+    <div class="demo-pagination-block mt-20">
         <el-pagination v-model:current-page="pageNum" v-model:page-size="pageSize" :page-sizes="[5, 10, 15, 20]"
             :disabled="disabled" layout="total, sizes, prev, pager, next, jumper" :total="total"
             @size-change="handleSizeChange" @current-change="handleCurrentChange" />

@@ -1,6 +1,6 @@
 <template>
     <div class="ipt">
-        <span class="label">查询部门用户：</span>
+        <!-- <span class="label">查询部门用户：</span> -->
         <el-select v-model="form.searchDepId" placeholder="请选择部门" clearable>
             <el-option v-for="item in departmentList" :key="item.id" :label="item.name" :value="item.id" />
         </el-select>
@@ -13,7 +13,7 @@
     </div>
 
 
-    <el-table :data="userListData" border style="width: 100%" fit>
+    <el-table class="mt-20" :data="userListData" border style="width: 100%" fit>
         <el-table-column label="用户ID" align="center" width="100px">
             <template #default="scope">
                 <div>{{ scope.row.userId }}</div>
@@ -141,7 +141,7 @@
         </template>
     </el-dialog>
 
-    <div class="pagination">
+    <div class="pagination mt-20">
         <el-pagination v-model:currentPage="pageNum" v-model:page-size="pageSize" :page-sizes="[5, 10, 20, 30, 40]"
             :small="small" :disabled="disabled" :background="background"
             layout="total, sizes, prev, pager, next, jumper" :total="total" @size-change="handleSizeChange"
@@ -439,10 +439,6 @@ const removeUserDepartment = async (userId: number) => {
 
 <style scoped>
 .page,
-.ipt {
-    padding: 20px 0;
-}
-
 .label {
     display: inline-block;
     font-size: 16px;
@@ -480,9 +476,9 @@ a {
     float: right;
 }
 
-:deep(.el-pagination) {
+/* :deep(.el-pagination) {
     margin-top: 20px;
-}
+} */
 
 :deep(.el-input) {
     width: 200px;

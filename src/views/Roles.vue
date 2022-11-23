@@ -97,14 +97,14 @@ const to = function (id: number) {
 <template>
     <div class="select">
         <div style="display: inline-block;">
-            <span style="" class='lable' align="center">查询角色：</span>
-            <el-select v-model="selectValue" filterable placeholder="请搜索" size="small" @change="handleChange">
+            <el-select v-model="selectValue" filterable placeholder="请输入角色名称"  @change="handleChange">
                 <el-option v-for="item in resData" :key="item.id" :label="item.roleName" :value="item.id" />
             </el-select>
         </div>
+        <el-button type="danger" class="float" @click="router.push('createRoles')" >创建角色</el-button>
+
     </div>
-    <div class="table">
-        <el-button type="danger" class="mb-10" @click="router.push('createRoles')" size="small">创建角色</el-button>
+    <div class="table mt-20">
         <el-table :data="currentList" style="width: 100%">
             <el-table-column label="id" width="240px" align="center">
                 <template #default="scope" align="center">
@@ -120,17 +120,17 @@ const to = function (id: number) {
 
                 </template>
             </el-table-column>
-            <el-table-column label="操作" align="center">
+            <el-table-column label="操作" align="center" width="300">
                 <template #default="scope" align="center">
-                    <el-button size="small" @click="queryPermissionList(scope.row)">查看权限详情</el-button>
-                    <el-button size="small" @click="to(scope.row.id)">设置角色权限</el-button>
-                    <el-button size="small" type="danger"
-                        @click="handleDelete(scope.$index, scope.row); centerDialogVisible = true">删除
-                    </el-button>
+                    <div class="flex">
+                        <el-link type="success"  @click="queryPermissionList(scope.row)">查看权限详情</el-link>
+                        <el-link @click="to(scope.row.id)" type="warning">设置角色权限</el-link>
+                        <el-link  @click="handleDelete(scope.$index, scope.row); centerDialogVisible = true" >删除</el-link>
+                    </div>
                 </template>
             </el-table-column>
         </el-table>
-        <div class="demo-pagination-block mt-10">
+        <div class="demo-pagination-block mt-20">
             <el-pagination v-model:currentPage="pageNum" v-model:page-size="pageSize" :page-sizes="[5, 10, 15, 20]"
                 layout="total, sizes, prev, pager, next, jumper" :total="total" @size-change="handleSizeChange"
                 @current-change="handleCurrentChange" />
@@ -185,5 +185,12 @@ const to = function (id: number) {
     font-size: 15px;
     font-weight: 600;
     color: rgb(145, 137, 137);
+}
+.float{
+    float: right;
+}
+.flex{
+    display: flex;
+    justify-content: space-around;
 }
 </style>
