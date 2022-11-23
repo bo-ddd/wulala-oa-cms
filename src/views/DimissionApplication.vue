@@ -119,14 +119,6 @@ const resetForm = (formEl: FormInstance | undefined) => {
 //上传附件;
 const fileList = ref<UploadUserFile[]>([])
 
-const handleRemove: UploadProps['onRemove'] = (file, uploadFiles) => {
-  console.log(file, uploadFiles)
-}
-
-const handlePreview: UploadProps['onPreview'] = (uploadFile) => {
-  console.log(uploadFile)
-}
-
 const handleExceed: UploadProps['onExceed'] = (files, uploadFiles) => {
   ElMessage.warning(
     `您选择了${files.length} 文件，已超过最大上传数量`
@@ -181,8 +173,8 @@ const handleSuccessUpload = (response: any) => {
       </el-form-item>
 
       <el-form-item label="附件">
-        <el-upload v-model:file-list="fileList" class="upload-demo" multiple :on-preview="handlePreview"
-          action="/api/upload/enclosure" :on-remove="handleRemove" :before-remove="beforeRemove" :limit="1"
+        <el-upload v-model:file-list="fileList" class="upload-demo" multiple 
+          action="/api/upload/enclosure"  :before-remove="beforeRemove" :limit="1"
           :on-exceed="handleExceed" :on-success="handleSuccessUpload">
           <el-button type="danger">点击上传</el-button>
           <template #tip>

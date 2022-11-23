@@ -2,15 +2,11 @@
 <script setup lang="ts">
 import { ref, type Ref, reactive, toRefs } from 'vue';
 import { useRouter } from 'vue-router';
-import type { TabsPaneContext } from 'element-plus'
 import { ElMessage } from 'element-plus';
 import { StarFilled, EditPen } from '@element-plus/icons-vue';
 import axios from '../assets/api/api';
 const router = useRouter();
 const activeName = ref('first')
-const handleClick = (tab: TabsPaneContext, event: Event) => {
-    console.log(tab, event)
-}
 const disabled: Ref = ref(true);
 let age = ref<number | null>()
 let birthday = ref<string | null>()
@@ -105,7 +101,7 @@ interface UserInfo {
 
 <template>
     <div>
-        <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick">
+        <el-tabs v-model="activeName" class="demo-tabs">
             <el-tab-pane label="个人资料" name="first">
                 <el-container>
                     <el-aside width="10%">
