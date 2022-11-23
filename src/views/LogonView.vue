@@ -81,7 +81,6 @@ const submitForm = (formEl: FormInstance | undefined) => {
                     avatarName: ruleForm.avatarName
                 }).then(res => {
                     if (res.status == 1) {
-                        console.log(res);
                         alert('注册成功')
                     } else if (res.status == 10107) {
                         alert('用户名已存在')
@@ -89,10 +88,6 @@ const submitForm = (formEl: FormInstance | undefined) => {
                 })
             })()
         }
-        // else {
-        //     console.log('失败')
-        //     return false
-        // }
     })
 }
 </script>

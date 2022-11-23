@@ -105,7 +105,6 @@ const submitForm = (formEl: FormInstance | undefined) => {
                     avatarName: ruleForm.avatarName || '呜啦啦议员'
                 }).then(res => {
                     if (res.status == 1) {
-                        console.log(res);
                         createSuccess();
                         router.push('userList')
                     } else if (res.status == 10107) {
@@ -120,7 +119,7 @@ const submitForm = (formEl: FormInstance | undefined) => {
 
 <template>
     <div class="logon">
-        <div class="box" :style="{ boxShadow: '--el-box-shadow-dark'}">
+        <div class="box" :style="{ boxShadow: '--el-box-shadow-dark' }">
             <h3>创建用户</h3>
             <el-form ref="ruleFormRef" :model="ruleForm" status-icon :rules="rules" class="demo-ruleForm">
                 <el-form-item class="username" prop="username">

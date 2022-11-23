@@ -103,7 +103,6 @@ const rules = reactive<FormRules>({
 
 const getsunmit = async ()=>{
   let userId = await axios.queryUserInfoApi({});
-  console.log(userId);
   ruleForm.id = userId.data.userId
   ruleForm.name = userId.data.avatarName
 }
