@@ -97,22 +97,15 @@ const checkChange=function(data:PermissionVO,isChecked: boolean){
 </script>
 <template>
     <el-form :inline="true" :model="Role" class="demo-form-inline">
-        <el-form-item label="角色名称:" class="lable">
-            <el-input v-model="Role.roleName" placeholder="请输入新增角色名称" size="small" />
-        </el-form-item>
-        <el-form-item label="所属部门:" class="lable">
-            <el-select v-model="Role" placeholder="请选择部门" size="small">
-                <el-option label="Zone one" value="shanghai" />
-                <el-option label="Zone two" value="beijing" />
-                <!-- <el-op;ption v-for="item in data" :key="item.id" :label="item.roleName" :value="item.id" /> -->
-            </el-select>
+        <el-form-item class="lable">
+            <el-input v-model="Role.roleName" placeholder="请输入新增角色名称" />
         </el-form-item>
         <el-form-item>
-            <el-button type="danger" @click="addRole" size="small" plain>创建角色</el-button>
+            <el-button type="danger" @click="addRole" plain>创建角色</el-button>
         </el-form-item>
     </el-form>
 
-    <div class="custom-tree-container mb-10">
+    <div class="custom-tree-container mtb-10">
         <el-tree :data="dataList" show-checkbox  default-expand-all @check-change='checkChange' node-key="id" :expand-on-click-node="true">
             <template #default="{ data }">
                 <span class="custom-tree-node ">
@@ -121,7 +114,6 @@ const checkChange=function(data:PermissionVO,isChecked: boolean){
             </template>
         </el-tree>
     </div>
-    <!-- <el-button type="danger" @click="addRolePermission" size="small">创建角色权限</el-button> -->
 </template>
 
 <style scoped>
@@ -150,5 +142,14 @@ const checkChange=function(data:PermissionVO,isChecked: boolean){
 }
 .el-tree::-webkit-scrollbar{
     display: none;
+}
+.mtb-10{
+  margin: 10px 0;
+}
+.ptb-10{
+  padding: 10px 0;
+}
+.el-tree{
+padding: 10px 0;
 }
 </style>
