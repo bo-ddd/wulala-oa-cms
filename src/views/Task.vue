@@ -18,6 +18,7 @@ const pageSize = ref(10)
 const total = ref()
 const disabled = ref(false)
 const percentage = ref()  //百分比
+const progressBarStatus = ref()  //百分比
 
 const searchForm: any = reactive({
     userId: '',
@@ -130,9 +131,33 @@ const queryTask = () => {
     })
 }
 const viewDetails = (row: Task) => {
+    console.log(row);
+    Details.taskName = row.taskName;
+    Details.taskDesc = row.description;
+    if (row.status == 0) {
+        percentage.value = "0"
+        progressBarStatus.value=''
+    } else if (row.status == 1) {
+        percentage.value = 50;
+        progressBarStatus.value='warning'
+    } else if (row.status == 2) {
+        percentage.value = "100";
+        progressBarStatus.value='success'
+    } else if (row.status == 3) {
+        percentage.value = "100"
+        progressBarStatus.value='exception'
+    }
     dialogDetailsVisible.value = true;
-    
+
 }
+//查看详情 
+const Details: any = reactive({
+    taskName: '',
+    taskDesc: '',
+})
+
+
+
 //查看详情弹层确定按钮
 const DetailsSubmit = function () {
 
@@ -166,11 +191,6 @@ const statusList = [
     },
 ]
 
-const formLabelAlign = reactive({
-    name: '',
-    region: '',
-    type: '',
-})
 </script>
 <template>
     <el-form :inline="true" :model="searchForm" class="demo-form-inline">
@@ -268,16 +288,17 @@ const formLabelAlign = reactive({
     </el-dialog>
     <!-- //查看详情弹层 -->
     <el-dialog v-model="dialogDetailsVisible" title="查看当前详情">
-        <el-form :label-position="labelPosition" label-width="100px" :model="formLabelAlign" style="max-width: 460px">
+        <el-form :label-position="labelPosition" label-width="100px" :model="Details" style="max-width: 460px">
             <el-form-item label="任务名称">
-                <el-input v-model="formLabelAlign.name" />
+                <el-input v-model="Details.taskName" disabled />
             </el-form-item>
             <el-form-item label="任务描述">
-                <el-input v-model="formLabelAlign.region" />
+                <el-input v-model="Details.taskDesc" disabled />
             </el-form-item>
             <el-form-item label="任务进度">
                 <div class="demo-progress">
-                    <el-progress :text-inside="true" :stroke-width="22" :percentage="percentage" status="warning" />
+                    <el-progress :text-inside="true" :stroke-width="22" :percentage="percentage" :status="progressBarStatus" />
+                    <span v-if="progressBarStatus=='exception'" style="color:red">已过期</span>
                 </div>
             </el-form-item>
         </el-form>
@@ -318,8 +339,13 @@ const formLabelAlign = reactive({
     display: flex;
     justify-content: space-around;
 }
+
 .demo-progress .el-progress--line {
-  margin-bottom: 15px;
-  width: 350px;
+    margin-bottom: 15px;
+    width: 350px;
+}
+.demo-progress .el-progress--line[data-v-371f9cea]{
+    height: 30px;
+    width: 363px;
 }
 </style>
