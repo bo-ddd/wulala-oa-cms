@@ -17,7 +17,7 @@ const pageNum = ref(1)
 const pageSize = ref(10)
 const total = ref()
 const disabled = ref(false)
-const percentage = ref()  //百分比
+// const percentage = ref()  //百分比
 const progressBarStatus = ref()  //百分比
 
 const searchForm: any = reactive({
@@ -112,7 +112,7 @@ enum StateCode {
     进行中,
     已完成,
     已过期,
-    
+
 }
 
 enum tagType {
@@ -135,19 +135,19 @@ const viewDetails = (row: Task) => {
     console.log(row);
     Details.taskName = row.taskName;
     Details.taskDesc = row.description;
-    if (row.status == 0) {
-        percentage.value = "0"
-        progressBarStatus.value=''
-    } else if (row.status == 1) {
-        percentage.value = 50;
-        progressBarStatus.value='warning'
-    } else if (row.status == 2) {
-        percentage.value = "100";
-        progressBarStatus.value='success'
-    } else if (row.status == 3) {
-        percentage.value = "100"
-        progressBarStatus.value='exception'
-    }
+    // if (row.status == 0) {
+    //     percentage.value = "0"
+    //     progressBarStatus.value=''
+    // } else if (row.status == 1) {
+    //     percentage.value = 50;
+    //     progressBarStatus.value='warning'
+    // } else if (row.status == 2) {
+    //     percentage.value = "100";
+    //     progressBarStatus.value='success'
+    // } else if (row.status == 3) {
+    //     percentage.value = "100"
+    //     progressBarStatus.value='exception'
+    // }
     dialogDetailsVisible.value = true;
 
 }
@@ -160,12 +160,12 @@ const Details: any = reactive({
 
 
 //查看详情弹层确定按钮
-const DetailsSubmit = function () {
+// const DetailsSubmit = function () {
 
-}
+// }
 const levelList = [
     {
-        value: 0,
+        value: '',
         label: '全部',
     },
     {
@@ -202,18 +202,18 @@ const statusList = [
 
 </script>
 <template>
-    <el-form :inline="true" :model="searchForm" class="demo-form-inline">
-        <el-form-item >
+    <el-form :inline="true">
+        <el-form-item label="接收人">
             <el-select v-model="searchForm.userId" placeholder="请选择接收人">
                 <el-option v-for="item in allUsers" :key="item.userId" :label="item.avatarName" :value="item.userId" />
             </el-select>
         </el-form-item>
-        <el-form-item >
+        <el-form-item label="紧急程度">
             <el-select v-model="searchForm.level" placeholder="按紧急程度查询">
                 <el-option v-for="item in levelList" :key="item.value" :label="item.label" :value="item.value" />
             </el-select>
         </el-form-item>
-        <el-form-item >
+        <el-form-item label="任务状态">
             <el-select v-model="searchForm.status" placeholder="按任务状态查询">
                 <el-option v-for="status in statusList" :key="status.value" :label="status.label"
                     :value="status.value" />
@@ -223,7 +223,7 @@ const statusList = [
             <el-button @click="queryTask" type="danger">查询</el-button>
         </el-form-item>
     </el-form>
-    <el-table :data="userTaskList" style="width: 100%" >
+    <el-table :data="userTaskList" style="width: 100%">
         <el-table-column label="ID" align="center">
             <template #default="scope" align="center">
                 <div>{{ scope.row.id }}</div>
@@ -242,7 +242,7 @@ const statusList = [
         </el-table-column>
         <el-table-column label="描述" align="center">
             <template #default="scope" align="center">
-                <div v-if="scope.row.description">{{ scope.row.description }}</div>
+                <div v-if="scope.row.description" class="nowrap">{{ scope.row.description }}</div>
                 <div v-else class="noDesc">暂无描述…</div>
             </template>
         </el-table-column>
@@ -298,25 +298,26 @@ const statusList = [
     <!-- //查看详情弹层 -->
     <el-dialog v-model="dialogDetailsVisible" title="查看当前详情">
         <el-form :label-position="labelPosition" label-width="100px" :model="Details" style="max-width: 460px">
-            <el-form-item label="任务名称">
-                <el-input v-model="Details.taskName" disabled />
+            <el-form-item label="任务名称:">
+                <span>{{ Details.taskName }}</span>
             </el-form-item>
-            <el-form-item label="任务描述">
-                <el-input v-model="Details.taskDesc" disabled />
+            <el-form-item label="任务描述:">
+                <span v-if="Details.taskDesc">{{ Details.taskDesc }}</span>
+                <span v-else class="noDesc">暂无描述…</span>
             </el-form-item>
-            <el-form-item label="任务进度">
-                <div class="demo-progress">
-                    <el-progress :text-inside="true" :stroke-width="22" :percentage="percentage" :status="progressBarStatus" />
-                    <span v-if="progressBarStatus=='exception'" style="color:red">已过期</span>
-                </div>
-            </el-form-item>
+            <!-- <el-form-item label="任务进度">
+                    <div class="demo-progress">
+                        <el-progress :text-inside="true" :stroke-width="22" :percentage="percentage" :status="progressBarStatus" />
+                        <span v-if="progressBarStatus=='exception'" style="color:red">已过期</span>
+                    </div>
+                </el-form-item> -->
         </el-form>
         <template #footer>
             <span class="dialog-footer">
                 <el-button @click="dialogDetailsVisible = false">取消</el-button>
-                <el-button type="danger" @click="DetailsSubmit">
+                <!-- <el-button type="danger" @click="DetailsSubmit">
                     确定
-                </el-button>
+                </el-button> -->
             </span>
         </template>
     </el-dialog>
@@ -353,8 +354,16 @@ const statusList = [
     margin-bottom: 15px;
     width: 350px;
 }
-.demo-progress .el-progress--line[data-v-371f9cea]{
+
+.demo-progress .el-progress--line[data-v-371f9cea] {
     height: 30px;
     width: 363px;
 }
+
+.nowrap {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 </style>
