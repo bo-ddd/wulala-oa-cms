@@ -1,7 +1,6 @@
 import axios from "axios";
 import {useRouter  } from "vue-router";
 let router= useRouter()
-console.log(import.meta.env.MODE)
 
 const $http = axios.create({
   baseURL: import.meta.env.MODE=='production'? 'http://8.131.89.181:8080':'/api',

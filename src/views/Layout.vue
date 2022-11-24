@@ -8,6 +8,8 @@ import {//顶部导航栏下拉效果;
     ArrowDown
 } from '@element-plus/icons-vue';
 import sidebarList from '../router/menu';
+import type { UploadInstance, UploadProps } from 'element-plus';
+import { ElMessage } from 'element-plus';
 
 //右上角个人中心列表;
 
@@ -81,19 +83,80 @@ function to(path: string) {
     activeItem.value = '/'
 }
 
-
-let userInfo = reactive({
-    avatarName: '',
-    avatarImg: ''
-});
-
+//上传头像;
 const defaultAvatarImg = 'https://img.ixintu.com/download/jpg/20200815/18ae766809ff27de6b7a942d7ea4111c_512_512.jpg!bg';
+
+const userInfo = reactive({} as UserInfo);
 
 (async () => {
     let data = (await axios.queryUserInfoApi()).data;
-    userInfo.avatarName = data.avatarName;
-    userInfo.avatarImg = data.avatarImg;
-})()
+    Object.assign(userInfo, data);
+})();
+
+interface UserInfo {
+    avatarImg: string;
+    avatarName: string;
+    birthday: string | Date;
+    hobby: string;
+    personalSignature: string;
+    phoneNumber: string;
+    sex: number | string;
+    userId: number;
+    address: string;
+};
+const updateUserInfoApi = (payLoad: {}) => {
+    return axios.updateUserInfoApi({
+        userId: userInfo.userId,
+        sex: userInfo.sex,
+        birthday: new Date(userInfo.birthday).getTime(),
+        hobby: userInfo.hobby,
+        ...payLoad
+    })
+}
+const dialogAvatarVisible = ref(false);
+const uploadUrl = ref('');
+const upload = ref<UploadInstance>()
+
+//获取上传图像的url;
+const handleSuccessUpload: UploadProps['onSuccess'] = (response) => {
+    uploadUrl.value = response.data.url
+}
+//校验上传图片大小;
+const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
+    if (rawFile.size / 1024 / 1024 > 1) {
+        ElMessage.error('文件大小不能超过 1MB!')
+        return false
+    }
+    return true
+}
+//上传头像;
+const submitUpload = () => {
+    if (!uploadUrl.value) return
+    updateUserInfoApi({
+        avatarImg: uploadUrl.value
+    }).then(res => {
+        ElMessage({
+            message: '修改成功',
+            type: 'success',
+        })
+        uploadUrl.value = '';
+        dialogAvatarVisible.value = false;
+    }).catch(error => {
+        ElMessage({
+            message: '修改失败',
+            type: 'warning',
+        })
+    })
+}
+//展示上传头像弹出框事件;
+const showDialog = () => {
+    dialogAvatarVisible.value = true;
+}
+//重置按钮事件;
+const resetUpload = () => {
+    uploadUrl.value = '';
+    upload.value!.clearFiles()
+}
 
 </script>
 
@@ -110,7 +173,7 @@ const defaultAvatarImg = 'https://img.ixintu.com/download/jpg/20200815/18ae76680
                 <!-- 动态渲染侧边栏列表 -->
                 <el-row class="tac sidebar-list">
                     <el-col :span="1">
-                        <el-menu router :default-active="activeItem" unique-opened >
+                        <el-menu router :default-active="activeItem" unique-opened>
                             <div v-for="(item, index) in sidebarList">
                                 <el-menu-item :index="item.targetPath" :key="index" v-if="!item.childrenList.length">
                                     <el-icon>
@@ -153,24 +216,24 @@ const defaultAvatarImg = 'https://img.ixintu.com/download/jpg/20200815/18ae76680
 
                         <div class="mine">
 
-                            <el-avatar :src="userInfo.avatarImg || defaultAvatarImg" />
-                                <el-dropdown trigger="click">
-                                    <span class="el-dropdown-link flex-col">
-                                        <span class="no-shrink">{{ userInfo.avatarName }}</span>
-                                        <el-icon class="el-icon--right">
-                                            <arrow-down />
-                                        </el-icon>
-                                    </span>
-                                    <template #dropdown>
-                                        <el-dropdown-menu split-button>
-                                            <el-dropdown-item divided @click="to(item.targetPath)"
-                                                v-for="(item, index) in dropDownList" :key="index">
-                                                {{ item.name }}
-                                            </el-dropdown-item>
-                                        </el-dropdown-menu>
-                                    </template>
-                                </el-dropdown>
-                           
+                            <el-avatar :src="userInfo.avatarImg || defaultAvatarImg" @click="showDialog" />
+                            <el-dropdown trigger="click">
+                                <span class="el-dropdown-link flex-col">
+                                    <span class="no-shrink">{{ userInfo.avatarName }}</span>
+                                    <el-icon class="el-icon--right">
+                                        <arrow-down />
+                                    </el-icon>
+                                </span>
+                                <template #dropdown>
+                                    <el-dropdown-menu split-button>
+                                        <el-dropdown-item divided @click="to(item.targetPath)"
+                                            v-for="(item, index) in dropDownList" :key="index">
+                                            {{ item.name }}
+                                        </el-dropdown-item>
+                                    </el-dropdown-menu>
+                                </template>
+                            </el-dropdown>
+
                         </div>
                     </div>
                 </el-header>
@@ -185,6 +248,29 @@ const defaultAvatarImg = 'https://img.ixintu.com/download/jpg/20200815/18ae76680
             </el-container>
         </el-container>
     </div>
+    <el-dialog v-model="dialogAvatarVisible" title="更换头像">
+        <div class="flex-center">
+            <el-upload ref="upload" class="avatar-uploader" action="/api/upload/enclosure"
+                :before-upload="beforeAvatarUpload" :on-success="handleSuccessUpload" :limit="1"
+                :show-file-list="false">
+                <img v-if="uploadUrl" :src="uploadUrl" class="avatar" />
+                <el-icon v-else class="avataruploader-icon">
+                    <Plus />
+                </el-icon>
+                <template #tip>
+                    <div class="el-upload__tip">
+                        jpg/png 格式文件不能超过 1M
+                    </div>
+                </template>
+            </el-upload>
+        </div>
+        <template #footer>
+            <span class="dialog-footer">
+                <el-button @click="resetUpload">重置</el-button>
+                <el-button type="danger" @click="submitUpload">上传头像</el-button>
+            </span>
+        </template>
+    </el-dialog>
 
 </template>
 
@@ -322,7 +408,50 @@ const defaultAvatarImg = 'https://img.ixintu.com/download/jpg/20200815/18ae76680
 .el-main::-webkit-scrollbar {
     display: none;
 }
-.flex-col{
+
+.flex-col {
     display: flex;
+}
+
+/* 上传头像 */
+:deep(.el-upload) {
+    display: flex;
+    width: 200px;
+    height: 200px;
+    align-items: center;
+}
+
+.avatar {
+    display: flex;
+    width: 200px;
+    height: 200px;
+}
+</style>
+<style>
+.avatar-uploader .el-upload {
+    border: 1px dashed var(--el-border-color);
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: var(--el-transition-duration-fast);
+}
+
+.avatar-uploader .el-upload:hover {
+    border-color: var(--el-color-primary);
+}
+
+.el-icon.avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 200px;
+    height: 200px;
+    text-align: center;
+}
+
+.flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 </style>
