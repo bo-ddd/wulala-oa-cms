@@ -223,6 +223,23 @@ const beforeUpload: UploadProps['beforeUpload'] = (rawFile) => {
   display: block;
 }
 
+.demo-ruleForm {
+  width: 60%;
+  margin: 40px auto;
+  margin-top: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
+}
+
+.position-btn {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+</style>
+<style>
 .avatar-uploader .el-upload {
   border: 1px dashed var(--el-border-color);
   border-radius: 6px;
@@ -242,21 +259,5 @@ const beforeUpload: UploadProps['beforeUpload'] = (rawFile) => {
   width: 178px;
   height: 178px;
   text-align: center;
-}
-
-.demo-ruleForm {
-  width: 60%;
-  margin: 40px auto;
-  margin-top: 80px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 20px;
-}
-
-.position-btn {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
 }
 </style>

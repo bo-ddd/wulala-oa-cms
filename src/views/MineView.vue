@@ -5,6 +5,8 @@ import { useRouter } from 'vue-router';
 import { ElMessage } from 'element-plus';
 import { StarFilled, EditPen } from '@element-plus/icons-vue';
 import axios from '../assets/api/api';
+import type { UploadProps } from 'element-plus'
+
 const router = useRouter();
 const activeName = ref('first')
 const disabled: Ref = ref(true);
@@ -97,6 +99,46 @@ interface UserInfo {
     }
 })();
 
+//上传附件;
+const dialogAvatarVisible = ref(false);
+const upload = ref('');
+const handleSuccessUpload: UploadProps['onSuccess'] = (response) => {
+    upload.value = response.data.url
+}
+//校验上传文件大小;
+const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
+    if (rawFile.size / 1024 / 1024 > 1) {
+        ElMessage.error('文件大小不能超过 1MB!')
+        return false
+    }
+    return true
+}
+
+const submitUpload = () => {
+    if (!upload.value) return
+    axios.updateUserInfoApi({
+        userId: userInfo.userId,
+        sex: userInfo.sex,
+        avatarImg: upload.value,
+        birthday: new Date(userInfo.birthday).getTime(),
+        hobby: userInfo.hobby,
+        personalSignature: userInfo.personalSignature
+    }).then(res => {
+        ElMessage({
+            message: '修改成功',
+            type: 'success',
+        })
+    }).catch(error => {
+        ElMessage({
+            message: '修改失败',
+            type: 'warning',
+        })
+    })
+}
+const showDialog = () => {
+    dialogAvatarVisible.value = true;
+}
+
 </script>
 
 <template>
@@ -112,7 +154,7 @@ interface UserInfo {
                                     <el-avatar shape="circle" :size="100" :fit="fit"
                                         :src="userInfo.avatarImg || state.url" />
                                     <div class="beforeEnter" :class="{ blur: isOver }">
-                                        <el-button size="small" text bg link round @click="to('updataAvatar')">修改头像
+                                        <el-button size="small" text bg link round @click="showDialog">修改头像
                                         </el-button>
                                     </div>
                                 </div>
@@ -131,13 +173,10 @@ interface UserInfo {
                                     placeholder="个性签名" clearable show-word-limit type="text" :disabled="disabled"
                                     @blur="closeInput" @keyup.enter="toBlur" />
                                 <el-button @click="openInput" type="danger" :icon="EditPen" circle size="large" link />
-
                             </el-main>
                         </el-container>
                     </el-main>
                 </el-container>
-
-
                 <!-- 个人资料/基础信息 -->
                 <el-divider>
                     <el-icon>
@@ -146,7 +185,7 @@ interface UserInfo {
                 </el-divider>
                 <el-descriptions title="基础信息" class="mt-20">
                     <template #extra>
-                        <el-button type="danger" text bg @click="to('/updataUserInfo')" >
+                        <el-button type="danger" text bg @click="to('/updataUserInfo')">
                             <el-icon>
                                 <EditPen />
                             </el-icon>编辑资料
@@ -171,6 +210,29 @@ interface UserInfo {
             <el-tab-pane label="Task" name="fourth">Task</el-tab-pane>
         </el-tabs>
     </div>
+    <!-- 上传图像弹出框 -->
+    <el-dialog v-model="dialogAvatarVisible" title="更换头像">
+        <div class="flex-center">
+            <el-upload class="avatar-uploader" action="/api/upload/enclosure" :before-upload="beforeAvatarUpload"
+                :on-success="handleSuccessUpload">
+                <img v-if="upload" :src="upload" class="avatar" />
+                <el-icon v-else class="avataruploader-icon">
+                    <Plus />
+                </el-icon>
+                <template #tip>
+                    <div class="el-upload__tip">
+                        jpg/png 格式文件不能超过 1M
+                    </div>
+                </template>
+            </el-upload>
+        </div>
+
+        <template #footer>
+            <span class="dialog-footer">
+                <el-button @click="submitUpload">上传头像</el-button>
+            </span>
+        </template>
+    </el-dialog>
 </template>
 
 
@@ -239,8 +301,6 @@ interface UserInfo {
     padding: 40px 0;
     box-sizing: border-box;
     text-align: center;
-
-
 }
 
 .blur {
@@ -260,5 +320,41 @@ interface UserInfo {
 
 :deep(.el-input) {
     width: 200px;
+}
+
+/* 上传头像 */
+:deep(.el-upload, .avatar) {
+    display: flex;
+    width: 200px;
+    height: 200px;
+    align-items: center;
+}
+</style>
+<style>
+.avatar-uploader .el-upload {
+    border: 1px dashed var(--el-border-color);
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: var(--el-transition-duration-fast);
+}
+
+.avatar-uploader .el-upload:hover {
+    border-color: var(--el-color-primary);
+}
+
+.el-icon.avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 200px;
+    height: 200px;
+    text-align: center;
+}
+
+.flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 </style>

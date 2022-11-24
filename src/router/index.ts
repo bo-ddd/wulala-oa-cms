@@ -68,15 +68,6 @@ const router = createRouter({
             requiresAuth: false
           }
         },
-        {//修改头像页面;
-          path: "/updataAvatar",
-          name: "updataAvatar",
-          component: () => import("../views/UpdataAvatarView.vue"),
-          meta: {
-            label: "修改头像",
-            requiresAuth: false
-          }
-        },
         {//修改个人资料页面;
           path: "/updataUserInfo",
           name: "updataUserInfo",
