@@ -370,10 +370,6 @@ const getEnclosureUrl = (imgUrl: string) => {
     width: 80%
 }
 
-:deep(.el-input__inner) {
-    width: 100px
-}
-
 .flex-options {
     display: flex;
     width: 50%;
