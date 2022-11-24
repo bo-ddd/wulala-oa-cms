@@ -5,7 +5,7 @@ import { useRouter } from 'vue-router';
 import { ElMessage } from 'element-plus';
 import { StarFilled, EditPen } from '@element-plus/icons-vue';
 import axios from '../assets/api/api';
-import type { UploadProps } from 'element-plus'
+import type { UploadInstance, UploadProps } from 'element-plus'
 
 const router = useRouter();
 const activeName = ref('first')
@@ -19,25 +19,29 @@ const state = reactive({
     url: 'https://img.ixintu.com/download/jpg/20200815/18ae766809ff27de6b7a942d7ea4111c_512_512.jpg!bg',
 })
 
-const { fit, url } = toRefs(state);
+const { fit } = toRefs(state);
 
 //公共路由跳转方法：
-function to(name: string) {
+const to = (name: string) => {
     router.push(name)
 }
 
+const updateUserInfoApi = (payLoad: {}) => {
+    return axios.updateUserInfoApi({
+        userId: userInfo.userId,
+        sex: userInfo.sex,
+        birthday: new Date(userInfo.birthday).getTime(),
+        hobby: userInfo.hobby,
+        ...payLoad
+    })
+}
 
 //切换个性签名编辑状态;
 function openInput() {
     disabled.value = false;
 }
 function closeInput() {
-
-    axios.updateUserInfoApi({
-        userId: userInfo.userId,
-        sex: userInfo.sex,
-        birthday: new Date(userInfo.birthday).getTime(),
-        hobby: userInfo.hobby,
+    updateUserInfoApi({
         personalSignature: userInfo.personalSignature
     }).then(res => {
         ElMessage({
@@ -45,14 +49,16 @@ function closeInput() {
             type: 'success',
         })
         disabled.value = true;
+    }).catch(error => {
+        ElMessage({
+            message: '修改失败',
+            type: 'warning',
+        })
     })
 }
-
 function toBlur() {
     disabled.value = true;
 }
-
-
 
 //切换头像入口状态;
 const isOver: Ref = ref(false);
@@ -75,8 +81,17 @@ interface UserInfo {
     sex: number | string;
     userId: number;
     address: string;
-}
+};
 
+//处理时间戳=>YY-MM-DD;
+const formatDate = (time: Date | string) => {
+    let year = new Date(time).getFullYear();
+    let month = new Date(time).getMonth() + 1;
+    let date = new Date(time).getDate();
+    let months = month >= 10 ? month : '0' + month;
+    let dates = date >= 10 ? date : '0' + date;
+    return year + '-' + months + '-' + dates;
+}
 
 //打开页面自动渲染数据;
 (async () => {
@@ -89,23 +104,21 @@ interface UserInfo {
         birthday.value = null
         age.value = null
     } else {
-        let year = new Date(userInfo.birthday).getFullYear();
-        let month = new Date(userInfo.birthday).getMonth() + 1;
-        let date = new Date(userInfo.birthday).getDate();
-        let months = month >= 10 ? month : '0' + month;
-        let dates = date >= 10 ? date : '0' + date;
-        birthday.value = year + '-' + months + '-' + dates;
+        birthday.value = formatDate(userInfo.birthday);
         age.value = Math.floor((Date.now() - new Date(userInfo.birthday).valueOf()) / 1000 / 60 / 60 / 24 / 365);
     }
 })();
 
-//上传附件;
+//上传头像;
 const dialogAvatarVisible = ref(false);
-const upload = ref('');
+const uploadUrl = ref('');
+const upload = ref<UploadInstance>()
+
+//获取上传图像的url;
 const handleSuccessUpload: UploadProps['onSuccess'] = (response) => {
-    upload.value = response.data.url
+    uploadUrl.value = response.data.url
 }
-//校验上传文件大小;
+//校验上传图片大小;
 const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
     if (rawFile.size / 1024 / 1024 > 1) {
         ElMessage.error('文件大小不能超过 1MB!')
@@ -113,21 +126,17 @@ const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
     }
     return true
 }
-
+//上传头像;
 const submitUpload = () => {
-    if (!upload.value) return
-    axios.updateUserInfoApi({
-        userId: userInfo.userId,
-        sex: userInfo.sex,
-        avatarImg: upload.value,
-        birthday: new Date(userInfo.birthday).getTime(),
-        hobby: userInfo.hobby,
-        personalSignature: userInfo.personalSignature
+    if (!uploadUrl.value) return
+    updateUserInfoApi({
+        avatarImg: upload.value
     }).then(res => {
         ElMessage({
             message: '修改成功',
             type: 'success',
         })
+        uploadUrl.value = '';
     }).catch(error => {
         ElMessage({
             message: '修改失败',
@@ -135,8 +144,14 @@ const submitUpload = () => {
         })
     })
 }
+//展示上传头像弹出框事件;
 const showDialog = () => {
     dialogAvatarVisible.value = true;
+}
+//重置按钮事件;
+const resetUpload = () => {
+    uploadUrl.value = '';
+    upload.value!.clearFiles()
 }
 
 </script>
@@ -213,9 +228,10 @@ const showDialog = () => {
     <!-- 上传图像弹出框 -->
     <el-dialog v-model="dialogAvatarVisible" title="更换头像">
         <div class="flex-center">
-            <el-upload class="avatar-uploader" action="/api/upload/enclosure" :before-upload="beforeAvatarUpload"
-                :on-success="handleSuccessUpload">
-                <img v-if="upload" :src="upload" class="avatar" />
+            <el-upload ref="upload" class="avatar-uploader" action="/api/upload/enclosure"
+                :before-upload="beforeAvatarUpload" :on-success="handleSuccessUpload" :limit="1"
+                :show-file-list="false">
+                <img v-if="uploadUrl" :src="uploadUrl" class="avatar" />
                 <el-icon v-else class="avataruploader-icon">
                     <Plus />
                 </el-icon>
@@ -229,7 +245,8 @@ const showDialog = () => {
 
         <template #footer>
             <span class="dialog-footer">
-                <el-button @click="submitUpload">上传头像</el-button>
+                <el-button @click="resetUpload">重置</el-button>
+                <el-button type="danger" @click="submitUpload">上传头像</el-button>
             </span>
         </template>
     </el-dialog>
@@ -257,11 +274,6 @@ const showDialog = () => {
 
 :deep(.el-divider__text) {
     /* 修改五角星分隔线的背景颜色 */
-    background-color: transparent;
-}
-
-:deep(.el-button) {
-    /* 设置修改昵称按钮的背景颜色 */
     background-color: transparent;
 }
 
@@ -323,11 +335,17 @@ const showDialog = () => {
 }
 
 /* 上传头像 */
-:deep(.el-upload, .avatar) {
+:deep(.el-upload) {
     display: flex;
     width: 200px;
     height: 200px;
     align-items: center;
+}
+
+.avatar {
+    display: flex;
+    width: 200px;
+    height: 200px;
 }
 </style>
 <style>
