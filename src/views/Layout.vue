@@ -267,6 +267,7 @@ const defaultAvatarImg = 'https://img.ixintu.com/download/jpg/20200815/18ae76680
     height: 100vh;
     border-radius: 25px 0 0 25px;
     background-color: #f5f9fd;
+    /* background-color: #e6f7f7; */
     padding: 10px 20px;
     box-sizing: border-box;
 }
