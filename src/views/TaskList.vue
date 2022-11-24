@@ -310,7 +310,7 @@ const receiveTask = function (row: Task) {
             <template #default="scope" align="center">
                 <el-popover effect="light" trigger="hover" placement="top" width="auto">
                     <template #default>
-                        <div v-if="scope.row.description" >desc: {{ scope.row.description }}</div>
+                        <div v-if="scope.row.description" >{{ scope.row.description }}</div>
                         <div v-else class="noDesc">暂无描述…</div>
                     </template>
                     <template #reference>

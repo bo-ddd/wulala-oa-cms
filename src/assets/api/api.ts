@@ -369,6 +369,13 @@ export default {
      sendMailApi(payload = {}) {
         return axios.post('/mail/send', payload)
     },
+    /**
+    * 修改密码
+    *"password": "123456" 
+    * **/
+    updatePasswordApi(payload = {}) {
+        return axios.post('/user/password/update', payload)
+    },
 
     // 
 }
