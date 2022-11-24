@@ -93,6 +93,24 @@ const rules = reactive({
     mailbox: [{ validator: checkMailBox, trigger: 'blur' }]
 })
 
+const sendSuccess = () => {
+    ElMessage({
+        showClose: true,
+        message: '邮件发送成功',
+        type: 'success',
+    })
+}
+
+const sendMail = async () => {
+    await axios.sendMailApi({
+        to: ruleForm.mailbox,
+        subject: '用户账号密码',
+        context: `用户账号:${ruleForm.username},用户密码:${ruleForm.password}`
+    }).then(res => {
+        if (res.status == 1) sendSuccess();
+    })
+}
+
 const submitForm = (formEl: FormInstance | undefined) => {
     if (!formEl) return
     formEl.validate((valid) => {
@@ -107,6 +125,7 @@ const submitForm = (formEl: FormInstance | undefined) => {
                     if (res.status == 1) {
                         createSuccess();
                         router.push('userList')
+                        sendMail();
                     } else if (res.status == 10107) {
                         createError()
                     }
@@ -178,9 +197,6 @@ const submitForm = (formEl: FormInstance | undefined) => {
     padding: 20px 30px;
 }
 
-/* h3 {
-    padding: 20px 0;
-} */
 
 :deep(.el-form-item) {
     margin: 0;

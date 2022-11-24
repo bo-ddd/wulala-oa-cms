@@ -152,8 +152,8 @@ const dialogFormVisibleDelete = ref(false)
         </el-button>
     </div>
 
-    <el-table :data="departmentList" border style="width: 100%" fit>
-        <el-table-column label="部门ID" width="200px" align="center">
+    <el-table :data="departmentList" style="width: 100%" fit>
+        <el-table-column label="ID" width="200px" align="center">
             <template #default="scope">
                 <div>{{ scope.row.id }}</div>
             </template>
