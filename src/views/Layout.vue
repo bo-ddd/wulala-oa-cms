@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { RouterView, useRouter, useRoute } from "vue-router";
-import { onMounted } from "vue";
+import { onMounted, watch } from "vue";
 import { ArrowRight } from '@element-plus/icons-vue';
 import axios from '../assets/api/api';
 import { reactive, ref } from 'vue';
@@ -10,6 +10,7 @@ import {//顶部导航栏下拉效果;
 import sidebarList from '../router/menu';
 import type { UploadInstance, UploadProps } from 'element-plus';
 import { ElMessage } from 'element-plus';
+
 
 //右上角个人中心列表;
 
@@ -94,10 +95,11 @@ const defaultAvatarImg = 'https://img.ixintu.com/download/jpg/20200815/18ae76680
 
 const userInfo = reactive({} as UserInfo);
 
-(async () => {
+const initUserInfo = async () => {
     let data = (await axios.queryUserInfoApi()).data;
     Object.assign(userInfo, data);
-})();
+};
+initUserInfo();
 
 interface UserInfo {
     avatarImg: string;
@@ -121,6 +123,7 @@ const updateUserInfoApi = (payLoad: {}) => {
 }
 const dialogAvatarVisible = ref(false);
 const uploadUrl = ref('');
+
 const upload = ref<UploadInstance>()
 
 //获取上传图像的url;
@@ -140,12 +143,13 @@ const submitUpload = () => {
     if (!uploadUrl.value) return
     updateUserInfoApi({
         avatarImg: uploadUrl.value
-    }).then(res => {
+    }).then(async (res) => {
         ElMessage({
             message: '修改成功',
             type: 'success',
         })
         uploadUrl.value = '';
+        await initUserInfo();
         dialogAvatarVisible.value = false;
     }).catch(error => {
         ElMessage({
@@ -399,6 +403,7 @@ const resetUpload = () => {
     min-width: 998px;
     border-radius: 15px;
     /* background-color: #e6f7f7; */
+    background-color: white;
     box-sizing: border-box;
 }
 
