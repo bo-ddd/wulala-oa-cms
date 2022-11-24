@@ -50,8 +50,8 @@ const submitForm = (formEl: FormInstance | undefined) => {
             }).then(res => {
                 if (res.status == 1) {
                     sessionStorage.setItem("token", res.data.token);// 吧后端返回的token 存到了本地
-                    userStore.getUserInfo() //调用户信息接口
                     to('home')
+                    userStore.getUserInfo() //调用户信息接口
                 } else {
                     alert('用户名或密码错误')
                 }
