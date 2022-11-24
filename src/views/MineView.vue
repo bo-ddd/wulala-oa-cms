@@ -5,8 +5,12 @@ import { useRouter } from 'vue-router';
 import { ElMessage } from 'element-plus';
 import { StarFilled, EditPen } from '@element-plus/icons-vue';
 import axios from '../assets/api/api';
-import type { UploadInstance, UploadProps } from 'element-plus'
-
+import type { UploadInstance, UploadProps } from 'element-plus';
+import { useUserStore } from '@/stores/userInfo';
+import { storeToRefs } from "pinia";
+const userStore = useUserStore();
+const { userInfo:userInfos } = storeToRefs(userStore)
+console.log(userInfos)
 const router = useRouter();
 const activeName = ref('first')
 const disabled: Ref = ref(true);
