@@ -30,7 +30,7 @@ getLeaveListApi()
                 <template v-if="item.id == myId">
                     <h3> {{ item.title }} </h3>
                     <p class="deeppink">{{ item.avatarName }}</p>
-                    <p class="cc">{{ item.content }}</p>
+                    <p class="cc" v-html="item.content"></p>
                 </template>
 
             </div>

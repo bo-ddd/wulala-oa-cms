@@ -3,7 +3,7 @@
         status-icon hide-required-asterisk>
         <template class="flex-row">
             <el-form-item label="标题:" prop="title">
-                <el-input v-model="ruleForm.title" class="input-width" placeholder="日报标题" />
+                <el-input v-model="ruleForm.title" class="input-width" placeholder="xxxx-xx-xx日报" />
             </el-form-item>
                 <el-button class="submitBtn" type="danger" @click="submitForm(ruleFormRef)">提交</el-button>
         </template>

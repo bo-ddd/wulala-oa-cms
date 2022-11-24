@@ -2,7 +2,6 @@
 import '@wangeditor/editor/dist/css/style.css' // 引入 css
 import { onBeforeUnmount, shallowRef,toRefs  } from 'vue'
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue';
-
 let props = defineProps<{
   modelValue : string
 }>();
@@ -11,23 +10,11 @@ let emit = defineEmits(['update:modelValue'])
 const emits = function(){
   emit('update:modelValue',prop.modelValue)
 }
-
-    // 编辑器实例，必须用 shallowRef
     const editorRef = shallowRef()
 
-    // 内容 HTML
-    
-    // 模拟 ajax 异步获取内容
-    // onMounted(() => {
-    //     setTimeout(() => {
-    //         valueHtml.value = `<p>日报内容</p>`
-    //     }, 1500)
-    // });
-
     const toolbarConfig = {}
-    const editorConfig = { placeholder: '请输入内容...' }
+    const editorConfig = { placeholder: '请输入内容...', }
 
-    // 组件销毁时，也及时销毁编辑器
     onBeforeUnmount(() => {
         const editor = editorRef.value
         if (editor == null) return
@@ -40,7 +27,7 @@ const emits = function(){
     
     let mode = 'default'
     const handleChange = (editor:any) => { 
-      emit('update:modelValue',editor.children[0].children[0].text)
+      emit('update:modelValue',editor.getHtml())
     }
 </script>  
 
@@ -67,7 +54,6 @@ const emits = function(){
         :mode="mode"
         @onChange="handleChange"
         @onCreated="handleCreated"
-        @change="handleChange(prop.modelValue)"
       />
 
       </div>
