@@ -71,12 +71,6 @@ let requiresAuthList = [
         requiresAuth: true
     },
     {
-        id: 703,
-        name: '新增角色',
-        targetPath: '/createRoles',
-        requiresAuth: true
-    },
-    {
         id: 704,
         name: '部门管理',
         targetPath: '/department',
