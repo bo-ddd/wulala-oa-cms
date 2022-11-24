@@ -3,6 +3,8 @@ import { reactive, ref, onMounted } from 'vue'
 import { useRouter } from "vue-router";
 import type{  FormInstance } from 'element-plus'
 import axios from '@/assets/api/api';
+import { useUserStore } from "../stores/userInfo";
+let userStore=useUserStore()
 const ruleFormRef = ref<FormInstance>();
 let router = useRouter()
 
@@ -11,7 +13,6 @@ const ruleForm = reactive({
     username: '',
     password: '',
 })
-
 
 const validateUsername = (rule: any, value: any, callback: any) => {
     if (value === '') {
@@ -50,6 +51,7 @@ const submitForm = (formEl: FormInstance | undefined) => {
                 if (res.status == 1) {
                     sessionStorage.setItem("token", res.data.token);// 吧后端返回的token 存到了本地
                     to('home')
+                    userStore.getUserInfo() //调用户信息接口
                 } else {
                     alert('用户名或密码错误')
                 }

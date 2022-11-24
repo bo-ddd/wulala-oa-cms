@@ -146,14 +146,14 @@ const dialogFormVisibleDelete = ref(false)
 </script>
 <template>
     <div class="ipt-add">
-        <!-- <span class="label label-add">添加部门：</span> -->
+        <span class="label label-add">添加部门：</span>
         <el-input v-model="departmentAdd" placeholder="请输入部门名称" clearable />
         <el-button class="ml-10" type="danger" @click="addDepartment(departmentAdd)">添加
         </el-button>
     </div>
 
-    <el-table :data="departmentList" border style="width: 100%" fit>
-        <el-table-column label="部门ID" width="200px" align="center">
+    <el-table :data="departmentList" style="width: 100%" fit>
+        <el-table-column label="ID" width="200px" align="center">
             <template #default="scope">
                 <div>{{ scope.row.id }}</div>
             </template>

@@ -200,7 +200,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 //查询选项;
 const queryOption: any = reactive({
     avatarName: '',
-    status: '',
+    status: '全部',
     duration: '',
 })
 
@@ -267,14 +267,20 @@ const getEnclosureUrl = (imgUrl: string) => {
 
 <template>
     <div class="flex-options">
-        <el-select v-model="queryOption.avatarName" placeholder="请输入姓名" filterable>
-            <el-option v-for="item in userAvatarNameList" :key="item" :label="item" :value="item" />
-        </el-select>
-        <el-select v-model="queryOption.status" placeholder="请输入审核状态">
-            <el-option v-for="item in StateCodeString" :key="item" :label="item" :value="item" />
-        </el-select>
-        <el-date-picker v-model="queryOption.duration" type="daterange" range-separator="至" start-placeholder="开始时间"
-            end-placeholder="结束时间" />
+        <el-form-item label="姓名">
+            <el-select v-model="queryOption.avatarName" placeholder="请输入姓名" filterable>
+                <el-option v-for="item in userAvatarNameList" :key="item" :label="item" :value="item" />
+            </el-select>
+        </el-form-item>
+        <el-form-item label="审核状态">
+            <el-select v-model="queryOption.status" placeholder="请输入审核状态">
+                <el-option v-for="item in StateCodeString" :key="item" :label="item" :value="item" />
+            </el-select>
+        </el-form-item>
+        <el-form-item label="时间范围">
+            <el-date-picker v-model="queryOption.duration" type="daterange" range-separator="至" start-placeholder="开始时间"
+                end-placeholder="结束时间" />
+        </el-form-item>
         <el-button type="danger" @click="queryDimissionInfo">查询</el-button>
     </div>
     <el-table :data="tableData" style="width: 100%" class="mt-20">
@@ -291,8 +297,7 @@ const getEnclosureUrl = (imgUrl: string) => {
         <el-table-column label="离职原因" prop="reason" align="center" />
         <el-table-column label="附件" prop="enclosure" align="center">
             <template #default="scope">
-                <el-link :type="scope.row.enclosure ? 'primary' : 'info'"
-                    :disabled="scope.row.status != 0 || !scope.row.enclosure"
+                <el-link :type="scope.row.enclosure ? 'primary' : 'info'" :disabled="!scope.row.enclosure"
                     @click="getEnclosureUrl(scope.row.enclosure)">
                     {{ scope.row.enclosure ? '查看' : '无' }}
                 </el-link>
@@ -316,8 +321,8 @@ const getEnclosureUrl = (imgUrl: string) => {
     </el-table>
     <!-- 分页 -->
     <el-pagination v-model:currentPage="currentPage" v-model:page-size="pageSize" :page-sizes="[5, 10, 20, 30, 40]"
-        :background="true" layout="total, sizes, prev, pager, next, jumper" :total="total"
-        @size-change="handleSizeChange" @current-change="handleCurrentChange" class="mt-20" />
+        layout="total, sizes, prev, pager, next, jumper" :total="total" @size-change="handleSizeChange"
+        @current-change="handleCurrentChange" class="mt-20" />
     <!-- 审核弹框 -->
     <el-dialog v-model="dialogFormVisible" title="审核处理">
         <el-form ref="approvalFormRef" :model="approvalForm" hide-required-asterisk label-width="120px" :rule="rules">
@@ -346,13 +351,13 @@ const getEnclosureUrl = (imgUrl: string) => {
         <div class="flex-center">
             <img :src="enclosureUrl" class="size-enclosure" alt="附件图片">
         </div>
-            <template #footer>
-                <span class="dialog-footer">
-                    <el-link type="danger" :href="enclosureUrl" class="size-btn_download">
-                        下载附件
-                    </el-link>
-                </span>
-            </template>
+        <template #footer>
+            <span class="dialog-footer">
+                <el-link type="danger" :href="enclosureUrl" class="size-btn_download">
+                    下载附件
+                </el-link>
+            </span>
+        </template>
     </el-dialog>
 </template>
 
@@ -370,14 +375,10 @@ const getEnclosureUrl = (imgUrl: string) => {
     width: 80%
 }
 
-:deep(.el-input__inner) {
-    width: 100px
-}
-
 .flex-options {
     display: flex;
-    width: 50%;
-    gap: 12px;
+    width: 80%;
+    gap: 30px;
 }
 
 .size-enclosure {
@@ -389,14 +390,15 @@ const getEnclosureUrl = (imgUrl: string) => {
     align-items: center;
     justify-content: center;
 }
-.size-btn_download{
-   padding:6px 8px;
-   color:white;
-   background-color: #F56C6C;
-   border-radius:3px;
-}
-.size-btn_download:hover{
-    background-color: rgba(245, 108, 108, 0.8);
+
+.size-btn_download {
+    padding: 6px 8px;
+    color: white;
+    background-color: #F56C6C;
+    border-radius: 3px;
 }
 
+.size-btn_download:hover {
+    background-color: rgba(245, 108, 108, 0.8);
+}
 </style>

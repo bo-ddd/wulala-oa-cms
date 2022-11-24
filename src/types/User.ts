@@ -1,5 +1,6 @@
 export interface UserInfo{
     userId:number
+    avatarImg?: string
 }
 export interface UserPermissionList{
     permissionName: string;
