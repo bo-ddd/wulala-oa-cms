@@ -108,7 +108,7 @@ const publishTask = function () {
                         type: 'success',
                     })
                     createMessage({
-                        content: '您已成功发布一条任务'
+                        content: '您已收到一条任务，快去查看吧！'
                     })
                     initFormData()
                     dialogTaskVisible.value = false;
@@ -280,20 +280,20 @@ const receiveTask = function (row: Task) {
 </script>
 <template>
     <div class="search">
-        <el-input v-model="searchTaskName" placeholder="输入名称搜索"  />
-        <el-button type="danger" class="ml-10" plain  @click="searchTask">
-            <el-icon  >
+        <el-input v-model="searchTaskName" placeholder="输入名称搜索" />
+        <el-button type="danger" class="ml-10" plain @click="searchTask">
+            <el-icon>
                 <Search />
             </el-icon>
             <span>搜索</span>
         </el-button>
-            <el-button type="danger" @click="creatTask">
+        <el-button type="danger" @click="creatTask">
             <el-icon>
                 <Plus />
             </el-icon>
             <span>新增</span>
         </el-button>
-        
+
     </div>
     <el-table :data="taskList" style="width: 100%" class="mt-20">
         <el-table-column label="ID" align="center">
@@ -308,8 +308,17 @@ const receiveTask = function (row: Task) {
         </el-table-column>
         <el-table-column label="描述" align="center">
             <template #default="scope" align="center">
-                <div v-if="scope.row.description">{{ scope.row.description }}</div>
-                <div v-else class="noDesc">暂无描述…</div>
+                <el-popover effect="light" trigger="hover" placement="top" width="auto">
+                    <template #default>
+                        <div v-if="scope.row.description" >desc: {{ scope.row.description }}</div>
+                        <div v-else class="noDesc">暂无描述…</div>
+                    </template>
+                    <template #reference>
+                        <div v-if="scope.row.description" class="nowrap">{{ scope.row.description }}</div>
+                        <div v-else class="noDesc">暂无描述…</div>
+                    </template>
+                </el-popover>
+
             </template>
         </el-table-column>
         <el-table-column label="等级" align="center">
@@ -325,10 +334,13 @@ const receiveTask = function (row: Task) {
         <el-table-column label="操作" align="center" width="200">
             <template #default="scope" align="center">
                 <span class="flex-row">
-                <el-link type="success"  @click="receiveTask(scope.row)" v-if="scope.row.userId != userStore.userId">领取任务</el-link>
-                <el-link type="primary"  @click="clickPublishTask(scope.row)"  v-if="scope.row.userId == userStore.userId">发布任务</el-link>
-                <el-link type="warning" @click="updateTask(scope.$index, scope.row)" >编辑</el-link>
-                <el-link type="info" @click="deleteTask(scope.row)"  v-if="scope.row.userId == userStore.userId">删除</el-link>
+                    <el-link type="success" @click="receiveTask(scope.row)" v-if="scope.row.userId != userStore.userId">
+                        领取任务</el-link>
+                    <el-link type="primary" @click="clickPublishTask(scope.row)"
+                        v-if="scope.row.userId == userStore.userId">发布任务</el-link>
+                    <el-link type="warning" @click="updateTask(scope.$index, scope.row)">编辑</el-link>
+                    <el-link type="info" @click="deleteTask(scope.row)" v-if="scope.row.userId == userStore.userId">删除
+                    </el-link>
                 </span>
             </template>
         </el-table-column>
@@ -423,21 +435,32 @@ const receiveTask = function (row: Task) {
 .demo-pagination-block .demonstration {
     margin-bottom: 16px;
 }
-.el-pager{
+
+.el-pager {
     margin: 0 4px;
 }
+
 .el-link {
-  margin-right: 8px;
+    margin-right: 8px;
 }
+
 .el-link .el-icon--right.el-icon {
-  vertical-align: text-bottom;
+    vertical-align: text-bottom;
 }
-.noDesc{
+
+.noDesc {
     font-size: 10px;
-    color:#ccc;
+    color: #ccc;
 }
-.flex-row{
+
+.flex-row {
     display: flex;
     justify-content: space-between;
+}
+
+.nowrap {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 </style>
