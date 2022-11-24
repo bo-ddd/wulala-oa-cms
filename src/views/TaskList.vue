@@ -296,7 +296,7 @@ const receiveTask = function (row: Task) {
         
     </div>
     <el-table :data="taskList" style="width: 100%" class="mt-20">
-        <el-table-column label="任务Id" align="center">
+        <el-table-column label="ID" align="center">
             <template #default="scope" align="center">
                 <div>{{ scope.row.id }}</div>
             </template>

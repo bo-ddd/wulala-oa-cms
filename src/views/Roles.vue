@@ -4,6 +4,7 @@ import axios from "@/assets/api/api";
 import { ElMessage } from 'element-plus'
 import { useRouter } from "vue-router";
 import type { Role } from "../types/Role";
+import RoleEditing from './RoleEditing.vue';
 let router = useRouter()
 const selectValue = ref('')
 const centerDialogVisible = ref(false)
@@ -14,7 +15,7 @@ let resData = reactive<Role[]>([]);
 let list = reactive<Role[]>([]);
 let permissionList = reactive<Role[]>([]);
 const dialogFormVisible = ref(false)
-
+let RoleId=ref()
 
 //封装 角色列表接口
 let getRoleList = async function () {
@@ -29,14 +30,18 @@ let getRoleList = async function () {
 }
 
 getRoleList()
-
+//搜索框改变
 const handleChange = (value: string) => {
     if (value) {
-        let user = resData.filter(item => item.id == Number(value));
+        RoleId.value=value;
+    }
+}
+//点击搜索按钮
+const searchRole=function(){
+    let user = resData.filter(item => item.id == Number( RoleId.value));
         console.log(user);
         list.length = 0;   // list = []重新定义list会让他没双向绑定 所以只能list.length =0;
         list.push(...user);
-    }
 }
 const queryPermissionList = async function (row: any) {
     let res = await axios.queryRolePermissionListApi({
@@ -100,13 +105,15 @@ const to = function (id: number) {
             <el-select v-model="selectValue" filterable placeholder="请输入角色名称"  @change="handleChange">
                 <el-option v-for="item in resData" :key="item.id" :label="item.roleName" :value="item.id" />
             </el-select>
+        <el-button type="danger" class="float ml-10" @click="searchRole" plain>搜索</el-button>
+
         </div>
         <el-button type="danger" class="float" @click="router.push('createRoles')" >创建角色</el-button>
 
     </div>
     <div class="table mt-20">
         <el-table :data="currentList" style="width: 100%">
-            <el-table-column label="id" width="240px" align="center">
+            <el-table-column label="ID" width="240px" align="center">
                 <template #default="scope" align="center">
                     <div align="center">
                         <span style="margin-left: 10px">{{ scope.row.id }}</span>
