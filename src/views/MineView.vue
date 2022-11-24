@@ -13,13 +13,13 @@ const disabled: Ref = ref(true);
 let age = ref<number | null>()
 let birthday = ref<string | null>()
 let userInfo = reactive({} as UserInfo);
-//用户头像自适应功能;s
+//用户头像自适应功能;
 const state = reactive({
     fit: 'fill',
     url: 'https://img.ixintu.com/download/jpg/20200815/18ae766809ff27de6b7a942d7ea4111c_512_512.jpg!bg',
 })
 
-const { fit } = toRefs(state);
+const { fit, url } = toRefs(state);
 
 //公共路由跳转方法：
 const to = (name: string) => {
@@ -94,7 +94,7 @@ const formatDate = (time: Date | string) => {
 }
 
 //打开页面自动渲染数据;
-(async () => {
+const initUserInfo = async () => {
     let data = (await axios.queryUserInfoApi({})).data;
     Object.assign(userInfo, data);
     if (!userInfo.personalSignature) {
@@ -107,7 +107,8 @@ const formatDate = (time: Date | string) => {
         birthday.value = formatDate(userInfo.birthday);
         age.value = Math.floor((Date.now() - new Date(userInfo.birthday).valueOf()) / 1000 / 60 / 60 / 24 / 365);
     }
-})();
+};
+initUserInfo()
 
 //上传头像;
 const dialogAvatarVisible = ref(false);
@@ -131,12 +132,13 @@ const submitUpload = () => {
     if (!uploadUrl.value) return
     updateUserInfoApi({
         avatarImg: uploadUrl.value
-    }).then(res => {
+    }).then(async (res) => {
         ElMessage({
             message: '修改成功',
             type: 'success',
         })
         uploadUrl.value = '';
+        await initUserInfo();
         dialogAvatarVisible.value = false;
     }).catch(error => {
         ElMessage({
@@ -154,21 +156,18 @@ const resetUpload = () => {
     uploadUrl.value = '';
     upload.value!.clearFiles()
 }
-
 </script>
 
 <template>
     <div>
         <el-tabs v-model="activeName" class="demo-tabs">
             <el-tab-pane label="个人资料" name="first">
-                <el-container>
+                <el-container class="flex-row">
                     <el-aside width="10%">
                         <div class="demo-fit">
                             <div class="block">
-                                <span class="title">{{ fit }}</span>
                                 <div class="box" @mouseover="enterStatus" @mouseout="leaveStatus">
-                                    <el-avatar shape="circle" :size="100" :fit="fit"
-                                        :src="userInfo.avatarImg || state.url" />
+                                    <el-avatar shape="circle" :size="100" :fit="fit" :src="userInfo.avatarImg || url" />
                                     <div class="beforeEnter" :class="{ blur: isOver }">
                                         <el-button size="small" text bg link round @click="showDialog">修改头像
                                         </el-button>
@@ -375,5 +374,12 @@ const resetUpload = () => {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.flex-row {
+    width: 30%;
+    display: flex;
+    align-items: center;
+    gap: 80px;
 }
 </style>
