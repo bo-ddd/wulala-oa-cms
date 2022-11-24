@@ -196,6 +196,7 @@ const formLabelWidth = '140px'
 
     <div class="ipt-add">
         <div class="left">
+            <span class="label">添加权限：</span>
             <el-input v-model="permissionNameAdd" placeholder="请输入添加的权限名称" clearable />
             <el-select v-model="permissionId" class="parentId m-2" placeholder="请选择挂载到？" clearable>
                 <el-option v-for="item in permissionList2" :key="item.id" :label="item.permissionName"
