@@ -13,8 +13,8 @@
     </div>
 
 
-    <el-table class="mt-20" :data="userListData" border style="width: 100%" fit>
-        <el-table-column label="用户ID" align="center" width="100px">
+    <el-table class="mt-20" :data="userListData" style="width: 100%" fit>
+        <el-table-column label="ID" align="center" width="100px">
             <template #default="scope">
                 <div>{{ scope.row.userId }}</div>
             </template>

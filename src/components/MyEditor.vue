@@ -67,6 +67,7 @@ const emits = function(){
         :mode="mode"
         @onChange="handleChange"
         @onCreated="handleCreated"
+        @change="handleChange(prop.modelValue)"
       />
 
       </div>
