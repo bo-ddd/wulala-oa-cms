@@ -82,7 +82,7 @@ const handleCurrentChange = (val: number) => {
 <template>
   <el-table :data="leave" style="width: 100%">
 
-    <el-table-column label="编号" width="100">
+    <el-table-column label="ID" width="100">
       <template #default="scope">
         <div style="display: flex; align-items: center;justify-content: center;">
           <span>{{ scope.row.userId }}</span>
@@ -153,17 +153,34 @@ const handleCurrentChange = (val: number) => {
 
     <el-table-column label="状态">
       <template #default="scope">
-        <div style="display: flex; align-items: center;justify-content: center;" v-if="scope.row.auditStatus == 0">
-          <span>待审核</span>
-        </div>
+        
+        <el-popover effect="light" trigger="hover" placement="top" width="auto"  v-if="scope.row.auditStatus == 0">
+          <template #default>
+            <div>审核状态：待审核</div>
+          </template>
+          <template #reference>
+            <el-tag >待审核</el-tag>
+          </template>
+        </el-popover>
+        
 
-        <div style="display: flex; align-items: center;justify-content: center;" v-if="scope.row.auditStatus == 1">
-          <span>审核通过</span>
-        </div>
+        <el-popover effect="light" trigger="hover" placement="top" width="auto"  v-if="scope.row.auditStatus == 1">
+          <template #default>
+            <div>审核状态：审核通过</div>
+          </template>
+          <template #reference>
+            <el-tag type="success">审核通过</el-tag>
+          </template>
+        </el-popover>
 
-        <div style="display: flex; align-items: center;justify-content: center;" v-if="scope.row.auditStatus == 2">
-          <span>审核不通过</span>
-        </div>
+        <el-popover effect="light" trigger="hover" placement="top" width="auto"  v-if="scope.row.auditStatus == 2">
+          <template #default>
+            <div>审核状态：审核不通过</div>
+          </template>
+          <template #reference>
+            <el-tag type="danger">审核不通过</el-tag>
+          </template>
+        </el-popover>
       </template>
     </el-table-column>
 

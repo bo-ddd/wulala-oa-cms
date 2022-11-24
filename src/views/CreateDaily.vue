@@ -1,11 +1,11 @@
 <template>
-    <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" label-width="120px" class="demo-ruleForm" size='small'
+    <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" label-width="120px" class="demo-ruleForm"
         status-icon hide-required-asterisk>
         <template class="flex-row">
             <el-form-item label="标题:" prop="title">
-                <el-input v-model="ruleForm.title" class="input-width" size="small" placeholder="日报标题" />
+                <el-input v-model="ruleForm.title" class="input-width" placeholder="日报标题" />
             </el-form-item>
-                <el-button class="submitBtn" type="danger" size="small" @click="submitForm(ruleFormRef)">提交</el-button>
+                <el-button class="submitBtn" type="danger" @click="submitForm(ruleFormRef)">提交</el-button>
         </template>
         <el-form-item label="内容:" prop="content" class="box">
             <MyEditor v-model="ruleForm.content" class="size-editor"></MyEditor>
@@ -100,7 +100,7 @@ const submitForm = (formEl: FormInstance | undefined) => {
 </script>
 <style scoped>
 :deep(.el-form-item__label){
-    font-size: 15px;
+    font-size: 20px;
     font-weight: 700;
 }
 .submitBtn{
