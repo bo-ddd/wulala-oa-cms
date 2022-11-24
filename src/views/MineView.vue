@@ -130,13 +130,14 @@ const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
 const submitUpload = () => {
     if (!uploadUrl.value) return
     updateUserInfoApi({
-        avatarImg: upload.value
+        avatarImg: uploadUrl.value
     }).then(res => {
         ElMessage({
             message: '修改成功',
             type: 'success',
         })
         uploadUrl.value = '';
+        dialogAvatarVisible.value = false;
     }).catch(error => {
         ElMessage({
             message: '修改失败',
