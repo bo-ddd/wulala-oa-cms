@@ -216,7 +216,8 @@ const resetUpload = () => {
 
                         <div class="mine">
 
-                            <el-avatar :src="userInfo.avatarImg || defaultAvatarImg" @click="showDialog" />
+                            <el-avatar :src="userInfo.avatarImg || defaultAvatarImg" class="img-avatar"
+                                @click="showDialog" />
                             <el-dropdown trigger="click">
                                 <span class="el-dropdown-link flex-col">
                                     <span class="no-shrink">{{ userInfo.avatarName }}</span>
@@ -453,5 +454,14 @@ const resetUpload = () => {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.img-avatar:hover {
+    -webkit-filter: blur(1px);
+    filter: blur(1px);
+}
+
+.img-avatar:active {
+    margin-top: 1px;
 }
 </style>
