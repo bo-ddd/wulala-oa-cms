@@ -1,6 +1,6 @@
 <template>
     <div class="ipt">
-        <!-- <span class="label">查询部门用户：</span> -->
+        <span class="label">查询部门用户：</span>
         <el-select v-model="form.searchDepId" placeholder="请选择部门" clearable>
             <el-option v-for="item in departmentList" :key="item.id" :label="item.name" :value="item.id" />
         </el-select>
@@ -156,7 +156,7 @@ import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router';
 
 const small = ref(false)
-const background = ref(true)
+const background = ref(false)
 const disabled = ref(false)
 const formLabelWidth = '140px'
 const router = useRouter();
