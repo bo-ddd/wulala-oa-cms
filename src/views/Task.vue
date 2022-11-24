@@ -224,7 +224,7 @@ const statusList = [
         </el-form-item>
     </el-form>
     <el-table :data="userTaskList" style="width: 100%" >
-        <el-table-column label="任务Id" align="center">
+        <el-table-column label="ID" align="center">
             <template #default="scope" align="center">
                 <div>{{ scope.row.id }}</div>
             </template>
@@ -267,7 +267,7 @@ const statusList = [
                 <span class="flex-row">
                     <el-link type="warning" @click="updateTask(scope.row)"
                         v-if="scope.row.receiveUserId == userStore.userId">任务状态</el-link>
-                    <el-link type="danger" @click="viewDetails(scope.row)">查看详情</el-link>
+                    <el-link type="primary" @click="viewDetails(scope.row)">查看详情</el-link>
                 </span>
             </template>
         </el-table-column>

@@ -360,5 +360,15 @@ export default {
      quitUserExamineApi(payload = {}) {
         return axios.post('/user/quit/examine', payload)
     },
+    /**
+    * 发送邮件的接口
+    *"to":  string, //邮件接收人
+    "subject": string, //标题
+    "context": string //内容
+    * **/
+     sendMailApi(payload = {}) {
+        return axios.post('/mail/send', payload)
+    },
 
+    // 
 }
