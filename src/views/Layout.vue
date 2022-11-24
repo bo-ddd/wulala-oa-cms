@@ -27,6 +27,12 @@ const dropDownList = [
         childrenList: []
     },
     {
+        id: 3,
+        name: '我的设置',
+        targetPath: '/myTools',
+        childrenList: []
+    },
+    {
         id: 4,
         name: '退出登录',
         targetPath: '/',

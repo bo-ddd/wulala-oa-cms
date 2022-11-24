@@ -94,6 +94,15 @@ const router = createRouter({
             label: "用户任务",
             requiresAuth: false
           }
+        },
+        {//个人设置列表页面;
+          path: "/myTools",
+          name: "myTools",
+          component: () => import("../views/MyTools.vue"),
+          meta: {
+            label: "我的设置",
+            requiresAuth: false
+          }
         }
       ]
     },
