@@ -236,6 +236,15 @@ let dynamicRoutes = [
       label: "创建用户",
       requiresAuth: true
     }
+  },
+  {//请假详情页面;
+    path: "/leaveDetail",
+    name: "leaveDetail",
+    component: () => import("../views/LeaveDetail.vue"),
+    meta: {
+      label: "请假详情",
+      requiresAuth: true
+    }
   }
 ];
 
