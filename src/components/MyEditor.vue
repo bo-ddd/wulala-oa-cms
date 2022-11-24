@@ -10,23 +10,11 @@ let emit = defineEmits(['update:modelValue'])
 const emits = function(){
   emit('update:modelValue',prop.modelValue)
 }
-
-    // 编辑器实例，必须用 shallowRef
     const editorRef = shallowRef()
-
-    // 内容 HTML
-    
-    // 模拟 ajax 异步获取内容
-    // onMounted(() => {
-    //     setTimeout(() => {
-    //         valueHtml.value = `<p>日报内容</p>`
-    //     }, 1500)
-    // });
 
     const toolbarConfig = {}
     const editorConfig = { placeholder: '请输入内容...', }
 
-    // 组件销毁时，也及时销毁编辑器
     onBeforeUnmount(() => {
         const editor = editorRef.value
         if (editor == null) return
@@ -40,12 +28,7 @@ const emits = function(){
     let mode = 'default'
     const handleChange = (editor:any) => { 
       emit('update:modelValue',editor.getHtml())
-      console.log(editor.getHtml());
     }
-     
-    
-    // const html = editorRef.value.getHtml()
-    //   console.log('editor content', html)
 </script>  
 
 <template>
