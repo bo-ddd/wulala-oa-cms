@@ -122,7 +122,7 @@ const queryDailyDetail = () => {
     </el-table>
     <!-- 分页 -->
     <el-pagination v-model:currentPage="currentPage" v-model:page-size="pageSize" :page-sizes="[5, 10, 20, 30, 40]"
-        :background="true" layout="total, sizes, prev, pager, next, jumper" :total="total"
+        layout="total, sizes, prev, pager, next, jumper" :total="total"
         @size-change="handleSizeChange" @current-change="handleCurrentChange" class="mt-20" />
 </template>
 
