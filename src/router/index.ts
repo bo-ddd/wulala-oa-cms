@@ -103,7 +103,16 @@ const router = createRouter({
             label: "我的设置",
             requiresAuth: false
           }
-        }
+        },
+        {//日报列表页面;
+          path: "/daily",
+          name: "daily",
+          component: () => import("../views/Daily.vue"),
+          meta: {
+            label: "日报列表",
+            requiresAuth: false
+          }
+        },
       ]
     },
   ],
@@ -126,15 +135,6 @@ let dynamicRoutes = [
     component: () => import("../views/LeaveView.vue"),
     meta: {
       label: "请假审批",
-      requiresAuth: true
-    }
-  },
-  {//日报列表页面;
-    path: "/daily",
-    name: "daily",
-    component: () => import("../views/Daily.vue"),
-    meta: {
-      label: "日报列表",
       requiresAuth: true
     }
   },

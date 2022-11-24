@@ -10,7 +10,7 @@ import { useUserStore } from '@/stores/userInfo';
 import { storeToRefs } from "pinia";
 const userStore = useUserStore();
 const { userInfo:userInfos } = storeToRefs(userStore)
-console.log(userInfos)
+// console.log(userInfos.value.avatarImg)
 const router = useRouter();
 const activeName = ref('first')
 const disabled: Ref = ref(true);

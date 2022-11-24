@@ -41,12 +41,6 @@ let requiresAuthList = [
         requiresAuth: true
     },
     {
-        id: 404,
-        name: '日报列表',
-        targetPath: '/daily',
-        requiresAuth: true
-    },
-    {
         id: 501,
         name: '任务平台',
         targetPath: '/taskList',
@@ -107,7 +101,13 @@ let sidebarList: Parent[] = [
                 name: '填写日报',
                 targetPath: '/createDaily',
                 requiresAuth: false
-            }
+            },
+            {
+                id: 302,
+                name: '日报列表',
+                targetPath: '/daily',
+                requiresAuth: false
+            },
         ],
         requiresAuth: true
     },
@@ -124,7 +124,6 @@ let sidebarList: Parent[] = [
                 targetPath: '/submitApplication',
                 requiresAuth: false
             },
-            
             {
                 id: 406,
                 name: '离职申请',
@@ -181,7 +180,7 @@ userPremissionList.value.forEach(Premission => {
         childrenList.push(reason)
     }
 })
- childrenList=[...new Set(childrenList)]
+childrenList = [...new Set(childrenList)]
 
 childrenList.forEach(item => {
     let parent = sidebarList.find(key => key.id == Number(String(item.id)[0]));
