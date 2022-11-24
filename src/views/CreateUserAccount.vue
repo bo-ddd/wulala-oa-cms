@@ -96,7 +96,7 @@ const rules = reactive({
 const sendSuccess = () => {
     ElMessage({
         showClose: true,
-        message: '邮件发送成功',
+        message: '账号密码已发送至用户邮箱',
         type: 'success',
     })
 }
