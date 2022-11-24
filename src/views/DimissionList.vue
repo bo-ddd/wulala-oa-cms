@@ -308,7 +308,7 @@ const getEnclosureUrl = (imgUrl: string) => {
         </el-table-column>
         <el-table-column label="操作" align="center">
             <template #default="scope">
-                <el-link type="danger" class="font-bold" @click="handleEdit(scope.$index, scope.row)" :disabled="scope.row.status != 0">
+                <el-link type="danger" @click="handleEdit(scope.$index, scope.row)" :disabled="scope.row.status != 0">
                     {{ scope.row.status != 0 ? '已审核' : '审核' }}
                 </el-link>
             </template>
@@ -397,9 +397,6 @@ const getEnclosureUrl = (imgUrl: string) => {
 }
 .size-btn_download:hover{
     background-color: rgba(245, 108, 108, 0.8);
-}
-.font-bold{
-    font-weight:bold;
 }
 
 </style>

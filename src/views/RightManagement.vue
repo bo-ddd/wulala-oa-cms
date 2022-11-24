@@ -195,19 +195,23 @@ const formLabelWidth = '140px'
 <template>
 
     <div class="ipt-add">
-        <span class="label label-add">添加权限：</span>
-        <el-input v-model="permissionNameAdd" placeholder="请输入权限名称" clearable />
-        <el-select v-model="permissionId" class="parentId m-2" placeholder="请选择挂载到？" clearable>
-            <el-option v-for="item in permissionList2" :key="item.id" :label="item.permissionName" :value="item.id" />
-        </el-select>
-        <el-button class="ml-10" type="danger" @click="addPermission(permissionNameAdd)">添加
-        </el-button>
-    </div>
-    <div class="ipt mt-20">
-        <div class="example-block">
-            <span class="example-demonstration">查询权限：</span>
-
-            <el-input v-model="searchValue" placeholder="请输入相关权限名称" clearable />
+        <div class="left">
+            <el-input v-model="permissionNameAdd" placeholder="请输入添加的权限名称" clearable />
+            <el-select v-model="permissionId" class="parentId m-2" placeholder="请选择挂载到？" clearable>
+                <el-option v-for="item in permissionList2" :key="item.id" :label="item.permissionName"
+                    :value="item.id" />
+            </el-select>
+            <el-button class="ml-10" type="danger" @click="addPermission(permissionNameAdd)">添加
+            </el-button>
+        </div>
+        <div class="search">
+            <el-input v-model="searchValue" placeholder="请输入要查询的权限名称" clearable>
+                <template #prefix>
+                    <el-icon class="el-input__icon">
+                        <search />
+                    </el-icon>
+                </template>
+            </el-input>
         </div>
     </div>
     <div class="tree mt-20">
@@ -258,6 +262,7 @@ const formLabelWidth = '140px'
     /* padding: 10px 0; */
     display: flex;
     align-items: center;
+    justify-content: space-between;
 }
 
 .label {
@@ -282,11 +287,13 @@ const formLabelWidth = '140px'
     color: rgb(145, 137, 137);
     font-weight: 600;
 }
-.tree{
+
+.tree {
     padding: 15px;
     background-color: white;
     border-radius: 10px;
 }
+
 :deep(.el-pagination) {
     margin-top: 20px;
 }

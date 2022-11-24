@@ -111,7 +111,8 @@ enum StateCode {
     未开始 = 0,
     进行中,
     已完成,
-    已过期
+    已过期,
+    
 }
 
 enum tagType {
@@ -164,6 +165,10 @@ const DetailsSubmit = function () {
 }
 const levelList = [
     {
+        value: 0,
+        label: '全部',
+    },
+    {
         value: 1,
         label: '普通',
     },
@@ -173,6 +178,10 @@ const levelList = [
     },
 ]
 const statusList = [
+    {
+        value: '',
+        label: '全部',
+    },
     {
         value: 0,
         label: '未开始',
@@ -194,17 +203,17 @@ const statusList = [
 </script>
 <template>
     <el-form :inline="true" :model="searchForm" class="demo-form-inline">
-        <el-form-item label="执行人">
+        <el-form-item >
             <el-select v-model="searchForm.userId" placeholder="请选择接收人">
                 <el-option v-for="item in allUsers" :key="item.userId" :label="item.avatarName" :value="item.userId" />
             </el-select>
         </el-form-item>
-        <el-form-item label="紧急程度">
+        <el-form-item >
             <el-select v-model="searchForm.level" placeholder="按紧急程度查询">
                 <el-option v-for="item in levelList" :key="item.value" :label="item.label" :value="item.value" />
             </el-select>
         </el-form-item>
-        <el-form-item label='任务状态'>
+        <el-form-item >
             <el-select v-model="searchForm.status" placeholder="按任务状态查询">
                 <el-option v-for="status in statusList" :key="status.value" :label="status.label"
                     :value="status.value" />
@@ -214,8 +223,8 @@ const statusList = [
             <el-button @click="queryTask" type="danger">查询</el-button>
         </el-form-item>
     </el-form>
-    <el-table :data="userTaskList" style="width: 100%" class="mb-10">
-        <el-table-column label="任务Id" align="center">
+    <el-table :data="userTaskList" style="width: 100%" >
+        <el-table-column label="ID" align="center">
             <template #default="scope" align="center">
                 <div>{{ scope.row.id }}</div>
             </template>
@@ -258,12 +267,12 @@ const statusList = [
                 <span class="flex-row">
                     <el-link type="warning" @click="updateTask(scope.row)"
                         v-if="scope.row.receiveUserId == userStore.userId">任务状态</el-link>
-                    <el-link type="danger" @click="viewDetails(scope.row)">查看详情</el-link>
+                    <el-link type="primary" @click="viewDetails(scope.row)">查看详情</el-link>
                 </span>
             </template>
         </el-table-column>
     </el-table>
-    <div class="demo-pagination-block">
+    <div class="demo-pagination-block mt-20 ">
         <el-pagination v-model:current-page="pageNum" v-model:page-size="pageSize" :page-sizes="[5, 10, 15, 20]"
             :disabled="disabled" layout="total, sizes, prev, pager, next, jumper" :total="total"
             @size-change="handleSizeChange" @current-change="handleCurrentChange" />

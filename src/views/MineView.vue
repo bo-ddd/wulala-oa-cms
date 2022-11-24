@@ -129,7 +129,7 @@ interface UserInfo {
                             <el-main class="bottom-main flex-box">
                                 <el-input class="input" v-model="userInfo.personalSignature" maxlength="30"
                                     placeholder="个性签名" clearable show-word-limit type="text" :disabled="disabled"
-                                    @blur="closeInput" size="small" @keyup.enter="toBlur" />
+                                    @blur="closeInput" @keyup.enter="toBlur" />
                                 <el-button @click="openInput" type="danger" :icon="EditPen" circle size="large" link />
 
                             </el-main>
@@ -146,7 +146,7 @@ interface UserInfo {
                 </el-divider>
                 <el-descriptions title="基础信息" class="mt-20">
                     <template #extra>
-                        <el-button type="danger" text bg @click="to('/updataUserInfo')" size="small">
+                        <el-button type="danger" text bg @click="to('/updataUserInfo')" >
                             <el-icon>
                                 <EditPen />
                             </el-icon>编辑资料
@@ -156,7 +156,7 @@ interface UserInfo {
                     <el-descriptions-item label="年龄">{{ age || '— —' }}</el-descriptions-item>
                     <el-descriptions-item label="生日">{{ birthday || '— —' }}</el-descriptions-item>
                     <el-descriptions-item label="标签">
-                        <el-tag size="small">萌新</el-tag>
+                        <el-tag>萌新</el-tag>
                     </el-descriptions-item>
                     <el-descriptions-item label="个人爱好">
                         {{ userInfo.hobby || '— —' }}

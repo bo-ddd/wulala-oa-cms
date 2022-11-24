@@ -122,19 +122,19 @@ const options = Array.from({ length: 10000 }).map((_, idx) => ({
 </script>
 
 <template>
-    <div>
+    <div class="main">
         <el-page-header :icon="ArrowLeft" title="返回" @back="to('mine')">
             <template #content>
                 <span class="text-large font-600 mr-3"> 编辑资料 </span>
             </template>
         </el-page-header>
-        <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" label-width="120px" class="demo-ruleForm mt-24"
-            :size="formSize" status-icon>
+        <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" label-width="120px" class="demo-ruleForm mt-24 flex-col"
+            :size="formSize" status-icon hide-required-asterisk>
             <el-form-item label="昵称" prop="avatarName" class="name-label">
-                <el-input v-model="ruleForm.avatarName" size="small" />
+                <el-input v-model="ruleForm.avatarName" />
             </el-form-item>
             <el-form-item label="性别" prop="sex" class="mt-20">
-                <el-radio-group v-model="ruleForm.sex" size="small">
+                <el-radio-group v-model="ruleForm.sex">
                     <el-radio label="男" />
                     <el-radio label="女" />
                 </el-radio-group>
@@ -143,31 +143,31 @@ const options = Array.from({ length: 10000 }).map((_, idx) => ({
             <el-form-item label="生日" required class="birthday-label mt-20">
                 <el-col :span="11">
                     <el-form-item prop="birthday">
-                        <el-date-picker v-model="ruleForm.birthday" type="date" size="small" label="Pick a date"
+                        <el-date-picker v-model="ruleForm.birthday" type="date" label="Pick a date"
                             placeholder="选择日期" />
                     </el-form-item>
                 </el-col>
             </el-form-item>
 
             <el-form-item label="联系方式" prop="phoneNumber" class="mt-20">
-                <el-input v-model="ruleForm.phoneNumber" type="text" size="small" placeholder="请输入11位手机号码" />
+                <el-input v-model="ruleForm.phoneNumber" type="text" placeholder="请输入11位手机号码" />
             </el-form-item>
 
             <el-form-item label="详细地址" prop="address" class="mt-20">
-                <el-input v-model="ruleForm.address" type="text" size="small" placeholder="省/市/县/镇/" />
+                <el-input v-model="ruleForm.address" type="text" placeholder="省/市/县/镇/" />
             </el-form-item>
 
             <el-form-item label="个人爱好" prop="hobby" class="mt-20">
-                <el-input v-model="ruleForm.hobby" type="text" size="small" placeholder="如吃瓜，户外运动" />
+                <el-input v-model="ruleForm.hobby" type="text" placeholder="如吃瓜，户外运动" />
             </el-form-item>
 
             <el-form-item label="个性签名" prop="personalSignatrue" class="mt-20">
-                <el-input v-model="ruleForm.personalSignature" type="text" size="small" placeholder="非必填项" />
+                <el-input v-model="ruleForm.personalSignature" type="text" placeholder="非必填项" />
             </el-form-item>
-            <el-form-item>
-                <el-button type="danger" @click="submitForm(ruleFormRef)" size="small">确认</el-button>
-                <el-button @click="resetForm(ruleFormRef)" size="small">重置</el-button>
-            </el-form-item>
+            <div class="btn mt-20">
+                <el-button type="danger" @click="submitForm(ruleFormRef)">确认</el-button>
+                <el-button @click="resetForm(ruleFormRef)">重置</el-button>
+            </div>
         </el-form>
     </div>
 </template>
@@ -175,5 +175,25 @@ const options = Array.from({ length: 10000 }).map((_, idx) => ({
 <style scoped>
 :deep(.el-input) {
     width: 200px
+}
+
+.main{
+    background-color: white;
+    height:100%;
+    padding:20px 10px;
+    box-sizing: border-box;
+}
+.flex-col{
+    display: flex;
+    flex-direction: column;
+    width:60%;
+    justify-content: center;
+    margin:40px auto;
+    background-color: white;
+}
+.btn{
+   display: flex;
+   gap:10px;
+   justify-content: center;
 }
 </style>
