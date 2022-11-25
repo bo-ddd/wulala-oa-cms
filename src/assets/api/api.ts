@@ -14,7 +14,7 @@ interface Result {
 export default {
     /**
     * 登录接口**/
-    loginApi(payload = {}) {
+    loginApi(payload = {}): Promise<Result> {
         return axios.post('/user/login', payload)
     },
     /**

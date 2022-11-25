@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { reactive, ref, onMounted } from 'vue'
 import { useRouter } from "vue-router";
-import type{  FormInstance } from 'element-plus'
+import { ElMessage, type FormInstance } from 'element-plus'
 import axios from '@/assets/api/api';
 import { useUserStore } from "../stores/userInfo";
-let userStore=useUserStore()
+let userStore = useUserStore()
 const ruleFormRef = ref<FormInstance>();
 let router = useRouter()
 
@@ -14,61 +14,43 @@ const ruleForm = reactive({
     password: '',
 })
 
-const validateUsername = (rule: any, value: any, callback: any) => {
-    if (value === '') {
-        callback(new Error('请输入您的用户名'))
-    } else if (value.length < 6 || value.length > 20) {
-        callback(new Error("用户名的长度应该在6-20位之间!"))
-    } else if (/\W/.test(value)) {
-        callback(new Error("用户名和密码不符合规范"))
-    } else {
-        callback();
-    }
-}
-const validatePassword = (rule: any, value: any, callback: any) => {
-    if (value === '') {
-        callback(new Error('请输入密码'))
-    } else {
-        callback()
-    }
-}
-const rules = reactive({
-    username: [{ validator: validateUsername, trigger: 'blur' }],
-    password: [{ validator: validatePassword, trigger: 'blur' }],
-})
 /// 一般情况  封装一个方法 要使用const
 const to = function (name: string) {
     router.push(name)
 }
-const submitForm = (formEl: FormInstance | undefined) => {
-    if (!formEl) return
-    formEl.validate(async (valid) => {
-        if (valid) {
-            await axios.loginApi({
-                username: ruleForm.username,
-                password: ruleForm.password,
-            }).then(res => {
-                if (res.status == 1) {
-                    sessionStorage.setItem("token", res.data.token);// 吧后端返回的token 存到了本地
-                    to('home')
-                    userStore.getUserInfo() //调用户信息接口
-                } else {
-                    alert('用户名或密码错误')
-                }
-            })
 
-        } else {
-            alert('失败，请重新再试')
-            return false
-        }
+const submit = async () => {
+    const { username, password } = ruleForm
+    if (username == '') {
+        ElMessage.warning('账号不能为空')
+        return
+    } else if (username.length < 6 || username.length > 20) {
+        ElMessage.warning('用户名必须为6-20位之间')
+        return
+    } else if (/\W/.test(username)) {
+        ElMessage.warning('用户名和密码不符合规范')
+        return
+    } else if (password.length < 6 || password.length > 20) {
+        ElMessage.warning('密码必须为6-20位之间')
+        return
+    }
+    await axios.loginApi({
+        username: ruleForm.username,
+        password: ruleForm.password,
+    }).then(res => {
+        sessionStorage.setItem("token", res.data.token);// 吧后端返回的token 存到了本地
+        ElMessage.success('登陆成功')
+        to('home')
+        userStore.getUserInfo() //调用户信息接口
     })
+
 }
 //回车自动登录
 onMounted(() => {
     document.onkeydown = function (e) {
         let key = e.key;
         if (key == "Enter") {
-            submitForm(ruleFormRef.value); //ref对象在js中需要value才能获取到
+            submit(ruleFormRef.value);
         }
     };
 })
@@ -79,7 +61,7 @@ onMounted(() => {
         <div class="login-bar">
             <div class="login-content">
                 <h1 class="title-login">Login</h1>
-                <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" class="demo-ruleForm">
+                <el-form ref="ruleFormRef" :model="ruleForm" class="demo-ruleForm">
                     <el-form-item label="账号" prop="username">
                         <el-input v-model="ruleForm.username" type="text" placeholder="请输入用户名" />
                     </el-form-item>
@@ -91,7 +73,7 @@ onMounted(() => {
                         <span class="right" @click="to('logon')">注册</span>
                     </div>
                     <el-form-item>
-                        <el-button type="danger" @click="submitForm(ruleFormRef)">GO</el-button>
+                        <el-button type="danger" @click="submit">GO</el-button>
                     </el-form-item>
                 </el-form>
             </div>
