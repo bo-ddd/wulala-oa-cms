@@ -320,7 +320,7 @@ const getEnclosureUrl = (imgUrl: string) => {
         </el-table-column>
     </el-table>
     <!-- 分页 -->
-    <el-pagination v-model:currentPage="currentPage" v-model:page-size="pageSize" :page-sizes="[5, 10, 20, 30, 40]"
+    <el-pagination v-model:currentPage="currentPage" v-model:page-size="pageSize" :page-sizes="[5, 10, 15, 20, 25, 30]"
         layout="total, sizes, prev, pager, next, jumper" :total="total" @size-change="handleSizeChange"
         @current-change="handleCurrentChange" class="mt-20" />
     <!-- 审核弹框 -->
@@ -378,7 +378,7 @@ const getEnclosureUrl = (imgUrl: string) => {
 .flex-options {
     display: flex;
     width: 80%;
-    gap: 30px;
+    gap: 20px;
 }
 
 .size-enclosure {

@@ -4,15 +4,11 @@
         <el-select v-model="form.searchDepId" placeholder="请选择部门" clearable>
             <el-option v-for="item in departmentList" :key="item.id" :label="item.name" :value="item.id" />
         </el-select>
-        <el-button class="ml-10" type="danger" @click="queryDeptUser(form.searchDepId)"> 查询成员
+        <el-button class="ml-20" type="danger" @click="queryDeptUser(form.searchDepId)"> 查询成员
         </el-button>
-        <el-button class="ml-10" type="default" @click="getUserList()">重置</el-button>
-        <span class="creat-user">
-            <el-button class="ml-10" type="danger" @click="toCreateUser()">创建用户</el-button>
-        </span>
+        <el-button class="ml-20" type="default" @click="getUserList()">重置</el-button>
+        <el-button class="creat-user" type="danger" @click="toCreateUser()">创建用户</el-button>
     </div>
-
-
     <el-table class="mt-20" :data="userListData" style="width: 100%" fit>
         <el-table-column label="ID" align="center" width="100px">
             <template #default="scope">
@@ -70,7 +66,7 @@
         <template #footer>
             <span class="dialog-footer">
                 <el-button @click="dialogFormVisibleAdd = false">取消</el-button>
-                <el-button type="primary" @click="dialogFormVisibleAdd = false; addUserRole(form.userId)">
+                <el-button type="danger" @click="dialogFormVisibleAdd = false; addUserRole(form.userId)">
                     确认添加
                 </el-button>
             </span>
@@ -91,7 +87,7 @@
         <template #footer>
             <span class="dialog-footer">
                 <el-button @click="dialogFormVisibleDelete = false">取消</el-button>
-                <el-button type="primary" @click="dialogFormVisibleDelete = false; deleteUserRole()">
+                <el-button type="danger" @click="dialogFormVisibleDelete = false; deleteUserRole()">
                     确认删除
                 </el-button>
             </span>
@@ -112,7 +108,7 @@
         <template #footer>
             <span class="dialog-footer">
                 <el-button @click="dialogFormisiblGeroup = false">取消</el-button>
-                <el-button type="primary" @click="dialogFormisiblGeroup = false; addDepartment()">
+                <el-button type="danger" @click="dialogFormisiblGeroup = false; addDepartment()">
                     确认添加
                 </el-button>
             </span>
@@ -134,7 +130,7 @@
         <template #footer>
             <span class="dialog-footer">
                 <el-button @click="dialogFormisiblDelete = false">取消</el-button>
-                <el-button type="primary" @click="dialogFormisiblDelete = false; removeUserDepartment(form.userId)">
+                <el-button type="danger" @click="dialogFormisiblDelete = false; removeUserDepartment(form.userId)">
                     确认删除
                 </el-button>
             </span>
@@ -142,7 +138,7 @@
     </el-dialog>
 
     <div class="pagination mt-20">
-        <el-pagination v-model:currentPage="pageNum" v-model:page-size="pageSize" :page-sizes="[5, 10, 20, 30, 40]"
+        <el-pagination v-model:currentPage="pageNum" v-model:page-size="pageSize" :page-sizes="[5, 10, 15, 20, 25, 30]"
             :small="small" :disabled="disabled" :background="background"
             layout="total, sizes, prev, pager, next, jumper" :total="total" @size-change="handleSizeChange"
             @current-change="handleCurrentChange" />
@@ -438,6 +434,7 @@ const removeUserDepartment = async (userId: number) => {
 </script>
 
 <style scoped>
+
 .page,
 .label {
     display: inline-block;
@@ -446,17 +443,11 @@ const removeUserDepartment = async (userId: number) => {
     color: rgb(145, 137, 137);
 }
 
-.label-size {
-    margin-left: 20px;
-}
-
 a {
     cursor: pointer;
     margin: 0 5px;
     text-decoration: none;
 }
-
-
 
 .touserdetail {
     color: darkturquoise;
@@ -476,11 +467,7 @@ a {
     float: right;
 }
 
-/* :deep(.el-pagination) {
-    margin-top: 20px;
-} */
-
-:deep(.el-input) {
-    width: 200px;
+:deep(.el-form-item__content > .el-input) {
+    width: 215px;
 }
 </style>

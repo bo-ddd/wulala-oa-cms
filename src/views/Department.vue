@@ -185,7 +185,7 @@ const dialogFormVisibleDelete = ref(false)
         <template #footer>
             <span class="dialog-footer">
                 <el-button @click="dialogFormVisibleUpdate = false">取消</el-button>
-                <el-button type="primary" @click="dialogFormVisibleUpdate = false; updateDepartment(form.id)">
+                <el-button type="danger" @click="dialogFormVisibleUpdate = false; updateDepartment(form.id)">
                     确认修改
                 </el-button>
             </span>

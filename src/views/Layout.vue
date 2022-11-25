@@ -1,19 +1,22 @@
 <script setup lang="ts">
 import { RouterView, useRouter, useRoute } from "vue-router";
-import { onMounted, watch } from "vue";
+import { onMounted } from "vue";
 import { ArrowRight } from '@element-plus/icons-vue';
 import axios from '../assets/api/api';
-import { reactive, ref } from 'vue';
+import { ref } from 'vue';
 import {//顶部导航栏下拉效果;
     ArrowDown
 } from '@element-plus/icons-vue';
 import sidebarList from '../router/menu';
 import type { UploadInstance, UploadProps } from 'element-plus';
 import { ElMessage } from 'element-plus';
+import { useUserStore } from '@/stores/userInfo';
+import { storeToRefs } from "pinia";
+const userStore = useUserStore();
+const { userInfo:userInfos } = storeToRefs(userStore)
 
 
 //右上角个人中心列表;
-
 const dropDownList = [
     {
         id: 1,
@@ -93,25 +96,8 @@ function to(path: string) {
 //上传头像;
 const defaultAvatarImg = 'https://img.ixintu.com/download/jpg/20200815/18ae766809ff27de6b7a942d7ea4111c_512_512.jpg!bg';
 
-const userInfo = reactive({} as UserInfo);
+const userInfo = userInfos.value;
 
-const initUserInfo = async () => {
-    let data = (await axios.queryUserInfoApi()).data;
-    Object.assign(userInfo, data);
-};
-initUserInfo();
-
-interface UserInfo {
-    avatarImg: string;
-    avatarName: string;
-    birthday: string | Date;
-    hobby: string;
-    personalSignature: string;
-    phoneNumber: string;
-    sex: number | string;
-    userId: number;
-    address: string;
-};
 const updateUserInfoApi = (payLoad: {}) => {
     return axios.updateUserInfoApi({
         userId: userInfo.userId,
@@ -132,6 +118,8 @@ const handleSuccessUpload: UploadProps['onSuccess'] = (response) => {
 }
 //校验上传图片大小;
 const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
+    console.log(rawFile);
+    
     if (rawFile.size / 1024 / 1024 > 1) {
         ElMessage.error('文件大小不能超过 1MB!')
         return false
@@ -149,7 +137,8 @@ const submitUpload = () => {
             type: 'success',
         })
         uploadUrl.value = '';
-        await initUserInfo();
+        // await initUserInfo();
+        await userStore.getUserInfo();
         dialogAvatarVisible.value = false;
     }).catch(error => {
         ElMessage({
@@ -167,7 +156,6 @@ const resetUpload = () => {
     uploadUrl.value = '';
     upload.value!.clearFiles()
 }
-
 </script>
 
 <template>
@@ -262,8 +250,7 @@ const resetUpload = () => {
     <el-dialog v-model="dialogAvatarVisible" title="更换头像">
         <div class="flex-center">
             <el-upload ref="upload" class="avatar-uploader" action="/api/upload/enclosure"
-                :before-upload="beforeAvatarUpload" :on-success="handleSuccessUpload" :limit="1"
-                :show-file-list="false">
+                :before-upload="beforeAvatarUpload" :on-success="handleSuccessUpload" :show-file-list="false">
                 <img v-if="uploadUrl" :src="uploadUrl" class="avatar" />
                 <el-icon v-else class="avataruploader-icon">
                     <Plus />
