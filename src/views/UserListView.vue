@@ -4,15 +4,11 @@
         <el-select v-model="form.searchDepId" placeholder="请选择部门" clearable>
             <el-option v-for="item in departmentList" :key="item.id" :label="item.name" :value="item.id" />
         </el-select>
-        <el-button class="ml-10" type="danger" @click="queryDeptUser(form.searchDepId)"> 查询成员
+        <el-button class="ml-20" type="danger" @click="queryDeptUser(form.searchDepId)"> 查询成员
         </el-button>
-        <el-button class="ml-10" type="default" @click="getUserList()">重置</el-button>
-        <span class="creat-user">
-            <el-button class="ml-10" type="danger" @click="toCreateUser()">创建用户</el-button>
-        </span>
+        <el-button class="ml-20" type="default" @click="getUserList()">重置</el-button>
+        <el-button class="creat-user" type="danger" @click="toCreateUser()">创建用户</el-button>
     </div>
-
-
     <el-table class="mt-20" :data="userListData" style="width: 100%" fit>
         <el-table-column label="ID" align="center" width="100px">
             <template #default="scope">
@@ -438,6 +434,7 @@ const removeUserDepartment = async (userId: number) => {
 </script>
 
 <style scoped>
+
 .page,
 .label {
     display: inline-block;
@@ -446,17 +443,11 @@ const removeUserDepartment = async (userId: number) => {
     color: rgb(145, 137, 137);
 }
 
-.label-size {
-    margin-left: 20px;
-}
-
 a {
     cursor: pointer;
     margin: 0 5px;
     text-decoration: none;
 }
-
-
 
 .touserdetail {
     color: darkturquoise;
@@ -475,10 +466,6 @@ a {
 .creat-user {
     float: right;
 }
-
-/* :deep(.el-pagination) {
-    margin-top: 20px;
-} */
 
 :deep(.el-form-item__content > .el-input) {
     width: 215px;
