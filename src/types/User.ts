@@ -1,6 +1,13 @@
 export interface UserInfo{
-    userId:number
-    avatarImg?: string
+    avatarImg: string;
+    avatarName: string;
+    birthday: string | Date;
+    hobby: string;
+    personalSignature: string;
+    phoneNumber: string;
+    sex: number | string;
+    userId: number;
+    address: string;
 }
 export interface UserPermissionList{
     permissionName: string;
@@ -14,4 +21,7 @@ export interface UserRegister {
     password: string
     avatarName?: string
     phoneNumber: string
+}
+export interface UserId{
+    userId: number;
 }

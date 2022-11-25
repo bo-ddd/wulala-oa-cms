@@ -1,6 +1,6 @@
 
 <script setup lang="ts">
-import { ref, type Ref, reactive, toRefs } from 'vue';
+import { ref, type Ref, reactive, toRefs, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { ElMessage } from 'element-plus';
 import { StarFilled, EditPen } from '@element-plus/icons-vue';
@@ -9,14 +9,19 @@ import type { UploadInstance, UploadProps } from 'element-plus';
 import { useUserStore } from '@/stores/userInfo';
 import { storeToRefs } from "pinia";
 const userStore = useUserStore();
-const { userInfo:userInfos } = storeToRefs(userStore)
-// console.log(userInfos.value.avatarImg)
+const { userInfo: userInfos } = storeToRefs(userStore)
+const userInfo = userInfos.value;
+onMounted(async () => {
+    await userStore.getUserInfo()
+    handleUserBirthday()
+
+})
 const router = useRouter();
 const activeName = ref('first')
 const disabled: Ref = ref(true);
 let age = ref<number | null>()
 let birthday = ref<string | null>()
-let userInfo = reactive({} as UserInfo);
+
 //用户头像自适应功能;
 const state = reactive({
     fit: 'fill',
@@ -73,20 +78,6 @@ function leaveStatus() {
     isOver.value = false;
 }
 
-//刷新页面，调用用户信息接口，渲染个人页面数据
-
-interface UserInfo {
-    avatarImg: string;
-    avatarName: string;
-    birthday: string | Date;
-    hobby: string;
-    personalSignature: string;
-    phoneNumber: string;
-    sex: number | string;
-    userId: number;
-    address: string;
-};
-
 //处理时间戳=>YY-MM-DD;
 const formatDate = (time: Date | string) => {
     let year = new Date(time).getFullYear();
@@ -97,13 +88,9 @@ const formatDate = (time: Date | string) => {
     return year + '-' + months + '-' + dates;
 }
 
-//打开页面自动渲染数据;
-const initUserInfo = async () => {
-    let data = (await axios.queryUserInfoApi({})).data;
-    Object.assign(userInfo, data);
-    if (!userInfo.personalSignature) {
-        userInfo.personalSignature = '这个人很懒，什么都没留下！';
-    };
+//从pinia中拿到个人资料，并进行处理，显示到页面上;
+const handleUserBirthday = () => {
+    userInfo.personalSignature = !userInfo.personalSignature ? '这个人很懒，什么都没留下！' : userInfo.personalSignature;
     if (!userInfo.birthday) {
         birthday.value = null
         age.value = null
@@ -111,8 +98,8 @@ const initUserInfo = async () => {
         birthday.value = formatDate(userInfo.birthday);
         age.value = Math.floor((Date.now() - new Date(userInfo.birthday).valueOf()) / 1000 / 60 / 60 / 24 / 365);
     }
-};
-initUserInfo()
+
+}
 
 //上传头像;
 const dialogAvatarVisible = ref(false);
@@ -142,7 +129,7 @@ const submitUpload = () => {
             type: 'success',
         })
         uploadUrl.value = '';
-        await initUserInfo();
+        await userStore.getUserInfo();
         dialogAvatarVisible.value = false;
     }).catch(error => {
         ElMessage({
@@ -183,7 +170,7 @@ const resetUpload = () => {
                     <el-main class="main">
                         <el-container class="username">
                             <el-header>
-                                <div class="flex-box">
+                                <div>
                                     <span class="strong">{{ userInfo.avatarName }}</span>
                                 </div>
                             </el-header>
@@ -233,8 +220,7 @@ const resetUpload = () => {
     <el-dialog v-model="dialogAvatarVisible" title="更换头像">
         <div class="flex-center">
             <el-upload ref="upload" class="avatar-uploader" action="/api/upload/enclosure"
-                :before-upload="beforeAvatarUpload" :on-success="handleSuccessUpload" :limit="1"
-                :show-file-list="false">
+                :before-upload="beforeAvatarUpload" :on-success="handleSuccessUpload" :show-file-list="false">
                 <img v-if="uploadUrl" :src="uploadUrl" class="avatar" />
                 <el-icon v-else class="avataruploader-icon">
                     <Plus />
@@ -300,11 +286,6 @@ const resetUpload = () => {
     display: flex;
     text-align: left;
     align-items: center;
-
-}
-
-.main .bottom-main {
-    padding-left: 20px;
 }
 
 :deep(.el-input) {
@@ -351,6 +332,24 @@ const resetUpload = () => {
     width: 200px;
     height: 200px;
 }
+
+.flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 头像与昵称的盒子 */
+.flex-row {
+    min-width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+:deep(.el-header) {
+    padding: 0;
+}
 </style>
 <style>
 .avatar-uploader .el-upload {
@@ -372,18 +371,5 @@ const resetUpload = () => {
     width: 200px;
     height: 200px;
     text-align: center;
-}
-
-.flex-center {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.flex-row {
-    width: 30%;
-    display: flex;
-    align-items: center;
-    gap: 80px;
 }
 </style>
