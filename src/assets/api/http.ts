@@ -24,24 +24,18 @@ $http.interceptors.request.use(function (config) {
   return Promise.reject(error);
 });
 
-
-
 // 添加响应拦截器
-$http.interceptors.response.use(function (response:any) {
+$http.interceptors.response.use(function (response) {
   // 2xx 范围内的状态码都会触发该函数。
   //作用1：关闭弹层
   //作用2: 根据不同的状态码，提示不同的信息
   //作用3：改变接口的返回数据类型
-
-  const { msg } = response.data
-  if (response.status == 1) {
-    ElMessage.success(msg)
+  const { msg } = response.data;
+  if (response.status == 200) {
+    ElMessage.success(msg);
   } else {
-    ElMessage.warning(msg)
-    return Promise.reject('登录失败')
-  }
-  if (response.data.status == 401) {
-    router.push('/login')
+    ElMessage.warning(msg);
+    return Promise.reject(msg)
   }
   return response.data;
 }, function (error) {

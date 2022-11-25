@@ -19,27 +19,26 @@ const to = function (name: string) {
     router.push(name)
 }
 
-const submit = async () => {
+const submit = async (value:any) => {
     const { username, password } = ruleForm
     if (username == '') {
         ElMessage.warning('账号不能为空')
-        return
+        return;
     } else if (username.length < 6 || username.length > 20) {
         ElMessage.warning('用户名必须为6-20位之间')
-        return
+        return;
     } else if (/\W/.test(username)) {
         ElMessage.warning('用户名和密码不符合规范')
-        return
+        return;
     } else if (password.length < 6 || password.length > 20) {
         ElMessage.warning('密码必须为6-20位之间')
-        return
+        return;
     }
     await axios.loginApi({
         username: ruleForm.username,
         password: ruleForm.password,
     }).then(res => {
         sessionStorage.setItem("token", res.data.token);// 吧后端返回的token 存到了本地
-        ElMessage.success('登陆成功')
         to('home')
         userStore.getUserInfo() //调用户信息接口
     })
