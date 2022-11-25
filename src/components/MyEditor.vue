@@ -62,3 +62,8 @@ const emits = function(){
 
 </template>
 
+<style>
+#editor-wrapper{
+  width: 100%;
+}
+</style>
