@@ -70,7 +70,7 @@
         <template #footer>
             <span class="dialog-footer">
                 <el-button @click="dialogFormVisibleAdd = false">取消</el-button>
-                <el-button type="primary" @click="dialogFormVisibleAdd = false; addUserRole(form.userId)">
+                <el-button type="danger" @click="dialogFormVisibleAdd = false; addUserRole(form.userId)">
                     确认添加
                 </el-button>
             </span>
@@ -91,7 +91,7 @@
         <template #footer>
             <span class="dialog-footer">
                 <el-button @click="dialogFormVisibleDelete = false">取消</el-button>
-                <el-button type="primary" @click="dialogFormVisibleDelete = false; deleteUserRole()">
+                <el-button type="danger" @click="dialogFormVisibleDelete = false; deleteUserRole()">
                     确认删除
                 </el-button>
             </span>
@@ -112,7 +112,7 @@
         <template #footer>
             <span class="dialog-footer">
                 <el-button @click="dialogFormisiblGeroup = false">取消</el-button>
-                <el-button type="primary" @click="dialogFormisiblGeroup = false; addDepartment()">
+                <el-button type="danger" @click="dialogFormisiblGeroup = false; addDepartment()">
                     确认添加
                 </el-button>
             </span>
@@ -134,7 +134,7 @@
         <template #footer>
             <span class="dialog-footer">
                 <el-button @click="dialogFormisiblDelete = false">取消</el-button>
-                <el-button type="primary" @click="dialogFormisiblDelete = false; removeUserDepartment(form.userId)">
+                <el-button type="danger" @click="dialogFormisiblDelete = false; removeUserDepartment(form.userId)">
                     确认删除
                 </el-button>
             </span>
@@ -142,7 +142,7 @@
     </el-dialog>
 
     <div class="pagination mt-20">
-        <el-pagination v-model:currentPage="pageNum" v-model:page-size="pageSize" :page-sizes="[5, 10, 20, 30, 40]"
+        <el-pagination v-model:currentPage="pageNum" v-model:page-size="pageSize" :page-sizes="[5, 10, 15, 20, 25, 30]"
             :small="small" :disabled="disabled" :background="background"
             layout="total, sizes, prev, pager, next, jumper" :total="total" @size-change="handleSizeChange"
             @current-change="handleCurrentChange" />
@@ -480,7 +480,7 @@ a {
     margin-top: 20px;
 } */
 
-:deep(.el-input) {
-    width: 200px;
+:deep(.el-form-item__content > .el-input) {
+    width: 215px;
 }
 </style>

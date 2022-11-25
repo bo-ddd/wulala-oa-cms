@@ -4,12 +4,11 @@ import axios from "@/assets/api/api";
 import { ElMessage } from 'element-plus'
 import { useRouter } from "vue-router";
 import type { Role } from "../types/Role";
-import RoleEditing from './RoleEditing.vue';
 let router = useRouter()
 const selectValue= ref('')
 const centerDialogVisible = ref(false)
 const pageNum = ref(1)
-const pageSize = ref(8)
+const pageSize = ref(5)
 const selectId = ref()
 let resData = reactive<Role[]>([]);
 let list = reactive<Role[]>([]);
@@ -47,7 +46,6 @@ const searchRole = function () {
         list.length = 0;  
         list.push(...resData);
         }
-    
     
     let user = resData.filter(item => item.id == Number(RoleId.value));
     list.length = 0;   // list = []重新定义list会让他没双向绑定 所以只能list.length =0;
@@ -134,9 +132,7 @@ const to = function (id: number) {
             </el-table-column>
             <el-table-column label="角色名称" align="center">
                 <template #default="scope" align="center">
-
                     <el-tag>{{ scope.row.roleName }}</el-tag>
-
                 </template>
             </el-table-column>
             <el-table-column label="操作" align="center" width="300">
