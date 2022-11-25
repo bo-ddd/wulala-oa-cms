@@ -118,6 +118,10 @@ p {
     padding: 10px;
 }
 
+.pd-20 {
+    padding: 20px;
+}
+
 .no-shrink {
     /* 弹性盒子中的元素不被压缩 */
     flex-shrink: 0;

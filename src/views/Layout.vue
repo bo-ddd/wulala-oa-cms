@@ -4,9 +4,7 @@ import { onMounted } from "vue";
 import { ArrowRight } from '@element-plus/icons-vue';
 import axios from '../assets/api/api';
 import { ref } from 'vue';
-import {//顶部导航栏下拉效果;
-    ArrowDown
-} from '@element-plus/icons-vue';
+import { ArrowDown } from '@element-plus/icons-vue';
 import sidebarList from '../router/menu';
 import type { UploadInstance, UploadProps } from 'element-plus';
 import { ElMessage } from 'element-plus';
@@ -14,7 +12,9 @@ import { useUserStore } from '@/stores/userInfo';
 import { storeToRefs } from "pinia";
 const userStore = useUserStore();
 const { userInfo:userInfos } = storeToRefs(userStore)
-
+onMounted(async () => {
+    await userStore.getUserInfo()
+})
 
 //右上角个人中心列表;
 const dropDownList = [
