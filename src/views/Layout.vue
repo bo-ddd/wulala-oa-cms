@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { RouterView, useRouter, useRoute } from "vue-router";
-import { onMounted, watch } from "vue";
+import { onMounted } from "vue";
 import { ArrowRight } from '@element-plus/icons-vue';
 import axios from '../assets/api/api';
-import { reactive, ref } from 'vue';
+import { ref } from 'vue';
 import {//顶部导航栏下拉效果;
     ArrowDown
 } from '@element-plus/icons-vue';
 import sidebarList from '../router/menu';
-import type { UploadInstance, UploadProps,UploadRawFile  } from 'element-plus';
-import { ElMessage,genFileId  } from 'element-plus';
+import type { UploadInstance, UploadProps } from 'element-plus';
+import { ElMessage } from 'element-plus';
 import { useUserStore } from '@/stores/userInfo';
 import { storeToRefs } from "pinia";
 const userStore = useUserStore();
@@ -17,7 +17,6 @@ const { userInfo:userInfos } = storeToRefs(userStore)
 
 
 //右上角个人中心列表;
-
 const dropDownList = [
     {
         id: 1,

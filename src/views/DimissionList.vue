@@ -378,7 +378,7 @@ const getEnclosureUrl = (imgUrl: string) => {
 .flex-options {
     display: flex;
     width: 80%;
-    gap: 30px;
+    gap: 20px;
 }
 
 .size-enclosure {
