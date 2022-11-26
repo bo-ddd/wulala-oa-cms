@@ -196,14 +196,15 @@ const formLabelWidth = '140px'
 
     <div class="ipt-add">
         <div class="left">
-            <span class="label">添加权限：</span>
-            <el-input v-model="permissionNameAdd" placeholder="请输入添加的权限名称" clearable />
-            <el-select v-model="permissionId" class="parentId m-2" placeholder="请选择挂载到？" clearable>
-                <el-option v-for="item in permissionList2" :key="item.id" :label="item.permissionName"
-                    :value="item.id" />
-            </el-select>
-            <el-button class="ml-10" type="danger" @click="addPermission(permissionNameAdd)">添加
-            </el-button>
+            <el-form-item label="添加权限">
+                <el-input v-model="permissionNameAdd" placeholder="请输入添加的权限名称" clearable />
+                <el-select v-model="permissionId" class="parentId m-2" placeholder="请选择挂载到？" clearable>
+                    <el-option v-for="item in permissionList2" :key="item.id" :label="item.permissionName"
+                        :value="item.id" />
+                </el-select>
+                <el-button class="ml-20" type="danger" @click="addPermission(permissionNameAdd)">添加
+                </el-button>
+            </el-form-item>
         </div>
         <div class="search">
             <el-input v-model="searchValue" placeholder="请输入要查询的权限名称" clearable>
@@ -262,7 +263,6 @@ const formLabelWidth = '140px'
 .ipt-add {
     /* padding: 10px 0; */
     display: flex;
-    align-items: center;
     justify-content: space-between;
 }
 
