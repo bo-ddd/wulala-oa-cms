@@ -165,17 +165,7 @@ const deleteTask = (row: Task) => {
             })
             if (res.status == 1) {
                 getTaskList()
-                ElMessage({
-                    type: 'success',
-                    message: '删除成功',
-                })
-            } else {
-                ElMessage({
-                    type: 'warning',
-                    message: '删除失败',
-                })
-            }
-
+            } 
         })
         .catch(() => {
             ElMessage({
