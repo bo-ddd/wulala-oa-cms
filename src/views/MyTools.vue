@@ -3,7 +3,11 @@ import { reactive, ref } from 'vue'
 import type { FormInstance } from 'element-plus'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import axios from '@/assets/api/api'
-
+import { usePageSizeSwitchStore } from "@/stores/tools";
+import { storeToRefs } from "pinia";
+const pageSizeSwitchStore = usePageSizeSwitchStore();
+const { pageSizeSwitchStatus: pageSizeStatus, pageSizeValue } = storeToRefs(pageSizeSwitchStore);
+pageSizeSwitchStore.getStorageStatus()
 // 修改密码页面;
 const ruleFormRef = ref<FormInstance>()
 
@@ -48,7 +52,7 @@ const submitForm = (formEl: FormInstance | undefined) => {
                     type: 'warning',
                 }
             ).then(() => {
-                axios.updatePasswordApi({ password: ruleForm.pass }).then(res=>{
+                axios.updatePasswordApi({ password: ruleForm.pass }).then(res => {
                     ruleForm.pass = '';
                     ruleForm.checkPass = '';
                 })
@@ -70,10 +74,8 @@ const resetForm = (formEl: FormInstance | undefined) => {
     formEl.resetFields()
 }
 // 个人配置页面;
+const pageSizeSwitchStatus = pageSizeStatus.value;
 const defaultPageSize = ref(10)
-const pageSizeInputStatus = ref(false)
-const pageSizeSwitchStatus = ref(false)
-
 // 表格中默认一个显示的行数;
 const defaultPageSizeList = [
     {
@@ -107,22 +109,27 @@ const defaultPageSizeList = [
         value: 30
     }
 ]
-const handlePageSizeStatue = (status: boolean) => {
+const handlePageSizeSwitchStatue = (status: boolean) => {
     if (status) {
         //开始你的表演;
-        
+
         //使用推荐设置，并禁用输入框;
         defaultPageSize.value = 20;
-        pageSizeInputStatus.value = true;
+        //将设置保存到本地中;
+        pageSizeSwitchStore.storageCurrentStatus(status,defaultPageSize.value)
+
     } else {
         // 收了你的神通吧;
 
         //恢复默认设置，并开启输入框;
         defaultPageSize.value = 10;
-        pageSizeInputStatus.value = false;
+        //将设置保存到本地中;
+        pageSizeSwitchStore.storageCurrentStatus(status,defaultPageSize.value)
     }
 }
+
 // 外观设置页面;
+const appearanceRadio = ref(1);
 const appearanceList = [
     {
         id: 1,
@@ -175,6 +182,10 @@ const appearanceList = [
         title: '雨夜'
     }
 ]
+//选中色块的点击事件;
+const handleRadioValue = (value: number) => {
+    console.log(value)
+}
 </script>
 <template>
     <el-tabs tab-position="left" style="height:96%" class="demo-tabs mt-20">
@@ -205,28 +216,30 @@ const appearanceList = [
                 <div class="mt-20 pd-20 flex-row">
                     <div>
                         <span>表格中默认一页显示</span>&nbsp
-                        <el-select v-model="defaultPageSize" :disabled="pageSizeInputStatus">
+                        <el-select v-model="defaultPageSize" :disabled="pageSizeSwitchStatus">
                             <el-option v-for="item in defaultPageSizeList" :label="item.label" :value="item.value"
                                 :key="item.id" class="no-selected" />
                         </el-select>&nbsp
                         <span>条。</span>
                     </div>
                     <el-switch v-model="pageSizeSwitchStatus" class="mb-2" active-text="使用推荐设置"
-                        @change="handlePageSizeStatue(pageSizeSwitchStatus)" />
+                        @change="handlePageSizeSwitchStatue(pageSizeSwitchStatus)" />
                 </div>
             </div>
         </el-tab-pane>
         <el-tab-pane label="外观">
             <div class="pd-20">
                 <h4>自定义外观</h4>
-                <div class="mt-20 pd-20 grid">
-                    <div class="appearance" v-for="item in appearanceList">
+                <el-radio-group v-model="appearanceRadio" class="mt-20 pd-20 grid"
+                    @change="handleRadioValue(appearanceRadio)">
+                    <el-radio :label="item.id" class="appearance" v-for="item in appearanceList"
+                        :class="{ 'active-appearance': item.id == appearanceRadio }">
                         <div class="color-block">
                             <img :src="item.appearanceUrl" alt="">
                         </div>
-                        <span class="title">{{ item.title }}</span>
-                    </div>
-                </div>
+                        <div class="title">{{ item.title }}</div>
+                    </el-radio>
+                </el-radio-group>
             </div>
 
         </el-tab-pane>
@@ -301,32 +314,53 @@ const appearanceList = [
     gap: 50px;
 }
 
+/* 外观页面 */
 .grid {
-    width:500px;
+    width: 500px;
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap:10px;
+    gap: 10px;
 }
 
 .appearance {
     width: 100px;
     height: 90px;
     background-color: rgb(112, 109, 109);
-    border:solid 1px black;
+    border: solid 1px black;
     padding: 6px;
     box-sizing: border-box;
-    border-radius:5px;
+    border-radius: 5px;
 }
-.appearance:hover{
-    border:solid 2px black;
+
+.active-appearance {
+    border-color: red;
+    border-width: 2px;
 }
-.color-block{
-    width:100%;
-    height:60px;
+
+.color-block {
+    width: 100%;
+    height: 60px;
     background-color: cyan;
 }
-.title{
-    font-size:10px;
-    color:white;
+
+.title {
+    display: inline-block;
+    font-size: 10px;
+    color: white;
+}
+
+/* 设置单选框组件样式 */
+:deep(.el-radio__inner) {
+    display: none;
+}
+
+:deep(.el-radio) {
+    margin-right: 0;
+    align-items: initial;
+}
+
+:deep(.el-radio__label) {
+    padding-left: 0;
+    width: 100%;
 }
 </style>
