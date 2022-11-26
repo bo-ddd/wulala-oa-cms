@@ -29,7 +29,6 @@ const searchForm: any = reactive({
 const getUserTaskList = async function (params: QueryTask) {
     let res = await axios.getUserTaskListApi(params)
     if (res.status == 1) {
-        console.log(res);
         total.value = res.data.total;
         pageSize.value = res.data.pageSize;
         pageNum.value = res.data.pageNum;

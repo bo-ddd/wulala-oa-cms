@@ -19,7 +19,7 @@ const to = function (name: string) {
     router.push(name)
 }
 
-const submit = async (value:any) => {
+const validate=function(){
     const { username, password } = ruleForm
     if (username == '') {
         ElMessage.warning('账号不能为空')
@@ -34,6 +34,10 @@ const submit = async (value:any) => {
         ElMessage.warning('密码必须为6-20位之间')
         return;
     }
+
+}
+const submit = async (value:any) => {
+    validate()
     await axios.loginApi({
         username: ruleForm.username,
         password: ruleForm.password,
@@ -42,7 +46,6 @@ const submit = async (value:any) => {
         to('home')
         userStore.getUserInfo() //调用户信息接口
     })
-
 }
 //回车自动登录
 onMounted(() => {

@@ -1,6 +1,8 @@
 import axios from "axios";
 import { ElMessage } from "element-plus";
 import { useRouter } from "vue-router";
+import { apiArr } from "@/assets/api/api";
+
 let router = useRouter()
 
 const $http = axios.create({
@@ -26,13 +28,20 @@ $http.interceptors.request.use(function (config) {
 
 // 添加响应拦截器
 $http.interceptors.response.use(function (response) {
+  console.log(response.config.url);
   // 2xx 范围内的状态码都会触发该函数。
+  // console.log(apiArr);
+
   //作用1：关闭弹层
   //作用2: 根据不同的状态码，提示不同的信息
   //作用3：改变接口的返回数据类型
   const { msg } = response.data;
-  if (response.status == 200) {
-    ElMessage.success(msg);
+  if (response.data.status == 1) {
+    if(apiArr.includes(<string>(response.config.url))){
+      ElMessage.success(msg);
+    }
+  } else if (response.data.status == 401) {
+    router.push('/')
   } else {
     ElMessage.warning(msg);
     return Promise.reject(msg)
@@ -43,5 +52,6 @@ $http.interceptors.response.use(function (response) {
   // 对响应错误做点什么
   return Promise.reject(error);
 });
+
 
 export default $http;

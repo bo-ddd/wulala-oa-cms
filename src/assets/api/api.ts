@@ -23,7 +23,6 @@ export default {
              "reason": "世界那么大，我想去看看",  //请假原因
              "startTime": 1280977330000,
              "endTime": 128097743000*/
-
     getLeaveListApi(payload = {}) {
         return axios.post('/user/leave/list', payload)
     },
@@ -103,7 +102,6 @@ export default {
     addUserRoleApi(payload = {}) {
         return axios.post('/user/addRole', payload)
     },
-
     /**
   * 删除用户角色接口
   * **/
@@ -219,7 +217,7 @@ export default {
      "deptId": 2 // 部门(组）id
     * **/
     deleteUserDeptApi(payload = {}) {
-        return axios.post('/user/dept/delete ', payload)
+        return axios.post('/user/dept/delete', payload)
     },
     /**
     *获取用户所在的组列表
@@ -270,8 +268,6 @@ export default {
         return axios.post('/user/task/list', payload)
     },
 
-    
- 
     /**
    * 发布任务
    * "userId": 152,
@@ -379,3 +375,7 @@ export default {
 
     // 
 }
+export const apiArr=['/user/login','/user/leave/create','/user/update','/permission/add','/permission/update','/permission/delete','/user/leave/examine',
+'/user/addRole','/user/deleteRole','/role/create','/role/delete','/role/addPermission','/role/deletePermission','/article/create','/dept/create','/dept/delete',
+'/dept/update','/user/dept/add','/user/dept/delete','/task/create','/task/update','/task/delete','/task/publish','/user/task/status/set','/message/send','/message/update',
+'/message/create','/user/message/status/set','/user/quit/apply','/mail/send','/user/password/update']
