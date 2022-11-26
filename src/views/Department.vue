@@ -146,10 +146,12 @@ const dialogFormVisibleDelete = ref(false)
 </script>
 <template>
     <div class="ipt-add">
-        <span class="label label-add">添加部门：</span>
-        <el-input v-model="departmentAdd" placeholder="请输入部门名称" clearable />
-        <el-button class="ml-10" type="danger" @click="addDepartment(departmentAdd)">添加
-        </el-button>
+        <el-form-item label="添加部门">
+            <el-input v-model="departmentAdd" placeholder="请输入部门名称" clearable />
+            <el-button class="ml-20" type="danger" @click="addDepartment(departmentAdd)">添加
+            </el-button>
+        </el-form-item>
+
     </div>
 
     <el-table :data="departmentList" style="width: 100%" fit>
@@ -195,9 +197,7 @@ const dialogFormVisibleDelete = ref(false)
 <style scoped>
 .ipt,
 .ipt-add {
-    padding: 20px 0;
     display: flex;
-    align-items: center;
 }
 
 .label {

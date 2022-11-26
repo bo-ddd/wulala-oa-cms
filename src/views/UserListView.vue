@@ -1,12 +1,13 @@
 <template>
     <div class="ipt">
-        <span class="label">查询部门用户：</span>
-        <el-select v-model="form.searchDepId" placeholder="请选择部门" clearable>
-            <el-option v-for="item in departmentList" :key="item.id" :label="item.name" :value="item.id" />
-        </el-select>
-        <el-button class="ml-20" type="danger" @click="queryDeptUser(form.searchDepId)"> 查询成员
-        </el-button>
-        <el-button class="ml-20" type="default" @click="getUserList()">重置</el-button>
+        <el-form-item label="查询部门用户">
+            <el-select label="查询部门用户"  v-model="form.searchDepId" placeholder="请选择部门" clearable>
+                <el-option v-for="item in departmentList" :key="item.id" :label="item.name" :value="item.id" />
+            </el-select>
+            <el-button class="ml-20" type="danger" @click="queryDeptUser(form.searchDepId)"> 查询成员
+            </el-button>
+            <el-button class="ml-20" type="default" @click="getUserList()">重置</el-button>
+        </el-form-item>
         <el-button class="creat-user" type="danger" @click="toCreateUser()">创建用户</el-button>
     </div>
     <el-table class="mt-20" :data="userListData" style="width: 100%" fit>
@@ -23,7 +24,7 @@
         <el-table-column v-if="label" :label=label align="center">
             <template #default="scope">
                 <div type="danger">{{ scope.row._rawValue ? showDeptName(scope.row._rawValue) :
-                        showRoleName(scope.row.roles)
+                showRoleName(scope.row.roles)
                 }}
                 </div>
             </template>
@@ -31,7 +32,7 @@
         <el-table-column v-if="label" :label=label align="center">
             <template #default="scope">
                 <div type="danger">{{ scope.row.roles ? showDeptName(scope.row.roles) :
-                        showRoleName(scope.row._rawValue)
+                showRoleName(scope.row._rawValue)
                 }}
                 </div>
             </template>
@@ -434,13 +435,9 @@ const removeUserDepartment = async (userId: number) => {
 </script>
 
 <style scoped>
-
-.page,
-.label {
-    display: inline-block;
-    font-size: 16px;
-    font-weight: 600;
-    color: rgb(145, 137, 137);
+.ipt{
+    display: flex;
+    justify-content: space-between;
 }
 
 a {
@@ -470,4 +467,5 @@ a {
 :deep(.el-form-item__content > .el-input) {
     width: 215px;
 }
+
 </style>
