@@ -59,7 +59,7 @@ const getUserInfo = async () => {
 getUserInfo()
 
 
-//获取当前用户的所在部门列表;//暂时还不能用;
+//获取当前用户的所在部门列表;
 const getUserDeptList = async (userId: number) => {
   let userDeptList = await axios.getUserDeptListApi({ userId });
   ruleForm.department = userDeptList.data[0].deptName;
@@ -135,7 +135,7 @@ const beforeUpload: UploadProps['beforeUpload'] = (rawFile) => {
 <template>
   <div class="form">
     <h3>离职申请</h3>
-    <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" label-width="120px" class="demo-ruleForm mt-20"
+    <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" label-width="120px" class="demo-ruleForm"
       hide-required-asterisk>
       <template class="grid">
         <el-form-item label="姓名">

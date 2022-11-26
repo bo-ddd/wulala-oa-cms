@@ -2,10 +2,10 @@ import { defineStore } from "pinia";
 import { reactive, computed } from "vue";
 import type { Permission } from "@/types/Permission";
 import axios from "../assets/api/api";
-import type { UserInfo, UserPermissionList } from "@/types/User";
+import type { UserId, UserPermissionList } from "@/types/User";
 
 export const useStore = defineStore('counter', () => {
-  let userInfo = reactive<UserInfo>({
+  let userInfo = reactive<UserId>({
     userId: 0
   })
   let userPremissionList = reactive<Permission[]>([]);
@@ -17,7 +17,7 @@ export const useStore = defineStore('counter', () => {
       setUserId(res.data)
     })
   }
-  const setUserId = (payLoad: UserInfo) => {
+  const setUserId = (payLoad: UserId) => {
     Object.assign(userInfo, payLoad)
   }
 

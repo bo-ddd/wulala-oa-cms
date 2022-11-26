@@ -1,17 +1,21 @@
 <template>
-  <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" label-width="120px" class="demo-ruleForm" :size="formSize"
-    status-icon>
-     <el-form-item label="用户名称" prop="name">
-      <el-input v-model="ruleForm.name" readonly="readonly" />
-    </el-form-item>
+  <h1>请假申请</h1>
+  <div class="flex">
+    <div class="m-0-auto">
 
-    <div class="block">
-      <el-form-item class="warp" label="用户名称" prop="name">
-      <el-date-picker v-model="ruleForm.dateValue" type="datetimerange" range-separator="To" start-placeholder="开始时间"
+      <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" label-width="120px" class="demo-ruleForm" :size="formSize"
+      status-icon>
+      <el-form-item label="用户名称" prop="name">
+        <el-input v-model="ruleForm.name" readonly="readonly" />
+      </el-form-item>
+      
+      <div class="block">
+        <el-form-item class="warp" label="用户名称" prop="name">
+          <el-date-picker v-model="ruleForm.dateValue" type="datetimerange" range-separator="To" start-placeholder="开始时间"
         end-placeholder="结束时间" />
       </el-form-item>
     </div>
-
+    
     <el-form-item class="block" label="请假理由" prop="desc">
       <el-input v-model="ruleForm.desc" type="textarea" />
     </el-form-item>
@@ -19,6 +23,8 @@
       <el-button type="danger" @click="submitForm(ruleFormRef)">提交</el-button>
     </el-form-item>
   </el-form>
+</div>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -105,13 +111,12 @@ const submitForm = (formEl: FormInstance | undefined) => {
 
 </script>
 <style scoped>
-.text-center {
-  text-align: center;
+:deep(.el-form){
+  width: 1000px;
 }
 .el-input {
   width: 60%;
 }
-
 .el-textarea {
   width: 60%;
 }
@@ -124,7 +129,15 @@ const submitForm = (formEl: FormInstance | undefined) => {
 .warp{
   width: 40%;
 }
-.demo-ruleForm{
-  margin-top: 20px;
+.m-0-auto{
+  width: 800px;
+  margin: 0 auto;
+}
+.flex{
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
 }
 </style>

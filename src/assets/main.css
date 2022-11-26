@@ -30,6 +30,9 @@ p {
 .mb-20 {
     margin-bottom: 20px;
 }
+.ml-20 {
+    margin-left: 20px;
+}
 
 .ml-30 {
     margin-left: 30px;
@@ -113,6 +116,10 @@ p {
 
 .pd-10 {
     padding: 10px;
+}
+
+.pd-20 {
+    padding: 20px;
 }
 
 .no-shrink {

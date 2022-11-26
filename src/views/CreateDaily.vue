@@ -5,11 +5,11 @@
             <el-form-item label="标题:" prop="title">
                 <el-input v-model="ruleForm.title" class="input-width" placeholder="xxxx-xx-xx日报" />
             </el-form-item>
-                <el-button class="submitBtn" type="danger" @click="submitForm(ruleFormRef)">提交</el-button>
         </template>
         <el-form-item label="内容:" prop="content" class="box">
             <MyEditor v-model="ruleForm.content" class="size-editor"></MyEditor>
         </el-form-item>
+        <el-button class="submitBtn" type="danger" @click="submitForm(ruleFormRef)">提交</el-button>
     </el-form>
 </template>
   
@@ -104,12 +104,16 @@ const submitForm = (formEl: FormInstance | undefined) => {
     font-weight: 700;
 }
 .submitBtn{
-    margin-left: 20px;
+    float: right;
+    margin-right: 100px;
 }
 .flex-row {
     display: flex;
 }
 .input-width {
     width: 300px;
+}
+:deep(.el-form-item__label){
+  width: 60px !important;
 }
 </style>

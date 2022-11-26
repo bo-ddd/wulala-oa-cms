@@ -14,6 +14,8 @@ const getLeaveListApi = async function () {
     let dailyDetail = await axios.getLeaveListApi({
         pageSize: total.value
     })
+    console.log(dailyDetail);
+    
     leave.value = dailyDetail.data.list
 }
 function updateTime(time: Date) {
@@ -34,30 +36,33 @@ getLeaveListApi()
 
     <div class="body">
         <div class="content">
-            <div class="content_l clearfix" v-for="item in leave">
+            <div class="clearfix" v-for="item in leave">
 
                 <template v-if="item.id == myId">
-                    <h3>{{ item.userInfo.avatarName }}</h3>
-                    <p class="deeppink">开始时间： {{ updateTime(item.startTime) }} </p>
-                    <p class="deeppink">结束时间： {{ updateTime(item.endTime) }} </p>
+                    <h3>姓名：{{ item.userInfo.avatarName }}</h3>
+                    <p class="state">开始时间：<span class="strong"> {{ updateTime(item.startTime) }} </span></p>
+                    <p class="state">结束时间：<span class="strong"> {{ updateTime(item.endTime) }} </span>  </p>
+
                     <div class="state"
                         v-if="item.leaveStatus == 0">
-                        <span>休假状态:未开始</span>
+                        <span>休假状态: <span class="strong">未开始</span> </span>
                     </div>
 
                     <div class="state"
                         v-if="item.leaveStatus == 1">
-                        <span>休假状态:已开始</span>
+                        <span class="strong">休假状态: <span class="strong">已开始</span></span>
                     </div>
 
                     <div class="state"
                         v-if="item.leaveStatus == 2">
-                        <span>休假状态:已结束</span>
+                        <span class="strong">休假状态: <span class="strong">已结束</span></span>
                     </div>
+
                     <div class="state">
-                        <span>联系方式：{{ item.userInfo.phoneNumber }}</span>
+                        <span>联系方式：<span class="strong"> {{ item.userInfo.phoneNumber }} </span></span>
                     </div>
-                    <p class="deeppink">请假原因如下</p>
+
+                    <p class="deeppink">请假原因：</p>
                     <p class="cc">{{ item.reason }}</p>
                 </template>
 
@@ -79,7 +84,11 @@ h3 {
 margin: 10px 0;
 }
 .deeppink{
-    color: deeppink;
+    font-weight: 700;
+    margin-top: 20px;
+}
+.strong{
+    font-weight: 700;
 }
 .body {
     width: 100%;
@@ -92,10 +101,10 @@ margin: 10px 0;
 }
 
 .content {
-    width: 600px;
-    padding: 10px;
+    width: 400px;
+    padding: 30px;
     border-radius: 10px;
-    background-color: rgba(236, 236, 236, 0.59);
+    background-color: rgba(236, 236, 236, 0.9);
     transition: all 1.0s;
 }
 
@@ -103,20 +112,12 @@ margin: 10px 0;
     box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.52);
 }
 
-.content_l {
-    text-align: center;
-}
+
 
 .cc {
     height: 300px;
-    margin: 0 auto;
     margin-top: 10px;
+    margin-left: 10px;
     color: #1F2023;
-    font-size: 18px;
-    font-weight: 700;
-}
-
-.deeppink {
-    color: deeppink;
 }
 </style>
