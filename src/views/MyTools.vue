@@ -3,7 +3,8 @@ import { reactive, ref } from 'vue'
 import type { FormInstance } from 'element-plus'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import axios from '@/assets/api/api'
-const defaultPageSize = ref(10)
+
+// 修改密码页面;
 const ruleFormRef = ref<FormInstance>()
 
 const validatePass = (rule: any, value: any, callback: any) => {
@@ -47,7 +48,11 @@ const submitForm = (formEl: FormInstance | undefined) => {
                     type: 'warning',
                 }
             ).then(() => {
-                axios.updatePasswordApi({ password: ruleForm.pass })
+                axios.updatePasswordApi({ password: ruleForm.pass }).then(res=>{
+                    ruleForm.pass = '';
+                    ruleForm.checkPass = '';
+                })
+
             }).catch(() => {
                 ElMessage({
                     type: 'info',
@@ -64,6 +69,10 @@ const resetForm = (formEl: FormInstance | undefined) => {
     if (!formEl) return
     formEl.resetFields()
 }
+// 个人配置页面;
+const defaultPageSize = ref(10)
+const pageSizeInputStatus = ref(false)
+const pageSizeSwitchStatus = ref(false)
 
 // 表格中默认一个显示的行数;
 const defaultPageSizeList = [
@@ -98,6 +107,74 @@ const defaultPageSizeList = [
         value: 30
     }
 ]
+const handlePageSizeStatue = (status: boolean) => {
+    if (status) {
+        //开始你的表演;
+        
+        //使用推荐设置，并禁用输入框;
+        defaultPageSize.value = 20;
+        pageSizeInputStatus.value = true;
+    } else {
+        // 收了你的神通吧;
+
+        //恢复默认设置，并开启输入框;
+        defaultPageSize.value = 10;
+        pageSizeInputStatus.value = false;
+    }
+}
+// 外观设置页面;
+const appearanceList = [
+    {
+        id: 1,
+        appearanceUrl: '',
+        title: '默认值'
+    },
+    {
+        id: 2,
+        appearanceUrl: '',
+        title: '晨雾'
+    },
+    {
+        id: 3,
+        appearanceUrl: '',
+        title: '冰凉薄荷'
+    },
+    {
+        id: 4,
+        appearanceUrl: '',
+        title: '海岛度假'
+    },
+    {
+        id: 5,
+        appearanceUrl: '',
+        title: '凉风'
+    },
+    {
+        id: 6,
+        appearanceUrl: '',
+        title: '柔和粉色'
+    },
+    {
+        id: 7,
+        appearanceUrl: '',
+        title: '泡泡糖'
+    },
+    {
+        id: 8,
+        appearanceUrl: '',
+        title: '晴天'
+    },
+    {
+        id: 9,
+        appearanceUrl: '',
+        title: '芒果天堂'
+    },
+    {
+        id: 10,
+        appearanceUrl: '',
+        title: '雨夜'
+    }
+]
 </script>
 <template>
     <el-tabs tab-position="left" style="height:96%" class="demo-tabs mt-20">
@@ -123,20 +200,36 @@ const defaultPageSizeList = [
             </div>
         </el-tab-pane>
         <el-tab-pane label="配置">
-
             <div class="pd-20">
                 <h4>个性化配置</h4>
-                <div class="mt-20 pd-20">
-                    <span>表格中默认一页显示</span>&nbsp
-                    <el-select v-model="defaultPageSize">
-                        <el-option v-for="item in defaultPageSizeList" :label="item.label" :value="item.value"
-                            :key="item.id" class="no-selected" />
-                    </el-select>&nbsp
-                    <span>条数。</span>
+                <div class="mt-20 pd-20 flex-row">
+                    <div>
+                        <span>表格中默认一页显示</span>&nbsp
+                        <el-select v-model="defaultPageSize" :disabled="pageSizeInputStatus">
+                            <el-option v-for="item in defaultPageSizeList" :label="item.label" :value="item.value"
+                                :key="item.id" class="no-selected" />
+                        </el-select>&nbsp
+                        <span>条。</span>
+                    </div>
+                    <el-switch v-model="pageSizeSwitchStatus" class="mb-2" active-text="使用推荐设置"
+                        @change="handlePageSizeStatue(pageSizeSwitchStatus)" />
                 </div>
             </div>
         </el-tab-pane>
-        <el-tab-pane label="外观"></el-tab-pane>
+        <el-tab-pane label="外观">
+            <div class="pd-20">
+                <h4>自定义外观</h4>
+                <div class="mt-20 pd-20 grid">
+                    <div class="appearance" v-for="item in appearanceList">
+                        <div class="color-block">
+                            <img :src="item.appearanceUrl" alt="">
+                        </div>
+                        <span class="title">{{ item.title }}</span>
+                    </div>
+                </div>
+            </div>
+
+        </el-tab-pane>
     </el-tabs>
 </template>
 
@@ -188,5 +281,52 @@ const defaultPageSizeList = [
 .text-size {
     font-size: 10px;
     color: #9B9797;
+}
+
+/* 设置pageSize按钮颜色 */
+:deep(.el-switch__label.is-active) {
+    color: #F56C6C;
+}
+
+:deep(.el-switch.is-checked .el-switch__core) {
+    background-color: #F56C6C;
+}
+
+:deep(.el-switch.is-checked .el-switch__core) {
+    border-color: #F56C6C;
+}
+
+.flex-row {
+    display: flex;
+    gap: 50px;
+}
+
+.grid {
+    width:500px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap:10px;
+}
+
+.appearance {
+    width: 100px;
+    height: 90px;
+    background-color: rgb(112, 109, 109);
+    border:solid 1px black;
+    padding: 6px;
+    box-sizing: border-box;
+    border-radius:5px;
+}
+.appearance:hover{
+    border:solid 2px black;
+}
+.color-block{
+    width:100%;
+    height:60px;
+    background-color: cyan;
+}
+.title{
+    font-size:10px;
+    color:white;
 }
 </style>
