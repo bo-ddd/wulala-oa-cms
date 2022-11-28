@@ -3,11 +3,12 @@ import { reactive, ref } from 'vue'
 import type { FormInstance } from 'element-plus'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import axios from '@/assets/api/api'
-import { usePageSizeSwitchStore } from "@/stores/tools";
+import { usePageSizeOptionsStore } from "@/stores/tools";
 import { storeToRefs } from "pinia";
-const pageSizeSwitchStore = usePageSizeSwitchStore();
-const { pageSizeSwitchStatus: pageSizeStatus, pageSizeValue } = storeToRefs(pageSizeSwitchStore);
-pageSizeSwitchStore.getStorageStatus()
+const pageSizeOptionsStore = usePageSizeOptionsStore();
+const { SwitchStatus, defaultValue } = storeToRefs(pageSizeOptionsStore);
+pageSizeOptionsStore.getStorageStatus()
+
 // 修改密码页面;
 const ruleFormRef = ref<FormInstance>()
 
@@ -56,7 +57,6 @@ const submitForm = (formEl: FormInstance | undefined) => {
                     ruleForm.pass = '';
                     ruleForm.checkPass = '';
                 })
-
             }).catch(() => {
                 ElMessage({
                     type: 'info',
@@ -74,8 +74,15 @@ const resetForm = (formEl: FormInstance | undefined) => {
     formEl.resetFields()
 }
 // 个人配置页面;
-const pageSizeSwitchStatus = pageSizeStatus.value;
-const defaultPageSize = ref(10)
+interface PageSizeOptions {
+    SwitchStatus: boolean,
+    defaultValue: number
+}
+const pageSizeOptions = reactive<PageSizeOptions>({
+    SwitchStatus: SwitchStatus.value,
+    defaultValue: defaultValue.value
+})
+
 // 表格中默认一个显示的行数;
 const defaultPageSizeList = [
     {
@@ -114,18 +121,22 @@ const handlePageSizeSwitchStatue = (status: boolean) => {
         //开始你的表演;
 
         //使用推荐设置，并禁用输入框;
-        defaultPageSize.value = 20;
+        pageSizeOptions.defaultValue = 20;
         //将设置保存到本地中;
-        pageSizeSwitchStore.storageCurrentStatus(status,defaultPageSize.value)
+        pageSizeOptionsStore.storageCurrentStatus(pageSizeOptions)
 
     } else {
         // 收了你的神通吧;
 
         //恢复默认设置，并开启输入框;
-        defaultPageSize.value = 10;
+        pageSizeOptions.defaultValue = 10;
         //将设置保存到本地中;
-        pageSizeSwitchStore.storageCurrentStatus(status,defaultPageSize.value)
+        pageSizeOptionsStore.storageCurrentStatus(pageSizeOptions)
     }
+}
+
+const handlePageSizeDefaultValue = () => {
+    pageSizeOptionsStore.storageCurrentStatus(pageSizeOptions)
 }
 
 // 外观设置页面;
@@ -216,14 +227,15 @@ const handleRadioValue = (value: number) => {
                 <div class="mt-20 pd-20 flex-row">
                     <div>
                         <span>表格中默认一页显示</span>&nbsp
-                        <el-select v-model="defaultPageSize" :disabled="pageSizeSwitchStatus">
+                        <el-select v-model="pageSizeOptions.defaultValue" :disabled="pageSizeOptions.SwitchStatus"
+                            @change="handlePageSizeDefaultValue">
                             <el-option v-for="item in defaultPageSizeList" :label="item.label" :value="item.value"
                                 :key="item.id" class="no-selected" />
                         </el-select>&nbsp
                         <span>条。</span>
                     </div>
-                    <el-switch v-model="pageSizeSwitchStatus" class="mb-2" active-text="使用推荐设置"
-                        @change="handlePageSizeSwitchStatue(pageSizeSwitchStatus)" />
+                    <el-switch v-model="pageSizeOptions.SwitchStatus" class="mb-2" active-text="使用推荐设置"
+                        @change="handlePageSizeSwitchStatue(pageSizeOptions.SwitchStatus)" />
                 </div>
             </div>
         </el-tab-pane>

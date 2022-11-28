@@ -1,21 +1,23 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
+interface PageSizeOptions {
+    SwitchStatus: boolean,
+    defaultValue: number
+}
 
-export const usePageSizeSwitchStore = defineStore('PageSizeSwitchStore', () => {
-    const pageSizeSwitchStatus = ref(false)
-    const pageSizeValue = ref(10)
+export const usePageSizeOptionsStore = defineStore('PageSizeSwitchStore', () => {
+    const SwitchStatus = ref(false)
+    const defaultValue = ref(10)
 
     const getStorageStatus = () => {
-        const statusValue = sessionStorage.getItem('pageSizeSwitchStatus');
-        const SizeValue = sessionStorage.getItem('pageSizeValue');
-        pageSizeSwitchStatus.value = statusValue ? JSON.parse(statusValue) : false;
-        pageSizeValue.value = SizeValue ? JSON.parse(SizeValue) : 10;
-    }
-    
-    const storageCurrentStatus = (status: boolean, value: number) => {
-        sessionStorage.setItem('pageSizeSwitchStatus', JSON.stringify(status))
-        sessionStorage.setItem('pageSizeValue', JSON.stringify(value))
+        const pageSizeOptions = sessionStorage.getItem('pageSizeOptions');
+        SwitchStatus.value = pageSizeOptions ? JSON.parse(pageSizeOptions).SwitchStatus : false;
+        defaultValue.value = pageSizeOptions ? JSON.parse(pageSizeOptions).defaultValue : 10;
     }
 
-    return { pageSizeSwitchStatus, pageSizeValue, getStorageStatus, storageCurrentStatus }
+    const storageCurrentStatus = (pageSizeOptions: PageSizeOptions) => {
+        sessionStorage.setItem('pageSizeOptions', JSON.stringify(pageSizeOptions))
+    }
+
+    return { SwitchStatus, defaultValue, getStorageStatus, storageCurrentStatus }
 })

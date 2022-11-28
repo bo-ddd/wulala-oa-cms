@@ -3,11 +3,22 @@ import axios from '../assets/api/api'
 import { ref, reactive } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { usePageSizeOptionsStore } from '@/stores/tools'
+import { storeToRefs } from "pinia";
+
+const pageSizeOptionsStore = usePageSizeOptionsStore()
+pageSizeOptionsStore.getStorageStatus()
+const { defaultValue } = storeToRefs(pageSizeOptionsStore)
 
 //分页参数;
 const currentPage = ref(1) //当前是第几页;
 const pageSize = ref(10)  //每页显示的条数;
-const total = ref(0)
+const total = ref(0)    
+// 从pinio中拿到用户设置的默认值;
+if (defaultValue.value) {
+    pageSize.value = defaultValue.value
+}
+
 
 //每页显示条数改变时的回调;
 const handleSizeChange = (val: number) => {
@@ -23,8 +34,8 @@ const handleCurrentChange = (val: number) => {
 interface TableData {
     id: number
     userId: number
-    department: string,
-    postName: string,
+    department: string
+    postName: string
     avatarName: string | null
     applyTime: string
     quitTime: string
