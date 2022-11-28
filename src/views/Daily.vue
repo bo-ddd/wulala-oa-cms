@@ -3,11 +3,22 @@ import axios from '../assets/api/api'
 import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { Search } from '@element-plus/icons-vue'
+import { usePageSizeOptionsStore } from '@/stores/tools'
+import { storeToRefs } from "pinia";
+
+const pageSizeOptionsStore = usePageSizeOptionsStore()
+pageSizeOptionsStore.getStorageStatus()
+const { defaultValue } = storeToRefs(pageSizeOptionsStore)
+
 const router = useRouter()
 //分页参数;
 const currentPage = ref(1) //当前是第几页;
 const pageSize = ref(10)  //每页显示的条数;
 const total = ref(0)
+// 从pinio中拿到用户设置的默认值;
+if (defaultValue.value) {
+    pageSize.value = defaultValue.value
+}
 
 //每页显示条数改变时的回调;
 const handleSizeChange = (val: number) => {
@@ -121,7 +132,7 @@ const queryDailyDetail = () => {
 
     </el-table>
     <!-- 分页 -->
-    <el-pagination v-model:currentPage="currentPage" v-model:page-size="pageSize" :page-sizes="[5, 10, 20, 30, 40]"
+    <el-pagination v-model:currentPage="currentPage" v-model:page-size="pageSize" :page-sizes="[5, 10, 15, 20, 25, 30]"
         layout="total, sizes, prev, pager, next, jumper" :total="total"
         @size-change="handleSizeChange" @current-change="handleCurrentChange" class="mt-20" />
 </template>
