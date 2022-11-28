@@ -28,10 +28,8 @@ $http.interceptors.request.use(function (config) {
 
 // 添加响应拦截器
 $http.interceptors.response.use(function (response) {
-  console.log(response.config.url);
   // 2xx 范围内的状态码都会触发该函数。
   // console.log(apiArr);
-
   //作用1：关闭弹层
   //作用2: 根据不同的状态码，提示不同的信息
   //作用3：改变接口的返回数据类型

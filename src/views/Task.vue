@@ -3,8 +3,14 @@ import axios from "@/assets/api/api";
 import { reactive, ref } from "vue";
 import type { Task, QueryTask } from "../types/Task";
 import { useStore } from "../stores/nav";
+import { usePageSizeOptionsStore } from '@/stores/tools'
+import { storeToRefs } from "pinia";
 let userStore = useStore()
 const labelPosition = ref('right')
+
+const pageSizeOptionsStore = usePageSizeOptionsStore()
+pageSizeOptionsStore.getStorageStatus()
+const { defaultValue } = storeToRefs(pageSizeOptionsStore)
 
 let dialogFormVisible = ref(false)
 let dialogDetailsVisible = ref(false)
@@ -17,9 +23,10 @@ const pageNum = ref(1)
 const pageSize = ref(10)
 const total = ref()
 const disabled = ref(false)
-// const percentage = ref()  //百分比
-const progressBarStatus = ref()  //百分比
-
+// 从pinio中拿到用户设置的默认值;
+if (defaultValue.value) {
+    pageSize.value = defaultValue.value
+}
 const searchForm: any = reactive({
     userId: '',
     level: '',
