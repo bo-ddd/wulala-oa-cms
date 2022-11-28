@@ -6,6 +6,12 @@ import type { Dept, DeptMember } from "../types/Dept";
 import { ElMessage, ElMessageBox } from 'element-plus'
 import type { Task } from "../types/Task";
 import { useStore } from "@/stores/nav";
+import { usePageSizeOptionsStore } from '@/stores/tools'
+import { storeToRefs } from "pinia";
+
+const pageSizeOptionsStore = usePageSizeOptionsStore()
+pageSizeOptionsStore.getStorageStatus()
+const { defaultValue } = storeToRefs(pageSizeOptionsStore)
 
 let userStore = useStore()
 let isCreated = ref(true);
@@ -27,7 +33,10 @@ let dialogFormVisible = ref(false)
 let dialogTaskVisible = ref(false)
 const formLabelWidth = '140px'
 let title = ref<string>()
-
+// 从pinio中拿到用户设置的默认值;
+if (defaultValue.value) {
+    pageSize.value = defaultValue.value
+}
 const handleSizeChange = (val: number) => {
     console.log(`一页有${val} `)
     pageSize.value = val
@@ -336,7 +345,7 @@ const receiveTask = function (row: Task) {
         </el-table-column>
     </el-table>
     <div class="demo-pagination-block mt-20">
-        <el-pagination v-model:current-page="pageNum" v-model:page-size="pageSize" :page-sizes="[5, 10, 15, 20]"
+        <el-pagination v-model:current-page="pageNum" v-model:page-size="pageSize" :page-sizes="[5, 10, 15, 20,25,30]"
             :disabled="disabled" layout="total, sizes, prev, pager, next, jumper" :total="total"
             @size-change="handleSizeChange" @current-change="handleCurrentChange" />
     </div>

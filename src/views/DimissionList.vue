@@ -5,6 +5,7 @@ import type { FormInstance, FormRules } from 'element-plus'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { usePageSizeOptionsStore } from '@/stores/tools'
 import { storeToRefs } from "pinia";
+import { promiseTimeout } from '@vueuse/shared'
 
 const pageSizeOptionsStore = usePageSizeOptionsStore()
 pageSizeOptionsStore.getStorageStatus()
@@ -13,7 +14,7 @@ const { defaultValue } = storeToRefs(pageSizeOptionsStore)
 //分页参数;
 const currentPage = ref(1) //当前是第几页;
 const pageSize = ref(10)  //每页显示的条数;
-const total = ref(0)    
+const total = ref(0)
 // 从pinio中拿到用户设置的默认值;
 if (defaultValue.value) {
     pageSize.value = defaultValue.value
@@ -46,36 +47,17 @@ interface TableData {
 const tableData = reactive<TableData[]>([])
 
 enum StateCode {
-    '待审核' = 0,
+    '待审核',
     '审核通过',
     '拒绝'
 }
 
 enum tagType {
-    '' = 0,
+    '',
     success,
     danger,
 }
 
-//获取用户的所在部门名称;
-const getUserDeptName = async (userId: number) => {
-    let userDeptList = await axios.getUserDeptListApi({ userId });
-    let deptName = '';
-    userDeptList.data.forEach((item: { deptName: string }) => {
-        deptName += item.deptName
-    })
-    return deptName;
-}
-
-// //获取用户的职位名称;
-const getUserPost = async (userId: number) => {
-    let userInfo = await axios.queryUserInfoApi({ userId });
-    let userPost = ''
-    userInfo.data.roles.forEach((item: { roleName: string }) => {
-        userPost += item.roleName;
-    })
-    return userPost;
-}
 //查询参数的类型;
 interface UserQuitListParam {
     avatarName?: string,
@@ -95,8 +77,18 @@ const getUserQuitList = async (param: UserQuitListParam) => {
     tableData.forEach(async (item) => {
         item.applyTime = handleTimeFormat(item.applyTime) //申请时间
         item.quitTime = handleTimeFormat(item.quitTime) //离职时间
-        item.department = await getUserDeptName(item.userId) //部门名称
-        item.postName = await getUserPost(item.userId) //职位名称
+        Promise.all([axios.getUserDeptListApi({ userId: item.userId }), axios.queryUserInfoApi({ userId: item.userId })]).then(res => {
+            let deptName = '';
+            let userPost = '';
+            res[0].data.forEach((item: { deptName: string }) => {
+                deptName += item.deptName
+            });
+            res[1].data.roles.forEach((item: { roleName: string }) => {
+                userPost += item.roleName;
+            })
+            item.department = deptName; //部门名称
+            item.postName = userPost //职位名称
+        })
     })
 }
 //刷新页面，初始化数据列表;
@@ -106,8 +98,8 @@ getUserQuitList({
 })
 
 //处理时间数据格式Api;
-const handleTimeFormat = (Time: string) => {
-    return Time.substring(0, 10)
+const handleTimeFormat = (time: string) => {
+    return time.substring(0, 10)
 }
 
 //审核按钮的点击事件;
