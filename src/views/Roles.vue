@@ -4,6 +4,12 @@ import axios from "@/assets/api/api";
 import { ElMessage } from 'element-plus'
 import { useRouter } from "vue-router";
 import type { Role } from "../types/Role";
+import { usePageSizeOptionsStore } from '@/stores/tools'
+import { storeToRefs } from "pinia";
+
+const pageSizeOptionsStore = usePageSizeOptionsStore()
+pageSizeOptionsStore.getStorageStatus()
+const { defaultValue } = storeToRefs(pageSizeOptionsStore)
 let router = useRouter()
 const selectValue= ref('')
 const centerDialogVisible = ref(false)
@@ -15,16 +21,15 @@ let list = reactive<Role[]>([]);
 let permissionList = reactive<Role[]>([]);
 const dialogFormVisible = ref(false)
 let RoleId = ref()
-
+// 从pinio中拿到用户设置的默认值;
+if (defaultValue.value) {
+    pageSize.value = defaultValue.value
+}
 //封装 角色列表接口
 let getRoleList = async function () {
     let res = await axios.getRoleListApi()
     resData.length = 0      //resData.length = [] 失去数据双向绑定   清空resData
     resData.push(...res.data);
-    resData.unshift({
-        id:1,
-        roleName:'全部'
-    })
     list.length = 0
     // 把返回的数据深拷贝一份，把拷贝后的数据在tablie列表渲染，区分开select 和table
     list.push(...JSON.parse(JSON.stringify(resData)));
