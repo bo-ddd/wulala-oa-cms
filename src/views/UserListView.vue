@@ -1,12 +1,12 @@
 <template>
     <div class="ipt">
         <el-form-item label="查询部门用户">
-            <el-select label="查询部门用户"  v-model="form.searchDepId" placeholder="请选择部门" clearable>
+            <el-select label="查询部门用户" v-model="form.searchDepId" placeholder="请选择部门" clearable>
                 <el-option v-for="item in departmentList" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
             <el-button class="ml-20" type="danger" @click="queryDeptUser(form.searchDepId)"> 查询成员
             </el-button>
-            <el-button class="ml-20" type="default" @click="getUserList()">重置</el-button>
+            <el-button class="ml-20" type="default" @click="getUserList(pageSize)">重置</el-button>
         </el-form-item>
         <el-button class="creat-user" type="danger" @click="toCreateUser()">创建用户</el-button>
     </div>
@@ -24,7 +24,7 @@
         <el-table-column v-if="label" :label=label align="center">
             <template #default="scope">
                 <div type="danger">{{ scope.row._rawValue ? showDeptName(scope.row._rawValue) :
-                showRoleName(scope.row.roles)
+                        showRoleName(scope.row.roles)
                 }}
                 </div>
             </template>
@@ -32,7 +32,7 @@
         <el-table-column v-if="label" :label=label align="center">
             <template #default="scope">
                 <div type="danger">{{ scope.row.roles ? showDeptName(scope.row.roles) :
-                showRoleName(scope.row._rawValue)
+                        showRoleName(scope.row._rawValue)
                 }}
                 </div>
             </template>
@@ -151,12 +151,41 @@ import { ref, reactive } from 'vue'
 import axios from '@/assets/api/api'
 import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router';
+import { usePageSizeOptionsStore } from '@/stores/tools'
+import { storeToRefs } from "pinia";
+
+
+const pageSizeOptionsStore = usePageSizeOptionsStore()
+pageSizeOptionsStore.getStorageStatus()
+const { defaultValue } = storeToRefs(pageSizeOptionsStore)
 
 const small = ref(false)
 const background = ref(false)
 const disabled = ref(false)
 const formLabelWidth = '140px'
 const router = useRouter();
+const rolesInput = ref();
+const departmentInput = ref();
+const departmentList = ref();
+const userDepartmentList = ref();
+const userListData = ref();
+const roleList = ref();
+const userRolesList = ref();
+const userInfo = ref();
+const userName = ref('');
+const userNameList = ref();
+const pageNum = ref(1);
+const pageSize = ref(10);
+const total = ref();
+const label = ref('');
+const form = reactive<Form>({
+    deptId: 0,
+    depName: '',
+    searchDepId: null,
+    userId: 0,
+    rolesId: null,
+    userName: '用户昵称'
+})
 
 const toUserDetail = (id: number) => {
     router.push({
@@ -169,6 +198,7 @@ const toUserDetail = (id: number) => {
 const toCreateUser = () => {
     router.push('createUserAccount')
 }
+
 const handleSizeChange = async (val: number) => {
     await getUserList(pageSize.value, pageNum.value)
     pageSize.value = val
@@ -192,28 +222,18 @@ const getUserList = (pageSize?: number, pageNum?: number) => {
     departmentInput.value = '';
     form.searchDepId = null
 }
-const rolesInput = ref();
-const departmentInput = ref();
-const departmentList = ref();
-const userDepartmentList = ref();
-const userListData = ref();
-const roleList = ref();
-const userRolesList = ref();
-const userInfo = ref();
-const userName = ref('');
-const userNameList = ref();
-const pageNum = ref(1);
-const pageSize = ref(10);
-const total = ref();
+if (defaultValue.value) {
+    pageSize.value = defaultValue.value
+    getUserList(pageSize.value);
+};
 
-const label = ref('');
 
-(async function () {
-    let userList = await axios.getUserListApi({})
-    userListData.value = userList.data.list;
-    total.value = userList.data.total
-    userNameList.value = userList.data.list
-})();
+// (async function () {
+//     let userList = await axios.getUserListApi({})
+//     userListData.value = userList.data.list;
+//     total.value = userList.data.total
+//     userNameList.value = userList.data.list
+// })();
 // 获取用户角色ID
 (async function () {
     let rolesList = await axios.getRoleListApi({})
@@ -247,14 +267,7 @@ interface Form {
     rolesId: number | null,
     userName: string
 }
-const form = reactive<Form>({
-    deptId: 0,
-    depName: '',
-    searchDepId: null,
-    userId: 0,
-    rolesId: null,
-    userName: '用户昵称'
-})
+
 
 
 const showRoleName = function (roleList: any) {
@@ -435,7 +448,7 @@ const removeUserDepartment = async (userId: number) => {
 </script>
 
 <style scoped>
-.ipt{
+.ipt {
     display: flex;
     justify-content: space-between;
 }
@@ -467,5 +480,4 @@ a {
 :deep(.el-form-item__content > .el-input) {
     width: 215px;
 }
-
 </style>
