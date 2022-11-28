@@ -46,13 +46,13 @@ interface TableData {
 const tableData = reactive<TableData[]>([])
 
 enum StateCode {
-    '待审核' = 0,
+    '待审核',
     '审核通过',
     '拒绝'
 }
 
 enum tagType {
-    '' = 0,
+    '',
     success,
     danger,
 }
@@ -106,8 +106,8 @@ getUserQuitList({
 })
 
 //处理时间数据格式Api;
-const handleTimeFormat = (Time: string) => {
-    return Time.substring(0, 10)
+const handleTimeFormat = (time: string) => {
+    return time.substring(0, 10)
 }
 
 //审核按钮的点击事件;
