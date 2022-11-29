@@ -13,8 +13,10 @@ import { usePageSizeOptionsStore } from "@/stores/tools";
 import { storeToRefs } from "pinia";
 const userStore = useUserStore();
 const { userInfo: userInfos } = storeToRefs(userStore)
+
 onMounted(async () => {
     await userStore.getUserInfo()
+    // 初始化页面数据
 })
 
 const pageSizeOptionsStore = usePageSizeOptionsStore();
@@ -25,6 +27,7 @@ pageSizeOptionsStore.getStorageStatus();
 if (SwitchStatus.value == true) {
     pageSizeOptionsStore.getRecommentdefaultValue();
 }
+
 
 //右上角个人中心列表;
 const dropDownList = [
@@ -57,7 +60,6 @@ const dropDownList = [
 //路由跳转;
 let router = useRouter();
 let route = useRoute();
-
 
 //动态渲染面包屑导航;
 let pName = ref('');
@@ -171,7 +173,7 @@ const resetUpload = () => {
 <template>
 
     <div class="common-layout gradient no-selected">
-        <el-container>
+        <el-container >
             <!-- 侧边栏 -->
             <el-aside width="200px" class="pt-20">
                 <div class="header-sidebar">

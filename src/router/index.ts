@@ -2,7 +2,9 @@ import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import { useStore } from "../stores/nav";
 import { storeToRefs } from "pinia";
+import {  ref, onMounted } from 'vue'
 
+import { close, start } from '@/nprogress/nprogress'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -210,6 +212,15 @@ let dynamicRoutes = [
       requiresAuth: true
     }
   },
+  {//创建消息页面;
+    path: "/createMessage",
+    name: "createMessage",
+    component: () => import("../views/CreateMessage.vue"),
+    meta: {
+      label: "创建消息",
+      requiresAuth: true
+    }
+  },
   {//发布消息页面;
     path: "/publishMessage",
     name: "publishMessage",
@@ -249,6 +260,7 @@ let dynamicRoutes = [
 ];
 
 router.beforeEach(async (to) => {
+  start()
   const userStore = useStore();
   const { userId, userPremissionList } = storeToRefs(userStore);
   let isAuth = sessionStorage.getItem("token");
@@ -274,5 +286,8 @@ router.beforeEach(async (to) => {
   }
 }
 )
+router.afterEach(() => {
+  close()
+})
 
 export default router;

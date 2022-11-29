@@ -135,7 +135,7 @@ const handlePageSizeSwitchStatue = (status: boolean) => {
 const handlePageSizeDefaultValue = () => {
     pageSizeOptionsStore.storageCurrentStatus(pageSizeOptions)
 }
-
+// ------------------------------------------------------------------------------------------------------------------
 // 外观设置页面;
 const appearanceRadio = ref(1);
 const appearanceList = [
@@ -193,6 +193,8 @@ const appearanceList = [
 //选中色块的点击事件;
 const handleRadioValue = (value: number) => {
     console.log(value)
+    console.log(321);
+    
 }
 </script>
 <template>
@@ -236,6 +238,7 @@ const handleRadioValue = (value: number) => {
                 </div>
             </div>
         </el-tab-pane>
+        <!-- ----------------------------------------------------------------------------------- -->
         <el-tab-pane label="外观">
             <div class="pd-20">
                 <h4>自定义外观</h4>

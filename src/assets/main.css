@@ -141,3 +141,11 @@ p {
     /* 字体加粗 */
     font-weight: bold;
 }
+.fade-enter,
+.fade-leave-active {
+  opacity: 0;
+}
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
