@@ -2,6 +2,12 @@
 import axios from '@/assets/api/api'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { usePageSizeOptionsStore } from '@/stores/tools'
+import { storeToRefs } from "pinia";
+
+const pageSizeOptionsStore = usePageSizeOptionsStore()
+pageSizeOptionsStore.getStorageStatus()
+const { defaultValue } = storeToRefs(pageSizeOptionsStore)
 const router = useRouter()
 interface User {
   id: number
@@ -52,6 +58,11 @@ let total = ref();
 //总页数
 let pageNum = ref(1);
 
+// 从pinio中拿到用户设置的默认值;
+if (defaultValue.value) {
+    pageSize.value = defaultValue.value
+}
+
 const small = ref(false);
 const disabled = ref(false);
 const getLeaveListApi = async function () {
@@ -93,6 +104,7 @@ const handleCurrentChange = (val: number) => {
   pageNum.value = val
   getLeaveListApi()
 }
+
 </script>
 
 <template>
@@ -135,38 +147,6 @@ const handleCurrentChange = (val: number) => {
       </template>
     </el-table-column>
 
-    <!-- <el-table-column label="时长" >
-      <template #default="scope">
-        <div style="display: flex; align-items: center;justify-content: center;">
-          <span>{{ date(scope.row.startTime,scope.row.endTime) }}</span>
-        </div>
-      </template>
-    </el-table-column> -->
-
-    <!-- <el-table-column label="休假状态">
-      <template #default="scope">
-        <div style="display: flex; align-items: center;justify-content: center;" v-if="scope.row.leaveStatus == 0">
-          <span>未开始</span>
-        </div>
-
-        <div style="display: flex; align-items: center;justify-content: center;" v-if="scope.row.leaveStatus == 1">
-          <span>已开始</span>
-        </div>
-
-        <div style="display: flex; align-items: center;justify-content: center;" v-if="scope.row.leaveStatus == 2">
-          <span>已结束</span>
-        </div>
-      </template>
-    </el-table-column> -->
-
-    <!-- <el-table-column label="请假原因">
-      <template #default="scope">
-        <div style="display: flex; align-items: center;justify-content: center;">
-          <span>{{ scope.row.reason }}</span>
-        </div>
-      </template>
-    </el-table-column> -->
-
     <el-table-column label="状态">
       <template #default="scope">
         
@@ -201,14 +181,6 @@ const handleCurrentChange = (val: number) => {
       </template>
     </el-table-column>
 
-    <!-- <el-table-column label="联系方式">
-      <template #default="scope">
-        <div style="display: flex; align-items: center;justify-content: center;">
-          <span>{{ scope.row.userInfo.phoneNumber }}</span>
-        </div>
-      </template>
-    </el-table-column> -->
-
     <el-table-column label="操作">
       <template #default="scope">
         <div class="btn" v-if="scope.row.auditStatus == 0">
@@ -225,7 +197,7 @@ const handleCurrentChange = (val: number) => {
   </el-table>
 
   <div class="demo-pagination-block">
-    <el-pagination v-model:pageNum="pageNum" v-model:page-size="pageSize" :page-sizes="[5, 10, 15, 20]" :small="small"
+    <el-pagination v-model:pageNum="pageNum" v-model:page-size="pageSize" :page-sizes="[5, 10, 15, 20, 25, 30]" :small="small"
       :disabled="disabled" layout="total, sizes, prev, pager, next, jumper" :total="total"
       @size-change="handleSizeChange" @current-change="handleCurrentChange" class="mt-20"/>
   </div>
