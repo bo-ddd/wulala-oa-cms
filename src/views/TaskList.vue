@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { reactive, ref ,onMounted} from 'vue'
 import axios from "@/assets/api/api";
 import type { Dept, DeptMember } from "../types/Dept";
 
@@ -8,6 +8,16 @@ import type { Task } from "../types/Task";
 import { useStore } from "@/stores/nav";
 import { usePageSizeOptionsStore } from '@/stores/tools'
 import { storeToRefs } from "pinia";
+import Loading from '@/components/laoding/index.vue'
+
+let isLoading =ref(true) ;
+const loadPageData = function () {
+    // axios 请求页面数据 .then 中将状态值修改 
+    isLoading.value= false
+}
+onMounted(async () => {
+  loadPageData()
+})
 
 const pageSizeOptionsStore = usePageSizeOptionsStore()
 pageSizeOptionsStore.getStorageStatus()
@@ -33,6 +43,7 @@ let dialogFormVisible = ref(false)
 let dialogTaskVisible = ref(false)
 const formLabelWidth = '140px'
 let title = ref<string>()
+
 // 从pinio中拿到用户设置的默认值;
 if (defaultValue.value) {
     pageSize.value = defaultValue.value
@@ -174,7 +185,7 @@ const deleteTask = (row: Task) => {
             })
             if (res.status == 1) {
                 getTaskList()
-            } 
+            }
         })
         .catch(() => {
             ElMessage({
@@ -278,6 +289,12 @@ const receiveTask = function (row: Task) {
 
 </script>
 <template>
+   <div>
+        <transition name="fade">
+            <loading v-if="isLoading"></loading>
+        </transition>
+    </div>
+
     <div class="search">
         <el-input v-model="searchTaskName" placeholder="输入名称搜索" />
         <el-button type="danger" class="ml-10" plain @click="searchTask">
@@ -309,7 +326,7 @@ const receiveTask = function (row: Task) {
             <template #default="scope" align="center">
                 <el-popover effect="light" trigger="hover" placement="top" width="auto">
                     <template #default>
-                        <div v-if="scope.row.description" >{{ scope.row.description }}</div>
+                        <div v-if="scope.row.description">{{ scope.row.description }}</div>
                         <div v-else class="noDesc">暂无描述…</div>
                     </template>
                     <template #reference>
@@ -345,7 +362,7 @@ const receiveTask = function (row: Task) {
         </el-table-column>
     </el-table>
     <div class="demo-pagination-block mt-20">
-        <el-pagination v-model:current-page="pageNum" v-model:page-size="pageSize" :page-sizes="[5, 10, 15, 20,25,30]"
+        <el-pagination v-model:current-page="pageNum" v-model:page-size="pageSize" :page-sizes="[5, 10, 15, 20, 25, 30]"
             :disabled="disabled" layout="total, sizes, prev, pager, next, jumper" :total="total"
             @size-change="handleSizeChange" @current-change="handleCurrentChange" />
     </div>

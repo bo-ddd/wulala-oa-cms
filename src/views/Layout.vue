@@ -9,12 +9,25 @@ import sidebarList from '../router/menu';
 import type { UploadInstance, UploadProps } from 'element-plus';
 import { ElMessage } from 'element-plus';
 import { useUserStore } from '@/stores/userInfo';
+import { usePageSizeOptionsStore } from "@/stores/tools";
 import { storeToRefs } from "pinia";
 const userStore = useUserStore();
-const { userInfo:userInfos } = storeToRefs(userStore)
+const { userInfo: userInfos } = storeToRefs(userStore)
+
 onMounted(async () => {
     await userStore.getUserInfo()
+    // 初始化页面数据
 })
+
+const pageSizeOptionsStore = usePageSizeOptionsStore();
+const { SwitchStatus } = storeToRefs(pageSizeOptionsStore);
+//刷新页面，获取存储的值和状态;
+pageSizeOptionsStore.getStorageStatus();
+//如果是true,获取推荐值，并存储到本地;
+if (SwitchStatus.value == true) {
+    pageSizeOptionsStore.getRecommentdefaultValue();
+}
+
 
 //右上角个人中心列表;
 const dropDownList = [
@@ -47,7 +60,6 @@ const dropDownList = [
 //路由跳转;
 let router = useRouter();
 let route = useRoute();
-
 
 //动态渲染面包屑导航;
 let pName = ref('');
@@ -119,7 +131,7 @@ const handleSuccessUpload: UploadProps['onSuccess'] = (response) => {
 //校验上传图片大小;
 const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
     console.log(rawFile);
-    
+
     if (rawFile.size / 1024 / 1024 > 1) {
         ElMessage.error('文件大小不能超过 1MB!')
         return false
@@ -161,7 +173,7 @@ const resetUpload = () => {
 <template>
 
     <div class="common-layout gradient no-selected">
-        <el-container>
+        <el-container >
             <!-- 侧边栏 -->
             <el-aside width="200px" class="pt-20">
                 <div class="header-sidebar">
