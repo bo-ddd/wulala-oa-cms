@@ -5,7 +5,7 @@ import type { FormInstance, FormRules } from 'element-plus'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { usePageSizeOptionsStore } from '@/stores/tools'
 import { storeToRefs } from "pinia";
-
+import AffixTip from '@/components/AffixTip.vue';
 const pageSizeOptionsStore = usePageSizeOptionsStore()
 pageSizeOptionsStore.getStorageStatus()
 const { defaultValue } = storeToRefs(pageSizeOptionsStore)
@@ -359,11 +359,8 @@ const getEnclosureUrl = (imgUrl: string) => {
             </span>
         </template>
     </el-dialog>
-
-    <!-- <el-affix class="mt-20" position="bottom" :offset="10">
-       <div class="tip"></div>
-    </el-affix> -->
-
+    <!-- 底部提示框 -->
+    <AffixTip class="mt-20"></AffixTip>
 
 </template>
 
@@ -407,8 +404,4 @@ const getEnclosureUrl = (imgUrl: string) => {
 .size-btn_download:hover {
     background-color: rgba(245, 108, 108, 0.8);
 }
-/* .tip{
-    height:20px;
-    background-color: red;
-} */
 </style>
