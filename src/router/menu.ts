@@ -48,6 +48,12 @@ let requiresAuthList = [
     },
     {
         id: 601,
+        name: '创建消息',
+        targetPath: '/createMessage',
+        requiresAuth: true
+    },
+    {
+        id: 602,
         name: '发布消息',
         targetPath: '/publishMessage',
         requiresAuth: true

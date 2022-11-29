@@ -210,6 +210,15 @@ let dynamicRoutes = [
       requiresAuth: true
     }
   },
+  {//创建消息页面;
+    path: "/createMessage",
+    name: "createMessage",
+    component: () => import("../views/CreateMessage.vue"),
+    meta: {
+      label: "创建消息",
+      requiresAuth: true
+    }
+  },
   {//发布消息页面;
     path: "/publishMessage",
     name: "publishMessage",
