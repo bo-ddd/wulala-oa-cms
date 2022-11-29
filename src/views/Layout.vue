@@ -11,11 +11,13 @@ import { ElMessage } from 'element-plus';
 import { useUserStore } from '@/stores/userInfo';
 import { storeToRefs } from "pinia";
 const userStore = useUserStore();
-const { userInfo:userInfos } = storeToRefs(userStore)
+const { userInfo: userInfos } = storeToRefs(userStore)
+//动画
+
 onMounted(async () => {
     await userStore.getUserInfo()
+    // 初始化页面数据
 })
-
 //右上角个人中心列表;
 const dropDownList = [
     {
@@ -47,7 +49,6 @@ const dropDownList = [
 //路由跳转;
 let router = useRouter();
 let route = useRoute();
-
 
 //动态渲染面包屑导航;
 let pName = ref('');
@@ -119,7 +120,7 @@ const handleSuccessUpload: UploadProps['onSuccess'] = (response) => {
 //校验上传图片大小;
 const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
     console.log(rawFile);
-    
+
     if (rawFile.size / 1024 / 1024 > 1) {
         ElMessage.error('文件大小不能超过 1MB!')
         return false
@@ -161,7 +162,7 @@ const resetUpload = () => {
 <template>
 
     <div class="common-layout gradient no-selected">
-        <el-container>
+        <el-container >
             <!-- 侧边栏 -->
             <el-aside width="200px" class="pt-20">
                 <div class="header-sidebar">
