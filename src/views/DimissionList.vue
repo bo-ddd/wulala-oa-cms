@@ -5,7 +5,6 @@ import type { FormInstance, FormRules } from 'element-plus'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { usePageSizeOptionsStore } from '@/stores/tools'
 import { storeToRefs } from "pinia";
-import { promiseTimeout } from '@vueuse/shared'
 
 const pageSizeOptionsStore = usePageSizeOptionsStore()
 pageSizeOptionsStore.getStorageStatus()
@@ -304,8 +303,6 @@ const getEnclosureUrl = (imgUrl: string) => {
                     @click="getEnclosureUrl(scope.row.enclosure)">
                     {{ scope.row.enclosure ? '查看' : '无' }}
                 </el-link>
-
-
             </template>
         </el-table-column>
         <el-table-column label="审核状态" prop="status" align="center">
@@ -362,6 +359,12 @@ const getEnclosureUrl = (imgUrl: string) => {
             </span>
         </template>
     </el-dialog>
+
+    <!-- <el-affix class="mt-20" position="bottom" :offset="10">
+       <div class="tip"></div>
+    </el-affix> -->
+
+
 </template>
 
 <style scoped>
@@ -404,4 +407,8 @@ const getEnclosureUrl = (imgUrl: string) => {
 .size-btn_download:hover {
     background-color: rgba(245, 108, 108, 0.8);
 }
+/* .tip{
+    height:20px;
+    background-color: red;
+} */
 </style>

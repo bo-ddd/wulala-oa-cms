@@ -1,7 +1,7 @@
 <template>
 
   <div style="display: inline-block" class="mb-10">
-    <el-select v-model="deptValue" clearable placeholder="所在分组" size="small" @change="asd">
+    <el-select v-model="deptValue" clearable placeholder="所在分组" size="small" @change="changeMembers">
       <el-option v-for="(group, index) in deptList" :key="index" :label="group.deptName" :value="group.deptId" />
     </el-select>
     <el-select v-model="deptMembersValue" multiple placeholder="谁接收消息" style="width: 240px" size="small" class="ml-10">
@@ -14,13 +14,13 @@
 
     <MyEditor v-model="ruleForm.desc"></MyEditor>
 
-   
+    <el-button class="submitBtn" type="danger" @click="createMessage()">提交</el-button>
   </el-form>
 </template>
   
 <script lang="ts" setup>
 import { reactive, ref, } from 'vue'
-import type { FormInstance, FormRules } from 'element-plus'
+import type { FormInstance } from 'element-plus'
 import type { Dept, DeptMember } from "../types/Dept";
 import { useStore } from "@/stores/nav";
 import axios from '@/assets/api/api'
@@ -37,7 +37,6 @@ const ruleForm = reactive({
   desc: '',
   type: [],
 })
-console.log(UserStore.userId);
 
 //获取用户所在哪个组
 const getUserDeptList = async function () {
@@ -63,7 +62,7 @@ const queryUserMembers = async function () {
   }
 }
 
-const asd = function (val: number) {
+const changeMembers = function (val: number) {
   deptId.value = val
   queryUserMembers()
 }
@@ -71,39 +70,22 @@ getUserDeptList()
 
 //创建消息方法
 const createMessage = async function () {
-  let createMessage = await axios.createMessageApi({
+  let a = await axios.createMessageApi({
         content: ruleForm.desc
       })
+      console.log(a);
 }
 //发送消息方法
 const sendMessage = async function () {
   let sendMessage = await axios.sendMessageApi({})
+  console.log(sendMessage);
 }
 
-
-
-// const submitForm = (formEl: FormInstance | undefined) => {
-//   console.log(ruleForm.desc);
-//   if (!formEl) return
-//   formEl.validate(async (valid, fields) => {
-//     if (valid) {
-//       alert("提交成功")
-//       let createArticle = await axios.createMessageApi({
-//         content: ruleForm.desc
-//       });
-//     } else {
-//       console.log('error submit!', fields)
-//       alert('提交错误')
-//       formEl.resetFields()
-//     }
-//   })
-// }
-
-const resetForm = (formEl: FormInstance | undefined) => {
-  if (!formEl) return
-  formEl.resetFields()
+const asd = async function () {
+  let a = await axios.queryMessageListApi({})
+  console.log(a);
 }
-
+asd()
 </script>
 <style scoped>
 .demo-datetime-picker .block {
