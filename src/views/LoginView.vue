@@ -4,6 +4,16 @@ import { useRouter } from "vue-router";
 import { ElMessage, type FormInstance } from 'element-plus'
 import axios from '@/assets/api/api';
 import { useUserStore } from "../stores/userInfo";
+import Loading from '@/components/laoding/index.vue'
+
+let isLoading = ref(true);
+const loadPageData = function () {
+    // axios 请求页面数据 .then 中将状态值修改 
+    isLoading.value = false
+}
+onMounted(async () => {
+    loadPageData()
+})
 let userStore = useUserStore()
 const ruleFormRef = ref<FormInstance>();
 let router = useRouter()
@@ -19,7 +29,7 @@ const to = function (name: string) {
     router.push(name)
 }
 
-const validate=function(){
+const validate = function () {
     const { username, password } = ruleForm
     if (username == '') {
         ElMessage.warning('账号不能为空')
@@ -36,7 +46,7 @@ const validate=function(){
     }
 
 }
-const submit = async (value:any) => {
+const submit = async (value: any) => {
     validate()
     await axios.loginApi({
         username: ruleForm.username,
@@ -59,6 +69,11 @@ onMounted(() => {
 </script>
 
 <template>
+    <div>
+        <transition name="fade">
+            <loading v-if="isLoading"></loading>
+        </transition>
+    </div>
     <div class="login">
         <div class="login-bar">
             <div class="login-content">
