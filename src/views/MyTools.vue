@@ -151,6 +151,8 @@ const handlePageSizeSwitchStatue = (status: boolean) => {
         pageSizeOptionsStore.storageCurrentStatus(pageSizeOptions)
     }
 }
+//初始化开关状态;
+handlePageSizeSwitchStatue(pageSizeOptions.SwitchStatus)
 
 const handlePageSizeDefaultValue = () => {
     pageSizeOptionsStore.storageCurrentStatus(pageSizeOptions)
