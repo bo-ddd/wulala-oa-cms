@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, ref ,onMounted} from 'vue'
+import { reactive, ref, onMounted } from 'vue'
 import axios from "@/assets/api/api";
 import type { Dept, DeptMember } from "../types/Dept";
 
@@ -10,13 +10,13 @@ import { usePageSizeOptionsStore } from '@/stores/tools'
 import { storeToRefs } from "pinia";
 import Loading from '@/components/laoding/index.vue'
 
-let isLoading =ref(true) ;
+let isLoading = ref(true);
 const loadPageData = function () {
     // axios 请求页面数据 .then 中将状态值修改 
-    isLoading.value= false
+    isLoading.value = false
 }
 onMounted(async () => {
-  loadPageData()
+    loadPageData()
 })
 
 const pageSizeOptionsStore = usePageSizeOptionsStore()
@@ -30,7 +30,7 @@ const deptValue = ref()
 const deptMembersValue = ref()
 let deptList = reactive<Dept[]>([])
 let deptMembersList = reactive<DeptMember[]>([])
-let taskReception = ref([])
+let taskReception = ref();
 let deptId = ref(0)
 //分页
 const pageNum = ref(1)
@@ -43,7 +43,7 @@ let dialogFormVisible = ref(false)
 let dialogTaskVisible = ref(false)
 const formLabelWidth = '140px'
 let title = ref<string>()
-
+let msgId = ref()
 // 从pinio中拿到用户设置的默认值;
 if (defaultValue.value) {
     pageSize.value = defaultValue.value
@@ -111,6 +111,16 @@ const getUserDeptList = async function () {
         deptList.push(...res.data)
     }
 }
+const createMessage = async function (content: { content: string; }) {
+    let res = await axios.createMessageApi(content)
+    if (res.status == 1) {
+        console.log(res);
+        msgId.value = res.data.id
+    }
+}
+const sendMessage = async function (payload: { userId: number, msgId: number }) {
+    return await axios.sendMessageApi(payload)
+}
 //发布任务接口
 const publishTask = function () {
     const userArr: any[] = []
@@ -121,24 +131,33 @@ const publishTask = function () {
                 taskId: rowTaskId.value
             })
             )
-            Promise.all(userArr).then(res => {
-                if (res[0].status == 1) {
-                    ElMessage({
-                        message: '发布成功',
-                        type: 'success',
-                    })
-                    createMessage({
-                        content: '您已收到一条任务，快去查看吧！'
-                    })
-                    initFormData()
-                    dialogTaskVisible.value = false;
-                } else {
-                    ElMessage({
-                        message: res[0].msg,
-                        type: 'warning',
+            Promise.all(userArr).then(async res => {
+                console.log('2222');
+
+                await createMessage({
+                    content: '您收到一条任务，快去完成吧'
+                })
+                const messageUserArr: any[] = []
+                if (taskReception.value.length) {
+                    taskReception.value.forEach((item: number) => {
+                        messageUserArr.push(axios.sendMessageApi({
+                            userId: item,
+                            msgId: msgId.value
+                        })
+                        )
+                        Promise.all(messageUserArr).then(async res => {
+                            console.log(res);
+                            initFormData()
+                            dialogTaskVisible.value = false;
+                        }
+                        )
                     })
                 }
-            })
+
+                initFormData()
+                dialogTaskVisible.value = false;
+            }
+            )
         })
     }
 
@@ -146,26 +165,27 @@ const publishTask = function () {
 //领取任务接口
 const receivePublishTask = async function (params: any) {
     let res = await axios.publishTaskApi(params)
-    if (res.status == 1) {
-        console.log(res);
-        ElMessage({
-            message: '领取成功',
-            type: 'success',
-        })
-        createMessage({
-            content: '您已成功领取一条任务，快去完成吧'
-        })
-    } else {
-        ElMessage({
-            message: res.msg,
-            type: 'warning',
-        })
-    }
+    // if (res.status == 1) {
+    //     console.log(res);
+    //     ElMessage({
+    //         message: '领取成功',
+    //         type: 'success',
+    //     })
+    sendMessage({
+        userId: rowTaskId.value,
+        msgId: msgId.value
+    })
+
+    // } else {
+    //     ElMessage({
+    //         message: res.msg,
+    //         type: 'warning',
+    //     })
+    // }
 }
 /// 生成消息接口
-const createMessage = async function (content: { content: string; }) {
-    let res = await axios.createMessageApi(content)
-}
+
+
 getTaskList()
 getUserDeptList()
 //确定删除
@@ -259,15 +279,15 @@ const taskLevelName = function (level: number | string) {
 
 //点击任务接收人获取id
 const taskRecipient = function (val: any) {
+    console.log(val);
     taskReception.value = val
+    console.log(taskReception.value);
 
 }
 //点击发布任务按钮
 const clickPublishTask = function (row: Task) {
     rowTaskId.value = row.id
-    console.log(rowTaskId.value);
     dialogTaskVisible.value = true;
-
 }
 //用户所在分组
 const groupChange = function (val: number) {
@@ -289,7 +309,7 @@ const receiveTask = function (row: Task) {
 
 </script>
 <template>
-   <div>
+    <div>
         <transition name="fade">
             <loading v-if="isLoading"></loading>
         </transition>
