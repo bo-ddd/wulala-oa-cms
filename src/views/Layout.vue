@@ -9,15 +9,26 @@ import sidebarList from '../router/menu';
 import type { UploadInstance, UploadProps } from 'element-plus';
 import { ElMessage } from 'element-plus';
 import { useUserStore } from '@/stores/userInfo';
+import { usePageSizeOptionsStore } from "@/stores/tools";
 import { storeToRefs } from "pinia";
 const userStore = useUserStore();
 const { userInfo: userInfos } = storeToRefs(userStore)
-//动画
 
 onMounted(async () => {
     await userStore.getUserInfo()
     // 初始化页面数据
 })
+
+const pageSizeOptionsStore = usePageSizeOptionsStore();
+const { SwitchStatus } = storeToRefs(pageSizeOptionsStore);
+//刷新页面，获取存储的值和状态;
+pageSizeOptionsStore.getStorageStatus();
+//如果是true,获取推荐值，并存储到本地;
+if (SwitchStatus.value == true) {
+    pageSizeOptionsStore.getRecommentdefaultValue();
+}
+
+
 //右上角个人中心列表;
 const dropDownList = [
     {
