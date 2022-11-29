@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { reactive, ref, computed } from 'vue'
 import type { FormInstance } from 'element-plus'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import axios from '@/assets/api/api'
@@ -116,18 +116,35 @@ const defaultPageSizeList = [
         value: 30
     }
 ]
+
+//获取表格推荐显示条数;
+const WindowHeight = document.documentElement.clientHeight;
+const redundantHeight = 302;
+const unitHeight = 41.53;
+const recommendPageSize = ref(0);
+let maxPageSize = computed(() => Math.floor((WindowHeight - redundantHeight) / unitHeight));
+
+//获取推荐的条数;
+const getRecommendPageSize = () => {
+    const pageSizeArr = [5, 10, 15, 20, 25, 30];
+    pageSizeArr.forEach(item => {
+        let result = Math.abs(item - maxPageSize.value);
+        if (result <= 2) {
+            recommendPageSize.value = item
+        }
+    })
+}
+
+
 const handlePageSizeSwitchStatue = (status: boolean) => {
     if (status) {
-        //开始你的表演;
-
+        //获取推荐设置的条数;
+        getRecommendPageSize()
         //使用推荐设置，并禁用输入框;
-        pageSizeOptions.defaultValue = 20;
+        pageSizeOptions.defaultValue = recommendPageSize.value;
         //将设置保存到本地中;
         pageSizeOptionsStore.storageCurrentStatus(pageSizeOptions)
-
     } else {
-        // 收了你的神通吧;
-
         //恢复默认设置，并开启输入框;
         pageSizeOptions.defaultValue = 10;
         //将设置保存到本地中;

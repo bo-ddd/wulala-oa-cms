@@ -6,12 +6,12 @@ interface PageSizeOptions {
 }
 
 export const usePageSizeOptionsStore = defineStore('PageSizeSwitchStore', () => {
-    const SwitchStatus = ref(false)
+    const SwitchStatus = ref(true)
     const defaultValue = ref(10)
 
     const getStorageStatus = () => {
         const pageSizeOptions = sessionStorage.getItem('pageSizeOptions');
-        SwitchStatus.value = pageSizeOptions ? JSON.parse(pageSizeOptions).SwitchStatus : false;
+        SwitchStatus.value = pageSizeOptions ? JSON.parse(pageSizeOptions).SwitchStatus : true;
         defaultValue.value = pageSizeOptions ? JSON.parse(pageSizeOptions).defaultValue : 10;
     }
 
