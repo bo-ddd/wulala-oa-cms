@@ -2,10 +2,19 @@
 
 <script lang="ts" setup>
 import * as echarts from 'echarts';
-import { onMounted } from 'vue';
+import { onMounted,ref } from 'vue';
 import { Check } from '@element-plus/icons-vue'
 // 进度条组件自带方法;
+import Loading from '@/components/laoding/index.vue'
 
+let isLoading =ref(true) ;
+const loadPageData = function () {
+    // axios 请求页面数据 .then 中将状态值修改 
+    isLoading.value= false
+}
+onMounted(async () => {
+  loadPageData()
+})
 const bannerList = [
   {
     id: 1,
@@ -451,9 +460,13 @@ onMounted(() => {
 
 </script>
 
-<template>  
+<template>
 
-
+  <div>
+    <transition name="fade">
+      <loading v-if="isLoading"></loading>
+    </transition>
+  </div>
   <div class="main">
     <el-row :gutter="40">
       <!-- 轮播图 -->
@@ -546,15 +559,18 @@ onMounted(() => {
 </template>
 
 <style scoped>
-:deep(.el-col-8){
+:deep(.el-col-8) {
   width: 33.3333%;
 }
-:deep(.el-space){
+
+:deep(.el-space) {
   width: 100%;
 }
-:deep(.el-space__item){
+
+:deep(.el-space__item) {
   width: 100%;
 }
+
 .main {
   width: 100%;
   height: 100%;
