@@ -5,6 +5,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import axios from '@/assets/api/api'
 import { usePageSizeOptionsStore } from "@/stores/tools";
 import { storeToRefs } from "pinia";
+import { useChangeColor } from "../stores/changecolor"
 const pageSizeOptionsStore = usePageSizeOptionsStore();
 const { SwitchStatus, defaultValue } = storeToRefs(pageSizeOptionsStore);
 
@@ -142,60 +143,72 @@ const appearanceList = [
     {
         id: 1,
         appearanceUrl: '',
-        title: '默认值'
+        title: '默认值',
+        color: '--el-gradient-gb-color-default'
     },
     {
         id: 2,
         appearanceUrl: '',
-        title: '晨雾'
+        title: '晨雾',
+        color: '--el-gradient-gb-color-grey'
     },
     {
         id: 3,
         appearanceUrl: '',
-        title: '冰凉薄荷'
+        title: '冰凉薄荷',
+        color: '--el-gradient-gb-color-mint'
     },
     {
         id: 4,
         appearanceUrl: '',
-        title: '海岛度假'
+        title: '海岛度假',
+        color: '--el-gradient-gb-color-island'
     },
     {
         id: 5,
         appearanceUrl: '',
-        title: '凉风'
+        title: '凉风',
+        color: '--el-gradient-gb-color-chillybreeze'
     },
     {
         id: 6,
         appearanceUrl: '',
-        title: '柔和粉色'
+        title: '柔和粉色',
+        color: '--el-gradient-gb-color-softpink'
     },
     {
         id: 7,
         appearanceUrl: '',
-        title: '泡泡糖'
+        title: '泡泡糖',
+        color: '--el-gradient-gb-color-bubble'
     },
     {
         id: 8,
         appearanceUrl: '',
-        title: '晴天'
+        title: '晴天',
+        color: '--el-gradient-gb-color-sunny'
     },
     {
         id: 9,
         appearanceUrl: '',
-        title: '芒果天堂'
+        title: '芒果天堂',
+        color: '--el-gradient-gb-color-mango'
     },
     {
         id: 10,
         appearanceUrl: '',
-        title: '雨夜'
+        title: '雨夜',
+        color: '--el-gradient-gb-color-rain'
     }
 ]
 //选中色块的点击事件;
-const handleRadioValue = (value: number) => {
+const userStore = useChangeColor();
+const { color } = storeToRefs(userStore);
+const handleRadioValue = (value: any) => {
     console.log(value)
-    console.log(321);
-    
+    userStore.setColor(value)
 }
+
 </script>
 <template>
     <el-tabs tab-position="left" style="height:96%" class="demo-tabs mt-20">
@@ -242,10 +255,10 @@ const handleRadioValue = (value: number) => {
         <el-tab-pane label="外观">
             <div class="pd-20">
                 <h4>自定义外观</h4>
-                <el-radio-group v-model="appearanceRadio" class="mt-20 pd-20 grid"
-                    @change="handleRadioValue(appearanceRadio)">
+                <el-radio-group v-model="appearanceRadio" class="mt-20 pd-20 grid">
                     <el-radio :label="item.id" class="appearance" v-for="item in appearanceList"
-                        :class="{ 'active-appearance': item.id == appearanceRadio }">
+                        :class="{ 'active-appearance': item.id == appearanceRadio }"
+                        @change="handleRadioValue(item)">
                         <div class="color-block">
                             <img :src="item.appearanceUrl" alt="">
                         </div>

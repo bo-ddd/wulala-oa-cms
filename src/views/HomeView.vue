@@ -2,19 +2,20 @@
 
 <script lang="ts" setup>
 import * as echarts from 'echarts';
-import { onMounted,ref } from 'vue';
+import { nextTick, onMounted,ref } from 'vue';
 import { Check } from '@element-plus/icons-vue'
+import router from "@/router/index"
+
+
 // 进度条组件自带方法;
 import Loading from '@/components/laoding/index.vue'
-
 let isLoading =ref(true) ;
 const loadPageData = function () {
     // axios 请求页面数据 .then 中将状态值修改 
     isLoading.value= false
 }
-onMounted(async () => {
-  loadPageData()
-})
+
+const centerDialogVisible = ref(false)
 const bannerList = [
   {
     id: 1,
@@ -452,12 +453,13 @@ const toDoList = [
   }
 ]
 
+
 onMounted(() => {
+  loadPageData();//小花
   contributionList(); //基金贡献占比排行榜;
   assessmentList(); //员工综合评估排行榜;
   dynamicData();//动态数据;
 })
-
 </script>
 
 <template>
@@ -556,6 +558,20 @@ onMounted(() => {
     </el-row>
   </div>
 
+  <el-dialog v-model="centerDialogVisible" title="Warning" width="30%" center>
+    <span>
+      It should be noted that the content will not be aligned in center by
+      default
+    </span>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="centerDialogVisible = false">Cancel</el-button>
+        <el-button type="primary" @click="centerDialogVisible = false">
+          Confirm
+        </el-button>
+      </span>
+    </template>
+  </el-dialog>
 </template>
 
 <style scoped>
@@ -747,5 +763,8 @@ onMounted(() => {
   background-color: white;
   border-radius: 10px;
   box-shadow: 0 0 12px rgba(0, 0, 0, 0.12);
+}
+.dialog-footer button:first-child {
+  margin-right: 10px;
 }
 </style>
