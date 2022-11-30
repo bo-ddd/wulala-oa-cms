@@ -144,6 +144,7 @@
             layout="total, sizes, prev, pager, next, jumper" :total="total" @size-change="handleSizeChange"
             @current-change="handleCurrentChange" />
     </div>
+    <AffixTip class="mt-20"></AffixTip>
 </template>
 
 <script setup lang="ts">
@@ -153,7 +154,7 @@ import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router';
 import { usePageSizeOptionsStore } from '@/stores/tools'
 import { storeToRefs } from "pinia";
-
+import AffixTip from '@/components/AffixTip.vue';
 
 const pageSizeOptionsStore = usePageSizeOptionsStore()
 pageSizeOptionsStore.getStorageStatus()
