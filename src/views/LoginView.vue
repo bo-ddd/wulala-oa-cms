@@ -4,20 +4,9 @@ import { useRouter } from "vue-router";
 import { ElMessage, type FormInstance } from 'element-plus'
 import axios from '@/assets/api/api';
 import { useUserStore } from "../stores/userInfo";
-import Loading from '@/components/laoding/index.vue'
-
-let isLoading = ref(true);
-const loadPageData = function () {
-    // axios 请求页面数据 .then 中将状态值修改 
-    isLoading.value = false
-}
-onMounted(async () => {
-    loadPageData()
-})
 let userStore = useUserStore()
 const ruleFormRef = ref<FormInstance>();
 let router = useRouter()
-
 
 const ruleForm = reactive({
     username: '',
@@ -69,11 +58,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <div>
-        <transition name="fade">
-            <loading v-if="isLoading"></loading>
-        </transition>
-    </div>
+     
     <div class="login">
         <div class="login-bar">
             <div class="login-content">
@@ -157,5 +142,8 @@ onMounted(() => {
 :deep(.el-button) {
     width: 100%;
     margin: 10px 0;
+}
+.example-showcase .el-loading-mask {
+  z-index: 9;
 }
 </style>

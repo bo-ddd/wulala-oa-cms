@@ -259,7 +259,8 @@ const statusList = [
         </el-table-column>
         <el-table-column label="等级" align="center">
             <template #default="scope" align="center">
-                <div>{{ taskLevelName(scope.row.level) }}</div>
+                <div v-if="scope.row.level==1" class="red">{{ taskLevelName(scope.row.level) }}</div>
+                <div v-else>{{ taskLevelName(scope.row.level) }}</div>
             </template>
         </el-table-column>
 
@@ -371,5 +372,7 @@ const statusList = [
     text-overflow: ellipsis;
     white-space: nowrap;
 }
-
+.red{
+    color: red;
+}
 </style>
