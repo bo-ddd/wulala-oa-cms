@@ -47,14 +47,14 @@ const submit = async (value: any) => {
     })
 }
 //回车自动登录
-onMounted(() => {
-    document.onkeydown = function (e) {
-        let key = e.key;
-        if (key == "Enter") {
-            submit(ruleFormRef.value);
-        }
-    };
-})
+// onMounted(() => {
+//     document.onkeydown = function (e) {
+//         let key = e.key;
+//         if (key == "Enter") {
+//             submit(ruleFormRef.value);
+//         }
+//     };
+// })
 </script>
 
 <template>
