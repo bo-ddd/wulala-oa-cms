@@ -1,6 +1,6 @@
 <template>
     <el-affix position="bottom" :offset="5" v-if="tipStatus">
-        <div class="tip">
+        <div class="tip">   
             <p class="text-tip">
                 <el-icon>
                     <WarningFilled />
@@ -39,7 +39,7 @@ const closeTip = () => {
     padding: 10px 20px;
     border-radius: 5px;
     font-size: 14px;
-    background-color: rgba(245, 197, 108, 0.3);
+    background-color: rgba(245, 197, 108, 0.2);
     display: flex;
     justify-content: space-between;
     align-items: center;

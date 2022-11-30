@@ -115,6 +115,15 @@ const router = createRouter({
             requiresAuth: false
           }
         },
+        {//Bpmn页面;
+          path: "/bpmnDemo",
+          name: "bpmnDemo",
+          component: () => import("../views/BpmnDemo.vue"),
+          meta: {
+            label: "日报列表",
+            requiresAuth: false
+          }
+        },
       ]
     },
   ],
