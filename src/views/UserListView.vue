@@ -200,12 +200,12 @@ const toCreateUser = () => {
     router.push('createUserAccount')
 }
 
-const handleSizeChange = async (val: number) => {
-    await getUserList(pageSize.value, pageNum.value)
+const handleSizeChange = (val: number) => {
+    getUserList(pageSize.value, pageNum.value)
     pageSize.value = val
 }
-const handleCurrentChange = async (val: number) => {
-    await getUserList(pageSize.value, pageNum.value)
+const handleCurrentChange = (val: number) => {
+    getUserList(pageSize.value, pageNum.value)
     pageNum.value = val
 }
 const getUserList = (pageSize?: number, pageNum?: number) => {
