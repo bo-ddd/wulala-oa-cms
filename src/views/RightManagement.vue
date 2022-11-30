@@ -2,6 +2,7 @@
 import { ref, reactive, watch, type Ref } from 'vue'
 import axios from '@/assets/api/api'
 import { ElMessage, ElMessageBox, ElTree } from 'element-plus'
+import AffixTip from '@/components/AffixTip.vue';
 
 let treeRef = ref<InstanceType<typeof ElTree>>()
 let newPermissionName = ref();
@@ -257,6 +258,7 @@ const formLabelWidth = '140px'
             </span>
         </template>
     </el-dialog>
+    <AffixTip class="mt-20"></AffixTip>
 </template>
 <style scoped>
 .ipt,
