@@ -2,8 +2,7 @@
 import { reactive, ref, onMounted } from 'vue'
 import axios from "@/assets/api/api";
 import type { Dept, DeptMember } from "../types/Dept";
-
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { ElMessageBox } from 'element-plus'
 import type { Task } from "../types/Task";
 import { useStore } from "@/stores/nav";
 import { usePageSizeOptionsStore } from '@/stores/tools'
@@ -12,13 +11,13 @@ import Loading from '@/components/laoding/index.vue'
 
 let isLoading = ref(true);
 const loadPageData = function () {
-    // axios 请求页面数据 .then 中将状态值修改 
-    isLoading.value = false
+    // if(){}
+    // // axios 请求页面数据 .then 中将状态值修改                                                       
+    isLoading.value = false;
 }
 onMounted(async () => {
     loadPageData()
 })
-
 const pageSizeOptionsStore = usePageSizeOptionsStore()
 pageSizeOptionsStore.getStorageStatus()
 const { defaultValue } = storeToRefs(pageSizeOptionsStore)
@@ -118,6 +117,7 @@ const createMessage = async function (content: { content: string; }) {
         msgId.value = res.data.id
     }
 }
+//发送消息
 const sendMessage = async function (payload: { userId: number, msgId: number }) {
     return await axios.sendMessageApi(payload)
 }
@@ -132,8 +132,6 @@ const publishTask = function () {
             })
             )
             Promise.all(userArr).then(async res => {
-                console.log('2222');
-
                 await createMessage({
                     content: '您收到一条任务，快去完成吧'
                 })
@@ -184,8 +182,6 @@ const receivePublishTask = async function (params: any) {
     // }
 }
 /// 生成消息接口
-
-
 getTaskList()
 getUserDeptList()
 //确定删除
@@ -206,12 +202,6 @@ const deleteTask = (row: Task) => {
             if (res.status == 1) {
                 getTaskList()
             }
-        })
-        .catch(() => {
-            ElMessage({
-                type: 'info',
-                message: '删除已取消',
-            })
         })
 }
 //新增任务按钮
@@ -314,7 +304,6 @@ const receiveTask = function (row: Task) {
             <loading v-if="isLoading"></loading>
         </transition>
     </div>
-
     <div class="search">
         <el-input v-model="searchTaskName" placeholder="输入名称搜索" />
         <el-button type="danger" class="ml-10" plain @click="searchTask">
@@ -329,7 +318,6 @@ const receiveTask = function (row: Task) {
             </el-icon>
             <span>新增</span>
         </el-button>
-
     </div>
     <el-table :data="taskList" style="width: 100%" class="mt-20">
         <el-table-column label="ID" align="center">
@@ -359,7 +347,8 @@ const receiveTask = function (row: Task) {
         </el-table-column>
         <el-table-column label="等级" align="center">
             <template #default="scope" align="center">
-                <div>{{ taskLevelName(scope.row.level) }}</div>
+                <div v-if="scope.row.level == 1" class="red">{{ taskLevelName(scope.row.level) }}</div>
+                <div v-else>{{ taskLevelName(scope.row.level) }}</div>
             </template>
         </el-table-column>
         <el-table-column label="发布人" align="center">
@@ -437,6 +426,8 @@ const receiveTask = function (row: Task) {
             </span>
         </template>
     </el-dialog>
+    <!-- 底部提示框 --> 
+     <AffixTip class="mt-20"></AffixTip>
 </template>
 
 <style scoped>
@@ -498,5 +489,9 @@ const receiveTask = function (row: Task) {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+.red {
+    color: red;
 }
 </style>

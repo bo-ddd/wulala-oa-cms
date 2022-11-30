@@ -2,10 +2,8 @@ import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import { useStore } from "../stores/nav";
 import { storeToRefs } from "pinia";
-import {  ref, onMounted } from 'vue'
-
-import { close, start } from '@/nprogress/nprogress'
-
+import { close, start } from '@/nprogress/nprogress';
+import Loading from "@/assets/loading/loading";
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -261,6 +259,7 @@ let dynamicRoutes = [
 
 router.beforeEach(async (to) => {
   start()
+  Loading?.start();
   const userStore = useStore();
   const { userId, userPremissionList } = storeToRefs(userStore);
   let isAuth = sessionStorage.getItem("token");
@@ -287,7 +286,8 @@ router.beforeEach(async (to) => {
 }
 )
 router.afterEach(() => {
-  close()
+  close();
+  Loading?.done();
 })
 
 export default router;

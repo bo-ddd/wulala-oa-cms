@@ -375,7 +375,7 @@ export default {
 
     // 
 }
-export const apiArr=['/user/login','/user/leave/create','/user/update','/permission/add','/permission/update','/permission/delete','/user/leave/examine',
+export const apiArr=['/user/leave/create','/user/update','/permission/add','/permission/update','/permission/delete','/user/leave/examine',
 '/user/addRole','/user/deleteRole','/role/create','/role/delete','/role/addPermission','/role/deletePermission','/article/create','/dept/create','/dept/delete',
 '/dept/update','/user/dept/add','/user/dept/delete','/task/create','/task/update','/task/delete','/task/publish','/user/task/status/set','/message/send','/message/update',
 '/message/create','/user/message/status/set','/user/quit/apply','/mail/send','/user/password/update']
