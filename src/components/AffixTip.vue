@@ -1,5 +1,5 @@
 <template>
-    <el-affix position="bottom" :offset="20" v-if="tipStatus">
+    <el-affix position="bottom" :offset="5" v-if="tipStatus">
         <div class="tip">
             <p class="text-tip">
                 <el-icon>
