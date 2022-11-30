@@ -1,21 +1,10 @@
-<!-- 当月任务共计  谁最优秀 最拉跨 谁罚钱 内部活动  班费赞助排行榜  称谓系统-->
-
 <script lang="ts" setup>
 import * as echarts from 'echarts';
-import { nextTick, onMounted,ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { Check } from '@element-plus/icons-vue'
-import router from "@/router/index"
-
-
-// 进度条组件自带方法;
-import Loading from '@/components/laoding/index.vue'
-let isLoading =ref(true) ;
-const loadPageData = function () {
-    // axios 请求页面数据 .then 中将状态值修改 
-    isLoading.value= false
-}
 
 const centerDialogVisible = ref(false)
+const updatedVersionDialog = ref(false)
 const bannerList = [
   {
     id: 1,
@@ -453,9 +442,11 @@ const toDoList = [
   }
 ]
 
-
 onMounted(() => {
-  loadPageData();//小花
+  if (!window.sessionStorage.getItem('update')) {
+    updatedVersionDialog.value = true;
+    window.sessionStorage.setItem('update', 'true')
+  }
   contributionList(); //基金贡献占比排行榜;
   assessmentList(); //员工综合评估排行榜;
   dynamicData();//动态数据;
@@ -463,12 +454,6 @@ onMounted(() => {
 </script>
 
 <template>
-
-  <div>
-    <transition name="fade">
-      <loading v-if="isLoading"></loading>
-    </transition>
-  </div>
   <div class="main">
     <el-row :gutter="40">
       <!-- 轮播图 -->
@@ -572,9 +557,23 @@ onMounted(() => {
       </span>
     </template>
   </el-dialog>
+
+  <el-dialog v-model="updatedVersionDialog" title="版本更新V1.0.0" width="30%" align-center>
+    <div>1、更新了页面未加载出来之前的进度条功能</div>
+    <div>2、增加了我的消息页面功能</div>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button type="primary" @click="updatedVersionDialog = false"> 我知道了</el-button>
+      </span>
+    </template>
+  </el-dialog>
 </template>
 
 <style scoped>
+.dialog-footer button:first-child {
+  margin-right: 10px;
+}
+
 :deep(.el-col-8) {
   width: 33.3333%;
 }
@@ -764,6 +763,7 @@ onMounted(() => {
   border-radius: 10px;
   box-shadow: 0 0 12px rgba(0, 0, 0, 0.12);
 }
+
 .dialog-footer button:first-child {
   margin-right: 10px;
 }
