@@ -5,7 +5,8 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import axios from '@/assets/api/api'
 import { usePageSizeOptionsStore } from "@/stores/tools";
 import { storeToRefs } from "pinia";
-import { useChangeColor } from "../stores/changecolor"
+import { useThemeStore } from '@/stores/themeColors'
+import type { Colors } from "@/types/ThemeColors"
 const pageSizeOptionsStore = usePageSizeOptionsStore();
 const { SwitchStatus, defaultValue } = storeToRefs(pageSizeOptionsStore);
 
@@ -144,70 +145,69 @@ const appearanceList = [
         id: 1,
         appearanceUrl: '',
         title: '默认值',
-        color: '--el-gradient-gb-color-default'
+        color: 'linear-gradient(to bottom, #f47599, #f7c6cd)'
     },
     {
         id: 2,
         appearanceUrl: '',
         title: '晨雾',
-        color: '--el-gradient-gb-color-grey'
+        color: ' #aab0b6'
     },
     {
         id: 3,
         appearanceUrl: '',
         title: '冰凉薄荷',
-        color: '--el-gradient-gb-color-mint'
+        color: '#7db6bf'
     },
     {
         id: 4,
         appearanceUrl: '',
         title: '海岛度假',
-        color: '--el-gradient-gb-color-island'
+        color: '#2fa5a7'
     },
     {
         id: 5,
         appearanceUrl: '',
         title: '凉风',
-        color: '--el-gradient-gb-color-chillybreeze'
+        color: '#609dbf'
     },
     {
         id: 6,
         appearanceUrl: '',
         title: '柔和粉色',
-        color: '--el-gradient-gb-color-softpink'
+        color: ' #d8b2ad'
     },
     {
         id: 7,
         appearanceUrl: '',
         title: '泡泡糖',
-        color: '--el-gradient-gb-color-bubble'
+        color: '#fd70a1'
     },
     {
         id: 8,
         appearanceUrl: '',
         title: '晴天',
-        color: '--el-gradient-gb-color-sunny'
+        color: '#d6af46'
     },
     {
         id: 9,
         appearanceUrl: '',
         title: '芒果天堂',
-        color: '--el-gradient-gb-color-mango'
+        color: '#eb8f3b'
     },
     {
         id: 10,
         appearanceUrl: '',
         title: '雨夜',
-        color: '--el-gradient-gb-color-rain'
+        color: '#38393c'
     }
 ]
 //选中色块的点击事件;
-const userStore = useChangeColor();
-const { color } = storeToRefs(userStore);
-const handleRadioValue = (value: any) => {
-    console.log(value)
-    userStore.setColor(value)
+const ThemeStore = useThemeStore();
+const changeColor = (value: Colors) => {
+    ThemeStore.setThemeColor(value)
 }
+
 
 </script>
 <template>
@@ -257,8 +257,7 @@ const handleRadioValue = (value: any) => {
                 <h4>自定义外观</h4>
                 <el-radio-group v-model="appearanceRadio" class="mt-20 pd-20 grid">
                     <el-radio :label="item.id" class="appearance" v-for="item in appearanceList"
-                        :class="{ 'active-appearance': item.id == appearanceRadio }"
-                        @change="handleRadioValue(item)">
+                        :class="{ 'active-appearance': item.id == appearanceRadio }" @change="changeColor(item)">
                         <div class="color-block">
                             <img :src="item.appearanceUrl" alt="">
                         </div>

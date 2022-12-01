@@ -1,97 +1,190 @@
 <script lang="ts" setup>
-import { Timer } from '@element-plus/icons-vue'
-import { ref } from 'vue'
+import { ref, reactive } from 'vue'
 import axios from '@/assets/api/api'
 
-interface User {
-  date: string
-  name: string
-  address: string
+import { usePageSizeOptionsStore } from '@/stores/tools'
+import { storeToRefs } from "pinia";
+const pageSizeOptionsStore = usePageSizeOptionsStore()
+pageSizeOptionsStore.getStorageStatus()
+const { defaultValue } = storeToRefs(pageSizeOptionsStore)
+const centerDialogVisible = ref(false)
+
+
+let pageNum = ref(1)
+let pageSize = ref(10)
+let total = ref();
+const small = ref(false);
+const disabled = ref(false);
+const ruleForm = reactive({
+    id : 0,
+    content: '',
+    type: [],
+    senderAvatarName : '',
+    createdAt : '',
+    updatedAt : '' 
+  })
+
+// 从pinio中拿到用户设置的默认值;
+if (defaultValue.value) {
+    pageSize.value = defaultValue.value
 }
 
-const handleEdit = (index: number, row: User) => {
+interface received {
+  senderAvatarName: string
+  content: string
+  createdAt: string
+  id: number
+  updatedAt: string
 }
-const handleDelete = (index: number, row: User) => {
+
+function updateTime(time: any) {
+  let date = new Date(time);
+  let year = date.getFullYear();
+  let mounth = date.getMonth() + 1;
+  let day = date.getUTCDate();
+  return `${year}-${mounth}-${day}`;
 }
+
 let getUserMessageList = ref()
 const getUserMessage = async function () {
-   let asd = await axios.getUserMessageApi({})
+   let asd = await axios.getUserMessageApi({
+    pageNum : pageNum.value,
+    pageSize : pageSize.value
+   })
+   total.value = asd.data.total
    getUserMessageList.value = asd.data.list
    console.log(asd);
    
 }
 getUserMessage()
+const handleSizeChange = (val: number) => {
+  pageSize.value = val
+  getUserMessage()
+}
+const handleCurrentChange = (val: number) => {
+  pageNum.value = val
+  getUserMessage()
+}
+
+const updateEditor = function (row : received){
+  ruleForm.id = row.id
+  ruleForm.content = row.content
+  ruleForm.senderAvatarName = row.senderAvatarName
+  ruleForm.updatedAt = row.updatedAt
+  ruleForm.createdAt = row.createdAt
+}
+
+const thisRow = function (row : received){
+  updateEditor(row)
+  console.log(row);
+  
+}
 </script>
 
 <template>
-   <el-table :data="getUserMessageList" style="width: 100%">
 
-    <el-table-column label="编号" >
-      <template #default="scope">
-        <div style="display: flex; align-items: center;">
-          <span style="margin-left: 10px">{{ scope.row.id }}</span>
-        </div>
+  <el-table :data="getUserMessageList" style="width: 100%" fit>
+
+<el-table-column label="ID" width="60">
+  <template #default="scope">
+    <div>
+      <span>{{ scope.row.id }}</span>
+    </div>
+  </template>
+</el-table-column>
+
+<el-table-column label="收件人">
+  <template #default="scope">
+    <el-popover effect="light" trigger="hover" placement="top">
+      <template #default>
+        <div>收件人: {{ scope.row.senderAvatarName }}</div>
       </template>
-    </el-table-column>
-
-    <el-table-column label="用户ID">
-      <template #default="scope">
-        <div style="display: flex; align-items: center;">
-          <span style="margin-left: 10px">{{ scope.row.senderId }}</span>
-        </div>
+      <template #reference>
+        <el-tag>{{ scope.row.senderAvatarName }}</el-tag>
       </template>
-    </el-table-column>
+    </el-popover>
+  </template>
+</el-table-column>
 
-    <el-table-column label="内容">
-      <template #default="scope">
-        <div style="display: flex; align-items: center;">
-          <span style="margin-left: 10px">{{ scope.row.content }}</span>
-        </div>
-      </template>
-    </el-table-column>
+<el-table-column label="创建时间">
+  <template #default="scope">
+    <div>
+      <span>{{ updateTime(scope.row.createdAt) }}</span>
+    </div>
+  </template>
+</el-table-column>
 
-    <el-table-column label="用户昵称">
-      <template #default="scope">
-        <el-popover effect="light" trigger="hover" placement="top" width="auto">
+<el-table-column label="更新时间">
+  <template #default="scope">
+    <div>
+      <span>{{ updateTime(scope.row.updatedAt) }}</span>
+    </div>
+  </template>
+</el-table-column>
 
-          <template #default>
-            <div>name: {{ scope.row.senderAvatarName }}</div>
-            <div>address: {{ scope.row.senderAvatarName }}</div>
-          </template>
+<el-table-column label="内容">
+  <template #default="scope">
+    <div>
+      <span class="content" v-html="scope.row.content"></span>
+    </div>
+  </template>
+</el-table-column>
 
-          <template #reference>
-            <el-tag>{{ scope.row.senderAvatarName }}</el-tag>
-          </template>
+<el-table-column label="操作">
+  <template #default="scope">
+    <div class="flex">
+      <el-link type="success" @click="centerDialogVisible = true,thisRow(scope.row)">查看消息</el-link>
+    </div>
+  </template>
+</el-table-column>
+</el-table>
+  
+<el-dialog
+    v-model="centerDialogVisible"
+    title="内容详情"
+    width="30%"
+    align-center
+  >
+    <p class="warp">收件人 : {{ ruleForm.senderAvatarName }}</p>
+    <p class="warp">收到时间 : {{ updateTime(ruleForm.createdAt) }}</p>
+    <p class="warp">更新时间 : {{ updateTime(ruleForm.updatedAt) }}</p>
+    <p class="warp">消息内容 : </p>
+    <span class="ml-20 inline-block" v-html="ruleForm.content"></span><br>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button type="primary" @click="centerDialogVisible = false">
+          我知道了
+        </el-button>
+      </span>
+    </template>
+  </el-dialog>
 
-        </el-popover>
-      </template>
-    </el-table-column>
+  <div class="demo-pagination-block">
+    <el-pagination v-model:pageNum="pageNum" v-model:page-size="pageSize" :page-sizes="[5, 10, 15, 20, 25, 30]" :small="small"
+      :disabled="disabled" layout="total, sizes, prev, pager, next, jumper" :total="total"
+      @size-change="handleSizeChange" @current-change="handleCurrentChange" class="mt-20"/>
+  </div>
 
-    <el-table-column label="创建时间">
-      <template #default="scope">
-        <div style="display: flex; align-items: center;">
-          <span style="margin-left: 10px">{{ scope.row.createdAt }}</span>
-        </div>
-      </template>
-    </el-table-column>
-
-    <el-table-column label="Operations">
-      <template #default="scope">
-        <el-button size="small" @click="handleEdit(scope.$index, scope.row)"
-          >编辑</el-button
-        >
-        
-        <el-button
-          size="small"
-          type="danger"
-          @click="handleDelete(scope.$index, scope.row)"
-          >删除</el-button
-        >
-      </template>
-    </el-table-column>
-  </el-table>
 </template>
 
 <style scoped>
+:deep(.cell) {
+  text-align: center;
+}
 
+.content {
+  text-overflow: ellipsis;
+  white-space: noWrap;
+  overflow: hidden;
+}
+.flex {
+  display: flex;
+  justify-content: space-around;
+}
+.warp{
+  margin: 10px 0;
+}
+.inline-block{
+  display: inline-block;
+}
 </style>

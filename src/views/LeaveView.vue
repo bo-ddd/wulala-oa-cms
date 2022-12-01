@@ -23,6 +23,14 @@ interface id{
   id : number
 }
 
+let leave = ref();
+//页面的条数
+let pageSize = ref(10);
+//总条数
+let total = ref();
+//总页数
+let pageNum = ref(1);
+
 const handleEdit = async (index: number, row: User) => {
   let setStatus = await axios.examineUserLeaveApi({
     auditStatus: 1,
@@ -49,14 +57,6 @@ function updateTime(time: Date) {
   // console.log(hour);  
   return `${ year }-${ mounth }-${ day }-${ hour }`;
 }
-
-let leave = ref();
-//页面的条数
-let pageSize = ref(10);
-//总条数
-let total = ref();
-//总页数
-let pageNum = ref(1);
 
 // 从pinio中拿到用户设置的默认值;
 if (defaultValue.value) {
@@ -194,6 +194,7 @@ const handleCurrentChange = (val: number) => {
         </div>
       </template>
     </el-table-column>
+
   </el-table>
 
   <div class="demo-pagination-block">
@@ -201,6 +202,7 @@ const handleCurrentChange = (val: number) => {
       :disabled="disabled" layout="total, sizes, prev, pager, next, jumper" :total="total"
       @size-change="handleSizeChange" @current-change="handleCurrentChange" class="mt-20"/>
   </div>
+ 
 
 </template>
 
