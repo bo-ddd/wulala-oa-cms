@@ -131,6 +131,24 @@ const router = createRouter({
             requiresAuth: false
           }
         },
+        {//创建活动页面;
+          path: "/createActivity",
+          name: "createActivity",
+          component: () => import("../views/CreateActivity.vue"),
+          meta: {
+            label: "创建活动",
+            requiresAuth: true
+          }
+        },
+        {//活动专区页面;
+          path: "/activityArea",
+          name: "activityArea",
+          component: () => import("../views/ActivityArea.vue"),
+          meta: {
+            label: "活动专区",
+            requiresAuth: false
+          }
+        },
       ]
     },
   ],
