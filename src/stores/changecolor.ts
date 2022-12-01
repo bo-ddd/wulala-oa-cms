@@ -9,12 +9,11 @@ export const useChangeColor = defineStore('counter', () => {
         title: '默认值',
         color: '--el-gradient-gb-color-default'
     })
-    let color = computed(() => themeColors.color)
+    let color = themeColors.color
 
     //设置主题颜色;
     const setColor = (payLoad: Colors) => {
         Object.assign(themeColors, payLoad)
     }
-
     return { color, setColor }
 })

@@ -141,19 +141,6 @@ const viewDetails = (row: Task) => {
     console.log(row);
     Details.taskName = row.taskName;
     Details.taskDesc = row.description;
-    // if (row.status == 0) {
-    //     percentage.value = "0"
-    //     progressBarStatus.value=''
-    // } else if (row.status == 1) {
-    //     percentage.value = 50;
-    //     progressBarStatus.value='warning'
-    // } else if (row.status == 2) {
-    //     percentage.value = "100";
-    //     progressBarStatus.value='success'
-    // } else if (row.status == 3) {
-    //     percentage.value = "100"
-    //     progressBarStatus.value='exception'
-    // }
     dialogDetailsVisible.value = true;
 
 }
