@@ -3,10 +3,12 @@
 </script>
 
 <template>
-    <div class="containers">
-        <div class="canvas" ref="canvas"></div>
+    <div>
+
     </div>
 </template>
+
+
 
 <style scoped>
 

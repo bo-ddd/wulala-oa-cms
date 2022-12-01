@@ -6,6 +6,7 @@ import axios from '@/assets/api/api'
 import { usePageSizeOptionsStore } from "@/stores/tools";
 import { storeToRefs } from "pinia";
 import { useChangeColor } from "../stores/changecolor"
+import { useStore } from '@/stores/nav';
 const pageSizeOptionsStore = usePageSizeOptionsStore();
 const { SwitchStatus, defaultValue } = storeToRefs(pageSizeOptionsStore);
 
@@ -205,7 +206,7 @@ const appearanceList = [
 const userStore = useChangeColor();
 const { color } = storeToRefs(userStore);
 const handleRadioValue = (value: any) => {
-    console.log(value)
+    console.log(value);
     userStore.setColor(value)
 }
 
@@ -257,8 +258,7 @@ const handleRadioValue = (value: any) => {
                 <h4>自定义外观</h4>
                 <el-radio-group v-model="appearanceRadio" class="mt-20 pd-20 grid">
                     <el-radio :label="item.id" class="appearance" v-for="item in appearanceList"
-                        :class="{ 'active-appearance': item.id == appearanceRadio }"
-                        @change="handleRadioValue(item)">
+                        :class="{ 'active-appearance': item.id == appearanceRadio }" @change="handleRadioValue(item)">
                         <div class="color-block">
                             <img :src="item.appearanceUrl" alt="">
                         </div>
