@@ -2,14 +2,14 @@
 :root {
   --vt-c-white: #ffffff;
   --vt-c-white-soft: #f8f8f8;
-  --el-gradient-gb-color-default: linear-gradient(to bottom, #f47599, #f7c6cd);
-  --el-gradient-gb-color-grey: #aab0b6;
-  --el-gradient-gb-color-mint: #7db6bf;
-  --el-gradient-gb-color-island: #2fa5a7;
-  --el-gradient-gb-color-chillybreeze: #609dbf;
-  --el-gradient-gb-color-softpink: #d8b2ad;
-  --el-gradient-gb-color-bubble: #fd70a1;
-  --el-gradient-gb-color-sunny: #d6af46;
-  --el-gradient-gb-color-mango: #eb8f3b;
-  --el-gradient-gb-color-rain: #38393c;
+  --gradient-bg-color-default: linear-gradient(to bottom, #f47599, #f7c6cd);
+  --gradient-bg-color-grey: #aab0b6;
+  --gradient-bg-color-mint: #7db6bf;
+  --gradient-bg-color-island: #2fa5a7;
+  --gradient-bg-color-chillybreeze: #609dbf;
+  --gradient-bg-color-softpink: #d8b2ad;
+  --gradient-bg-color-bubble: #fd70a1;
+  --gradient-bg-color-sunny: #d6af46;
+  --gradient-bg-color-mango: #eb8f3b;
+  --gradient-bg-color-rain: #38393c;
 }
