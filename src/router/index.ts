@@ -118,7 +118,16 @@ const router = createRouter({
           name: "bpmnDemo",
           component: () => import("../views/BpmnDemo.vue"),
           meta: {
-            label: "日报列表",
+            label: "Bpmn",
+            requiresAuth: false
+          }
+        },
+        {//更新公告页面;
+          path: "/updateAnnouncement",
+          name: "updateAnnouncement",
+          component: () => import("../views/UpdateAnnouncement.vue"),
+          meta: {
+            label: "更新公告",
             requiresAuth: false
           }
         },
