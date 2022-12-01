@@ -141,19 +141,6 @@ const viewDetails = (row: Task) => {
     console.log(row);
     Details.taskName = row.taskName;
     Details.taskDesc = row.description;
-    // if (row.status == 0) {
-    //     percentage.value = "0"
-    //     progressBarStatus.value=''
-    // } else if (row.status == 1) {
-    //     percentage.value = 50;
-    //     progressBarStatus.value='warning'
-    // } else if (row.status == 2) {
-    //     percentage.value = "100";
-    //     progressBarStatus.value='success'
-    // } else if (row.status == 3) {
-    //     percentage.value = "100"
-    //     progressBarStatus.value='exception'
-    // }
     dialogDetailsVisible.value = true;
 
 }
@@ -259,7 +246,8 @@ const statusList = [
         </el-table-column>
         <el-table-column label="等级" align="center">
             <template #default="scope" align="center">
-                <div>{{ taskLevelName(scope.row.level) }}</div>
+                <div v-if="scope.row.level==1" class="red">{{ taskLevelName(scope.row.level) }}</div>
+                <div v-else>{{ taskLevelName(scope.row.level) }}</div>
             </template>
         </el-table-column>
 
@@ -371,5 +359,7 @@ const statusList = [
     text-overflow: ellipsis;
     white-space: nowrap;
 }
-
+.red{
+    color: red;
+}
 </style>

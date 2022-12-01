@@ -2,10 +2,8 @@ import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import { useStore } from "../stores/nav";
 import { storeToRefs } from "pinia";
-import {  ref, onMounted } from 'vue'
-
-import { close, start } from '@/nprogress/nprogress'
-
+import { close, start } from '@/nprogress/nprogress';
+import Loading from "@/assets/loading/loading";
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -112,6 +110,24 @@ const router = createRouter({
           component: () => import("../views/Daily.vue"),
           meta: {
             label: "日报列表",
+            requiresAuth: false
+          }
+        },
+        {//Bpmn页面;
+          path: "/bpmnDemo",
+          name: "bpmnDemo",
+          component: () => import("../views/BpmnDemo.vue"),
+          meta: {
+            label: "Bpmn",
+            requiresAuth: false
+          }
+        },
+        {//更新公告页面;
+          path: "/updateAnnouncement",
+          name: "updateAnnouncement",
+          component: () => import("../views/UpdateAnnouncement.vue"),
+          meta: {
+            label: "更新公告",
             requiresAuth: false
           }
         },
@@ -261,6 +277,7 @@ let dynamicRoutes = [
 
 router.beforeEach(async (to) => {
   start()
+  Loading?.start();
   const userStore = useStore();
   const { userId, userPremissionList } = storeToRefs(userStore);
   let isAuth = sessionStorage.getItem("token");
@@ -287,7 +304,8 @@ router.beforeEach(async (to) => {
 }
 )
 router.afterEach(() => {
-  close()
+  close();
+  Loading?.done();
 })
 
 export default router;

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { reactive, ref, onMounted } from 'vue'
+import { reactive, ref, onMounted ,onUnmounted} from 'vue'
 import { useRouter } from "vue-router";
 import { ElMessage, type FormInstance } from 'element-plus'
 import axios from '@/assets/api/api';
@@ -7,7 +7,6 @@ import { useUserStore } from "../stores/userInfo";
 let userStore = useUserStore()
 const ruleFormRef = ref<FormInstance>();
 let router = useRouter()
-
 
 const ruleForm = reactive({
     username: '',
@@ -19,7 +18,7 @@ const to = function (name: string) {
     router.push(name)
 }
 
-const validate=function(){
+const validate = function () {
     const { username, password } = ruleForm
     if (username == '') {
         ElMessage.warning('账号不能为空')
@@ -36,7 +35,7 @@ const validate=function(){
     }
 
 }
-const submit = async (value:any) => {
+const submit = async (value: any) => {
     validate()
     await axios.loginApi({
         username: ruleForm.username,
@@ -47,18 +46,30 @@ const submit = async (value:any) => {
         userStore.getUserInfo() //调用户信息接口
     })
 }
+const keyDown = (e:any) => {
+  //如果是回车则执行登录方法
+  if (e.keyCode == 13) {
+    console.log(e);
+    submit(ruleForm)
+  }
+}
 //回车自动登录
 onMounted(() => {
-    document.onkeydown = function (e) {
-        let key = e.key;
-        if (key == "Enter") {
-            submit(ruleFormRef.value);
-        }
-    };
+    window.addEventListener('keydown', keyDown)
+    // document.onkeydown = function (e) {
+    //     let key = e.key;
+    //     if (key == "Enter") {
+    //         submit(ruleFormRef.value);
+    //     }
+    // };
+})
+onUnmounted(() => {
+  window.removeEventListener('keydown', keyDown, false)
 })
 </script>
 
 <template>
+     
     <div class="login">
         <div class="login-bar">
             <div class="login-content">
@@ -142,5 +153,8 @@ onMounted(() => {
 :deep(.el-button) {
     width: 100%;
     margin: 10px 0;
+}
+.example-showcase .el-loading-mask {
+  z-index: 9;
 }
 </style>

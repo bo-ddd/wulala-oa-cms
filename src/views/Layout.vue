@@ -51,6 +51,12 @@ const dropDownList = [
     },
     {
         id: 4,
+        name: '更新公告',
+        targetPath: '/updateAnnouncement',
+        childrenList: []
+    },
+    {
+        id: 5,
         name: '退出登录',
         targetPath: '/',
         childrenList: []
