@@ -5,13 +5,15 @@
         
       <MyEditor v-model="ruleForm.desc"></MyEditor>
   
-      <el-button class="submitBtn" type="danger" @click="createMessage()">提交</el-button>
+      <el-button class="submitBtn" type="danger" @click="createMessage">提交</el-button>
+      
     </el-form>
   </template>
     
   <script lang="ts" setup>
   import { reactive, ref, } from 'vue'
   import type { FormInstance } from 'element-plus'
+  import { ElMessage } from 'element-plus'
   import axios from '@/assets/api/api'
   import MyEditor from '@/components/MyEditor.vue'
   const formSize = ref('default')
@@ -22,9 +24,15 @@
   })
   //创建消息方法
   const createMessage = async function () {
-     await axios.createMessageApi({
+    console.log(ruleForm.desc);
+    
+     if(ruleForm.desc == '<p><br></p>'){
+        ElMessage.warning('内容不能为空')
+     }else{
+      await axios.createMessageApi({
           content: ruleForm.desc
         })
+     }
   }
   </script>
   <style scoped>
@@ -46,7 +54,9 @@
     margin-bottom: 20px;
   }
   .submitBtn{
-      margin-left: 20px;
+      margin-top: 20px;
+      margin-right: 200px;
+      float: right;
   }
   </style>
     
