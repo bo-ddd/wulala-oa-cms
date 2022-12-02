@@ -5,6 +5,8 @@ import { Check } from '@element-plus/icons-vue'
 
 const centerDialogVisible = ref(false)
 const updatedVersionDialog = ref(false)
+let title =`版本更新${import.meta.env.VITE_VERSION_CODE}`;
+
 const bannerList = [
   {
     id: 1,
@@ -443,9 +445,12 @@ const toDoList = [
 ]
 
 onMounted(() => {
-  if (!window.sessionStorage.getItem('update')) {
+  //更新日志弹框
+  const localVersion = localStorage.getItem("version");
+  const currentVersion = import.meta.env.VITE_VERSION_CODE;  ///环境变量 .env
+  if(localVersion != currentVersion){
     updatedVersionDialog.value = true;
-    window.sessionStorage.setItem('update', 'true')
+    localStorage.setItem('version', currentVersion);
   }
   contributionList(); //基金贡献占比排行榜;
   assessmentList(); //员工综合评估排行榜;
@@ -543,7 +548,7 @@ onMounted(() => {
     </el-row>
   </div>
 
-  <el-dialog v-model="centerDialogVisible" title="Warning" width="30%" center>
+  <el-dialog v-model="centerDialogVisible" :title="title" width="30%" center>
     <span>
       It should be noted that the content will not be aligned in center by
       default
@@ -557,16 +562,23 @@ onMounted(() => {
       </span>
     </template>
   </el-dialog>
+  <div>
+    <el-dialog v-model="updatedVersionDialog" :title="title" width="30%" align-center>
+      <div class="mb-10">
+        <div class="bold">【更新时间】</div>
+        <div> 2022年12月1日</div>
+      </div>
+      <div class="bold">【更新内容】</div>
+      <div>1、更新了页面未加载出来之前的进度条功能</div>
+      <div>2、增加了我的消息页面功能</div>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button type="primary" @click="updatedVersionDialog = false"> 我知道了</el-button>
+        </span>
+      </template>
+    </el-dialog>
 
-  <el-dialog v-model="updatedVersionDialog" title="版本更新V1.0.0" width="30%" align-center>
-    <div>1、更新了页面未加载出来之前的进度条功能</div>
-    <div>2、增加了我的消息页面功能</div>
-    <template #footer>
-      <span class="dialog-footer">
-        <el-button type="primary" @click="updatedVersionDialog = false"> 我知道了</el-button>
-      </span>
-    </template>
-  </el-dialog>
+  </div>
 </template>
 
 <style scoped>
@@ -766,5 +778,14 @@ onMounted(() => {
 
 .dialog-footer button:first-child {
   margin-right: 10px;
+}
+
+.bold {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.orange {
+  color: rgb(252, 170, 18);
 }
 </style>

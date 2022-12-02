@@ -2,7 +2,7 @@
 import { ref, reactive, watch, type Ref } from 'vue'
 import axios from '@/assets/api/api'
 import { ElMessage, ElMessageBox, ElTree } from 'element-plus'
-import AffixTip from '@/components/AffixTip.vue';
+// import AffixTip from '@/components/AffixTip.vue';
 
 let departmentList = ref();
 let departmentAdd = ref();
@@ -194,7 +194,7 @@ const dialogFormVisibleDelete = ref(false)
             </span>
         </template>
     </el-dialog>
-    <AffixTip class="mt-20"></AffixTip>
+    <!-- <AffixTip class="mt-20"></AffixTip> -->
 </template>
 <style scoped>
 .ipt,

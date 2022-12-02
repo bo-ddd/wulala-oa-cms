@@ -246,7 +246,7 @@ const statusList = [
         </el-table-column>
         <el-table-column label="等级" align="center">
             <template #default="scope" align="center">
-                <div v-if="scope.row.level==1" class="red">{{ taskLevelName(scope.row.level) }}</div>
+                <div v-if="scope.row.level == 1" class="red">{{ taskLevelName(scope.row.level) }}</div>
                 <div v-else>{{ taskLevelName(scope.row.level) }}</div>
             </template>
         </el-table-column>
@@ -271,6 +271,8 @@ const statusList = [
             :disabled="disabled" layout="total, sizes, prev, pager, next, jumper" :total="total"
             @size-change="handleSizeChange" @current-change="handleCurrentChange" />
     </div>
+    <!-- 底部提示框 -->
+    <AffixTip class="mt-20"></AffixTip>
 
     <!-- 状态弹层 -->
     <el-dialog v-model="dialogFormVisible" title="任务状态">
@@ -359,7 +361,8 @@ const statusList = [
     text-overflow: ellipsis;
     white-space: nowrap;
 }
-.red{
+
+.red {
     color: red;
 }
 </style>
