@@ -6,69 +6,76 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { usePageSizeOptionsStore } from '@/stores/tools'
 import { storeToRefs } from "pinia";
 import AffixTip from '@/components/AffixTip.vue';
-const pageSizeOptionsStore = usePageSizeOptionsStore()
-pageSizeOptionsStore.getStorageStatus()
-const { defaultValue } = storeToRefs(pageSizeOptionsStore)
+import type { TableData, UserQuitListParam, ApprovalForm } from '@/types/Dimission';
 
-//分页参数;
+//pinia模块，动态改变一页显示最佳条数;
+const pageSizeOptionsStore = usePageSizeOptionsStore()
+const { defaultValue } = storeToRefs(pageSizeOptionsStore)  //从pinia中拿到一页显示的默认条数; 
 const currentPage = ref(1) //当前是第几页;
 const pageSize = ref(10)  //每页显示的条数;
-const total = ref(0)
-// 从pinio中拿到用户设置的默认值;
-if (defaultValue.value) {
-    pageSize.value = defaultValue.value
-}
+const total = ref(0) //总条数;
+const tableData = reactive<TableData[]>([]) //审核列表的数据对象;
+const dialogFormVisible = ref(false) //审核按钮弹出框状态;
+const applicantId = ref(0) //离职申请人的ID;
+const approvalFormRef = ref<FormInstance>() //审核弹出框中的表单验证实例;
 
-
-//每页显示条数改变时的回调;
-const handleSizeChange = (val: number) => {
-    pageSize.value = val
-    queryDimissionInfo()
-}
-//改变页数时的回调;
-const handleCurrentChange = (val: number) => {
-    currentPage.value = val
-    queryDimissionInfo()
-}
-
-interface TableData {
-    id: number
-    userId: number
-    department: string
-    postName: string
-    avatarName: string | null
-    applyTime: string
-    quitTime: string
-    reason: string
-    enclosure: string
-    status: number
-}
-const tableData = reactive<TableData[]>([])
-
-enum StateCode {
+const StateCodeString = ['全部', '待审核', '审核通过', '拒绝']; //获取-审核状态-查询列表;
+const userAvatarNameList = reactive<string[]>([]) //用户昵称列表;
+const dialogFormVisibleEnclosure = ref(false); //附件弹出框的显示状态;
+const enclosureUrl = ref<string>(''); //附件弹出框中显示的图片Url;
+const approvalForm = reactive<ApprovalForm>({//审核弹出框的表单数据;
+    id: 0,
+    operation: '',
+    suggestion: ''
+})
+const rules = reactive<FormRules>({//审核弹出框的表单验证;
+    operation: [
+        {
+            required: true,
+            message: '请您完成审核',
+            trigger: 'change'
+        }
+    ]
+})
+const queryOption: any = reactive({ //离职列表查询选项的值;
+    avatarName: '',
+    status: '全部',
+    duration: '',
+})
+enum StateCode { //审核状态查询列表;
     '待审核',
     '审核通过',
     '拒绝'
 }
-
-enum tagType {
+enum tagType { //审核状态的b背景颜色;
     '',
     success,
     danger,
 }
 
-//查询参数的类型;
-interface UserQuitListParam {
-    avatarName?: string,
-    status?: number,
-    applyStartTime?: string,
-    applyEndTime?: string,
-    pageSize: number,
-    pageNum: number
+pageSizeOptionsStore.getStorageStatus() //从pinia中拿到当前存储状态;
+pageSize.value = defaultValue.value ? defaultValue.value : pageSize.value; // 从pinio中拿到用户设置的默认值;
+getUserQuitList({ //刷新页面，初始化数据列表;
+    pageSize: pageSize.value,
+    pageNum: currentPage.value
+})
+getUserAvatarNameList() //获取用户昵称查询列表;
 
+
+//每页显示条数改变时的回调;
+function handleSizeChange(val: number) {
+    pageSize.value = val
+    queryDimissionInfo()
 }
+
+//改变页数时的回调;
+function handleCurrentChange(val: number) {
+    currentPage.value = val
+    queryDimissionInfo()
+}
+
 //获取离职列表数据;
-const getUserQuitList = async (param: UserQuitListParam) => {
+async function getUserQuitList(param: UserQuitListParam) {
     let { data } = await axios.getQuitListApi(param)
     total.value = data.total;
     tableData.length = 0;
@@ -90,64 +97,34 @@ const getUserQuitList = async (param: UserQuitListParam) => {
         })
     })
 }
-//刷新页面，初始化数据列表;
-getUserQuitList({
-    pageSize: pageSize.value,
-    pageNum: currentPage.value
-})
 
 //处理时间数据格式Api;
-const handleTimeFormat = (time: string) => {
+function handleTimeFormat(time: string) {
     return time.substring(0, 10)
 }
 
 //审核按钮的点击事件;
-const handleEdit = async (index: number, row: TableData) => {
+async function handleEdit(index: number, row: TableData) {
     dialogFormVisible.value = true
     approvalForm.id = row.id
     applicantId.value = row.userId
-
 }
-//审核按钮弹层;
-const dialogFormVisible = ref(false)
-const approvalFormRef = ref<FormInstance>()
 
-interface ApprovalForm {
-    id: number;
-    operation: string;
-    suggestion: string;
-}
-const approvalForm = reactive<ApprovalForm>({
-    id: 0,
-    operation: '',
-    suggestion: ''
-})
-
-const rules = reactive<FormRules>({
-    operation: [
-        {
-            required: true,
-            message: '请您完成审核',
-            trigger: 'change'
-        }
-    ]
-})
-
-const resetForm = (formEl: FormInstance | undefined) => {
+//审核弹层中的重置按钮的点击事件;
+function resetForm(formEl: FormInstance | undefined) {
     if (!formEl) return
     formEl.resetFields()
 }
 //通知申请人审核结果功能;
-const applicantId = ref(0);
 //创建消息api;
-const createMessage = async (text: string) => {
+async function createMessage(text: string) {
     let { data } = await axios.createMessageApi({
         content: text
     })
     return data.id
 }
 //发送消息;
-const sentMessage = async (text: string) => {
+async function sentMessage(text: string) {
     axios.sendMessageApi({
         userId: applicantId.value,
         msgId: await createMessage(text)
@@ -155,7 +132,7 @@ const sentMessage = async (text: string) => {
 }
 
 //完后审核，提交表单;
-const submitForm = async (formEl: FormInstance | undefined) => {
+async function submitForm(formEl: FormInstance | undefined) {
     if (!formEl) return
     await formEl.validate((valid, fields) => {
         if (valid) {
@@ -199,19 +176,9 @@ const submitForm = async (formEl: FormInstance | undefined) => {
         }
     })
 }
-//查询选项;
-const queryOption: any = reactive({
-    avatarName: '',
-    status: '全部',
-    duration: '',
-})
-
-//获取-审核状态-查询列表;
-const StateCodeString = ['全部', '待审核', '审核通过', '拒绝'];
 
 //获取-用户昵称-查询列表;
-const userAvatarNameList = reactive<string[]>([])
-const getUserAvatarNameList = async () => {
+async function getUserAvatarNameList() {
     const res = await axios.getUserListApi({
         pageSize: 2147483647
     })
@@ -220,11 +187,9 @@ const getUserAvatarNameList = async () => {
         userAvatarNameList.push(item.avatarName)
     })
 }
-getUserAvatarNameList()
 
 //查询数据;
-const queryDimissionInfo = () => {
-
+function queryDimissionInfo() {
     getUserQuitList({
         avatarName: queryOption.avatarName, //姓名
         status: Number(StateCode[queryOption.status]), //审核状态
@@ -236,7 +201,7 @@ const queryDimissionInfo = () => {
 }
 
 // 判断是否有权限审核;
-const isApprover = async (applicationUserId: number) => {
+async function isApprover(applicationUserId: number) {
     // 对比申请人与当前用户的上下级关系
     //获取申请人的资料;
     const { data } = await axios.queryUserInfoApi({})
@@ -258,13 +223,10 @@ const isApprover = async (applicationUserId: number) => {
 }
 
 //查看附件弹框;
-const dialogFormVisibleEnclosure = ref(false);
-const enclosureUrl = ref<string>('');
-const getEnclosureUrl = (imgUrl: string) => {
+function getEnclosureUrl(imgUrl: string) {
     dialogFormVisibleEnclosure.value = true;
     enclosureUrl.value = imgUrl
 }
-
 </script>
 
 <template>
