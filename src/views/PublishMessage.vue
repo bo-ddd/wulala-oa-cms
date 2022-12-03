@@ -1,9 +1,11 @@
 <template>
 
   <div style="display: inline-block" class="mb-10">
+    <span class="label">请选择组 : </span>
     <el-select v-model="deptValue" clearable placeholder="所在分组" size="small" @change="changeMembers">
       <el-option v-for="(group, index) in deptList" :key="index" :label="group.name" :value="group.id" />
     </el-select>
+   <span class="label ml-20">接收人 : </span> 
     <el-select v-model="deptMembersValue" multiple placeholder="谁接收消息" style="width: 240px" @change="receiveMessages"
       size="small" class="ml-10">
       <el-option v-for="(item, index) in deptMembersList" :key="index" :label="item.avatarName" :value="item.userId" />
@@ -161,6 +163,7 @@ const queryUserMembers = async function () {
     deptId: deptId.value
   })
   if (res.status == 1) {
+    deptMembersList.length = 0
     deptMembersList.push(...res.data)
   }
 }
@@ -231,16 +234,17 @@ const modifyMessage = async function () {
 :deep(.cell) {
   text-align: center;
 }
-
 .content {
   text-overflow: ellipsis;
   white-space: noWrap;
   overflow: hidden;
 }
-
 .flex {
   display: flex;
   justify-content: space-around;
+}
+.label{
+  font-size: 14px;
 }
 </style>
   
