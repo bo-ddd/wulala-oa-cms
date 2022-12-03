@@ -5,31 +5,11 @@ import type { FormInstance, FormRules } from 'element-plus'
 import { ArrowLeft } from '@element-plus/icons-vue';
 import axios from '../assets/api/api';
 import { ElMessage } from 'element-plus';
+import type { UserInfoForm } from '@/types/User';
 
 const router = useRouter();
-const to = (name: string) => {
-    router.push(name)
-}
-
-//form表单
-const formSize = ref('default')
 const ruleFormRef = ref<FormInstance>()
-
-interface RuleForm {
-    avatarName: string;
-    birthday: Date | number | null;
-    hobby: string;
-    personalSignature: string;
-    phoneNumber: string;
-    sex: number | string;
-    userId: number;
-    address: string;
-}
-
-
-const ruleForm = reactive({} as RuleForm)
-
-//form表单校验规则
+const userInfoForm = reactive({} as UserInfoForm)
 const rules = reactive<FormRules>({
     avatarName: [
         { required: true, message: '请输入昵称', trigger: 'blur' },
@@ -74,25 +54,32 @@ const rules = reactive<FormRules>({
         { required: true, message: '请输入您的家庭住址', trigger: 'blur' },
         { min: 0, max: 30, message: '长度不能超过30个字符', trigger: 'blur' },
     ]
-})
+});
 
-const submitForm = async (formEl: FormInstance | undefined) => {
+//刷新页面，调用用户信息接口，渲染个人页面数据;
+(async () => {
+    let data = (await axios.queryUserInfoApi({})).data;
+    Object.assign(userInfoForm, data);
+    userInfoForm.sex = data.sex == 1 ? "男" : "女";
+})();
+
+async function submitForm(formEl: FormInstance | undefined) {
     if (!formEl) return
     await formEl.validate((valid, fields) => {
         if (valid) {
-            ruleForm.sex = ruleForm.sex == "男" ? 1 : 0;
-            if (!ruleForm.birthday) {
-                ruleForm.birthday = null
+            userInfoForm.sex = userInfoForm.sex == "男" ? 1 : 0;
+            if (!userInfoForm.birthday) {
+                userInfoForm.birthday = null
             } else {
-                ruleForm.birthday = new Date(ruleForm.birthday).valueOf();
+                userInfoForm.birthday = new Date(userInfoForm.birthday).valueOf();
             }
 
-            axios.updateUserInfoApi(ruleForm).then(res => {
+            axios.updateUserInfoApi(userInfoForm).then(res => {
                 ElMessage({
                     message: '修改成功',
                     type: 'success',
                 })
-                to('mine')
+                router.push('mine')
             })
         } else {
             ElMessage.error('修改失败')
@@ -104,37 +91,22 @@ const resetForm = (formEl: FormInstance | undefined) => {
     if (!formEl) return
     formEl.resetFields()
 }
-
-const options = Array.from({ length: 10000 }).map((_, idx) => ({
-    value: `${idx + 1}`,
-    label: `${idx + 1}`,
-}));
-
-//刷新页面，调用用户信息接口，渲染个人页面数据
-
-(async () => {
-    let data = (await axios.queryUserInfoApi({})).data;
-    Object.assign(ruleForm, data);
-    ruleForm.sex = data.sex == 1 ? "男" : "女";
-})();
-
-
 </script>
 
 <template>
     <div class="main">
-        <el-page-header :icon="ArrowLeft" title="返回" @back="to('mine')">
+        <el-page-header :icon="ArrowLeft" title="返回" @back="router.push('mine')">
             <template #content>
                 <span class="text-large font-600 mr-3"> 编辑资料 </span>
             </template>
         </el-page-header>
-        <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" label-width="120px" class="demo-ruleForm mt-24 flex-col"
-            :size="formSize" status-icon hide-required-asterisk>
+        <el-form ref="ruleFormRef" :model="userInfoForm" :rules="rules" label-width="120px"
+            class="demo-ruleForm mt-24 flex-col" status-icon hide-required-asterisk>
             <el-form-item label="昵称" prop="avatarName" class="name-label">
-                <el-input v-model="ruleForm.avatarName" />
+                <el-input v-model="userInfoForm.avatarName" />
             </el-form-item>
             <el-form-item label="性别" prop="sex" class="mt-20">
-                <el-radio-group v-model="ruleForm.sex">
+                <el-radio-group v-model="userInfoForm.sex">
                     <el-radio label="男" />
                     <el-radio label="女" />
                 </el-radio-group>
@@ -143,27 +115,28 @@ const options = Array.from({ length: 10000 }).map((_, idx) => ({
             <el-form-item label="生日" required class="birthday-label mt-20">
                 <el-col :span="11">
                     <el-form-item prop="birthday">
-                        <el-date-picker v-model="ruleForm.birthday" type="date" label="Pick a date"
+                        <el-date-picker v-model="userInfoForm.birthday" type="date" label="Pick a date"
                             placeholder="选择日期" />
                     </el-form-item>
                 </el-col>
             </el-form-item>
 
             <el-form-item label="联系方式" prop="phoneNumber" class="mt-20">
-                <el-input v-model="ruleForm.phoneNumber" type="text" placeholder="请输入11位手机号码" />
+                <el-input v-model="userInfoForm.phoneNumber" type="text" placeholder="请输入11位手机号码" />
             </el-form-item>
 
             <el-form-item label="详细地址" prop="address" class="mt-20">
-                <el-input v-model="ruleForm.address" type="text" placeholder="省/市/县/镇/" />
+                <el-input v-model="userInfoForm.address" type="text" placeholder="省/市/县/镇/" />
             </el-form-item>
 
             <el-form-item label="个人爱好" prop="hobby" class="mt-20">
-                <el-input v-model="ruleForm.hobby" type="text" placeholder="如吃瓜，户外运动" />
+                <el-input v-model="userInfoForm.hobby" type="text" placeholder="如吃瓜，户外运动" />
             </el-form-item>
 
             <el-form-item label="个性签名" prop="personalSignatrue" class="mt-20">
-                <el-input v-model="ruleForm.personalSignature" type="text" placeholder="非必填项" />
+                <el-input v-model="userInfoForm.personalSignature" type="text" placeholder="非必填项" />
             </el-form-item>
+
             <div class="btn mt-20">
                 <el-button type="danger" @click="submitForm(ruleFormRef)">确认</el-button>
                 <el-button @click="resetForm(ruleFormRef)">重置</el-button>
@@ -177,23 +150,25 @@ const options = Array.from({ length: 10000 }).map((_, idx) => ({
     width: 200px
 }
 
-.main{
+.main {
     background-color: white;
-    height:100%;
-    padding:20px 10px;
+    height: 100%;
+    padding: 20px 10px;
     box-sizing: border-box;
 }
-.flex-col{
+
+.flex-col {
     display: flex;
     flex-direction: column;
-    width:60%;
+    width: 60%;
     justify-content: center;
-    margin:40px auto;
+    margin: 40px auto;
     background-color: white;
 }
-.btn{
-   display: flex;
-   gap:10px;
-   justify-content: center;
+
+.btn {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
 }
 </style>
