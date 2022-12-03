@@ -44,10 +44,6 @@ const ruleForm = reactive({
 })
 
 const rules = reactive<FormRules>({
-  // name: [
-  //   { required: true, message: 'Please input Activity name', trigger: 'blur' },
-  //   { min: 1, max: 3, message: 'Length should be 3 to 5', trigger: 'blur' },
-  // ],
   date1: [
     {
       type: 'date',
@@ -73,7 +69,7 @@ const rules = reactive<FormRules>({
     },
   ],
   desc: [
-    { required: true, message: 'Please input activity form', trigger: 'blur' },
+    { required: true, message: '请假理由不能为空！！！', trigger: 'blur' },
   ],
 });
 
@@ -89,7 +85,7 @@ const submitForm = (formEl: FormInstance | undefined) => {
     if (valid) {
       console.log('submit!');
       alert("提交成功")
-      let userInfo = await axios.createLeaveApi({
+       await axios.createLeaveApi({
         userId: ruleForm.id,
         reason: ruleForm.desc,
         startTime: ruleForm.dateValue[0],
@@ -97,17 +93,12 @@ const submitForm = (formEl: FormInstance | undefined) => {
       });
       formEl.resetFields()
     } else {
-      // console.log('error submit!', fields)
       alert('提交错误')
       formEl.resetFields()
     }
   })
 }
 
-// const resetForm = (formEl: FormInstance | undefined) => {
-//   if (!formEl) return
-//   formEl.resetFields()
-// }
 
 </script>
 <style scoped>
