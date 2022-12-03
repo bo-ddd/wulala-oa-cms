@@ -7,67 +7,61 @@ import type { Task } from "../types/Task";
 import { useStore } from "@/stores/nav";
 import { usePageSizeOptionsStore } from '@/stores/tools'
 import { storeToRefs } from "pinia";
-import Loading from '@/components/laoding/index.vue'
 
-let isLoading = ref(true);
-const loadPageData = function () {
-    // if(){}
-    // // axios 请求页面数据 .then 中将状态值修改                                                       
-    isLoading.value = false;
-}
-onMounted(async () => {
-    loadPageData()
-})
 const pageSizeOptionsStore = usePageSizeOptionsStore()
-pageSizeOptionsStore.getStorageStatus()
 const { defaultValue } = storeToRefs(pageSizeOptionsStore)
 
-let userStore = useStore()
-let isCreated = ref(true);
-let rowTaskId = ref(0)
-const deptValue = ref()
-const deptMembersValue = ref()
-let deptList = reactive<Dept[]>([])
-let deptMembersList = reactive<DeptMember[]>([])
-let taskReception = ref();
-let deptId = ref(0)
+const userStore = useStore()
+const isCreated = ref(true);
+const rowTaskId = ref(0)
+const selectDept = ref('')
+const selectRecipient = ref('')
+const deptList = reactive<Dept[]>([])
+const deptMembersList = reactive<DeptMember[]>([])
+const taskReception = ref();
+const deptId = ref(0)
 //分页
 const pageNum = ref(1)
 const pageSize = ref(10)
 const disabled = ref(false)
-const total = ref()
-let taskList = reactive<Task[]>([])
-const searchTaskName = ref('')
-let dialogFormVisible = ref(false)
-let dialogTaskVisible = ref(false)
+const total = ref<number>()
+const taskList = reactive<Task[]>([])
+const search=reactive({
+    searchTaskName:'',
+    searchTaskLevel:''
+})
+const dialogFormVisible = ref(false)
+const dialogTaskVisible = ref(false)
 const formLabelWidth = '140px'
-let title = ref<string>()
-let msgId = ref()
+const title = ref<string>()
+const msgId = ref()
+const form = reactive({
+    taskName: '',
+    description: '',
+    level: 0,
+    id: 0,
+    receive:''
+})
+getTaskList()
+getUserDeptList()
+pageSizeOptionsStore.getStorageStatus()
+
 // 从pinio中拿到用户设置的默认值;
 if (defaultValue.value) {
     pageSize.value = defaultValue.value
 }
 const handleSizeChange = (val: number) => {
-    console.log(`一页有${val} `)
     pageSize.value = val
     getTaskList()
 }
 const handleCurrentChange = (val: number) => {
-    console.log(`当前几页 :${val}`)
     pageNum.value = val
     getTaskList()
 }
-
-let form = reactive({
-    taskName: '',
-    description: '',
-    level: 0,
-    id: 0,
-})
 //搜索
 const searchTask = async function () {
     let res = await axios.getTaskListApi({
-        taskName: searchTaskName.value
+        taskName:search.searchTaskName
     })
     let data = res.data.list;
     console.log(data);
@@ -75,7 +69,7 @@ const searchTask = async function () {
     taskList.push(...data)
 }
 //封装列表接口
-let getTaskList = async function () {
+async function getTaskList() {
     let res = await axios.getTaskListApi({
         pageNum: pageNum.value,
         pageSize: pageSize.value,
@@ -99,7 +93,7 @@ const queryUserMembers = async function () {
     }
 }
 //获取用户所在的组列表
-const getUserDeptList = async function () {
+async function getUserDeptList() {
     let res = await axios.getUserDeptListApi({
         userId: userStore.userId
     })
@@ -163,27 +157,11 @@ const publishTask = function () {
 //领取任务接口
 const receivePublishTask = async function (params: any) {
     let res = await axios.publishTaskApi(params)
-    // if (res.status == 1) {
-    //     console.log(res);
-    //     ElMessage({
-    //         message: '领取成功',
-    //         type: 'success',
-    //     })
     sendMessage({
         userId: rowTaskId.value,
         msgId: msgId.value
     })
-
-    // } else {
-    //     ElMessage({
-    //         message: res.msg,
-    //         type: 'warning',
-    //     })
-    // }
 }
-/// 生成消息接口
-getTaskList()
-getUserDeptList()
 //确定删除
 const deleteTask = (row: Task) => {
     ElMessageBox.confirm(
@@ -216,8 +194,8 @@ const initFormData = function () {
     form.taskName = '';
     form.description = '';
     form.level = 0;
-    deptValue.value = ''
-    deptMembersValue.value = ''
+    selectDept.value = ''
+    selectRecipient.value = ''
 
 }
 const updateTaskDuplicate = function (row: Task) {
@@ -296,16 +274,11 @@ const receiveTask = function (row: Task) {
         taskId: row.id
     })
 }
-
 </script>
 <template>
-    <div>
-        <transition name="fade">
-            <loading v-if="isLoading"></loading>
-        </transition>
-    </div>
     <div class="search">
-        <el-input v-model="searchTaskName" placeholder="输入名称搜索" />
+        <el-input v-model="search.searchTaskName" placeholder="输入名称搜索" />
+        <el-input v-model="search.searchTaskLevel" placeholder="按紧急程度搜索" class="ml-20" />
         <el-button type="danger" class="ml-10" plain @click="searchTask">
             <el-icon>
                 <Search />
@@ -316,7 +289,7 @@ const receiveTask = function (row: Task) {
             <el-icon>
                 <Plus />
             </el-icon>
-            <span>新增</span>
+            <span>创建任务</span>
         </el-button>
     </div>
     <el-table :data="taskList" style="width: 100%" class="mt-20">
@@ -392,6 +365,12 @@ const receiveTask = function (row: Task) {
                     <el-radio :label="1">紧急</el-radio>
                 </el-radio-group>
             </el-form-item>
+            <el-form-item label="是否可领取" :label-width="formLabelWidth">
+                <el-radio-group v-model="form.receive">
+                    <el-radio :label="0">可领取</el-radio>
+                    <el-radio :label="1">不可领</el-radio>
+                </el-radio-group>
+            </el-form-item>
 
         </el-form>
         <template #footer>
@@ -406,13 +385,13 @@ const receiveTask = function (row: Task) {
     <!-- //发送任务弹层 -->
     <el-dialog v-model="dialogTaskVisible" title="发布消息">
         <el-form-item label="所在组">
-            <el-select v-model="deptValue" placeholder="请选择组" @change="groupChange">
+            <el-select v-model="selectDept" placeholder="请选择组" @change="groupChange">
                 <el-option v-for="(group, index) in deptList" :key="index" :label="group.deptName"
                     :value="group.deptId" />
             </el-select>
         </el-form-item>
         <el-form-item label="接收人">
-            <el-select v-model="deptMembersValue" multiple placeholder="请选择接收人" @change="taskRecipient">
+            <el-select v-model="selectRecipient" multiple placeholder="请选择接收人" @change="taskRecipient">
                 <el-option v-for="(item, index) in deptMembersList" :key="index" :label="item.avatarName"
                     :value="item.userId" />
             </el-select>

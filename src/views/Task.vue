@@ -23,17 +23,79 @@ const pageNum = ref(1)
 const pageSize = ref(10)
 const total = ref()
 const disabled = ref(false)
-// 从pinio中拿到用户设置的默认值;
-if (defaultValue.value) {
-    pageSize.value = defaultValue.value
-}
+//查看详情 
+const Details: any = reactive({
+    taskName: '',
+    taskDesc: '',
+})
 const searchForm: any = reactive({
     userId: '',
     level: '',
     status: ''
 })
+enum StateCode {
+    未开始 = 0,
+    进行中,
+    已完成,
+    已过期,
+
+}
+enum tagType {
+    '' = 0,
+    warning = 1,
+    success,
+    danger,
+}
+
+const levelList = [
+    {
+        value: '',
+        label: '全部',
+    },
+    {
+        value: 1,
+        label: '普通',
+    },
+    {
+        value: 2,
+        label: '紧急',
+    },
+]
+const statusList = [
+    {
+        value: '',
+        label: '全部',
+    },
+    {
+        value: 0,
+        label: '未开始',
+    },
+    {
+        value: 1,
+        label: '进行中',
+    },
+    {
+        value: 2,
+        label: '已完成',
+    },
+    {
+        value: 3,
+        label: '已过期',
+    },
+]
+getUserList()
+//刚进页面调用户任务列表接口
+getUserTaskList({
+    pageNum: pageNum.value,
+    pageSize: pageSize.value,
+})
+
+// 从pinio中拿到用户设置的默认值;
+if (defaultValue.value) {
+    pageSize.value = defaultValue.value
+}
 //封装用户任务列表
-const getUserTaskList = async function (params: QueryTask) {
+ async function getUserTaskList(params: QueryTask) {
     let res = await axios.getUserTaskListApi(params)
     if (res.status == 1) {
         total.value = res.data.total;
@@ -48,7 +110,7 @@ const getUserTaskList = async function (params: QueryTask) {
     }
 }
 //获取用户列表
-const getUserList = async function () {
+async function getUserList() {
     let res = await axios.getUserListApi({
         pageSize: 2147483647   //int类型最大值
     })
@@ -60,12 +122,6 @@ const getUserList = async function () {
 
     }
 }
-//刚进页面调用户任务列表接口
-getUserTaskList({
-    pageNum: pageNum.value,
-    pageSize: pageSize.value,
-})
-getUserList()
 //点击任务状态按钮
 const updateTask = (row: Task) => {
     taskStatus.value = row.status;
@@ -113,21 +169,6 @@ const handleCurrentChange = (val: number) => {
         userId: searchForm.userId
     })
 }
-enum StateCode {
-    未开始 = 0,
-    进行中,
-    已完成,
-    已过期,
-
-}
-
-enum tagType {
-    '' = 0,
-    warning = 1,
-    success,
-    danger,
-}
-
 const queryTask = () => {
     getUserTaskList({
         pageNum: pageNum.value,
@@ -144,54 +185,6 @@ const viewDetails = (row: Task) => {
     dialogDetailsVisible.value = true;
 
 }
-//查看详情 
-const Details: any = reactive({
-    taskName: '',
-    taskDesc: '',
-})
-
-
-
-//查看详情弹层确定按钮
-// const DetailsSubmit = function () {
-
-// }
-const levelList = [
-    {
-        value: '',
-        label: '全部',
-    },
-    {
-        value: 1,
-        label: '普通',
-    },
-    {
-        value: 2,
-        label: '紧急',
-    },
-]
-const statusList = [
-    {
-        value: '',
-        label: '全部',
-    },
-    {
-        value: 0,
-        label: '未开始',
-    },
-    {
-        value: 1,
-        label: '进行中',
-    },
-    {
-        value: 2,
-        label: '已完成',
-    },
-    {
-        value: 3,
-        label: '已过期',
-    },
-]
 
 </script>
 <template>
@@ -301,19 +294,12 @@ const statusList = [
                 <span v-if="Details.taskDesc">{{ Details.taskDesc }}</span>
                 <span v-else class="noDesc">暂无描述…</span>
             </el-form-item>
-            <!-- <el-form-item label="任务进度">
-                    <div class="demo-progress">
-                        <el-progress :text-inside="true" :stroke-width="22" :percentage="percentage" :status="progressBarStatus" />
-                        <span v-if="progressBarStatus=='exception'" style="color:red">已过期</span>
-                    </div>
-                </el-form-item> -->
+           
         </el-form>
         <template #footer>
             <span class="dialog-footer">
                 <el-button @click="dialogDetailsVisible = false">取消</el-button>
-                <!-- <el-button type="danger" @click="DetailsSubmit">
-                    确定
-                </el-button> -->
+               
             </span>
         </template>
     </el-dialog>
