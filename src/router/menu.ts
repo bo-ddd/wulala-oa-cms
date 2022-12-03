@@ -75,6 +75,12 @@ let requiresAuthList = [
         name: '部门管理',
         targetPath: '/department',
         requiresAuth: true
+    },
+    {
+        id: 801,
+        name:'创建活动',
+        targetPath: '/createActivity',
+        requiresAuth: true
     }
 ]
 
@@ -171,6 +177,21 @@ let sidebarList: Parent[] = [
     },
     {
         id: 8,
+        icon: 'Present',
+        name: '活动管理',
+        targetPath: '',
+        childrenList: [
+            {
+                id: 802,
+                name:'活动专区',
+                targetPath: '/activityArea',
+                requiresAuth: false
+            }
+        ],
+        requiresAuth: false
+    },
+    {
+        id: 9,
         icon: 'Tools',
         name: '设置',
         targetPath: '',

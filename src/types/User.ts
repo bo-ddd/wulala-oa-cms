@@ -25,3 +25,13 @@ export interface UserRegister {
 export interface UserId{
     userId: number;
 }
+export interface UserInfoForm {
+    avatarName: string;
+    birthday: Date | number | null;
+    hobby: string;
+    personalSignature: string;
+    phoneNumber: string;
+    sex: number | string;
+    userId: number;
+    address: string;
+}

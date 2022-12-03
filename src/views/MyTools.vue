@@ -5,7 +5,6 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import axios from '@/assets/api/api'
 import { usePageSizeOptionsStore } from "@/stores/tools";
 import { storeToRefs } from "pinia";
-import { useThemeStore } from '@/stores/themeColors'
 import type { Colors } from "@/types/ThemeColors"
 const pageSizeOptionsStore = usePageSizeOptionsStore();
 const { SwitchStatus, defaultValue } = storeToRefs(pageSizeOptionsStore);
@@ -203,9 +202,8 @@ const appearanceList = [
     }
 ]
 //选中色块的点击事件;
-const ThemeStore = useThemeStore();
 const changeColor = (value: Colors) => {
-    ThemeStore.setThemeColor(value)
+    localStorage.setItem('color', value.color)
 }
 
 
@@ -258,7 +256,7 @@ const changeColor = (value: Colors) => {
                 <el-radio-group v-model="appearanceRadio" class="mt-20 pd-20 grid">
                     <el-radio :label="item.id" class="appearance" v-for="item in appearanceList"
                         :class="{ 'active-appearance': item.id == appearanceRadio }" @change="changeColor(item)">
-                        <div class="color-block">
+                        <div class="color-block" style="background-color:v-bind(item.color)">
                             <img :src="item.appearanceUrl" alt="">
                         </div>
                         <div class="title">{{ item.title }}</div>
