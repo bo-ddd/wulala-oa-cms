@@ -8,34 +8,41 @@ import axios from '../assets/api/api';
 import type { UploadInstance, UploadProps } from 'element-plus';
 import { useUserStore } from '@/stores/userInfo';
 import { storeToRefs } from "pinia";
+
+//pinia模块，实时更新头像功能;
 const userStore = useUserStore();
 const { userInfo: userInfos } = storeToRefs(userStore)
 const userInfo = userInfos.value;
+
+const router = useRouter();
+const activeName = ref('first')
+const disabled: Ref = ref(true);
+const age = ref<number | null>()
+const birthday = ref<string | null>()
+const state = reactive({//用户头像自适应功能;
+    fit: 'fill',
+    url: 'https://img.ixintu.com/download/jpg/20200815/18ae766809ff27de6b7a942d7ea4111c_512_512.jpg!bg',
+})
+const { fit, url } = toRefs(state);
+const isOver: Ref = ref(false); //切换头像时鼠标移入的状态;
+
+const dialogAvatarVisible = ref(false); //更换头像的弹出框;
+const uploadUrl = ref(''); //头像的Url;
+const upload = ref<UploadInstance>()
+
+
 onMounted(async () => {
     await userStore.getUserInfo()
     handleUserBirthday()
 
 })
-const router = useRouter();
-const activeName = ref('first')
-const disabled: Ref = ref(true);
-let age = ref<number | null>()
-let birthday = ref<string | null>()
-
-//用户头像自适应功能;
-const state = reactive({
-    fit: 'fill',
-    url: 'https://img.ixintu.com/download/jpg/20200815/18ae766809ff27de6b7a942d7ea4111c_512_512.jpg!bg',
-})
-
-const { fit, url } = toRefs(state);
 
 //公共路由跳转方法：
-const to = (name: string) => {
+function to(name: string) {
     router.push(name)
 }
 
-const updateUserInfoApi = (payLoad: {}) => {
+function updateUserInfoApi(payLoad: {}) {
     return axios.updateUserInfoApi({
         userId: userInfo.userId,
         sex: userInfo.sex,
@@ -70,7 +77,6 @@ function toBlur() {
 }
 
 //切换头像入口状态;
-const isOver: Ref = ref(false);
 function enterStatus() {
     isOver.value = true;
 }
@@ -79,7 +85,7 @@ function leaveStatus() {
 }
 
 //处理时间戳=>YY-MM-DD;
-const formatDate = (time: Date | string) => {
+function formatDate(time: Date | string) {
     let year = new Date(time).getFullYear();
     let month = new Date(time).getMonth() + 1;
     let date = new Date(time).getDate();
@@ -89,7 +95,7 @@ const formatDate = (time: Date | string) => {
 }
 
 //从pinia中拿到个人资料，并进行处理，显示到页面上;
-const handleUserBirthday = () => {
+function handleUserBirthday() {
     userInfo.personalSignature = !userInfo.personalSignature ? '这个人很懒，什么都没留下！' : userInfo.personalSignature;
     if (!userInfo.birthday) {
         birthday.value = null
@@ -102,10 +108,6 @@ const handleUserBirthday = () => {
 }
 
 //上传头像;
-const dialogAvatarVisible = ref(false);
-const uploadUrl = ref('');
-const upload = ref<UploadInstance>()
-
 //获取上传图像的url;
 const handleSuccessUpload: UploadProps['onSuccess'] = (response) => {
     uploadUrl.value = response.data.url
@@ -119,7 +121,7 @@ const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
     return true
 }
 //上传头像;
-const submitUpload = () => {
+function submitUpload() {
     if (!uploadUrl.value) return
     updateUserInfoApi({
         avatarImg: uploadUrl.value
@@ -139,11 +141,11 @@ const submitUpload = () => {
     })
 }
 //展示上传头像弹出框事件;
-const showDialog = () => {
+function showDialog() {
     dialogAvatarVisible.value = true;
 }
 //重置按钮事件;
-const resetUpload = () => {
+function resetUpload() {
     uploadUrl.value = '';
     upload.value!.clearFiles()
 }
@@ -213,7 +215,6 @@ const resetUpload = () => {
             </el-tab-pane>
             <el-tab-pane label="我的消息" name="second">我的消息</el-tab-pane>
             <el-tab-pane label="我的钱包" name="third">我的钱包</el-tab-pane>
-            <el-tab-pane label="Task" name="fourth">Task</el-tab-pane>
         </el-tabs>
     </div>
     <!-- 上传图像弹出框 -->

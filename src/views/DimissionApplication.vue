@@ -35,8 +35,20 @@ const rules = reactive<FormRules>({
     }
   ]
 })
+//离职类型;
+const quitType = ['主动离职', '被动离职'];
+//当前离职申请人的ID;
+const userId = ref<number>()
+
+
+//申请时间;
+ruleForm.applicationTime = formatDate(new Date());
+//获取申请人的用户信息;
+getUserInfo()
+
+
 //处理时间戳=>YY-MM-DD;
-const formatDate = (time: Date | string) => {
+function formatDate(time: Date | string) {
   let year = new Date(time).getFullYear();
   let month = new Date(time).getMonth() + 1;
   let date = new Date(time).getDate();
@@ -44,33 +56,24 @@ const formatDate = (time: Date | string) => {
   let dates = date >= 10 ? date : '0' + date;
   return year + '-' + months + '-' + dates;
 }
-//申请时间;
-ruleForm.applicationTime = formatDate(new Date());
 
 //获取当前用户的信息, 部门/职位;
-const userId = ref<number>()
-const getUserInfo = async () => {
+async function getUserInfo() {
   let userInfo = await axios.queryUserInfoApi();
   ruleForm.name = userInfo.data.avatarName;
   ruleForm.post = userInfo.data.roles[0].roleName;
   userId.value = userInfo.data.userId as number;
   getUserDeptList(userId.value)
 }
-getUserInfo()
-
 
 //获取当前用户的所在部门列表;
-const getUserDeptList = async (userId: number) => {
+async function getUserDeptList(userId: number) {
   let userDeptList = await axios.getUserDeptListApi({ userId });
   ruleForm.department = userDeptList.data[0].deptName;
 }
 
-
-//离职类型;
-const quitType = ['主动离职', '被动离职'];
-
-
-const submitForm = async (formEl: FormInstance | undefined) => {
+//提交表单事件;
+async function submitForm(formEl: FormInstance | undefined) {
   if (!formEl) return
   await formEl.validate((valid, fields) => {
     if (valid) {
@@ -114,7 +117,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     }
   })
 }
-const resetForm = (formEl: FormInstance | undefined) => {
+function resetForm(formEl: FormInstance | undefined) {
   if (!formEl) return
   formEl.resetFields()
 }
