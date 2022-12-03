@@ -46,6 +46,7 @@ const submit = async (value: any) => {
         userStore.getUserInfo() //调用户信息接口
     })
 }
+//回车自动登录
 const keyDown = (e:any) => {
   //如果是回车则执行登录方法
   if (e.keyCode == 13) {
@@ -53,7 +54,6 @@ const keyDown = (e:any) => {
     submit(ruleForm)
   }
 }
-//回车自动登录
 onMounted(() => {
     window.addEventListener('keydown', keyDown)
     // document.onkeydown = function (e) {
