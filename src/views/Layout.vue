@@ -98,11 +98,15 @@ function getMinePageName(path: string) {
 
 //解决页面刷新后面包屑导航名称与侧边栏名称会重置的情况;
 const activeItem = ref('/')
+let themeColor:string
+
 onMounted(() => {
     getPageName(route.path);
     getMinePageName(route.path);
     activeItem.value = route.path
 })
+themeColor = localStorage.getItem('color') as string
+console.log(themeColor);
 
 //右上角个人中心路由跳转;
 function to(path: string) {
@@ -179,7 +183,7 @@ const resetUpload = () => {
 <template>
 
     <div class="common-layout gradient no-selected">
-        <el-container >
+        <el-container>
             <!-- 侧边栏 -->
             <el-aside width="200px" class="pt-20">
                 <div class="header-sidebar">
