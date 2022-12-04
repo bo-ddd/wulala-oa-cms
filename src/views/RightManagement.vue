@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, reactive, watch, type Ref } from 'vue'
-import axios from '@/assets/api/api'
+import { getPermissionListApi, deletePermissionApi, addPermissionApi, updatePermissionApi } from '@/assets/api/api'
 import { ElMessage, ElMessageBox, ElTree } from 'element-plus'
 // import AffixTip from '@/components/AffixTip.vue';
 
@@ -40,7 +40,7 @@ const formDataPid = (data: Permission1[]) => {
     return data.filter(item => item.pid == 0)
 }
 const getPermissionList = async () => {
-    await axios.getPermissionListApi({}).then(res => {
+    await getPermissionListApi({}).then(res => {
         if (res.status === 1) {
             permissionList2.value = res.data;
             Object.assign(permissionList, formatData(res.data))
@@ -92,7 +92,7 @@ const open = (id: number) => {
             type: 'warning',
         }
     ).then(() => {
-        axios.deletePermissionApi({ id }).then(res => {
+        deletePermissionApi({ id }).then(res => {
             if (res.status == 1) {
                 ElMessage({
                     showClose: true,
@@ -120,7 +120,7 @@ const open = (id: number) => {
 
 // 添加权限
 const addPermission = async (permissionNameAdd: string) => {
-    await axios.addPermissionApi({
+    await addPermissionApi({
         permissionName: permissionNameAdd,
         pid: permissionId.value | 0
     }).then(res => {
@@ -134,7 +134,7 @@ const addPermission = async (permissionNameAdd: string) => {
 }
 // 修改权限
 const upPermission = async (permissionNameId: number, newPermissionName: string) => {
-    axios.updatePermissionApi({
+    updatePermissionApi({
         id: permissionNameId,
         permissionName: newPermissionName,
         pid: permissionId.value | 0

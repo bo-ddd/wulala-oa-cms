@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
-import axios from '../assets/api/api'
-import type { FormInstance, FormRules } from 'element-plus'
+import { getUserDeptListApi, userQuitApplyApi, queryUserInfoApi } from '../assets/api/api'
+import type { FormInstance } from 'element-plus'
 import { useRouter } from 'vue-router';
 import { ElMessage, ElMessageBox } from 'element-plus'
 import type { UploadProps } from 'element-plus'
@@ -19,7 +19,7 @@ const ruleForm = reactive({
   reason: '',
   enclosure: ''
 })
-const rules = reactive<FormRules>({
+const rules = ({
   duration: [
     {
       required: true,
@@ -59,7 +59,7 @@ function formatDate(time: Date | string) {
 
 //获取当前用户的信息, 部门/职位;
 async function getUserInfo() {
-  let userInfo = await axios.queryUserInfoApi();
+  let userInfo = await queryUserInfoApi();
   ruleForm.name = userInfo.data.avatarName;
   ruleForm.post = userInfo.data.roles[0].roleName;
   userId.value = userInfo.data.userId as number;
@@ -68,7 +68,7 @@ async function getUserInfo() {
 
 //获取当前用户的所在部门列表;
 async function getUserDeptList(userId: number) {
-  let userDeptList = await axios.getUserDeptListApi({ userId });
+  let userDeptList = await getUserDeptListApi({ userId });
   ruleForm.department = userDeptList.data[0].deptName;
 }
 
@@ -90,7 +90,7 @@ async function submitForm(formEl: FormInstance | undefined) {
         .then(async () => {
           //调用提交接口;
           let quitTime = formatDate(ruleForm.duration[1]);
-          await axios.userQuitApplyApi({
+          await userQuitApplyApi({
             userId: userId.value,
             quitTime,
             reason: ruleForm.reason,

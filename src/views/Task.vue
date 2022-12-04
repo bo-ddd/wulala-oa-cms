@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import axios from "@/assets/api/api";
 import { reactive, ref } from "vue";
 import type { Task, QueryTask } from "../types/Task";
 import { useStore } from "../stores/nav";
 import { usePageSizeOptionsStore } from '@/stores/tools'
 import { storeToRefs } from "pinia";
+import {  getUserTaskListApi,getUserListApi,setUserTaskStatusApi} from "@/assets/api/api";
 let userStore = useStore()
 const labelPosition = ref('right')
 
@@ -96,7 +96,7 @@ if (defaultValue.value) {
 }
 //封装用户任务列表
  async function getUserTaskList(params: QueryTask) {
-    let res = await axios.getUserTaskListApi(params)
+    let res = await getUserTaskListApi(params)
     if (res.status == 1) {
         total.value = res.data.total;
         pageSize.value = res.data.pageSize;
@@ -111,7 +111,7 @@ if (defaultValue.value) {
 }
 //获取用户列表
 async function getUserList() {
-    let res = await axios.getUserListApi({
+    let res = await getUserListApi({
         pageSize: 2147483647   //int类型最大值
     })
     if (res.status == 1) {
@@ -130,7 +130,7 @@ const updateTask = (row: Task) => {
 }
 //状态弹层确定
 const submitTaskStatus = async function () {
-    let res = await axios.setUserTaskStatusApi({
+    let res = await setUserTaskStatusApi({
         taskId: taskId.value,
         status: taskStatus.value
     })

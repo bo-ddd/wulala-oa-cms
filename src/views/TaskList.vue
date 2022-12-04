@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { reactive, ref, onMounted } from 'vue'
-import axios from "@/assets/api/api";
+import { reactive, ref } from 'vue'
 import type { Dept, DeptMember } from "../types/Dept";
 import { ElMessageBox } from 'element-plus'
 import type { Task } from "../types/Task";
 import { useStore } from "@/stores/nav";
 import { usePageSizeOptionsStore } from '@/stores/tools'
 import { storeToRefs } from "pinia";
+import { getTaskListApi,queryUserMembersApi,getUserDeptListApi,createMessageApi,
+    sendMessageApi,deleteTaskApi,publishTaskApi,createTaskApi,updateTaskApi } from "@/assets/api/api";
 
 const pageSizeOptionsStore = usePageSizeOptionsStore()
 const { defaultValue } = storeToRefs(pageSizeOptionsStore)
@@ -60,7 +61,7 @@ const handleCurrentChange = (val: number) => {
 }
 //搜索
 const searchTask = async function () {
-    let res = await axios.getTaskListApi({
+    let res = await getTaskListApi({
         taskName:search.searchTaskName
     })
     let data = res.data.list;
@@ -70,7 +71,7 @@ const searchTask = async function () {
 }
 //封装列表接口
 async function getTaskList() {
-    let res = await axios.getTaskListApi({
+    let res = await getTaskListApi({
         pageNum: pageNum.value,
         pageSize: pageSize.value,
     })
@@ -84,7 +85,7 @@ async function getTaskList() {
 }
 //封装获取组中所有用户
 const queryUserMembers = async function () {
-    let res = await axios.queryUserMembersApi({
+    let res = await queryUserMembersApi({
         deptId: deptId.value
     })
     if (res.status == 1) {
@@ -94,7 +95,7 @@ const queryUserMembers = async function () {
 }
 //获取用户所在的组列表
 async function getUserDeptList() {
-    let res = await axios.getUserDeptListApi({
+    let res = await getUserDeptListApi({
         userId: userStore.userId
     })
     if (res.status == 1) {
@@ -105,7 +106,7 @@ async function getUserDeptList() {
     }
 }
 const createMessage = async function (content: { content: string; }) {
-    let res = await axios.createMessageApi(content)
+    let res = await createMessageApi(content)
     if (res.status == 1) {
         console.log(res);
         msgId.value = res.data.id
@@ -113,14 +114,14 @@ const createMessage = async function (content: { content: string; }) {
 }
 //发送消息
 const sendMessage = async function (payload: { userId: number, msgId: number }) {
-    return await axios.sendMessageApi(payload)
+    return await sendMessageApi(payload)
 }
 //发布任务接口
 const publishTask = function () {
     const userArr: any[] = []
     if (taskReception.value.length) {
         taskReception.value.forEach((item: number) => {
-            userArr.push(axios.publishTaskApi({
+            userArr.push(publishTaskApi({
                 userId: item,
                 taskId: rowTaskId.value
             })
@@ -132,7 +133,7 @@ const publishTask = function () {
                 const messageUserArr: any[] = []
                 if (taskReception.value.length) {
                     taskReception.value.forEach((item: number) => {
-                        messageUserArr.push(axios.sendMessageApi({
+                        messageUserArr.push(sendMessageApi({
                             userId: item,
                             msgId: msgId.value
                         })
@@ -156,7 +157,7 @@ const publishTask = function () {
 }
 //领取任务接口
 const receivePublishTask = async function (params: any) {
-    let res = await axios.publishTaskApi(params)
+    let res = await publishTaskApi(params)
     sendMessage({
         userId: rowTaskId.value,
         msgId: msgId.value
@@ -174,7 +175,7 @@ const deleteTask = (row: Task) => {
         }
     )
         .then(async () => {
-            let res = await axios.deleteTaskApi({
+            let res = await deleteTaskApi({
                 id: row.id
             })
             if (res.status == 1) {
@@ -214,7 +215,7 @@ const updateTask = (index: number, row: Task) => {
 }
 //是新增
 const submitTaskWithCreate = async function () {
-    let res = await axios.createTaskApi({
+    let res = await createTaskApi({
         taskName: form.taskName,
         level: form.level,
         description: form.description,
@@ -227,7 +228,7 @@ const submitTaskWithCreate = async function () {
 }
 //是修改
 const submitTaskWithEdit = async function () {
-    await axios.updateTaskApi({
+    await updateTaskApi({
         id: form.id,
         taskName: form.taskName,
         description: form.description,

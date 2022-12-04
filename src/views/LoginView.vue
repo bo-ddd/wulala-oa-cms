@@ -2,8 +2,8 @@
 import { reactive, ref, onMounted ,onUnmounted} from 'vue'
 import { useRouter } from "vue-router";
 import { ElMessage, type FormInstance } from 'element-plus'
-import axios from '@/assets/api/api';
 import { useUserStore } from "../stores/userInfo";
+import { loginApi } from "@/assets/api/api";
 let userStore = useUserStore()
 const ruleFormRef = ref<FormInstance>();
 let router = useRouter()
@@ -37,7 +37,7 @@ const validate = function () {
 }
 const submit = async (value: any) => {
     validate()
-    await axios.loginApi({
+    await loginApi({
         username: ruleForm.username,
         password: ruleForm.password,
     }).then(res => {
@@ -56,12 +56,6 @@ const keyDown = (e:any) => {
 }
 onMounted(() => {
     window.addEventListener('keydown', keyDown)
-    // document.onkeydown = function (e) {
-    //     let key = e.key;
-    //     if (key == "Enter") {
-    //         submit(ruleFormRef.value);
-    //     }
-    // };
 })
 onUnmounted(() => {
   window.removeEventListener('keydown', keyDown, false)

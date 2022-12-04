@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { reactive, ref } from 'vue'
-import axios from "../assets/api/api"
+import { getRoleListApi, getPermissionListApi, queryRolePermissionListApi, addPermissionRoleApi, deletePermissionRoleApi } from "../assets/api/api"
 import { ElTree, ElMessage } from 'element-plus'
 import type Node from 'element-plus/es/components/tree/src/model/node'
 import { useRouter, useRoute } from "vue-router";
@@ -43,8 +43,8 @@ function formatePermissionList(data: FormatData[]) {
 
 //列表跳详情，在选择框中做复显操作;
 async function getCheckedRole() {
-  Object.assign(roleList, (await axios.getRoleListApi({})).data)
-  let permissionList = (await axios.getPermissionListApi({})).data
+  Object.assign(roleList, (await getRoleListApi({})).data)
+  let permissionList = (await getPermissionListApi({})).data
   Object.assign(RolePermissionTree, formatePermissionList(permissionList))
 
   // -----------------拿到角色ID--------------
@@ -67,7 +67,7 @@ async function getUserPermission() {
   });
 
   //根据id搜索出对应的数据;
-  let { data } = await axios.queryRolePermissionListApi({
+  let { data } = await queryRolePermissionListApi({
     roleId: roleId.value
   })
   //清空上一次的数据;
@@ -124,7 +124,7 @@ function submit() {
   if (addList.length) {
     addData.push(
       addList.forEach(item => {
-        axios.addPermissionRoleApi({
+        addPermissionRoleApi({
           roleId: roleId.value,
           permissionId: item
         })
@@ -150,7 +150,7 @@ function submit() {
   if (deleteList.length) {
     deleteData.push(
       deleteList.forEach(item => {
-        axios.deletePermissionRoleApi({
+        deletePermissionRoleApi({
           roleId: roleId.value,
           permissionId: item
         })

@@ -2,7 +2,7 @@
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import type { FormInstance } from 'element-plus'
-import axios from '@/assets/api/api'
+import { registerApi } from '@/assets/api/api'
 
 const ruleFormRef = ref<FormInstance>()
 
@@ -74,7 +74,7 @@ const submitForm = (formEl: FormInstance | undefined) => {
     formEl.validate((valid) => {
         if (valid) {
             (async function () {
-                await axios.registerApi({
+                await registerApi({
                     password: ruleForm.password,
                     phoneNumber: ruleForm.phoneNumber,
                     username: ruleForm.username,

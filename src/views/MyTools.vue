@@ -2,10 +2,11 @@
 import { reactive, ref } from 'vue'
 import type { FormInstance } from 'element-plus'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import axios from '@/assets/api/api'
+import { updatePasswordApi } from '@/assets/api/api'
 import { usePageSizeOptionsStore } from "@/stores/tools";
 import { storeToRefs } from "pinia";
 import type { Colors } from "@/types/ThemeColors"
+import { useThemeStore } from '@/stores/themeColors';
 const pageSizeOptionsStore = usePageSizeOptionsStore();
 const { SwitchStatus, defaultValue } = storeToRefs(pageSizeOptionsStore);
 
@@ -53,7 +54,7 @@ const submitForm = (formEl: FormInstance | undefined) => {
                     type: 'warning',
                 }
             ).then(() => {
-                axios.updatePasswordApi({ password: ruleForm.pass }).then(res => {
+                updatePasswordApi({ password: ruleForm.pass }).then(res => {
                     ruleForm.pass = '';
                     ruleForm.checkPass = '';
                 })
@@ -150,7 +151,7 @@ const appearanceList = [
         id: 2,
         appearanceUrl: '',
         title: '晨雾',
-        color: ' #aab0b6'
+        color: '#aab0b6'
     },
     {
         id: 3,
@@ -174,7 +175,7 @@ const appearanceList = [
         id: 6,
         appearanceUrl: '',
         title: '柔和粉色',
-        color: ' #d8b2ad'
+        color: '#d8b2ad'
     },
     {
         id: 7,
@@ -202,8 +203,10 @@ const appearanceList = [
     }
 ]
 //选中色块的点击事件;
+let useThemeColor = useThemeStore();
+
 const changeColor = (value: Colors) => {
-    localStorage.setItem('color', value.color)
+    useThemeColor.setThemeColor(value)
 }
 
 

@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import axios from '@/assets/api/api';
 import { useRouter } from 'vue-router';
 import { ref, reactive } from 'vue'
 import type PermissionVO from "../types/PermissionVO";
+import {createRoleApi,getPermissionListApi } from "@/assets/api/api";
+
 
 const router = useRouter()
 const dataList = ref()
@@ -20,7 +21,7 @@ const to = function (name: string) {
 }
 //创建角色
 const addRole = async () => {
-    let res = await axios.createRoleApi({
+    let res = await createRoleApi({
         roleName: Role.roleName,
         permissionIds: permissionIds,
     })
@@ -50,7 +51,7 @@ function formatData(data: PermissionVO[]) {
 }
 //封装权限列表接口
 async function getPermissionList() {
-    await axios.getPermissionListApi().then(res => {
+    await getPermissionListApi().then(res => {
         dataList.value = formatData(res.data)
         console.log('----------data---------')
         console.log(res.data)

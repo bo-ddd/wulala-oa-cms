@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import axios from '../assets/api/api'
+import { getQuitListApi, getUserDeptListApi, queryUserInfoApi, createMessageApi, sendMessageApi, quitUserExamineApi, getUserListApi } from '../assets/api/api'
 import { ref, reactive } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
 import { ElMessage, ElMessageBox } from 'element-plus'
@@ -76,14 +76,14 @@ function handleCurrentChange(val: number) {
 
 //获取离职列表数据;
 async function getUserQuitList(param: UserQuitListParam) {
-    let { data } = await axios.getQuitListApi(param)
+    let { data } = await getQuitListApi(param)
     total.value = data.total;
     tableData.length = 0;
     Object.assign(tableData, data.list)
     tableData.forEach(async (item) => {
         item.applyTime = handleTimeFormat(item.applyTime) //申请时间
         item.quitTime = handleTimeFormat(item.quitTime) //离职时间
-        Promise.all([axios.getUserDeptListApi({ userId: item.userId }), axios.queryUserInfoApi({ userId: item.userId })]).then(res => {
+        Promise.all([getUserDeptListApi({ userId: item.userId }), queryUserInfoApi({ userId: item.userId })]).then(res => {
             let deptName = '';
             let userPost = '';
             res[0].data.forEach((item: { deptName: string }) => {
@@ -118,14 +118,14 @@ function resetForm(formEl: FormInstance | undefined) {
 //通知申请人审核结果功能;
 //创建消息api;
 async function createMessage(text: string) {
-    let { data } = await axios.createMessageApi({
+    let { data } = await createMessageApi({
         content: text
     })
     return data.id
 }
 //发送消息;
 async function sentMessage(text: string) {
-    axios.sendMessageApi({
+    sendMessageApi({
         userId: applicantId.value,
         msgId: await createMessage(text)
     })
@@ -147,7 +147,7 @@ async function submitForm(formEl: FormInstance | undefined) {
                 }
             ).then(async () => {
                 //调用提交接口;
-                await axios.quitUserExamineApi({
+                await quitUserExamineApi({
                     id: approvalForm.id,
                     status: approvalForm.operation
                 }).then(res => {
@@ -179,7 +179,7 @@ async function submitForm(formEl: FormInstance | undefined) {
 
 //获取-用户昵称-查询列表;
 async function getUserAvatarNameList() {
-    const res = await axios.getUserListApi({
+    const res = await getUserListApi({
         pageSize: 2147483647
     })
     userAvatarNameList.length = 0;
@@ -204,13 +204,13 @@ function queryDimissionInfo() {
 async function isApprover(applicationUserId: number) {
     // 对比申请人与当前用户的上下级关系
     //获取申请人的资料;
-    const { data } = await axios.queryUserInfoApi({})
+    const { data } = await queryUserInfoApi({})
     const userId = data.userId
 
     // 如果申请人与登录人是同一用户, 没有权限;
     //获取所在的部门ID;
-    const { data: UserDeptInfo } = await axios.getUserDeptListApi({ userId });
-    const { data: applicationUserDeptInfo } = await axios.getUserDeptListApi({ userId: applicationUserId })
+    const { data: UserDeptInfo } = await getUserDeptListApi({ userId });
+    const { data: applicationUserDeptInfo } = await getUserDeptListApi({ userId: applicationUserId })
     //如果申请人与登录人的部门不相同，没有权限;
 
     if (UserDeptInfo[0].deptId != applicationUserDeptInfo[0].deptId) {
