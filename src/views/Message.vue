@@ -1,18 +1,20 @@
 <script lang="ts" setup>
 import { ref, reactive } from 'vue'
-import axios from '@/assets/api/api'
+import { getUserMessageApi } from '@/assets/api/api'
 
 import { usePageSizeOptionsStore } from '@/stores/tools'
 import { storeToRefs } from "pinia";
+import type { received } from '@/types/Message'
 const pageSizeOptionsStore = usePageSizeOptionsStore()
 pageSizeOptionsStore.getStorageStatus()
 const { defaultValue } = storeToRefs(pageSizeOptionsStore)
 const centerDialogVisible = ref(false)
 
+let pageNum = ref<number>()
+let pageSize = ref<number>()
+let total = ref<number>();
+let getUserMessageList = ref()
 
-let pageNum = ref(1)
-let pageSize = ref(10)
-let total = ref();
 const small = ref(false);
 const disabled = ref(false);
 const ruleForm = reactive({
@@ -29,13 +31,7 @@ if (defaultValue.value) {
     pageSize.value = defaultValue.value
 }
 
-interface received {
-  senderAvatarName: string
-  content: string
-  createdAt: string
-  id: number
-  updatedAt: string
-}
+getUserMessage()
 
 function updateTime(time: any) {
   let date = new Date(time);
@@ -45,18 +41,14 @@ function updateTime(time: any) {
   return `${year}-${mounth}-${day}`;
 }
 
-let getUserMessageList = ref()
-const getUserMessage = async function () {
-   let asd = await axios.getUserMessageApi({
+async function getUserMessage () {
+   let myMessage = await getUserMessageApi({
     pageNum : pageNum.value,
     pageSize : pageSize.value
    })
-   total.value = asd.data.total
-   getUserMessageList.value = asd.data.list
-   console.log(asd);
-   
+   total.value = myMessage.data.total
+   getUserMessageList.value = myMessage.data.list
 }
-getUserMessage()
 const handleSizeChange = (val: number) => {
   pageSize.value = val
   getUserMessage()
@@ -76,8 +68,6 @@ const updateEditor = function (row : received){
 
 const thisRow = function (row : received){
   updateEditor(row)
-  console.log(row);
-  
 }
 </script>
 
@@ -168,7 +158,7 @@ const thisRow = function (row : received){
   <AffixTip class="mt-20"></AffixTip>
 
 </template>
-
+ 
 <style scoped>
 :deep(.cell) {
   text-align: center;

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import axios from '@/assets/api/api'
+import { getLeaveListApi,examineUserLeaveApi } from '@/assets/api/api'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { usePageSizeOptionsStore } from '@/stores/tools'
@@ -10,26 +10,21 @@ const pageSizeOptionsStore = usePageSizeOptionsStore()
 pageSizeOptionsStore.getStorageStatus()
 const { defaultValue } = storeToRefs(pageSizeOptionsStore)
 const router = useRouter()
-
 let leave = ref<any>();
-let pageSize = ref(10);
-let total = ref();
+let pageSize = ref<number>();
+let total = ref<number>();
 let pageNum = ref(1);
 const small = ref(false);
 const disabled = ref(false);
 
-
-getLeaveListApi()
-
-
-
+getMyLeaveListApi()
 // 从pinio中拿到用户设置的默认值;
 if (defaultValue.value) {
     pageSize.value = defaultValue.value
 }
 
- async function getLeaveListApi() {
-  let leaveData = await axios.getLeaveListApi({
+ async function getMyLeaveListApi() {
+  let leaveData = await getLeaveListApi({
     pageSize: pageSize.value,
     pageNum: pageNum.value
   })
@@ -38,9 +33,8 @@ if (defaultValue.value) {
   leave.value = leaveData.data.list;
 }
 
-
 const handleEdit = async (index: number, row: ExamineUserLeave) => {
-  let setStatus = await axios.examineUserLeaveApi({
+  let setStatus = await examineUserLeaveApi({
     auditStatus: 1,
     id: row.id
   })
@@ -48,7 +42,7 @@ const handleEdit = async (index: number, row: ExamineUserLeave) => {
 }
 
 const handleDelete = async (index: number, row: ExamineUserLeave) => {
-  let setStatus = await axios.examineUserLeaveApi({
+  let setStatus = await examineUserLeaveApi({
     auditStatus: 2,
     id: row.id
   })

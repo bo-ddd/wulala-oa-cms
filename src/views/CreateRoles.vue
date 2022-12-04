@@ -25,7 +25,6 @@ const addRole = async () => {
         roleName: Role.roleName,
         permissionIds: permissionIds,
     })
-    console.log(res.data.id);
     Role.roleId = res.data.id
     to('roles')
 }

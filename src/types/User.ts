@@ -35,3 +35,30 @@ export interface UserInfoForm {
     userId: number;
     address: string;
 }
+export interface Form {
+    deptId: number | null,
+    depName: string,
+    searchDepId: number | null,
+    userId: number,
+    rolesId: number | null,
+    userName: string
+}
+export interface UserRolesInfo extends UserInfo{
+    roles: []
+}
+export interface DepartmentList {
+    id: number,
+    name: string
+}
+export interface UserDepartmentList {
+    deptId: number,
+    deptName: string
+}
+export interface RoleList {
+    id: number,
+    roleName: string
+}
+export interface RoleList {
+    id: number,
+    roleName: string
+}

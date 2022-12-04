@@ -2,29 +2,20 @@
 import { ref, reactive, watch, type Ref } from 'vue'
 import { getPermissionListApi, deletePermissionApi, addPermissionApi, updatePermissionApi } from '@/assets/api/api'
 import { ElMessage, ElMessageBox, ElTree } from 'element-plus'
-// import AffixTip from '@/components/AffixTip.vue';
+import type { Tree, Permission } from '@/types/Permission'
 
 let treeRef = ref<InstanceType<typeof ElTree>>()
 let newPermissionName = ref();
 let permissionNameAdd = ref();
 let permissionListPid = ref();
-let permissionList = reactive<Permission1[]>([]);
-interface Permission1 {
-    id: number,
-    permissionName: string,
-    pid: number,
-    children: Permission1[]
-}
-interface Permission2 {
-    id: number,
-    permissionName: string,
-    pid: number,
-}
-let permissionId = ref();
-let permissionList2: Ref<Permission2[]> = ref([]);
+let permissionList = reactive<Tree[]>([]);
 
-const formatData = (data: Permission1[]) => {
-    let res: Permission1[] = JSON.parse(JSON.stringify(data));
+
+let permissionId = ref();
+let permissionPidList: Ref<Permission[]> = ref([]);
+
+const formatData = (data: Tree[]) => {
+    let res: Tree[] = JSON.parse(JSON.stringify(data));
     res.forEach(item => {
         if (!item.children) item.children = [];
         if (item.pid != 0) {
@@ -36,13 +27,13 @@ const formatData = (data: Permission1[]) => {
     return res.filter(item => item.pid == 0)
 }
 
-const formDataPid = (data: Permission1[]) => {
+const formDataPid = (data: Tree[]) => {
     return data.filter(item => item.pid == 0)
 }
 const getPermissionList = async () => {
     await getPermissionListApi({}).then(res => {
         if (res.status === 1) {
-            permissionList2.value = res.data;
+            permissionPidList.value = res.data;
             Object.assign(permissionList, formatData(res.data))
             permissionListPid.value = formDataPid(res.data)
         }
@@ -166,12 +157,6 @@ const remove = (node: Node, id: number) => {
     open(id)
 }
 
-interface Tree {
-    id: number,
-    permissionName: string,
-    pid: number,
-    children: Tree[]
-}
 
 const defaultProps = {
     children: 'children',
@@ -200,7 +185,7 @@ const formLabelWidth = '140px'
             <el-form-item label="添加权限">
                 <el-input v-model="permissionNameAdd" placeholder="请输入添加的权限名称" clearable />
                 <el-select v-model="permissionId" class="parentId m-2" placeholder="请选择挂载到？" clearable>
-                    <el-option v-for="item in permissionList2" :key="item.id" :label="item.permissionName"
+                    <el-option v-for="item in permissionPidList" :key="item.id" :label="item.permissionName"
                         :value="item.id" />
                 </el-select>
                 <el-button class="ml-20" type="danger" @click="addPermission(permissionNameAdd)">添加
@@ -243,7 +228,7 @@ const formLabelWidth = '140px'
             </el-form-item>
             <el-form-item label="挂载" :label-width="formLabelWidth">
                 <el-select v-model="permissionId" class="m-2" placeholder="请选择需要挂载到？" clearable>
-                    <el-option v-for="item in permissionList2" :key="item.id" :label="item.permissionName"
+                    <el-option v-for="item in permissionPidList" :key="item.id" :label="item.permissionName"
                         :value="item.id" />
                 </el-select>
             </el-form-item>
@@ -258,7 +243,6 @@ const formLabelWidth = '140px'
             </span>
         </template>
     </el-dialog>
-    <!-- <AffixTip class="mt-20"></AffixTip> -->
 </template>
 <style scoped>
 .ipt,

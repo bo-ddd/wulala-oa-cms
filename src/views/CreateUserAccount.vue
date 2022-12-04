@@ -3,7 +3,7 @@ import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import type { FormInstance } from 'element-plus'
 import { ElMessage } from 'element-plus'
-import axios from '@/assets/api/api'
+import { sendMailApi, registerApi } from '@/assets/api/api'
 
 const ruleFormRef = ref<FormInstance>()
 
@@ -102,7 +102,7 @@ const sendSuccess = () => {
 }
 
 const sendMail = async () => {
-    await axios.sendMailApi({
+    await sendMailApi({
         to: ruleForm.mailbox,
         subject: '用户账号密码',
         context: `用户账号:${ruleForm.username},用户密码:${ruleForm.password}`
@@ -116,7 +116,7 @@ const submitForm = (formEl: FormInstance | undefined) => {
     formEl.validate((valid) => {
         if (valid) {
             (async function () {
-                await axios.registerApi({
+                await registerApi({
                     password: ruleForm.password,
                     phoneNumber: ruleForm.phoneNumber,
                     username: ruleForm.username,
