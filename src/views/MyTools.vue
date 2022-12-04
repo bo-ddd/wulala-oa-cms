@@ -2,7 +2,7 @@
 import { reactive, ref } from 'vue'
 import type { FormInstance } from 'element-plus'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import axios from '@/assets/api/api'
+import { updatePasswordApi } from '@/assets/api/api'
 import { usePageSizeOptionsStore } from "@/stores/tools";
 import { storeToRefs } from "pinia";
 import type { Colors } from "@/types/ThemeColors"
@@ -54,7 +54,7 @@ const submitForm = (formEl: FormInstance | undefined) => {
                     type: 'warning',
                 }
             ).then(() => {
-                axios.updatePasswordApi({ password: ruleForm.pass }).then(res => {
+                updatePasswordApi({ password: ruleForm.pass }).then(res => {
                     ruleForm.pass = '';
                     ruleForm.checkPass = '';
                 })

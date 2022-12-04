@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref, reactive, watch, type Ref } from 'vue'
-import axios from '@/assets/api/api'
-import { ElMessage, ElMessageBox, ElTree } from 'element-plus'
+import { ref, reactive } from 'vue'
+import { getDeptList, createDeptApi, updateDeptApi, deleteDeptApi } from '@/assets/api/api'
+import { ElMessage, ElMessageBox } from 'element-plus'
 // import AffixTip from '@/components/AffixTip.vue';
 
 let departmentList = ref();
@@ -50,7 +50,7 @@ interface DepartmentData {
 }
 
 const getDepartmentList = async () => {
-    await axios.getDeptList({}).then(res => {
+    await getDeptList({}).then(res => {
         if (res.status == 1) {
             departmentList.value = res.data
         }
@@ -61,7 +61,7 @@ getDepartmentList();
 
 // 添加部门
 const addDepartment = async (departmentAdd: string) => {
-    await axios.createDeptApi({
+    await createDeptApi({
         name: departmentAdd
     }).then(res => {
         if (res.status == 1) {
@@ -80,7 +80,7 @@ const edit = (data: DepartmentData) => {
 }
 const updateDepartment = async (departmentId: number) => {
 
-    await axios.updateDeptApi({
+    await updateDeptApi({
         id: departmentId,
         name: newDepartmentName.value
     }).then(res => {
@@ -105,7 +105,7 @@ const open = (id: number) => {
             type: 'warning',
         }
     ).then(() => {
-        axios.deleteDeptApi({ id }).then(res => {
+        deleteDeptApi({ id }).then(res => {
             if (res.status == 1) {
                 ElMessage({
                     showClose: true,

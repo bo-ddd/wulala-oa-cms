@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import type { FormInstance, FormRules } from 'element-plus'
+import type { FormInstance } from 'element-plus'
 import { ArrowLeft } from '@element-plus/icons-vue';
-import axios from '../assets/api/api';
+import { queryUserInfoApi, updateUserInfoApi } from '../assets/api/api';
 import { ElMessage } from 'element-plus';
 import type { UserInfoForm } from '@/types/User';
 
@@ -58,7 +58,7 @@ const rules = ({
 
 //刷新页面，调用用户信息接口，渲染个人页面数据;
 (async () => {
-    let data = (await axios.queryUserInfoApi({})).data;
+    let data = (await queryUserInfoApi({})).data;
     Object.assign(userInfoForm, data);
     userInfoForm.sex = data.sex == 1 ? "男" : "女";
 })();
@@ -74,7 +74,7 @@ async function submitForm(formEl: FormInstance | undefined) {
                 userInfoForm.birthday = new Date(userInfoForm.birthday).valueOf();
             }
 
-            axios.updateUserInfoApi(userInfoForm).then(res => {
+            updateUserInfoApi(userInfoForm).then(res => {
                 ElMessage({
                     message: '修改成功',
                     type: 'success',
