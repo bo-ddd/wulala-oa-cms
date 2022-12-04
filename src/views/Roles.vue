@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { ref, computed, reactive, h } from 'vue'
-import axios from "@/assets/api/api";
 import { ElMessage } from 'element-plus'
 import { useRouter } from "vue-router";
 import type { Role } from "../types/Role";
 import { usePageSizeOptionsStore } from '@/stores/tools'
 import { storeToRefs } from "pinia";
+import { getRoleListApi,queryRolePermissionListApi,deleteRoleApi} from "@/assets/api/api";
+
 
 const pageSizeOptionsStore = usePageSizeOptionsStore()
 pageSizeOptionsStore.getStorageStatus()
@@ -38,7 +39,7 @@ if (defaultValue.value) {
 }
 //封装 角色列表接口
 async function getRoleList() {
-    let res = await axios.getRoleListApi()
+    let res = await getRoleListApi()
     resData.length = 0      //resData.length = [] 失去数据双向绑定   清空resData
     resData.push(...res.data);
     list.length = 0
@@ -67,7 +68,7 @@ const searchRole = function () {
 
 }
 const queryPermissionList = async function (row: any) {
-    let res = await axios.queryRolePermissionListApi({
+    let res = await queryRolePermissionListApi({
         roleId: row.id
     })
     console.log(res);
@@ -93,7 +94,7 @@ const handleDelete = async (index: number, row: Role) => {
 }
 //弹层确定删除角色及权限
 const handleDelectRole = async function () {
-    await axios.deleteRoleApi({
+    await deleteRoleApi({
         id: selectId.value
     })
     getRoleList()

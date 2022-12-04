@@ -1,8 +1,9 @@
 import { defineStore } from "pinia";
 import { reactive, computed } from "vue";
 import type { Permission } from "@/types/Permission";
-import axios from "../assets/api/api";
+// import axios from "../assets/api/api";
 import type { UserId, UserPermissionList } from "@/types/User";
+import { queryUserInfoApi,permissionUserListApi } from "@/assets/api/api";
 
 export const useStore = defineStore('counter', () => {
   let userInfo = reactive<UserId>({
@@ -13,7 +14,7 @@ export const useStore = defineStore('counter', () => {
 
   //获取userId;
   const getUserId = () => {
-    return axios.queryUserInfoApi().then(res => {
+    return queryUserInfoApi().then(res => {
       setUserId(res.data)
     })
   }
@@ -23,7 +24,7 @@ export const useStore = defineStore('counter', () => {
 
   //获取权限列表;
   const getUserPermissionList = () => {
-    return axios.permissionUserListApi({ userId: userInfo.userId }).then(res => {
+    return permissionUserListApi({ userId: userInfo.userId }).then(res => {
       setUserPermissionList(res.data)
     })
   }
