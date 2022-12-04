@@ -10,7 +10,7 @@ import type { UserInfoForm } from '@/types/User';
 const router = useRouter();
 const ruleFormRef = ref<FormInstance>()
 const userInfoForm = reactive({} as UserInfoForm)
-const rules = reactive<FormRules>({
+const rules = ({
     avatarName: [
         { required: true, message: '请输入昵称', trigger: 'blur' },
         { min: 1, max: 7, message: '长度必须在1-7位字符之间', trigger: 'blur' },

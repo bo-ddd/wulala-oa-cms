@@ -19,7 +19,7 @@ const ruleForm = reactive({
   reason: '',
   enclosure: ''
 })
-const rules = reactive<FormRules>({
+const rules = ({
   duration: [
     {
       required: true,

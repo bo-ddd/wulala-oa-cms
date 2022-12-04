@@ -113,15 +113,6 @@ const router = createRouter({
             requiresAuth: false
           }
         },
-        {//Bpmn页面;
-          path: "/bpmnDemo",
-          name: "bpmnDemo",
-          component: () => import("../views/BpmnDemo.vue"),
-          meta: {
-            label: "Bpmn",
-            requiresAuth: false
-          }
-        },
         {//更新公告页面;
           path: "/updateAnnouncement",
           name: "updateAnnouncement",
