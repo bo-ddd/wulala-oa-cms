@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import axios from '../assets/api/api'
+import { getArticleListApi } from '../assets/api/api'
 import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { Search } from '@element-plus/icons-vue'
 import { usePageSizeOptionsStore } from '@/stores/tools'
 import { storeToRefs } from "pinia";
+import type { TableData , UserDailyListParam } from '@/types/Daily'
 
 const pageSizeOptionsStore = usePageSizeOptionsStore()
 pageSizeOptionsStore.getStorageStatus()
@@ -30,30 +31,9 @@ const handleCurrentChange = (val: number) => {
     queryDailyDetail()
 }
 
-interface TableData {
-    id: number
-    userId: number
-    avatarName: string
-    title: string
-    content: string
-    createdAt: string
-    updatedAt: null
-}
-
-
-//查询参数的类型;
-interface UserDailyListParam {
-    userId?: number,
-    title?: string,
-    startCreatedTime?: string,
-    endCreatedTime?: string,
-    pageSize: number,
-    pageNum: number
-}
-
 //获取日报列表数据;
 const getDailyList = async (param: UserDailyListParam) => {
-    let { data } = await axios.getArticleListApi(param)
+    let { data } = await getArticleListApi(param)
     total.value = data.total;
     tableData.length = 0;
     Object.assign(tableData, data.list)

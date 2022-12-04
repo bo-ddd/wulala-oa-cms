@@ -1,21 +1,17 @@
 <script lang="ts" setup>
 import { ref, reactive } from 'vue'
-import type { FormInstance, FormRules } from 'element-plus'
-import { useRouter } from 'vue-router';
-import { ElMessage, ElMessageBox } from 'element-plus'
+import type { FormInstance } from 'element-plus'
+import { ElMessage } from 'element-plus'
 import type { UploadProps } from 'element-plus'
 
-
-const router = useRouter()
 const ruleFormRef = ref<FormInstance>()
-const posterUrl = ref('') //活动海报的Url;
 const ruleForm = reactive({
     name: '',
     count: '',
     type: '',
     duration: '',
     desc: '',
-    posterUrl:''
+    posterUrl: ''
 })
 
 const activityType = [
@@ -71,7 +67,7 @@ const handlePosterSuccess: UploadProps['onSuccess'] = (
     response,
     uploadFile
 ) => {
-    posterUrl.value = URL.createObjectURL(uploadFile.raw!)
+    ruleForm.posterUrl = URL.createObjectURL(uploadFile.raw!)
 }
 
 const beforePosterUpload: UploadProps['beforeUpload'] = (rawFile) => {
@@ -106,8 +102,6 @@ const options = Array.from({ length: 10000 }).map((_, idx) => ({
     label: `${idx + 1}`,
 }))
 
-
-
 </script>
 
 
@@ -134,7 +128,7 @@ const options = Array.from({ length: 10000 }).map((_, idx) => ({
             <el-form-item label="活动海报">
                 <el-upload class="avatar-uploader" action="/api/upload/enclosure" :show-file-list="false"
                     :on-success="handlePosterSuccess" :before-upload="beforePosterUpload">
-                    <img v-if="posterUrl" :src="posterUrl" class="avatar" />
+                    <img v-if="ruleForm.posterUrl" :src="ruleForm.posterUrl" class="avatar" />
                     <el-icon v-else class="avatar-uploader-icon">
                         <Plus />
                     </el-icon>
@@ -180,7 +174,7 @@ const options = Array.from({ length: 10000 }).map((_, idx) => ({
 
 :deep(.el-textarea__inner) {
     width: 500px;
-    height: 300px;
+    height: 200px;
 }
 
 .position-btn {

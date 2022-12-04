@@ -7,7 +7,7 @@ let props = defineProps<{
 }>();
 let prop = toRefs(props);
 let emit = defineEmits(['update:modelValue'])
-const emits = function(){
+const emits = function () {
   emit('update:modelValue',prop.modelValue)
 }
     const editorRef = shallowRef()
