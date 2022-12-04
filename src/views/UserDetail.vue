@@ -31,7 +31,7 @@
 </template>
 
 <script setup lang="ts">
-import axios from '@/assets/api/api'
+import { getUserDeptListApi, queryUserInfoApi } from '@/assets/api/api'
 import { reactive } from 'vue';
 import { useRoute, useRouter } from 'vue-router'
 import { ArrowLeft } from '@element-plus/icons-vue'
@@ -40,9 +40,9 @@ const router = useRouter();
 const backUserList = () => {
     router.push('userList')
 }
-const userInfoData = reactive({} as User);
+const userInfoData = reactive({} as UserDetailData);
 let id = route.query.id
-interface User {
+interface UserDetailData {
     address: string
     avatarImg: string | null
     avatarName: string
@@ -71,24 +71,15 @@ const showDeptName = function (deptList: any) {
     })
     return str.substring(0, str.length - 1);
 };
-// (async function () {
-//     await axios.queryUserInfoApi({
-//         userId: id
-//     }).then(res => {
-//         if (res.status == 1) {
-//             Object.assign(userInfoData, res.data)
-//         }
-//     })
-// })()
 
 let deptNameList = reactive([]);
 
 (async () => {
-    await axios.getUserDeptListApi({
+    await getUserDeptListApi({
         userId: id
     }).then(async res => {
         if (res.status == 1) {
-            let userData = (await axios.queryUserInfoApi({ userId: id })).data
+            let userData = (await queryUserInfoApi({ userId: id })).data
             deptNameList.values = res.data
             Object.assign(userData, deptNameList)
             Object.assign(userInfoData, userData)

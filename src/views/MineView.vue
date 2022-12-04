@@ -4,7 +4,7 @@ import { ref, type Ref, reactive, toRefs, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { ElMessage } from 'element-plus';
 import { StarFilled, EditPen } from '@element-plus/icons-vue';
-import axios from '../assets/api/api';
+import {updateUserInfoApi} from '../assets/api/api';
 import type { UploadInstance, UploadProps } from 'element-plus';
 import { useUserStore } from '@/stores/userInfo';
 import { storeToRefs } from "pinia";
@@ -42,8 +42,8 @@ function to(name: string) {
     router.push(name)
 }
 
-function updateUserInfoApi(payLoad: {}) {
-    return axios.updateUserInfoApi({
+function updateUserInfo(payLoad: {}) {
+    return updateUserInfoApi({
         userId: userInfo.userId,
         sex: userInfo.sex,
         birthday: new Date(userInfo.birthday).getTime(),
@@ -57,7 +57,7 @@ function openInput() {
     disabled.value = false;
 }
 function closeInput() {
-    updateUserInfoApi({
+    updateUserInfo({
         personalSignature: userInfo.personalSignature
     }).then(res => {
         ElMessage({
