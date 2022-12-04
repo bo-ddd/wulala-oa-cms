@@ -4,31 +4,27 @@ import { ref } from 'vue'
 import axios from '@/assets/api/api'
 let route = useRoute()
 let myId = route.query.id;
-let leave = ref();
-let total = ref();
-const getLeaveListApi = async function () {
+let leave = ref<any>();
+let total = ref<number>();
 
-    let DetailData = await axios.getLeaveListApi()
+getLeaveListApi()
+
+async function getLeaveListApi () {
+    let DetailData = await axios.getLeaveListApi({})
     total.value = DetailData.data.total;
     //渲染列表的数据
     let dailyDetail = await axios.getLeaveListApi({
         pageSize: total.value
     })
-    console.log(dailyDetail);
-    
     leave.value = dailyDetail.data.list
 }
 function updateTime(time: Date) {
     let date = new Date(time);
-    // console.log(date);
     let year = date.getFullYear();
     let mounth = date.getMonth() + 1;
     let day = date.getUTCDate();
-    let hour = date.getHours();
-    // console.log(hour);  
     return `${year}-${mounth}-${day}`;
 }
-getLeaveListApi()
 
 </script>
 

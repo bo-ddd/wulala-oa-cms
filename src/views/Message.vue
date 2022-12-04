@@ -165,13 +165,14 @@ const thisRow = function (row : received){
       @size-change="handleSizeChange" @current-change="handleCurrentChange" class="mt-20"/>
   </div>
 
+  <AffixTip class="mt-20"></AffixTip>
+
 </template>
 
 <style scoped>
 :deep(.cell) {
   text-align: center;
 }
-
 .content {
   text-overflow: ellipsis;
   white-space: noWrap;

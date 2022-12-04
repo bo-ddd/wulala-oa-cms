@@ -1,9 +1,11 @@
 <template>
 
   <div style="display: inline-block" class="mb-10">
+    <span class="label">请选择组 : </span>
     <el-select v-model="deptValue" clearable placeholder="所在分组" size="small" @change="changeMembers">
-      <el-option v-for="(group, index) in deptList" :key="index" :label="group.deptName" :value="group.deptId" />
+      <el-option v-for="(group, index) in deptList" :key="index" :label="group.name" :value="group.id" />
     </el-select>
+   <span class="label ml-20">接收人 : </span> 
     <el-select v-model="deptMembersValue" multiple placeholder="谁接收消息" style="width: 240px" @change="receiveMessages"
       size="small" class="ml-10">
       <el-option v-for="(item, index) in deptMembersList" :key="index" :label="item.avatarName" :value="item.userId" />
@@ -83,7 +85,6 @@
       </template>
     </el-dialog>
   </el-form>
-  
 
   <div class="demo-pagination-block">
     <el-pagination v-model:pageNum="pageNum" v-model:page-size="pageSize" :page-sizes="[5, 10, 15, 20, 25, 30]"
@@ -91,37 +92,35 @@
       @size-change="handleSizeChange" @current-change="handleCurrentChange" class="mt-20" />
   </div>
 
+  <AffixTip class="mt-20"></AffixTip>
 
-  <!-- <el-button class="submitBtn" type="danger" @click="createMessage()">提交</el-button> -->
 </template>
   
 <script lang="ts" setup>
 import { reactive, ref, } from 'vue'
-import type { Dept, DeptMember } from "../types/Dept";
-import { useStore } from "@/stores/nav";
+import type { DeptMember } from "../types/Dept";
 import axios from '@/assets/api/api'
 import { usePageSizeOptionsStore } from '@/stores/tools'
 import { storeToRefs } from "pinia";
 import MyEditor from '@/components/MyEditor.vue';
-import { number } from 'echarts';
+import type { Message } from '@/types/Message'
 const pageSizeOptionsStore = usePageSizeOptionsStore()
 pageSizeOptionsStore.getStorageStatus()
 const { defaultValue } = storeToRefs(pageSizeOptionsStore)
 
 const deptMembersValue = ref([])
 const deptValue = ref([])
-let deptList = reactive<Dept[]>([])
+let deptList = reactive<any>([])
 let deptMembersList = reactive<DeptMember[]>([])
 let deptId = ref(0)
-let UserStore = useStore()
-let message = ref()
+let message = ref([])
 let messageMember = ref([])
 //页面的条数
 let pageSize = ref(10);
 //总页数
 let pageNum = ref(1);
 //总条数
-let total = ref();
+let total = ref<number>();
 const small = ref(false);
 const disabled = ref(false);
 const ruleForm = reactive({
@@ -138,29 +137,18 @@ if (defaultValue.value) {
 //弹窗
 const dialogTableVisible = ref(false)
 
-interface message {
-  id: number
-  avatarName: string
-  createdAt: Date
-  content: string
-}
-
 function updateTime(time: Date) {
   let date = new Date(time);
-  // console.log(date);
   let year = date.getFullYear();
   let mounth = date.getMonth() + 1;
   let day = date.getUTCDate();
-  // let hour = date.getHours();
-  // console.log(hour);  
   return `${year}-${mounth}-${day}`;
 }
 //获取用户所在哪个组
 const getUserDeptList = async function () {
-  let res = await axios.getUserDeptListApi({
-    userId: UserStore.userId
-  })
-
+  let res = await axios.getDeptList({})
+  console.log(res.data);
+  
   if (res.status == 1) {
     res.data.forEach((dept: any) => {
       deptId.value = dept.deptId
@@ -175,6 +163,7 @@ const queryUserMembers = async function () {
     deptId: deptId.value
   })
   if (res.status == 1) {
+    deptMembersList.length = 0
     deptMembersList.push(...res.data)
   }
 }
@@ -185,8 +174,7 @@ const changeMembers = function (val: number) {
 getUserDeptList()
 
 //发送消息方法
-const sendMessage = function (row: message) {
-  // let sendMessage = await axios.sendMessageApi({})
+const sendMessage = function (row: Message) {
   const userIdArr: any[] = [];
   if (messageMember.value.length) {
     messageMember.value.forEach(item => {
@@ -221,12 +209,12 @@ const handleCurrentChange = (val: number) => {
   myMessageList()
 }
 
-const updateEditor = function (row: message) {
+const updateEditor = function (row: Message) {
   ruleForm.msgId = row.id
   ruleForm.desc = row.content
 }
 
-const thisRow = function (row: message) {
+const thisRow = function (row: Message) {
   updateEditor(row)
 }
 
@@ -246,16 +234,17 @@ const modifyMessage = async function () {
 :deep(.cell) {
   text-align: center;
 }
-
 .content {
   text-overflow: ellipsis;
   white-space: noWrap;
   overflow: hidden;
 }
-
 .flex {
   display: flex;
   justify-content: space-around;
+}
+.label{
+  font-size: 14px;
 }
 </style>
   

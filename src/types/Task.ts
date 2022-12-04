@@ -1,4 +1,5 @@
 export interface CreatedTask{
+    id?:number
     taskName:  string
     description: string
     level: number

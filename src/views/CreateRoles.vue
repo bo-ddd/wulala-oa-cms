@@ -1,24 +1,27 @@
 <script setup lang="ts">
-import axios from '@/assets/api/api';
 import { useRouter } from 'vue-router';
 import { ref, reactive } from 'vue'
 import type PermissionVO from "../types/PermissionVO";
+import {createRoleApi,getPermissionListApi } from "@/assets/api/api";
 
-let router = useRouter()
-let dataList = ref()
-let permissionIds = reactive<number[]>([])
 
-const to = function (name: string) {
-    router.push(name)
-}
+const router = useRouter()
+const dataList = ref()
+const permissionIds = reactive<number[]>([])
 const Role = reactive({
     roleId: 0,
     permissionId: 0,
     roleName: ''
 })
+
+getPermissionList()  //进入页面调接口
+
+const to = function (name: string) {
+    router.push(name)
+}
 //创建角色
 const addRole = async () => {
-    let res = await axios.createRoleApi({
+    let res = await createRoleApi({
         roleName: Role.roleName,
         permissionIds: permissionIds,
     })
@@ -47,51 +50,26 @@ function formatData(data: PermissionVO[]) {
     return res.filter(item => item.pid == 0);
 }
 //封装权限列表接口
-const getPermissionList = async function () {
-    await axios.getPermissionListApi().then(res => {
+async function getPermissionList() {
+    await getPermissionListApi().then(res => {
         dataList.value = formatData(res.data)
         console.log('----------data---------')
         console.log(res.data)
         console.log(dataList.value);   //处理之后的
     })
 }
-getPermissionList()  //进入页面调接口
-//点击当前权限获取 权限id
-// const checkPermission = function (data: PermissionVO) {
-//     console.log(data);
-//     isChecked.value=!isChecked.value;
-//     console.log(isChecked.value);
-//     var arr = formatter(data)
-//      if(isChecked.value){
-//         permissionIds.push(...arr)
-//      }else{
-//         // console.log(123);
-//          permissionIds=permissionIds.filter(id=>!arr.includes(id))
-//      }
-// }
-// const formatter=function(data:PermissionVO){
-//      let res=[]
-//      res.push(data.id)
-//     if(data.children&&data.children.length){
-//        data.children.forEach(item=>{
-//           let ids=formatter(item)
-//           res.push(...ids)
-//        })
-//     }
-//     return res
-// }
-const checkChange=function(data:PermissionVO,isChecked: boolean){
-      if(isChecked){
+const checkChange = function (data: PermissionVO, isChecked: boolean) {
+    if (isChecked) {
         permissionIds.push(data.id)
-      }else{
-        permissionIds.forEach(item=>{
-            if(data.id==item){
+    } else {
+        permissionIds.forEach(item => {
+            if (data.id == item) {
                 console.log(item);
-                permissionIds.splice(permissionIds.indexOf(item),1)  //找到item返回他的下标，从下标开始，删除一个
+                permissionIds.splice(permissionIds.indexOf(item), 1)  //找到item返回他的下标，从下标开始，删除一个
             }
         })
-      }
-      return [...new Set(permissionIds)]   ///
+    }
+    return [...new Set(permissionIds)]   ///
 
 }
 </script>
@@ -106,7 +84,8 @@ const checkChange=function(data:PermissionVO,isChecked: boolean){
     </el-form>
 
     <div class="custom-tree-container mtb-10">
-        <el-tree :data="dataList" show-checkbox  default-expand-all @check-change='checkChange' node-key="id" :expand-on-click-node="true">
+        <el-tree :data="dataList" show-checkbox default-expand-all @check-change='checkChange' node-key="id"
+            :expand-on-click-node="true">
             <template #default="{ data }">
                 <span class="custom-tree-node ">
                     <span>{{ data.permissionName }}</span>
@@ -131,25 +110,31 @@ const checkChange=function(data:PermissionVO,isChecked: boolean){
 :deep(.el-input) {
     width: 200px;
 }
-.lable{
+
+.lable {
     font-size: 16px;
     font-weight: 600;
     color: rgb(145, 137, 137);
 }
+
 .el-tree {
     height: 500px;
-    overflow-y:scroll ;
+    overflow-y: scroll;
 }
-.el-tree::-webkit-scrollbar{
+
+.el-tree::-webkit-scrollbar {
     display: none;
 }
-.mtb-10{
-  margin: 10px 0;
+
+.mtb-10 {
+    margin: 10px 0;
 }
-.ptb-10{
-  padding: 10px 0;
+
+.ptb-10 {
+    padding: 10px 0;
 }
-.el-tree{
-padding: 10px 0;
+
+.el-tree {
+    padding: 10px 0;
 }
 </style>
