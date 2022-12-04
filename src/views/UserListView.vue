@@ -163,10 +163,14 @@ const { defaultValue } = storeToRefs(pageSizeOptionsStore)
 const small = ref(false)
 const background = ref(false)
 const disabled = ref(false)
+const dialogFormVisibleAdd = ref(false);
+const dialogFormVisibleDelete = ref(false);
+const dialogFormisiblGeroup = ref(false);
+const dialogFormisiblDelete = ref(false);
 const formLabelWidth = '140px'
 const router = useRouter();
-const rolesInput = ref();
-const departmentInput = ref();
+const rolesInput = ref<number | null>();
+const departmentInput = ref<number | null>();
 const departmentList = ref();
 const userDepartmentList = ref();
 const userListData = ref();
@@ -175,7 +179,7 @@ const userRolesList = ref();
 const userInfo = ref();
 const pageNum = ref(1);
 const pageSize = ref(10);
-const total = ref();
+const total = ref<number>();
 const label = ref('');
 const form = reactive<Form>({
     deptId: 0,
@@ -185,128 +189,11 @@ const form = reactive<Form>({
     rolesId: null,
     userName: '用户昵称'
 })
-
-const toUserDetail = (id: number) => {
-    router.push({
-        name: 'userDetail',
-        query: {
-            id
-        }
-    })
-}
-const toCreateUser = () => {
-    router.push('createUserAccount')
-}
-
-const handleSizeChange = (val: number) => {
-    getUserList(pageSize.value, pageNum.value)
-    pageSize.value = val
-}
-const handleCurrentChange = (val: number) => {
-    getUserList(pageSize.value, pageNum.value)
-    pageNum.value = val
-}
-const getUserList = (pageSize?: number, pageNum?: number) => {
-    label.value = ''
-    axios.getUserListApi({
-        pageNum: pageNum,
-        pageSize: pageSize
-    }).then(res => {
-        if (res.status === 1) {
-            userListData.value = res.data.list;
-            total.value = res.data.total
-        }
-    })
-    rolesInput.value = '';
-    departmentInput.value = '';
-    form.searchDepId = null
-}
+getDepartmentId();
 if (defaultValue.value) {
     pageSize.value = defaultValue.value
     getUserList(pageSize.value);
 };
-
-
-// (async function () {
-//     let userList = await axios.getUserListApi({})
-//     userListData.value = userList.data.list;
-//     total.value = userList.data.total
-//     userNameList.value = userList.data.list
-// })();
-// 获取用户角色ID
-(async function () {
-    let rolesList = await axios.getRoleListApi({})
-    roleList.value = rolesList.data
-})()
-
-
-interface User {
-    address: string
-    avatarImg: string | null
-    avatarName: string
-    birthday: string
-    hobby: string
-    personalSignature: string
-    phoneNumber: string
-    roles: []
-    sex: number
-    userId: number
-}
-
-const dialogFormVisibleAdd = ref(false);
-const dialogFormVisibleDelete = ref(false);
-const dialogFormisiblGeroup = ref(false);
-const dialogFormisiblDelete = ref(false);
-
-interface Form {
-    deptId: number | null,
-    depName: string,
-    searchDepId: number | null,
-    userId: number,
-    rolesId: number | null,
-    userName: string
-}
-
-
-
-const showRoleName = function (roleList: any) {
-    if (!Array.isArray(roleList)) return;
-    let str = '';
-    roleList.forEach(item => {
-        str += `${item.roleName},`
-    })
-    return str.substring(0, str.length - 1);
-}
-const showDeptName = function (deptList: any) {
-    if (!Array.isArray(deptList)) return;
-    let str = '';
-    deptList.forEach(item => {
-        str += `${item.deptName},`
-    })
-    return str.substring(0, str.length - 1);
-}
-// 添加用户角色
-const addUserRole = async (addUserId: number) => {
-    let res = await axios.addUserRoleApi({
-        userId: addUserId,
-        roleId: form.rolesId
-    })
-    if (res.status == 1) {
-        // userSearch(addUserId)
-        addSuccess();
-        form.rolesId = null
-    } else {
-        addError();
-    }
-}
-
-const upError = () => {
-    ElMessage({
-        showClose: true,
-        message: '查询失败',
-        type: 'error',
-    })
-}
 const addSuccess = () => {
     ElMessage({
         showClose: true,
@@ -342,15 +229,93 @@ const deleteError = () => {
         type: 'error',
     })
 }
-
-interface User {
-    userId: number
-    avatarName: string
-    phoneNumber: string
+const toUserDetail = (id: number) => {
+    router.push({
+        name: 'userDetail',
+        query: {
+            id
+        }
+    })
 }
-const addRoles = (row: User) => {
-    form.userId = row.userId
-    form.userName = row.avatarName
+const toCreateUser = () => {
+    router.push('createUserAccount')
+}
+const handleSizeChange = (val: number) => {
+    getUserList(pageSize.value, pageNum.value)
+    pageSize.value = val
+}
+const handleCurrentChange = (val: number) => {
+    getUserList(pageSize.value, pageNum.value)
+    pageNum.value = val
+}
+async function getUserList(pageSize?: number, pageNum?: number) {
+    label.value = ''
+    await axios.getUserListApi({
+        pageNum: pageNum,
+        pageSize: pageSize
+    }).then(res => {
+        if (res.status === 1) {
+            userListData.value = res.data.list;
+            total.value = res.data.total
+        }
+    })
+    rolesInput.value = null;
+    departmentInput.value = null;
+    form.searchDepId = null
+}
+(async function () {
+    let rolesList = await axios.getRoleListApi({})
+    roleList.value = rolesList.data
+})()
+interface User {
+    address: string
+    avatarImg: string | null
+    avatarName: string
+    birthday: string
+    hobby: string
+    personalSignature: string
+    phoneNumber: string
+    roles: []
+    sex: number
+    userId: number
+}
+interface Form {
+    deptId: number | null,
+    depName: string,
+    searchDepId: number | null,
+    userId: number,
+    rolesId: number | null,
+    userName: string
+}
+const showRoleName = function (roleList: any) {
+    if (!Array.isArray(roleList)) return;
+    let str = '';
+    roleList.forEach(item => {
+        str += `${item.roleName},`
+    })
+    return str.substring(0, str.length - 1);
+}
+const showDeptName = function (deptList: any) {
+    if (!Array.isArray(deptList)) return;
+    let str = '';
+    deptList.forEach(item => {
+        str += `${item.deptName},`
+    })
+    return str.substring(0, str.length - 1);
+}
+// 添加用户角色
+const addUserRole = async (addUserId: number) => {
+    let res = await axios.addUserRoleApi({
+        userId: addUserId,
+        roleId: form.rolesId
+    })
+    if (res.status == 1) {
+        // userSearch(addUserId)
+        addSuccess();
+        form.rolesId = null
+    } else {
+        addError();
+    }
 }
 // 删除用户角色
 const getUserId = async (row: User) => {
@@ -399,9 +364,8 @@ const queryDeptUser = async (id: number | null) => {
         total.value = userListData.value.length
     })
 }
-
 // 给用户添加部门
-const getDepartmentId = async () => {
+async function getDepartmentId() {
     await axios.getDeptList({}).then(res => {
         if (res.status == 1) {
             form.deptId = res.data.id
@@ -411,9 +375,6 @@ const getDepartmentId = async () => {
         }
     })
 }
-
-
-getDepartmentId();
 const addDepartment = async () => {
     getDepartmentId();
     await axios.addUserDeptApi({
@@ -429,7 +390,6 @@ const addDepartment = async () => {
         }
     })
 }
-
 // 删除用户部门
 const removeUserDepartment = async (userId: number) => {
     await axios.deleteUserDeptApi({
@@ -456,20 +416,6 @@ a {
     cursor: pointer;
     margin: 0 5px;
     text-decoration: none;
-}
-
-.touserdetail {
-    color: darkturquoise;
-}
-
-.roles-add,
-.geroup-add {
-    color: crimson;
-}
-
-.roles-delete,
-.geroup-delete {
-    color: green;
 }
 
 .creat-user {

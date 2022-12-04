@@ -6,6 +6,7 @@ import { updatePasswordApi } from '@/assets/api/api'
 import { usePageSizeOptionsStore } from "@/stores/tools";
 import { storeToRefs } from "pinia";
 import type { Colors } from "@/types/ThemeColors"
+import { useThemeStore } from '@/stores/themeColors';
 const pageSizeOptionsStore = usePageSizeOptionsStore();
 const { SwitchStatus, defaultValue } = storeToRefs(pageSizeOptionsStore);
 
@@ -150,7 +151,7 @@ const appearanceList = [
         id: 2,
         appearanceUrl: '',
         title: '晨雾',
-        color: ' #aab0b6'
+        color: '#aab0b6'
     },
     {
         id: 3,
@@ -174,7 +175,7 @@ const appearanceList = [
         id: 6,
         appearanceUrl: '',
         title: '柔和粉色',
-        color: ' #d8b2ad'
+        color: '#d8b2ad'
     },
     {
         id: 7,
@@ -202,8 +203,10 @@ const appearanceList = [
     }
 ]
 //选中色块的点击事件;
+let useThemeColor = useThemeStore();
+
 const changeColor = (value: Colors) => {
-    localStorage.setItem('color', value.color)
+    useThemeColor.setThemeColor(value)
 }
 
 
