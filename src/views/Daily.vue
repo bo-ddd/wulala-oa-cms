@@ -9,12 +9,11 @@ import { storeToRefs } from "pinia";
 const pageSizeOptionsStore = usePageSizeOptionsStore()
 pageSizeOptionsStore.getStorageStatus()
 const { defaultValue } = storeToRefs(pageSizeOptionsStore)
-
 const router = useRouter()
-//分页参数;
 const currentPage = ref(1) //当前是第几页;
 const pageSize = ref(10)  //每页显示的条数;
 const total = ref(0)
+const tableData = reactive<TableData[]>([])
 // 从pinio中拿到用户设置的默认值;
 if (defaultValue.value) {
     pageSize.value = defaultValue.value
@@ -40,7 +39,6 @@ interface TableData {
     createdAt: string
     updatedAt: null
 }
-const tableData = reactive<TableData[]>([])
 
 
 //查询参数的类型;
@@ -135,6 +133,8 @@ const queryDailyDetail = () => {
     <el-pagination v-model:currentPage="currentPage" v-model:page-size="pageSize" :page-sizes="[5, 10, 15, 20, 25, 30]"
         layout="total, sizes, prev, pager, next, jumper" :total="total"
         @size-change="handleSizeChange" @current-change="handleCurrentChange" class="mt-20" />
+
+        <AffixTip class="mt-20"></AffixTip>
 </template>
 
 <style scoped>

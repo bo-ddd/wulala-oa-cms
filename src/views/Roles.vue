@@ -1,17 +1,18 @@
 <script setup lang="ts">
 import { ref, computed, reactive, h } from 'vue'
-import axios from "@/assets/api/api";
 import { ElMessage } from 'element-plus'
 import { useRouter } from "vue-router";
 import type { Role } from "../types/Role";
 import { usePageSizeOptionsStore } from '@/stores/tools'
 import { storeToRefs } from "pinia";
+import { getRoleListApi,queryRolePermissionListApi,deleteRoleApi} from "@/assets/api/api";
+
 
 const pageSizeOptionsStore = usePageSizeOptionsStore()
 pageSizeOptionsStore.getStorageStatus()
 const { defaultValue } = storeToRefs(pageSizeOptionsStore)
 let router = useRouter()
-const selectValue= ref('')
+const selectValue = ref('')
 const centerDialogVisible = ref(false)
 const pageNum = ref(1)
 const pageSize = ref(10)
@@ -21,13 +22,24 @@ let list = reactive<Role[]>([]);
 let permissionList = reactive<Role[]>([]);
 const dialogFormVisible = ref(false)
 let RoleId = ref()
+//分页
+let total = computed(() => list.length)
+//当前每页列表数据
+let currentList = computed(() => list.slice(startIndex.value, endIndex.value))
+//开始下标
+let startIndex = computed(() => (pageNum.value - 1) * pageSize.value)
+//结束下标
+let endIndex = computed(() => pageNum.value * pageSize.value)
+
+getRoleList()
+
 // 从pinio中拿到用户设置的默认值;
 if (defaultValue.value) {
     pageSize.value = defaultValue.value
 }
 //封装 角色列表接口
-let getRoleList = async function () {
-    let res = await axios.getRoleListApi()
+async function getRoleList() {
+    let res = await getRoleListApi()
     resData.length = 0      //resData.length = [] 失去数据双向绑定   清空resData
     resData.push(...res.data);
     list.length = 0
@@ -36,7 +48,6 @@ let getRoleList = async function () {
     console.log(resData);
 }
 
-getRoleList()
 //搜索框改变
 const handleChange = (value: string) => {
     if (value) {
@@ -46,11 +57,10 @@ const handleChange = (value: string) => {
 }
 //点击搜索按钮
 const searchRole = function () {
-    if(selectValue.value=='全部'){
-        list.length = 0;  
+    if (selectValue.value == '全部') {
+        list.length = 0;
         list.push(...resData);
-        }
-    
+    }
     let user = resData.filter(item => item.id == Number(RoleId.value));
     list.length = 0;   // list = []重新定义list会让他没双向绑定 所以只能list.length =0;
     list.push(...user);
@@ -58,7 +68,7 @@ const searchRole = function () {
 
 }
 const queryPermissionList = async function (row: any) {
-    let res = await axios.queryRolePermissionListApi({
+    let res = await queryRolePermissionListApi({
         roleId: row.id
     })
     console.log(res);
@@ -84,19 +94,12 @@ const handleDelete = async (index: number, row: Role) => {
 }
 //弹层确定删除角色及权限
 const handleDelectRole = async function () {
-    await axios.deleteRoleApi({
+    await deleteRoleApi({
         id: selectId.value
     })
     getRoleList()
 }
-//分页
-let total = computed(() => list.length)
-//当前每页列表数据
-let currentList = computed(() => list.slice(startIndex.value, endIndex.value))
-//开始下标
-let startIndex = computed(() => (pageNum.value - 1) * pageSize.value)
-//结束下标
-let endIndex = computed(() => pageNum.value * pageSize.value)
+
 const handleSizeChange = (val: number) => {
     pageSize.value = val
 }
