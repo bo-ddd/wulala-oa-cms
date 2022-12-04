@@ -2,7 +2,7 @@
 import { RouterView, useRouter, useRoute } from "vue-router";
 import { onMounted } from "vue";
 import { ArrowRight } from '@element-plus/icons-vue';
-import axios from '../assets/api/api';
+import { updateUserInfoApi } from '../assets/api/api';
 import { ref } from 'vue';
 import { ArrowDown } from '@element-plus/icons-vue';
 import sidebarList from '../router/menu';
@@ -98,7 +98,7 @@ function getMinePageName(path: string) {
 
 //解决页面刷新后面包屑导航名称与侧边栏名称会重置的情况;
 const activeItem = ref('/')
-let themeColor:string
+let themeColor: string
 
 onMounted(() => {
     getPageName(route.path);
@@ -120,8 +120,8 @@ const defaultAvatarImg = 'https://img.ixintu.com/download/jpg/20200815/18ae76680
 
 const userInfo = userInfos.value;
 
-const updateUserInfoApi = (payLoad: {}) => {
-    return axios.updateUserInfoApi({
+const updateUserInfo = (payLoad: {}) => {
+    return updateUserInfoApi({
         userId: userInfo.userId,
         sex: userInfo.sex,
         birthday: new Date(userInfo.birthday).getTime(),
@@ -151,9 +151,9 @@ const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
 //上传头像;
 const submitUpload = () => {
     if (!uploadUrl.value) return
-    updateUserInfoApi({
+    updateUserInfo({
         avatarImg: uploadUrl.value
-    }).then(async (res) => {
+    }).then(async () => {
         ElMessage({
             message: '修改成功',
             type: 'success',
@@ -162,7 +162,7 @@ const submitUpload = () => {
         // await initUserInfo();
         await userStore.getUserInfo();
         dialogAvatarVisible.value = false;
-    }).catch(error => {
+    }).catch(() => {
         ElMessage({
             message: '修改失败',
             type: 'warning',

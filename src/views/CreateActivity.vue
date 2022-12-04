@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { ref, reactive } from 'vue'
-import axios from '../assets/api/api'
 import type { FormInstance, FormRules } from 'element-plus'
 import { useRouter } from 'vue-router';
 import { ElMessage, ElMessageBox } from 'element-plus'
