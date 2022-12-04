@@ -3,13 +3,7 @@ import type { UserList, UserRegister } from "@/types/User";
 import type { UpdatePermission } from "@/types/Permission";
 import type { CreateLeave, ExamineUserLeave } from "@/types/Leave";
 import type { CreatedTask } from "@/types/Task";
-
-interface Result {
-    status: number;
-    data: any;
-    msg: string;
-}
-
+import type{ Result } from "@/types/Result";
 /**
 * @description 登录接口
 * @param payload

@@ -56,12 +56,6 @@ const keyDown = (e:any) => {
 }
 onMounted(() => {
     window.addEventListener('keydown', keyDown)
-    // document.onkeydown = function (e) {
-    //     let key = e.key;
-    //     if (key == "Enter") {
-    //         submit(ruleFormRef.value);
-    //     }
-    // };
 })
 onUnmounted(() => {
   window.removeEventListener('keydown', keyDown, false)
