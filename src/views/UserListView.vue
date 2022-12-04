@@ -149,7 +149,8 @@
 
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
-import axios from '@/assets/api/api'
+import { getUserListApi, getRoleListApi, addUserRoleApi, queryUserInfoApi, deleteUserRoleApi, getUserDeptListApi,
+     queryUserMembersApi, getDeptList, addUserDeptApi, deleteUserDeptApi} from '@/assets/api/api'
 import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router';
 import { usePageSizeOptionsStore } from '@/stores/tools'
@@ -250,7 +251,7 @@ const handleCurrentChange = (val: number) => {
 }
 async function getUserList(pageSize?: number, pageNum?: number) {
     label.value = ''
-    await axios.getUserListApi({
+    await getUserListApi({
         pageNum: pageNum,
         pageSize: pageSize
     }).then(res => {
@@ -264,7 +265,7 @@ async function getUserList(pageSize?: number, pageNum?: number) {
     form.searchDepId = null
 }
 (async function () {
-    let rolesList = await axios.getRoleListApi({})
+    let rolesList = await getRoleListApi({})
     roleList.value = rolesList.data
 })()
 interface User {
@@ -305,7 +306,7 @@ const showDeptName = function (deptList: any) {
 }
 // 添加用户角色
 const addUserRole = async (addUserId: number) => {
-    let res = await axios.addUserRoleApi({
+    let res = await addUserRoleApi({
         userId: addUserId,
         roleId: form.rolesId
     })
@@ -320,7 +321,7 @@ const addUserRole = async (addUserId: number) => {
 // 删除用户角色
 const getUserId = async (row: User) => {
     queryUserDepartment(row.userId)
-    let res = await axios.queryUserInfoApi({
+    let res = await queryUserInfoApi({
         userId: row.userId
     })
     if (res.status == 1) {
@@ -331,7 +332,7 @@ const getUserId = async (row: User) => {
     form.userName = row.avatarName
 }
 const deleteUserRole = async () => {
-    let res = await axios.deleteUserRoleApi({
+    let res = await deleteUserRoleApi({
         id: form.rolesId
     })
     if (res.status == 1) {
@@ -344,7 +345,7 @@ const deleteUserRole = async () => {
 }
 // 获取用户部门
 const queryUserDepartment = async (id: number) => {
-    await axios.getUserDeptListApi({
+    await getUserDeptListApi({
         userId: id
     }).then(res => {
         if (res.status == 1) {
@@ -354,7 +355,7 @@ const queryUserDepartment = async (id: number) => {
 }
 // 查询部门用户
 const queryDeptUser = async (id: number | null) => {
-    await axios.queryUserMembersApi({
+    await queryUserMembersApi({
         deptId: id
     }).then(res => {
         userListData.value.length = 0
@@ -366,7 +367,7 @@ const queryDeptUser = async (id: number | null) => {
 }
 // 给用户添加部门
 async function getDepartmentId() {
-    await axios.getDeptList({}).then(res => {
+    await getDeptList({}).then(res => {
         if (res.status == 1) {
             form.deptId = res.data.id
             form.searchDepId = res.data.id
@@ -377,7 +378,7 @@ async function getDepartmentId() {
 }
 const addDepartment = async () => {
     getDepartmentId();
-    await axios.addUserDeptApi({
+    await addUserDeptApi({
         userId: form.userId,
         deptId: form.deptId
     }).then(res => {
@@ -392,7 +393,7 @@ const addDepartment = async () => {
 }
 // 删除用户部门
 const removeUserDepartment = async (userId: number) => {
-    await axios.deleteUserDeptApi({
+    await deleteUserDeptApi({
         userId: userId,
         deptId: form.deptId
     }).then(res => {
