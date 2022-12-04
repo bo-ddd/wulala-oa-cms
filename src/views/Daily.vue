@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import axios from '../assets/api/api'
+import { getArticleListApi } from '../assets/api/api'
 import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { Search } from '@element-plus/icons-vue'
@@ -33,7 +33,7 @@ const handleCurrentChange = (val: number) => {
 
 //获取日报列表数据;
 const getDailyList = async (param: UserDailyListParam) => {
-    let { data } = await axios.getArticleListApi(param)
+    let { data } = await getArticleListApi(param)
     total.value = data.total;
     tableData.length = 0;
     Object.assign(tableData, data.list)

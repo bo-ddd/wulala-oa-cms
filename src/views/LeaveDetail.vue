@@ -1,19 +1,19 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router';
 import { ref } from 'vue'
-import axios from '@/assets/api/api'
+import { getLeaveListApi } from '@/assets/api/api'
 let route = useRoute()
 let myId = route.query.id;
 let leave = ref<any>();
 let total = ref<number>();
 
-getLeaveListApi()
+getMyLeaveListApi()
 
-async function getLeaveListApi () {
-    let DetailData = await axios.getLeaveListApi({})
+async function getMyLeaveListApi () {
+    let DetailData = await getLeaveListApi({})
     total.value = DetailData.data.total;
     //渲染列表的数据
-    let dailyDetail = await axios.getLeaveListApi({
+    let dailyDetail = await getLeaveListApi({
         pageSize: total.value
     })
     leave.value = dailyDetail.data.list

@@ -30,7 +30,7 @@
 <script lang="ts" setup>
 import { reactive, ref } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
-import axios from '@/assets/api/api'
+import { queryUserInfoApi,createLeaveApi } from '@/assets/api/api'
 
 const formSize = ref('default')
 const ruleFormRef = ref<FormInstance>()
@@ -75,7 +75,7 @@ const rules = reactive<FormRules>({
 getsunmit()
 
 async function getsunmit (){
-  let userId = await axios.queryUserInfoApi({});
+  let userId = await queryUserInfoApi({});
   ruleForm.id = userId.data.userId
   ruleForm.name = userId.data.avatarName
 }
@@ -85,7 +85,7 @@ const submitForm = (formEl: FormInstance | undefined) => {
     if (valid) {
       console.log('submit!');
       alert("提交成功")
-       await axios.createLeaveApi({
+       await createLeaveApi({
         userId: ruleForm.id,
         reason: ruleForm.desc,
         startTime: ruleForm.dateValue[0],

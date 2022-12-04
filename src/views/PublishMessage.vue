@@ -99,7 +99,7 @@
 <script lang="ts" setup>
 import { reactive, ref, } from 'vue'
 import type { DeptMember } from "../types/Dept";
-import axios from '@/assets/api/api'
+import { getDeptList,queryUserMembersApi,sendMessageApi,queryMessageListApi,updateMessageApi } from '@/assets/api/api'
 import { usePageSizeOptionsStore } from '@/stores/tools'
 import { storeToRefs } from "pinia";
 import MyEditor from '@/components/MyEditor.vue';
@@ -149,7 +149,7 @@ function updateTime(time: Date) {
 }
 //获取用户所在哪个组
 async function getUserDeptList() {
-  let res = await axios.getDeptList({})
+  let res = await getDeptList({})
   console.log(res.data);
   
   if (res.status == 1) {
@@ -161,7 +161,7 @@ async function getUserDeptList() {
 }
 //查询当前组都有谁
 const queryUserMembers = async function () {
-  let res = await axios.queryUserMembersApi({
+  let res = await queryUserMembersApi({
     deptId: deptId.value
   })
   if (res.status == 1) {
@@ -178,7 +178,7 @@ const sendMessage = function (row: Message) {
   const userIdArr: any[] = [];
   if (messageMember.value.length) {
     messageMember.value.forEach(item => {
-      userIdArr.push(axios.sendMessageApi({
+      userIdArr.push(sendMessageApi({
         userId: item,
         msgId: row.id
       }))
@@ -191,7 +191,7 @@ const receiveMessages = function (val: any) {
 }
 //获取列表
 async function myMessageList () {
-  let messageList = await axios.queryMessageListApi({
+  let messageList = await queryMessageListApi({
     pageSize: pageSize.value,
     pageNum: pageNum.value,
   })
@@ -214,7 +214,7 @@ const thisRow = function (row: Message) {
   updateEditor(row)
 }
 const modifyMessage = async function () {
-  await axios.updateMessageApi({
+  await updateMessageApi({
     id: ruleForm.msgId,
     content: ruleForm.desc
   })

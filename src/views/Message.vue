@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, reactive } from 'vue'
-import axios from '@/assets/api/api'
+import { getUserMessageApi } from '@/assets/api/api'
 
 import { usePageSizeOptionsStore } from '@/stores/tools'
 import { storeToRefs } from "pinia";
@@ -42,7 +42,7 @@ function updateTime(time: any) {
 }
 
 async function getUserMessage () {
-   let myMessage = await axios.getUserMessageApi({
+   let myMessage = await getUserMessageApi({
     pageNum : pageNum.value,
     pageSize : pageSize.value
    })
