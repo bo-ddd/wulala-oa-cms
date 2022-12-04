@@ -4,34 +4,42 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { usePageSizeOptionsStore } from '@/stores/tools'
 import { storeToRefs } from "pinia";
+import type { ExamineUserLeave } from '@/types/Leave'
 
 const pageSizeOptionsStore = usePageSizeOptionsStore()
 pageSizeOptionsStore.getStorageStatus()
 const { defaultValue } = storeToRefs(pageSizeOptionsStore)
 const router = useRouter()
-interface User {
-  id: number
-  userId: number
-  reason: string
-  startTime: string
-  endTime: string
-  leaveStatus: number
-  auditStatus: number
-}
 
-interface id{
-  id : number
-}
-
-let leave = ref();
-//页面的条数
+let leave = ref<any>();
 let pageSize = ref(10);
-//总条数
 let total = ref();
-//总页数
 let pageNum = ref(1);
+const small = ref(false);
+const disabled = ref(false);
 
-const handleEdit = async (index: number, row: User) => {
+
+getLeaveListApi()
+
+
+
+// 从pinio中拿到用户设置的默认值;
+if (defaultValue.value) {
+    pageSize.value = defaultValue.value
+}
+
+ async function getLeaveListApi() {
+  let leaveData = await axios.getLeaveListApi({
+    pageSize: pageSize.value,
+    pageNum: pageNum.value
+  })
+  total.value = leaveData.data.total;
+  //渲染列表的数据
+  leave.value = leaveData.data.list;
+}
+
+
+const handleEdit = async (index: number, row: ExamineUserLeave) => {
   let setStatus = await axios.examineUserLeaveApi({
     auditStatus: 1,
     id: row.id
@@ -39,12 +47,11 @@ const handleEdit = async (index: number, row: User) => {
   getLeaveListApi()
 }
 
-const handleDelete = async (index: number, row: User) => {
+const handleDelete = async (index: number, row: ExamineUserLeave) => {
   let setStatus = await axios.examineUserLeaveApi({
     auditStatus: 2,
     id: row.id
   })
-
   getLeaveListApi()
 }
 function updateTime(time: Date) {
@@ -58,40 +65,13 @@ function updateTime(time: Date) {
   return `${ year }-${ mounth }-${ day }-${ hour }`;
 }
 
-// 从pinio中拿到用户设置的默认值;
-if (defaultValue.value) {
-    pageSize.value = defaultValue.value
-}
-
-const small = ref(false);
-const disabled = ref(false);
-const getLeaveListApi = async function () {
-  let leaveData = await axios.getLeaveListApi({
-    pageSize: pageSize.value,
-    pageNum: pageNum.value
-  })
-  total.value = leaveData.data.total;
-  //渲染列表的数据
-  leave.value = leaveData.data.list;
-  console.log(leaveData);
-  
-}
-getLeaveListApi()
-
-let date = (startTime1 : number , endTime1 : number) =>{
-  let starTime = new Date(startTime1).getTime()
-  let endTime = new Date(endTime1).getTime()
-  let timeStamp = endTime - starTime
-  // let duration = timeStamp/1000/60/60%24
-  return Math.ceil(timeStamp/1000/60/60/24*24);
-};
 
 const handleSizeChange = (val: number) => {
   pageSize.value = val
   getLeaveListApi()
 }
 
-const handleLeaveDetail = (index: number, row: id) => {
+const handleLeaveDetail = (index: number, row: ExamineUserLeave) => {
     router.push({
         name: 'leaveDetail',
         query: {
@@ -202,7 +182,8 @@ const handleCurrentChange = (val: number) => {
       :disabled="disabled" layout="total, sizes, prev, pager, next, jumper" :total="total"
       @size-change="handleSizeChange" @current-change="handleCurrentChange" class="mt-20"/>
   </div>
- 
+
+  <AffixTip class="mt-20"></AffixTip>
 
 </template>
 
