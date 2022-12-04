@@ -14,3 +14,7 @@ export interface DeptMember{
     sex : number
     userId: number
 }
+export interface DepartmentData {
+  id: number,
+  name: string
+}
