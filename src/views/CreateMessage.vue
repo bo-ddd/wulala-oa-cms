@@ -14,7 +14,7 @@
   import { reactive, ref, } from 'vue'
   import type { FormInstance } from 'element-plus'
   import { ElMessage } from 'element-plus'
-  import axios from '@/assets/api/api'
+  import { createMessageApi } from '@/assets/api/api'
   import MyEditor from '@/components/MyEditor.vue'
   const formSize = ref('default')
   const ruleFormRef = ref<FormInstance>()
@@ -24,12 +24,10 @@
   })
   //创建消息方法
   const createMessage = async function () {
-    console.log(ruleForm.desc);
-    
      if(ruleForm.desc == '<p><br></p>'){
         ElMessage.warning('内容不能为空')
      }else{
-      await axios.createMessageApi({
+      await createMessageApi({
           content: ruleForm.desc
         })
      }

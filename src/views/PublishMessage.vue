@@ -99,7 +99,7 @@
 <script lang="ts" setup>
 import { reactive, ref, } from 'vue'
 import type { DeptMember } from "../types/Dept";
-import axios from '@/assets/api/api'
+import { getDeptList,queryUserMembersApi,sendMessageApi,queryMessageListApi,updateMessageApi } from '@/assets/api/api'
 import { usePageSizeOptionsStore } from '@/stores/tools'
 import { storeToRefs } from "pinia";
 import MyEditor from '@/components/MyEditor.vue';
@@ -137,6 +137,9 @@ if (defaultValue.value) {
 //弹窗
 const dialogTableVisible = ref(false)
 
+getUserDeptList()
+myMessageList()
+
 function updateTime(time: Date) {
   let date = new Date(time);
   let year = date.getFullYear();
@@ -145,8 +148,8 @@ function updateTime(time: Date) {
   return `${year}-${mounth}-${day}`;
 }
 //获取用户所在哪个组
-const getUserDeptList = async function () {
-  let res = await axios.getDeptList({})
+async function getUserDeptList() {
+  let res = await getDeptList({})
   console.log(res.data);
   
   if (res.status == 1) {
@@ -156,10 +159,9 @@ const getUserDeptList = async function () {
     deptList.push(...res.data)
   }
 }
-
 //查询当前组都有谁
 const queryUserMembers = async function () {
-  let res = await axios.queryUserMembersApi({
+  let res = await queryUserMembersApi({
     deptId: deptId.value
   })
   if (res.status == 1) {
@@ -171,35 +173,31 @@ const changeMembers = function (val: number) {
   deptId.value = val
   queryUserMembers()
 }
-getUserDeptList()
-
 //发送消息方法
 const sendMessage = function (row: Message) {
   const userIdArr: any[] = [];
   if (messageMember.value.length) {
     messageMember.value.forEach(item => {
-      userIdArr.push(axios.sendMessageApi({
+      userIdArr.push(sendMessageApi({
         userId: item,
         msgId: row.id
       }))
     })
   }
 }
-
 // 监听当前选择的收消息的人
 const receiveMessages = function (val: any) {
   messageMember.value = val
 }
 //获取列表
-const myMessageList = async function () {
-  let messageList = await axios.queryMessageListApi({
+async function myMessageList () {
+  let messageList = await queryMessageListApi({
     pageSize: pageSize.value,
     pageNum: pageNum.value,
   })
   total.value = messageList.data.total
   message.value = messageList.data.list
 }
-myMessageList()
 const handleSizeChange = (val: number) => {
   pageSize.value = val
   myMessageList()
@@ -208,27 +206,21 @@ const handleCurrentChange = (val: number) => {
   pageNum.value = val
   myMessageList()
 }
-
 const updateEditor = function (row: Message) {
   ruleForm.msgId = row.id
   ruleForm.desc = row.content
 }
-
 const thisRow = function (row: Message) {
   updateEditor(row)
 }
-
 const modifyMessage = async function () {
-  await axios.updateMessageApi({
+  await updateMessageApi({
     id: ruleForm.msgId,
     content: ruleForm.desc
   })
   dialogTableVisible.value = false
   myMessageList()
 }
-
-
-
 </script>
 <style scoped>
 :deep(.cell) {

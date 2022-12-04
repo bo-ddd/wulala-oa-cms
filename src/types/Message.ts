@@ -4,3 +4,10 @@ export interface Message {
     createdAt: Date
     content: string
   }
+  export interface received {
+    senderAvatarName: string
+    content: string
+    createdAt: string
+    id: number
+    updatedAt: string
+  }

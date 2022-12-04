@@ -16,16 +16,17 @@
 <script lang="ts" setup>
 import { reactive, ref, } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
-import axios from '@/assets/api/api'
+import { createArticleApi } from '@/assets/api/api'
 import MyEditor from '@/components/MyEditor.vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { useRouter } from "vue-router"
+import type { CreateDaily } from '@/types/Daily'
 const router = useRouter()
 
 const ruleFormRef = ref<FormInstance>()
-const ruleForm = reactive({
-    title: '',
-    content: '',
+const ruleForm = reactive<CreateDaily>({
+    title : '',
+    content : ''
 })
 
 const rules = reactive<FormRules>({
@@ -63,7 +64,7 @@ const submitForm = (formEl: FormInstance | undefined) => {
                             message: '标题格式不正确',
                         })
                     } else {
-                        await axios.createArticleApi({
+                        await createArticleApi({
                             title: ruleForm.title,
                             content: ruleForm.content
                         }).then(res => {
