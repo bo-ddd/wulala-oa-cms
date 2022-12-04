@@ -25,7 +25,6 @@ function updateTime(time: Date) {
     let day = date.getUTCDate();
     return `${year}-${mounth}-${day}`;
 }
-
 </script>
 
 <template>

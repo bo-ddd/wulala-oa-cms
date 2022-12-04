@@ -34,7 +34,6 @@ import axios from '@/assets/api/api'
 
 const formSize = ref('default')
 const ruleFormRef = ref<FormInstance>()
-
 const ruleForm = reactive({
   name: '',
   id: '',
@@ -42,7 +41,6 @@ const ruleForm = reactive({
   type: [],
   desc: '',
 })
-
 const rules = reactive<FormRules>({
   date1: [
     {
@@ -73,12 +71,14 @@ const rules = reactive<FormRules>({
   ],
 });
 
-const getsunmit = async () => {
+
+getsunmit()
+
+async function getsunmit (){
   let userId = await axios.queryUserInfoApi({});
   ruleForm.id = userId.data.userId
   ruleForm.name = userId.data.avatarName
 }
-getsunmit()
 const submitForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return
   formEl.validate(async (valid, fields) => {
@@ -98,8 +98,6 @@ const submitForm = (formEl: FormInstance | undefined) => {
     }
   })
 }
-
-
 </script>
 <style scoped>
 :deep(.el-form){

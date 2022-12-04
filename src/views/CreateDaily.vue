@@ -20,12 +20,13 @@ import axios from '@/assets/api/api'
 import MyEditor from '@/components/MyEditor.vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { useRouter } from "vue-router"
+import type { CreateDaily } from '@/types/Daily'
 const router = useRouter()
 
 const ruleFormRef = ref<FormInstance>()
-const ruleForm = reactive({
-    title: '',
-    content: '',
+const ruleForm = reactive<CreateDaily>({
+    title : '',
+    content : ''
 })
 
 const rules = reactive<FormRules>({

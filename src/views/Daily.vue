@@ -5,6 +5,7 @@ import { useRouter } from 'vue-router'
 import { Search } from '@element-plus/icons-vue'
 import { usePageSizeOptionsStore } from '@/stores/tools'
 import { storeToRefs } from "pinia";
+import type { TableData , UserDailyListParam } from '@/types/Daily'
 
 const pageSizeOptionsStore = usePageSizeOptionsStore()
 pageSizeOptionsStore.getStorageStatus()
@@ -28,27 +29,6 @@ const handleSizeChange = (val: number) => {
 const handleCurrentChange = (val: number) => {
     currentPage.value = val
     queryDailyDetail()
-}
-
-interface TableData {
-    id: number
-    userId: number
-    avatarName: string
-    title: string
-    content: string
-    createdAt: string
-    updatedAt: null
-}
-
-
-//查询参数的类型;
-interface UserDailyListParam {
-    userId?: number,
-    title?: string,
-    startCreatedTime?: string,
-    endCreatedTime?: string,
-    pageSize: number,
-    pageNum: number
 }
 
 //获取日报列表数据;

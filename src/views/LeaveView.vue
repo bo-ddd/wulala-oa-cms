@@ -10,19 +10,14 @@ const pageSizeOptionsStore = usePageSizeOptionsStore()
 pageSizeOptionsStore.getStorageStatus()
 const { defaultValue } = storeToRefs(pageSizeOptionsStore)
 const router = useRouter()
-
 let leave = ref<any>();
-let pageSize = ref(10);
-let total = ref();
+let pageSize = ref<number>();
+let total = ref<number>();
 let pageNum = ref(1);
 const small = ref(false);
 const disabled = ref(false);
 
-
 getLeaveListApi()
-
-
-
 // 从pinio中拿到用户设置的默认值;
 if (defaultValue.value) {
     pageSize.value = defaultValue.value
@@ -37,7 +32,6 @@ if (defaultValue.value) {
   //渲染列表的数据
   leave.value = leaveData.data.list;
 }
-
 
 const handleEdit = async (index: number, row: ExamineUserLeave) => {
   let setStatus = await axios.examineUserLeaveApi({

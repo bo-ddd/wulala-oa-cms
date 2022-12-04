@@ -24,8 +24,6 @@
   })
   //创建消息方法
   const createMessage = async function () {
-    console.log(ruleForm.desc);
-    
      if(ruleForm.desc == '<p><br></p>'){
         ElMessage.warning('内容不能为空')
      }else{
