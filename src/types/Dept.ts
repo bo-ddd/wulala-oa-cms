@@ -13,6 +13,7 @@ export interface DeptMember{
     roles: number
     sex : number
     userId: number
+    pid : number
 }
 export interface DepartmentData {
   id: number,

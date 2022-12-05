@@ -441,6 +441,23 @@ export function sendMailApi(payload = {}) {
 export function updatePasswordApi(payload = {}) {
     return axios.post('/user/password/update', payload)
 }
+/**
+* @description 上传附件 通常是员工的审核资料相关的文件
+* @param payload
+* @param payload.file  string  
+**/
+export function uploadEnclosureApi(payload = {}) {
+    return axios.post('/upload/enclosure', payload)
+}
+/**
+* @description 上传头像接口
+* @param payload
+* @param payload.file  string  
+**/
+export function uploadAvatarApi(payload = {}) {
+    return axios.post('/upload/avatar', payload)
+}
+
 
 export const apiArr = ['/user/leave/create', '/user/update', '/permission/add', '/permission/update', '/permission/delete', '/user/leave/examine',
     '/user/addRole', '/user/deleteRole', '/role/create', '/role/delete', '/role/addPermission', '/role/deletePermission', '/article/create', '/dept/create', '/dept/delete',

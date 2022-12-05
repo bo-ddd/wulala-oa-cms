@@ -8,7 +8,9 @@
    <span class="label ml-20">接收人 : </span> 
     <el-select v-model="deptMembersValue" multiple placeholder="谁接收消息" style="width: 240px" @change="receiveMessages"
       size="small" class="ml-10">
-      <el-option v-for="(item, index) in deptMembersList" :key="index" :label="item.avatarName" :value="item.userId" />
+      <div v-for="(item, index) in deptMembersList">
+        <el-option :key="index" v-if="(item.pid==pid)" :label="item.avatarName" :value="item.userId" />
+      </div>
     </el-select>
   </div>
 
@@ -115,6 +117,7 @@ let deptMembersList = reactive<DeptMember[]>([])
 let deptId = ref(0)
 let message = ref([])
 let messageMember = ref([])
+let pid=ref(0)
 //页面的条数
 let pageSize = ref(10);
 //总页数
@@ -150,8 +153,6 @@ function updateTime(time: Date) {
 //获取用户所在哪个组
 async function getUserDeptList() {
   let res = await getDeptList({})
-  console.log(res.data);
-  
   if (res.status == 1) {
     res.data.forEach((dept: any) => {
       deptId.value = dept.deptId
@@ -159,18 +160,27 @@ async function getUserDeptList() {
     deptList.push(...res.data)
   }
 }
+
 //查询当前组都有谁
 const queryUserMembers = async function () {
   let res = await queryUserMembersApi({
     deptId: deptId.value
   })
   if (res.status == 1) {
+    let arr=[]
     deptMembersList.length = 0
-    deptMembersList.push(...res.data)
+    arr.push(...res.data);
+    deptMembersList.push(...arr.map(item=>{
+      return {
+        ...item,
+        pid:deptId.value
+      }
+    }))
   }
 }
 const changeMembers = function (val: number) {
   deptId.value = val
+  pid.value=val;
   queryUserMembers()
 }
 //发送消息方法

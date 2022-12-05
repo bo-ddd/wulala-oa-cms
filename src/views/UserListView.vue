@@ -21,20 +21,9 @@
                 <el-tag>{{ scope.row.avatarName }}</el-tag>
             </template>
         </el-table-column>
-        <el-table-column v-if="label" :label=label align="center">
+        <el-table-column label="性别" align="center">
             <template #default="scope">
-                <div type="danger">{{ scope.row._rawValue ? showDeptName(scope.row._rawValue) :
-                        showRoleName(scope.row.roles)
-                }}
-                </div>
-            </template>
-        </el-table-column>
-        <el-table-column v-if="label" :label=label align="center">
-            <template #default="scope">
-                <div type="danger">{{ scope.row.roles ? showDeptName(scope.row.roles) :
-                        showRoleName(scope.row._rawValue)
-                }}
-                </div>
+                <el-tag type="success">{{showSex(scope.row.sex) }}</el-tag>
             </template>
         </el-table-column>
         <el-table-column label="联系方式" align="center">
@@ -269,23 +258,10 @@ async function getUserList(pageSize?: number, pageNum?: number) {
 }
 (async function () {
     let rolesList = await getRoleListApi({})
-    Object.assign(roleList,rolesList.data)
+    Object.assign(roleList, rolesList.data)
 })()
-const showRoleName = function (roleList: any) {
-    if (!Array.isArray(roleList)) return;
-    let str = '';
-    roleList.forEach(item => {
-        str += `${item.roleName},`
-    })
-    return str.substring(0, str.length - 1);
-}
-const showDeptName = function (deptList: any) {
-    if (!Array.isArray(deptList)) return;
-    let str = '';
-    deptList.forEach(item => {
-        str += `${item.deptName},`
-    })
-    return str.substring(0, str.length - 1);
+const showSex = function (sex: any) {
+    return  sex ? '男' : '女'
 }
 // 添加用户角色
 const addUserRole = async (addUserId: number) => {
@@ -308,8 +284,8 @@ const getUserId = async (row: UserRolesInfo) => {
         userId: row.userId
     })
     if (res.status == 1) {
-        Object.assign(userInfo,res.data)
-        Object.assign(userRolesList,res.data.roles)
+        Object.assign(userInfo, res.data)
+        Object.assign(userRolesList, res.data.roles)
     }
     form.userId = row.userId
     form.userName = row.avatarName
@@ -332,7 +308,7 @@ const queryUserDepartment = async (id: number) => {
         userId: id
     }).then(res => {
         if (res.status == 1) {
-            Object.assign(userDepartmentList,res.data)
+            Object.assign(userDepartmentList, res.data)
         }
     })
 }
@@ -355,7 +331,7 @@ async function getDepartmentId() {
             form.deptId = res.data.id
             form.searchDepId = res.data.id
             form.depName = res.data.name
-            Object.assign(departmentList,res.data)
+            Object.assign(departmentList, res.data)
         }
     })
 }

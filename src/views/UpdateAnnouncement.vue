@@ -6,60 +6,74 @@ const versionList = [
     {
         id: 1,
         label: '最新版本',
+        title: 'V1.2.3',
+        time: '2022年12月5日',
+        contentList: [
+            {
+                id: 1 - 1,
+                first: '更新了上传头像功能',
+            },
+           
+
+        ]
+    },
+    {
+        id: 2,
+        label: 'V1.2.2',
         title: 'V1.2.2',
         time: '2022年12月1日',
         contentList: [
             {
-                id: 1 - 1,
+                id: 2 - 1,
                 first: '1、更新了页面未加载出来之前的进度条功能',
             },
             {
-                id: 1 - 2,
+                id: 2 - 2,
                 first: '2、增加了我的消息页面功能',
             }
 
         ]
     },
     {
-        id: 2,
+        id: 3,
         label: 'V1.1.2',
         title: 'V1.1.2',
         time: '2022年11月23日',
         contentList: [
             {
-                id: 2 - 1,
+                id: 3 - 1,
                 first: '修改了所有页面的分页效果，用户可以自定义每页的总条数',
             },
         ]
     },
     {
-        id: 3,
+        id: 4,
         label: 'V1.1.1',
         title: 'V1.1.1',
         time: '2022年11月15日',
         contentList: [
             {
-                id: 3 - 1,
+                id: 4 - 1,
                 first: '1、修改了日报功能的相关样式',
             },
             {
-                id: 3 - 1,
+                id: 4 - 1,
                 first: '2、修改了所有按钮和input框的大小',
             },
             {
-                id: 3 - 1,
+                id: 4 - 1,
                 first: '3、同意了所有按钮的颜色',
             },
         ]
     },
     {
-        id: 4,
+        id: 5,
         label: 'V1.1.0',
         title: 'V1.1.0',
         time: '2022年11月1日',
         contentList: [
             {
-                id: 4 - 1,
+                id: 5 - 1,
                 first: '增加了提交日报的功能',
             },
         ]

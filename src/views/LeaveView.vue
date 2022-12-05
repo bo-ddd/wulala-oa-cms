@@ -11,7 +11,7 @@ pageSizeOptionsStore.getStorageStatus()
 const { defaultValue } = storeToRefs(pageSizeOptionsStore)
 const router = useRouter()
 let leave = ref<any>();
-let pageSize = ref<number>();
+let pageSize = ref<number>(10);
 let total = ref<number>();
 let pageNum = ref(1);
 const small = ref(false);
@@ -38,15 +38,15 @@ const handleEdit = async (index: number, row: ExamineUserLeave) => {
     auditStatus: 1,
     id: row.id
   })
-  getLeaveListApi()
+  getMyLeaveListApi()
 }
 
 const handleDelete = async (index: number, row: ExamineUserLeave) => {
-  let setStatus = await examineUserLeaveApi({
+   await examineUserLeaveApi({
     auditStatus: 2,
     id: row.id
   })
-  getLeaveListApi()
+  getMyLeaveListApi()
 }
 function updateTime(time: Date) {
   let date = new Date(time);
@@ -59,10 +59,9 @@ function updateTime(time: Date) {
   return `${ year }-${ mounth }-${ day }-${ hour }`;
 }
 
-
 const handleSizeChange = (val: number) => {
   pageSize.value = val
-  getLeaveListApi()
+  getMyLeaveListApi()
 }
 
 const handleLeaveDetail = (index: number, row: ExamineUserLeave) => {
@@ -76,7 +75,7 @@ const handleLeaveDetail = (index: number, row: ExamineUserLeave) => {
 
 const handleCurrentChange = (val: number) => {
   pageNum.value = val
-  getLeaveListApi()
+  getMyLeaveListApi()
 }
 
 </script>
