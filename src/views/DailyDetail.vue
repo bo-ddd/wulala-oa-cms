@@ -1,21 +1,24 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router';
 import { ref } from 'vue'
-import axios from '@/assets/api/api'
+import { getArticleListApi } from '@/assets/api/api'
 let route = useRoute()
 console.log(route);
 let myId = route.query.id;
 let leave = ref();
 let total = ref();
-const getLeaveListApi = async function () {
-    let DetailData = await axios.getArticleListApi()
+
+getLeaveListApi()
+
+async function getLeaveListApi() {
+    let DetailData = await getArticleListApi()
     total.value = DetailData.data.total;
-    let dailyDetail = await axios.getArticleListApi({
+    let dailyDetail = await getArticleListApi({
         pageSize:total.value
     })
     leave.value = dailyDetail.data.list
 }
-getLeaveListApi()
+
 </script>
 
 <template>
