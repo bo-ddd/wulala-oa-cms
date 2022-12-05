@@ -35,6 +35,7 @@ import { getUserDeptListApi, queryUserInfoApi } from '@/assets/api/api'
 import { reactive } from 'vue';
 import { useRoute, useRouter } from 'vue-router'
 import { ArrowLeft } from '@element-plus/icons-vue'
+import type { UserDetailData } from '@/types/UserDetail'
 const route = useRoute();
 const router = useRouter();
 const backUserList = () => {
@@ -42,19 +43,6 @@ const backUserList = () => {
 }
 const userInfoData = reactive({} as UserDetailData);
 let id = route.query.id
-interface UserDetailData {
-    address: string
-    avatarImg: string | null
-    avatarName: string
-    birthday: string
-    hobby: string
-    personalSignature: string
-    phoneNumber: string
-    roles: []
-    sex: number
-    userId: number
-    values: []
-}
 const showRoleName = function (roleList: any) {
     if (!Array.isArray(roleList)) return;
     let str = '';

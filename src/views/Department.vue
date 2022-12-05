@@ -2,8 +2,7 @@
 import { ref, reactive } from 'vue'
 import { getDeptList, createDeptApi, updateDeptApi, deleteDeptApi } from '@/assets/api/api'
 import { ElMessage, ElMessageBox } from 'element-plus'
-// import AffixTip from '@/components/AffixTip.vue';
-
+import type { DepartmentData } from '@/types/Dept'
 let departmentList = ref();
 let departmentAdd = ref();
 let newDepartmentName = ref();
@@ -44,10 +43,7 @@ const upError = () => {
     })
 }
 
-interface DepartmentData {
-    id: number,
-    name: string
-}
+
 
 const getDepartmentList = async () => {
     await getDeptList({}).then(res => {

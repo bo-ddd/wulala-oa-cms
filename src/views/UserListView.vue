@@ -149,12 +149,15 @@
 
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
-import { getUserListApi, getRoleListApi, addUserRoleApi, queryUserInfoApi, deleteUserRoleApi, getUserDeptListApi,
-     queryUserMembersApi, getDeptList, addUserDeptApi, deleteUserDeptApi} from '@/assets/api/api'
+import {
+    getUserListApi, getRoleListApi, addUserRoleApi, queryUserInfoApi, deleteUserRoleApi, getUserDeptListApi,
+    queryUserMembersApi, getDeptList, addUserDeptApi, deleteUserDeptApi
+} from '@/assets/api/api'
 import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router';
 import { usePageSizeOptionsStore } from '@/stores/tools'
 import { storeToRefs } from "pinia";
+import type { Form, UserRolesInfo, DepartmentList, UserDepartmentList, UserInfo, RoleList } from '@/types/User'
 import AffixTip from '@/components/AffixTip.vue';
 
 const pageSizeOptionsStore = usePageSizeOptionsStore()
@@ -172,12 +175,12 @@ const formLabelWidth = '140px'
 const router = useRouter();
 const rolesInput = ref<number | null>();
 const departmentInput = ref<number | null>();
-const departmentList = ref();
-const userDepartmentList = ref();
-const userListData = ref();
-const roleList = ref();
-const userRolesList = ref();
-const userInfo = ref();
+let departmentList = reactive<DepartmentList[]>([]);
+let userDepartmentList = reactive<UserDepartmentList[]>([]);
+let userListData = reactive<UserInfo[]>([]);
+let roleList = reactive<RoleList[]>([]);
+let userRolesList = reactive<RoleList[]>([]);
+const userInfo = reactive<UserRolesInfo[]>([]);
 const pageNum = ref(1);
 const pageSize = ref(10);
 const total = ref<number>();
@@ -256,7 +259,7 @@ async function getUserList(pageSize?: number, pageNum?: number) {
         pageSize: pageSize
     }).then(res => {
         if (res.status === 1) {
-            userListData.value = res.data.list;
+            Object.assign(userListData, res.data.list)
             total.value = res.data.total
         }
     })
@@ -266,28 +269,8 @@ async function getUserList(pageSize?: number, pageNum?: number) {
 }
 (async function () {
     let rolesList = await getRoleListApi({})
-    roleList.value = rolesList.data
+    Object.assign(roleList,rolesList.data)
 })()
-interface User {
-    address: string
-    avatarImg: string | null
-    avatarName: string
-    birthday: string
-    hobby: string
-    personalSignature: string
-    phoneNumber: string
-    roles: []
-    sex: number
-    userId: number
-}
-interface Form {
-    deptId: number | null,
-    depName: string,
-    searchDepId: number | null,
-    userId: number,
-    rolesId: number | null,
-    userName: string
-}
 const showRoleName = function (roleList: any) {
     if (!Array.isArray(roleList)) return;
     let str = '';
@@ -319,14 +302,14 @@ const addUserRole = async (addUserId: number) => {
     }
 }
 // 删除用户角色
-const getUserId = async (row: User) => {
+const getUserId = async (row: UserRolesInfo) => {
     queryUserDepartment(row.userId)
     let res = await queryUserInfoApi({
         userId: row.userId
     })
     if (res.status == 1) {
-        userInfo.value = res.data
-        userRolesList.value = res.data.roles
+        Object.assign(userInfo,res.data)
+        Object.assign(userRolesList,res.data.roles)
     }
     form.userId = row.userId
     form.userName = row.avatarName
@@ -349,7 +332,7 @@ const queryUserDepartment = async (id: number) => {
         userId: id
     }).then(res => {
         if (res.status == 1) {
-            userDepartmentList.value = res.data
+            Object.assign(userDepartmentList,res.data)
         }
     })
 }
@@ -358,11 +341,11 @@ const queryDeptUser = async (id: number | null) => {
     await queryUserMembersApi({
         deptId: id
     }).then(res => {
-        userListData.value.length = 0
-        res.data.forEach((item: User) => {
-            userListData.value.push(item)
+        userListData.length = 0
+        res.data.forEach((item: UserInfo) => {
+            userListData.push(item)
         });
-        total.value = userListData.value.length
+        total.value = userListData.length
     })
 }
 // 给用户添加部门
@@ -372,7 +355,7 @@ async function getDepartmentId() {
             form.deptId = res.data.id
             form.searchDepId = res.data.id
             form.depName = res.data.name
-            departmentList.value = res.data
+            Object.assign(departmentList,res.data)
         }
     })
 }

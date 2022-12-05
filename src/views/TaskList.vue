@@ -6,8 +6,10 @@ import type { Task } from "../types/Task";
 import { useStore } from "@/stores/nav";
 import { usePageSizeOptionsStore } from '@/stores/tools'
 import { storeToRefs } from "pinia";
-import { getTaskListApi,queryUserMembersApi,getUserDeptListApi,createMessageApi,
-    sendMessageApi,deleteTaskApi,publishTaskApi,createTaskApi,updateTaskApi } from "@/assets/api/api";
+import {
+    getTaskListApi, queryUserMembersApi, getUserDeptListApi, createMessageApi,
+    sendMessageApi, deleteTaskApi, publishTaskApi, createTaskApi, updateTaskApi
+} from "@/assets/api/api";
 
 const pageSizeOptionsStore = usePageSizeOptionsStore()
 const { defaultValue } = storeToRefs(pageSizeOptionsStore)
@@ -27,9 +29,9 @@ const pageSize = ref(10)
 const disabled = ref(false)
 const total = ref<number>()
 const taskList = reactive<Task[]>([])
-const search=reactive({
-    searchTaskName:'',
-    searchTaskLevel:''
+const search = reactive({
+    searchTaskName: '',
+    searchTaskLevel: ''
 })
 const dialogFormVisible = ref(false)
 const dialogTaskVisible = ref(false)
@@ -41,7 +43,7 @@ const form = reactive({
     description: '',
     level: 0,
     id: 0,
-    receive:''
+    receive: ''
 })
 getTaskList()
 getUserDeptList()
@@ -62,7 +64,7 @@ const handleCurrentChange = (val: number) => {
 //搜索
 const searchTask = async function () {
     let res = await getTaskListApi({
-        taskName:search.searchTaskName
+        taskName: search.searchTaskName
     })
     let data = res.data.list;
     console.log(data);
@@ -361,12 +363,29 @@ const receiveTask = function (row: Task) {
                 <el-input v-model="form.description" autocomplete="off" />
             </el-form-item>
             <el-form-item label="任务等级" :label-width="formLabelWidth">
+                <el-tooltip class="box-item" effect="dark" content="单选，若选紧急，则该任务为紧急状态，否则为普通状态" placement="top">
+                    <el-icon class="mr-5">
+                        <QuestionFilled />
+                    </el-icon>
+                </el-tooltip>
+
                 <el-radio-group v-model="form.level">
                     <el-radio :label="0">普通</el-radio>
                     <el-radio :label="1">紧急</el-radio>
                 </el-radio-group>
             </el-form-item>
             <el-form-item label="是否可领取" :label-width="formLabelWidth">
+                <!-- <el-tooltip class="box-item" effect="dark" content="的 等等" placement="top">
+                   
+                </el-tooltip> -->
+                <el-tooltip placement="top">
+                    <template #content>如果选择可领取，则组员可以自己领取该任务。<br>
+                         否则组员不能自己领取该任务 </template>
+                    <el-icon class="mr-5">
+                        <QuestionFilled />
+                    </el-icon>
+                    <!-- <el-button>Top center</el-button> -->
+                </el-tooltip>
                 <el-radio-group v-model="form.receive">
                     <el-radio :label="0">可领取</el-radio>
                     <el-radio :label="1">不可领</el-radio>
@@ -406,8 +425,8 @@ const receiveTask = function (row: Task) {
             </span>
         </template>
     </el-dialog>
-    <!-- 底部提示框 --> 
-     <AffixTip class="mt-20"></AffixTip>
+    <!-- 底部提示框 -->
+    <AffixTip class="mt-20"></AffixTip>
 </template>
 
 <style scoped>
