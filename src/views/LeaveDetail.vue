@@ -29,7 +29,7 @@ function updateTime(time: Date) {
 
 <template>
 
-    <div class="body">
+    <div class="body"> 
         <div class="content">
             <div class="clearfix" v-for="item in leave">
 
