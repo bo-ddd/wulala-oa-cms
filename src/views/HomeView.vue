@@ -566,7 +566,7 @@ onMounted(() => {
     <el-dialog v-model="updatedVersionDialog" :title="title" width="30%" align-center>
       <div class="mb-10">
         <div class="bold">【更新时间】</div>
-        <div> 2022年12月1日</div>
+        <div> 2022年12月5日</div>
       </div>
       <div class="bold">【更新内容】</div>
       <div>更新了上传头像功能</div>
