@@ -4,7 +4,7 @@ import { ref, type Ref, reactive, toRefs, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { ElMessage } from 'element-plus';
 import { StarFilled, EditPen } from '@element-plus/icons-vue';
-import {updateUserInfoApi} from '../assets/api/api';
+import { updateUserInfoApi } from '../assets/api/api';
 import type { UploadInstance, UploadProps } from 'element-plus';
 import { useUserStore } from '@/stores/userInfo';
 import { storeToRefs } from "pinia";
@@ -29,7 +29,6 @@ const isOver: Ref = ref(false); //切换头像时鼠标移入的状态;
 const dialogAvatarVisible = ref(false); //更换头像的弹出框;
 const uploadUrl = ref(''); //头像的Url;
 const upload = ref<UploadInstance>()
-
 
 onMounted(async () => {
     await userStore.getUserInfo()
@@ -123,26 +122,19 @@ const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
 //上传头像;
 function submitUpload() {
     if (!uploadUrl.value) return
-    updateUserInfoApi({
+    updateUserInfo({
         avatarImg: uploadUrl.value
     }).then(async (res) => {
-        ElMessage({
-            message: '修改成功',
-            type: 'success',
-        })
         uploadUrl.value = '';
         await userStore.getUserInfo();
         dialogAvatarVisible.value = false;
-    }).catch(error => {
-        ElMessage({
-            message: '修改失败',
-            type: 'warning',
-        })
     })
 }
 //展示上传头像弹出框事件;
 function showDialog() {
+    uploadUrl.value = '';
     dialogAvatarVisible.value = true;
+    
 }
 //重置按钮事件;
 function resetUpload() {
@@ -220,8 +212,8 @@ function resetUpload() {
     <!-- 上传图像弹出框 -->
     <el-dialog v-model="dialogAvatarVisible" title="更换头像">
         <div class="flex-center">
-            <el-upload ref="upload" class="avatar-uploader" action="/api/upload/enclosure"
-                :before-upload="beforeAvatarUpload" :on-success="handleSuccessUpload" :show-file-list="false">
+            <el-upload ref="upload" class="avatar-uploader" action="/api/upload/avatar" :before-upload="beforeAvatarUpload"
+                :on-success="handleSuccessUpload" :show-file-list="false">
                 <img v-if="uploadUrl" :src="uploadUrl" class="avatar" />
                 <el-icon v-else class="avataruploader-icon">
                     <Plus />
