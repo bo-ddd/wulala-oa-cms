@@ -375,16 +375,12 @@ const receiveTask = function (row: Task) {
                 </el-radio-group>
             </el-form-item>
             <el-form-item label="是否可领取" :label-width="formLabelWidth">
-                <!-- <el-tooltip class="box-item" effect="dark" content="的 等等" placement="top">
-                   
-                </el-tooltip> -->
                 <el-tooltip placement="top">
                     <template #content>如果选择可领取，则组员可以自己领取该任务。<br>
                          否则组员不能自己领取该任务 </template>
                     <el-icon class="mr-5">
                         <QuestionFilled />
                     </el-icon>
-                    <!-- <el-button>Top center</el-button> -->
                 </el-tooltip>
                 <el-radio-group v-model="form.receive">
                     <el-radio :label="0">可领取</el-radio>
