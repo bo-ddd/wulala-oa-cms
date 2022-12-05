@@ -27,7 +27,9 @@ pageSizeOptionsStore.getStorageStatus();
 if (SwitchStatus.value == true) {
     pageSizeOptionsStore.getRecommentdefaultValue();
 }
-
+console.log(import.meta.env.MODE)
+const action=ref('')
+action.value = import.meta.env.MODE == 'production' ? 'http://8.131.89.181:8080/upload/enclosure' : '/api/upload/enclosure';
 
 //右上角个人中心列表;
 const dropDownList = [
@@ -271,7 +273,7 @@ const resetUpload = () => {
     </div>
     <el-dialog v-model="dialogAvatarVisible" title="更换头像">
         <div class="flex-center">
-            <el-upload ref="upload" class="avatar-uploader" action="/api/upload/enclosure"
+            <el-upload ref="upload" class="avatar-uploader" :action="action"
                 :before-upload="beforeAvatarUpload" :on-success="handleSuccessUpload" :show-file-list="false">
                 <img v-if="uploadUrl" :src="uploadUrl" class="avatar" />
                 <el-icon v-else class="avataruploader-icon">

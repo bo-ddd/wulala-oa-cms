@@ -29,7 +29,8 @@ const isOver: Ref = ref(false); //切换头像时鼠标移入的状态;
 const dialogAvatarVisible = ref(false); //更换头像的弹出框;
 const uploadUrl = ref(''); //头像的Url;
 const upload = ref<UploadInstance>()
-
+const action=ref('')
+action.value = import.meta.env.MODE == 'production' ? 'http://8.131.89.181:8080/upload/enclosure' : '/api/upload/enclosure';
 
 onMounted(async () => {
     await userStore.getUserInfo()
@@ -220,7 +221,7 @@ function resetUpload() {
     <!-- 上传图像弹出框 -->
     <el-dialog v-model="dialogAvatarVisible" title="更换头像">
         <div class="flex-center">
-            <el-upload ref="upload" class="avatar-uploader" action="/api/upload/enclosure"
+            <el-upload ref="upload" class="avatar-uploader" :action="action"
                 :before-upload="beforeAvatarUpload" :on-success="handleSuccessUpload" :show-file-list="false">
                 <img v-if="uploadUrl" :src="uploadUrl" class="avatar" />
                 <el-icon v-else class="avataruploader-icon">
