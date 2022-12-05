@@ -17,11 +17,11 @@ const ruleForm = reactive({
 const activityType = [
     {
         id: 1,
-        name: '一次性游戏'
+        name: '一次性活动'
     },
     {
         id: 2,
-        name: '长期游戏'
+        name: '长期活动'
     },
     {
         id: 3,
