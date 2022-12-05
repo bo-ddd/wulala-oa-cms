@@ -14,7 +14,7 @@ import { storeToRefs } from "pinia";
 import { useThemeStore } from '@/stores/themeColors';
 const userStore = useUserStore();
 const { userInfo: userInfos } = storeToRefs(userStore)
-
+const action = import.meta.env.MODE == 'production' ? 'http://8.131.89.181:8080/upload/avatar' : '/api/upload/avatar';
 onMounted(async () => {
     await userStore.getUserInfo()
     // 初始化页面数据
@@ -279,7 +279,7 @@ const resetUpload = () => {
     </div>
     <el-dialog v-model="dialogAvatarVisible" title="更换头像">
         <div class="flex-center">
-            <el-upload ref="upload" class="avatar-uploader" action="/api/upload/enclosure"
+            <el-upload ref="upload" class="avatar-uploader" :action="action"
                 :before-upload="beforeAvatarUpload" :on-success="handleSuccessUpload" :show-file-list="false">
                 <img v-if="uploadUrl" :src="uploadUrl" class="avatar" />
                 <el-icon v-else class="avataruploader-icon">
