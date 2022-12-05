@@ -145,61 +145,61 @@ const appearanceList = [
         id: 1,
         appearanceUrl: '',
         title: '默认值',
-        color: 'linear-gradient(to bottom, #f47599, #f7c6cd)'
+        color: '--gradient-bg-color-default'
     },
     {
         id: 2,
         appearanceUrl: '',
         title: '晨雾',
-        color: '#aab0b6'
+        color: '--gradient-bg-color-grey'
     },
     {
         id: 3,
         appearanceUrl: '',
         title: '冰凉薄荷',
-        color: '#7db6bf'
+        color: '--gradient-bg-color-mint'
     },
     {
         id: 4,
         appearanceUrl: '',
         title: '海岛度假',
-        color: '#2fa5a7'
+        color: '--gradient-bg-color-island'
     },
     {
         id: 5,
         appearanceUrl: '',
         title: '凉风',
-        color: '#609dbf'
+        color: '--gradient-bg-color-chillybreeze'
     },
     {
         id: 6,
         appearanceUrl: '',
         title: '柔和粉色',
-        color: '#d8b2ad'
+        color: '--gradient-bg-color-softpink'
     },
     {
         id: 7,
         appearanceUrl: '',
         title: '泡泡糖',
-        color: '#fd70a1'
+        color: '--gradient-bg-color-bubble'
     },
     {
         id: 8,
         appearanceUrl: '',
         title: '晴天',
-        color: '#d6af46'
+        color: '--gradient-bg-color-sunny'
     },
     {
         id: 9,
         appearanceUrl: '',
         title: '芒果天堂',
-        color: '#eb8f3b'
+        color: '--gradient-bg-color-mango'
     },
     {
         id: 10,
         appearanceUrl: '',
         title: '雨夜',
-        color: '#38393c'
+        color: '--gradient-bg-color-rainc'
     }
 ]
 //选中色块的点击事件;
