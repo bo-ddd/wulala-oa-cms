@@ -3,7 +3,6 @@ import { useRoute } from 'vue-router';
 import { ref } from 'vue'
 import { getArticleListApi } from '@/assets/api/api'
 let route = useRoute()
-console.log(route);
 let myId = route.query.id;
 let leave = ref();
 let total = ref();
