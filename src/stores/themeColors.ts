@@ -14,9 +14,10 @@ export const useThemeStore = defineStore('themeStore', () => {
 
   const setThemeColor = (payLoad: Colors) => {
     Object.assign(themeColors, payLoad)
-    console.log(themeColors.color)
     localStorage.setItem('color', themeColors.color)
   }
-
-  return { themeColors, color, setThemeColor }
+  const getThemeColor = () => {
+    return localStorage.getItem('color') as string
+  }
+  return { themeColors, color, setThemeColor, getThemeColor }
 })
