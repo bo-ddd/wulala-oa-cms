@@ -10,13 +10,24 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
   },
   "dependencies": {
-    "pinia": "^2.0.21",
+    "@element-plus/icons-vue": "^2.0.10",
+    "@wangeditor/editor": "^5.1.22",
+    "@wangeditor/editor-for-vue": "^5.1.12",
+    "axios": "^1.1.3",
+    "bpmn-js": "^8.6.1",
+    "bpmn-js-properties-panel": "^0.43.0",
+    "camunda-bpmn-moddle": "^5.1.2",
+    "echarts": "^5.4.0",
+    "element-plus": "^2.2.18",
+    "nprogress": "^0.2.0",
+    "pinia": "^2.0.23",
     "vue": "^3.2.38",
     "vue-router": "^4.1.5"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.1.4",
     "@types/node": "^16.11.56",
+    "@types/nprogress": "^0.2.0",
     "@vitejs/plugin-vue": "^3.0.3",
     "@vitejs/plugin-vue-jsx": "^2.0.1",
     "@vue/eslint-config-prettier": "^7.0.0",
@@ -27,6 +38,8 @@
     "npm-run-all": "^4.1.5",
     "prettier": "^2.7.1",
     "typescript": "~4.7.4",
+    "unplugin-auto-import": "^0.12.0",
+    "unplugin-vue-components": "^0.22.11",
     "vite": "^3.0.9",
     "vue-tsc": "^0.40.7"
   }
