@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { RouterView, useRouter, useRoute } from "vue-router";
-import { onMounted, computed } from "vue";
+import { onMounted, computed, watchEffect } from "vue";
 import { ArrowRight } from '@element-plus/icons-vue';
 import { updateUserInfoApi } from '../assets/api/api';
-import { ref } from 'vue';
+import { ref, reactive } from 'vue';
 import { ArrowDown } from '@element-plus/icons-vue';
 import sidebarList from '../router/menu';
 import type { UploadInstance, UploadProps } from 'element-plus';
@@ -12,6 +12,7 @@ import { useUserStore } from '@/stores/userInfo';
 import { usePageSizeOptionsStore } from "@/stores/tools";
 import { storeToRefs } from "pinia";
 import { useThemeStore } from '@/stores/themeColors';
+import type { Colors } from "@/types/ThemeColors";
 const userStore = useUserStore();
 const { userInfo: userInfos } = storeToRefs(userStore)
 const action = import.meta.env.MODE == 'production' ? 'http://8.131.89.181:8080/upload/avatar' : '/api/upload/avatar';
@@ -107,14 +108,13 @@ onMounted(() => {
 })
 
 // 一键换肤
-let themeColor = ref('')
+let color = ref('')
 let useThemeColor = useThemeStore();
-
-if (useThemeColor.getThemeColor()) {
-    themeColor = computed(() => useThemeColor.getThemeColor())
-    console.log(themeColor.value)
-}
-
+let { themeColors } = useThemeColor
+watchEffect(() => {
+    color.value = themeColors.color
+    console.log(color.value)
+})
 
 //右上角个人中心路由跳转;
 function to(path: string) {
@@ -279,8 +279,8 @@ const resetUpload = () => {
     </div>
     <el-dialog v-model="dialogAvatarVisible" title="更换头像">
         <div class="flex-center">
-            <el-upload ref="upload" class="avatar-uploader" :action="action"
-                :before-upload="beforeAvatarUpload" :on-success="handleSuccessUpload" :show-file-list="false">
+            <el-upload ref="upload" class="avatar-uploader" :action="action" :before-upload="beforeAvatarUpload"
+                :on-success="handleSuccessUpload" :show-file-list="false">
                 <img v-if="uploadUrl" :src="uploadUrl" class="avatar" />
                 <el-icon v-else class="avataruploader-icon">
                     <Plus />

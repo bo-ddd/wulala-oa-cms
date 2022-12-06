@@ -4,10 +4,10 @@ import type { Colors } from "@/types/ThemeColors"
 
 export const useThemeStore = defineStore('themeStore', () => {
   const themeColors = reactive<Colors>({
-    id: 0,
+    id: 1,
     appearanceUrl: '',
     title: '',
-    color: ''
+    color: localStorage.getItem('color') as string
   })
 
   let color = computed(() => themeColors.color)
