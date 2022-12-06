@@ -3,7 +3,8 @@ export interface CreatedTask{
     taskName:  string
     description: string
     level: number
-    sort ?: number
+    sort ?: number, 
+   receivable?:number
 }
 export interface Task {
     pageNum: number,

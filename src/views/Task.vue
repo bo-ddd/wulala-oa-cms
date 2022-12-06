@@ -53,11 +53,11 @@ const levelList = [
         label: '全部',
     },
     {
-        value: 1,
+        value: 0,
         label: '普通',
     },
     {
-        value: 2,
+        value: 1,
         label: '紧急',
     },
 ]
@@ -83,6 +83,10 @@ const statusList = [
         label: '已过期',
     },
 ]
+// 从pinio中拿到用户设置的默认值;
+if (defaultValue.value) {
+    pageSize.value = defaultValue.value
+}
 getUserList()
 //刚进页面调用户任务列表接口
 getUserTaskList({
@@ -90,10 +94,7 @@ getUserTaskList({
     pageSize: pageSize.value,
 })
 
-// 从pinio中拿到用户设置的默认值;
-if (defaultValue.value) {
-    pageSize.value = defaultValue.value
-}
+
 //封装用户任务列表
  async function getUserTaskList(params: QueryTask) {
     let res = await getUserTaskListApi(params)
@@ -169,12 +170,13 @@ const handleCurrentChange = (val: number) => {
         userId: searchForm.userId
     })
 }
+//搜索
 const queryTask = () => {
     getUserTaskList({
         pageNum: pageNum.value,
         pageSize: pageSize.value,
         status: searchForm.status,
-        level: searchForm.level == 1 ? 0 : searchForm.level == 2 ? 1 : null,
+        level: searchForm.level ,
         userId: searchForm.userId
     })
 }
