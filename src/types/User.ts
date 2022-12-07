@@ -1,3 +1,12 @@
+export interface User {
+    id: number
+    date: string
+    name: string
+    address: string
+    hasChildren?: boolean
+    children?: User[]
+}
+
 export interface UserInfo{
     avatarImg: string;
     avatarName: string;
