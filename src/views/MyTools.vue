@@ -139,81 +139,82 @@ const handlePageSizeDefaultValue = () => {
 }
 // ------------------------------------------------------------------------------------------------------------------
 // 外观设置页面;
-const appearanceRadio = ref(1);
 const appearanceList = [
     {
         id: 1,
         appearanceUrl: '',
         title: '默认值',
-        color: '--gradient-bg-color-default',
-        bgColor:'linear-gradient(to bottom, #f47599, #f7c6cd)'
+        color: 'default',
+        bgColor: 'linear-gradient(to bottom, #f47599, #f7c6cd)'
     },
     {
         id: 2,
         appearanceUrl: '',
         title: '晨雾',
-        color: '--gradient-bg-color-grey',
-        bgColor:'#aab0b6'
+        color: 'grey',
+        bgColor: '#aab0b6'
     },
     {
         id: 3,
         appearanceUrl: '',
         title: '冰凉薄荷',
-        color: '--gradient-bg-color-mint',
-        bgColor:'#7db6bf'
+        color: 'mint',
+        bgColor: '#7db6bf'
     },
     {
         id: 4,
         appearanceUrl: '',
         title: '海岛度假',
-        color: '--gradient-bg-color-island',
-        bgColor:'#2fa5a7'
+        color: 'island',
+        bgColor: '#2fa5a7'
     },
     {
         id: 5,
         appearanceUrl: '',
         title: '凉风',
-        color: '--gradient-bg-color-chillybreeze',
-        bgColor:'#609dbf'
+        color: 'chillybreeze',
+        bgColor: '#609dbf'
     },
     {
         id: 6,
         appearanceUrl: '',
         title: '柔和粉色',
-        color: '--gradient-bg-color-softpink',
-        bgColor:'#d8b2ad'
+        color: 'softpink',
+        bgColor: '#d8b2ad'
     },
     {
         id: 7,
         appearanceUrl: '',
         title: '泡泡糖',
-        color: '--gradient-bg-color-bubble',
-        bgColor:'#fd70a1'
+        color: 'bubble',
+        bgColor: '#fd70a1'
     },
     {
         id: 8,
         appearanceUrl: '',
         title: '晴天',
-        color: '--gradient-bg-color-sunny',
-        bgColor:'#d6af46'
+        color: 'sunny',
+        bgColor: '#d6af46'
     },
     {
         id: 9,
         appearanceUrl: '',
         title: '芒果天堂',
-        color: '--gradient-bg-color-mango',
-        bgColor:'#eb8f3b'
+        color: 'mango',
+        bgColor: '#eb8f3b'
     },
     {
         id: 10,
         appearanceUrl: '',
         title: '雨夜',
-        color: '--gradient-bg-color-rainc',
-        bgColor:'#38393c'
+        color: 'rain',
+        bgColor: '#38393c'
     }
 ]
 //选中色块的点击事件;
 let useThemeColor = useThemeStore();
+const { themeColors } = useThemeColor
+const appearanceRadio = ref(themeColors.id);
 
 const changeColor = (value: Colors) => {
     useThemeColor.setThemeColor(value)
@@ -266,7 +267,7 @@ const changeColor = (value: Colors) => {
         <el-tab-pane label="外观">
             <div class="pd-20">
                 <h4>自定义外观</h4>
-                <el-radio-group v-model="appearanceRadio" class="mt-20 pd-20 grid"> 
+                <el-radio-group v-model="appearanceRadio" class="mt-20 pd-20 grid">
                     <el-radio :label="item.id" class="appearance" v-for="item in appearanceList"
                         :class="{ 'active-appearance': item.id == appearanceRadio }" @change="changeColor(item)">
                         <div class="color-block" style="background-color:v-bind(item.bgColor)"></div>
