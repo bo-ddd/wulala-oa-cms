@@ -1,0 +1,10 @@
+:root{
+  --text-color: black;
+  --gradient-bg-color: linear-gradient(to bottom, #f47599, #f7c6cd);
+  --el-button-color: var(--el-color-danger);
+  --el-button-bd-color:var(--el-color-danger);
+  --el-button-hover-color: var(--el-color-danger-light-3);
+  --el-button-hover-bd-color: var(--el-color-danger-light-3);
+  --el-button-txt-color: var(--el-color-white);
+  --el-button-h-text-color: var(--el-color-white);
+}

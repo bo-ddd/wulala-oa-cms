@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { RouterView, useRouter, useRoute } from "vue-router";
-import { onMounted, computed } from "vue";
+import { onMounted, watchEffect } from "vue";
 import { ArrowRight } from '@element-plus/icons-vue';
 import { updateUserInfoApi } from '../assets/api/api';
 import { ref } from 'vue';
@@ -12,6 +12,7 @@ import { useUserStore } from '@/stores/userInfo';
 import { usePageSizeOptionsStore } from "@/stores/tools";
 import { storeToRefs } from "pinia";
 import { useThemeStore } from '@/stores/themeColors';
+
 const userStore = useUserStore();
 const { userInfo: userInfos } = storeToRefs(userStore)
 const action = import.meta.env.MODE == 'production' ? 'http://8.131.89.181:8080/upload/avatar' : '/api/upload/avatar';
@@ -107,14 +108,18 @@ onMounted(() => {
 })
 
 // 一键换肤
-let themeColor = ref('')
+let color = ref('')
 let useThemeColor = useThemeStore();
-
-if (useThemeColor.getThemeColor()) {
-    themeColor = computed(() => useThemeColor.getThemeColor())
-    console.log(themeColor.value)
-}
-
+let { themeColors } = useThemeColor
+watchEffect(async () => {
+    color.value = themeColors.color
+    let link = document.createElement('link');
+    link.type = 'text/css';
+    link.id = "theme";
+    link.rel = 'stylesheet';
+    link.href = `../src/theme/theme-${color.value}.css`;
+    document.getElementsByTagName("head")[0].appendChild(link);
+})
 
 //右上角个人中心路由跳转;
 function to(path: string) {
@@ -189,7 +194,6 @@ const resetUpload = () => {
 </script>
 
 <template>
-
     <div class="common-layout gradient no-selected">
         <el-container>
             <!-- 侧边栏 -->
@@ -203,7 +207,8 @@ const resetUpload = () => {
                     <el-col :span="1">
                         <el-menu router :default-active="activeItem" unique-opened>
                             <div v-for="(item, index) in sidebarList">
-                                <el-menu-item :index="item.targetPath" :key="index" v-if="!item.childrenList.length">
+                                <el-menu-item style="color:var(--text-color)" :index="item.targetPath" :key="index"
+                                    v-if="!item.childrenList.length">
                                     <el-icon>
                                         <component :is="item.icon"></component>
                                     </el-icon>
@@ -212,13 +217,13 @@ const resetUpload = () => {
 
                                 <el-sub-menu :key="index" :index="index + ''" v-if="item.childrenList.length">
                                     <template #title>
-                                        <el-icon>
+                                        <el-icon style="color:var(--text-color)">
                                             <component :is="item.icon"></component>
                                         </el-icon>
-                                        <span>{{ item.name }}</span>
+                                        <span style="color:var(--text-color)">{{ item.name }}</span>
                                     </template>
-                                    <el-menu-item :index="key.targetPath" :key="index + '-' + keyIndex"
-                                        v-for="(key, keyIndex) in item.childrenList"
+                                    <el-menu-item style="color:var(--text-color)" :index="key.targetPath"
+                                        :key="index + '-' + keyIndex" v-for="(key, keyIndex) in item.childrenList"
                                         @click="getPageName(key.targetPath)">
                                         {{ key.name }}
                                     </el-menu-item>
@@ -279,8 +284,8 @@ const resetUpload = () => {
     </div>
     <el-dialog v-model="dialogAvatarVisible" title="更换头像">
         <div class="flex-center">
-            <el-upload ref="upload" class="avatar-uploader" :action="action"
-                :before-upload="beforeAvatarUpload" :on-success="handleSuccessUpload" :show-file-list="false">
+            <el-upload ref="upload" class="avatar-uploader" :action="action" :before-upload="beforeAvatarUpload"
+                :on-success="handleSuccessUpload" :show-file-list="false">
                 <img v-if="uploadUrl" :src="uploadUrl" class="avatar" />
                 <el-icon v-else class="avataruploader-icon">
                     <Plus />
@@ -453,8 +458,12 @@ const resetUpload = () => {
 </style>
 <style>
 .gradient {
-    background: var(--gradient-bg-color-default);
+    background: var(--gradient-bg-color);
     overflow-y: hidden;
+}
+
+svg {
+    color: var(--text-color)
 }
 
 .avatar-uploader .el-upload {

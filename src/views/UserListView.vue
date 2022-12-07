@@ -23,7 +23,7 @@
         </el-table-column>
         <el-table-column label="性别" align="center">
             <template #default="scope">
-                <el-tag type="success">{{showSex(scope.row.sex) }}</el-tag>
+                <el-tag type="success">{{ showSex(scope.row.sex) }}</el-tag>
             </template>
         </el-table-column>
         <el-table-column label="联系方式" align="center">
@@ -261,7 +261,7 @@ async function getUserList(pageSize?: number, pageNum?: number) {
     Object.assign(roleList, rolesList.data)
 })()
 const showSex = function (sex: any) {
-    return  sex ? '男' : '女'
+    return sex ? '男' : '女'
 }
 // 添加用户角色
 const addUserRole = async (addUserId: number) => {
@@ -382,6 +382,15 @@ a {
     float: right;
 }
 
+:deep(.el-button) {
+    --el-button-bg-color: var(--el-button-color);
+    --el-button-border-color: var(--el-button-bd-color);
+    --el-button-hover-bg-color: var(--el-button-hover-color);
+    --el-button-hover-border-color: var(--el-button-hover-bd-color);
+    --el-button-text-color: var(--el-button-txt-color);
+    --el-button-hover-text-color: var(--el-button-h-text-color)
+}
+ 
 :deep(.el-form-item__content > .el-input) {
     width: 215px;
 }

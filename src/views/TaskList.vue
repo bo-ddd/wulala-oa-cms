@@ -2,10 +2,11 @@
 import { reactive, ref } from 'vue'
 import type { Dept, DeptMember } from "../types/Dept";
 import { ElMessageBox } from 'element-plus'
-import type { Task } from "../types/Task";
+import type { Task, TaskVO } from "../types/Task";
 import { useStore } from "@/stores/nav";
 import { usePageSizeOptionsStore } from '@/stores/tools'
 import { storeToRefs } from "pinia";
+import type{ User } from "@/types/User";
 import {
     getTaskListApi, queryUserMembersApi, getUserDeptListApi, createMessageApi,
     sendMessageApi, deleteTaskApi, publishTaskApi, createTaskApi, updateTaskApi
@@ -28,7 +29,7 @@ const pageNum = ref(1)
 const pageSize = ref(10)
 const disabled = ref(false)
 const total = ref<number>()
-const taskList = reactive<Task[]>([])
+let taskList =reactive<Task[]>([])
 const search = reactive({
     searchTaskName: '',
     searchTaskLevel: ''
@@ -43,16 +44,30 @@ const form = reactive({
     description: '',
     level: 0,
     id: 0,
-    receive: ''
+    receivable: 0
 })
-getTaskList()
-getUserDeptList()
-pageSizeOptionsStore.getStorageStatus()
-
+const levelList = [
+    {
+        value: '',
+        label: '全部',
+    },
+    {
+        value: 0,
+        label: '普通',
+    },
+    {
+        value: 1,
+        label: '紧急',
+    },
+]
 // 从pinio中拿到用户设置的默认值;
 if (defaultValue.value) {
     pageSize.value = defaultValue.value
 }
+getTaskList()
+getUserDeptList()
+pageSizeOptionsStore.getStorageStatus()
+
 const handleSizeChange = (val: number) => {
     pageSize.value = val
     getTaskList()
@@ -64,7 +79,8 @@ const handleCurrentChange = (val: number) => {
 //搜索
 const searchTask = async function () {
     let res = await getTaskListApi({
-        taskName: search.searchTaskName
+        taskName: search.searchTaskName,
+        level: search.searchTaskLevel
     })
     let data = res.data.list;
     console.log(data);
@@ -77,13 +93,24 @@ async function getTaskList() {
         pageNum: pageNum.value,
         pageSize: pageSize.value,
     })
-    let data = res.data.list;
+    taskList.length=0
+    Object.assign(taskList,formatData(res.data.list))
     total.value = res.data.total;
     pageSize.value = res.data.pageSize;
     pageNum.value = res.data.pageNum;
-    taskList.length = 0;
-    taskList.push(...data)
-
+}
+//处理数据 pid  id
+const formatData = function (data: Task[]) {
+    let res: TaskVO[] = JSON.parse(JSON.stringify(data))
+    res.forEach(item => {
+        if (!item.children) item.children = []
+        if (item.pid != 0) {
+            let pItem = res.find(pItem => pItem.id == item.pid);
+            if (pItem && !pItem.children) pItem.children = []
+            pItem?.children.push(item)
+        }
+    })
+    return res
 }
 //封装获取组中所有用户
 const queryUserMembers = async function () {
@@ -141,7 +168,6 @@ const publishTask = function () {
                         })
                         )
                         Promise.all(messageUserArr).then(async res => {
-                            console.log(res);
                             initFormData()
                             dialogTaskVisible.value = false;
                         }
@@ -158,7 +184,7 @@ const publishTask = function () {
 
 }
 //领取任务接口
-const receivePublishTask = async function (params: any) {
+const receivablePublishTask = async function (params: any) {
     let res = await publishTaskApi(params)
     sendMessage({
         userId: rowTaskId.value,
@@ -221,6 +247,7 @@ const submitTaskWithCreate = async function () {
         taskName: form.taskName,
         level: form.level,
         description: form.description,
+        receivable: form.receivable
     })
     if (res.status == 1) {
         initFormData();
@@ -235,6 +262,7 @@ const submitTaskWithEdit = async function () {
         taskName: form.taskName,
         description: form.description,
         level: form.level,
+
     })
     getTaskList()
     dialogFormVisible.value = false;
@@ -271,17 +299,49 @@ const submitPublishTask = function () {
 
 }
 //点击领取任务按钮
-const receiveTask = function (row: Task) {
-    receivePublishTask({
+const receivableTask = function (row: Task) {
+    receivablePublishTask({
         userId: userStore.userId,
         taskId: row.id
     })
 }
+
+
+const load = (
+    row: User,
+    treeNode: unknown,
+    resolve: (date: User[]) => void
+) => {
+    setTimeout(() => {
+        resolve([
+            {
+                id: 31,
+                date: '2016-05-01',
+                name: 'wangxiaohu',
+                address: 'No. 189, Grove St, Los Angeles',
+            },
+            {
+                id: 32,
+                date: '2016-05-01',
+                name: 'wangxiaohu',
+                address: 'No. 189, Grove St, Los Angeles',
+            },
+        ])
+    }, 1000)
+}
 </script>
 <template>
     <div class="search">
-        <el-input v-model="search.searchTaskName" placeholder="输入名称搜索" />
-        <el-input v-model="search.searchTaskLevel" placeholder="按紧急程度搜索" class="ml-20" />
+        <el-form :inline="true" :model="search" class="demo-form-inline">
+            <el-form-item label="任务名称">
+                <el-input v-model="search.searchTaskName" placeholder="输入名称搜索" />
+            </el-form-item>
+            <el-form-item label="紧急程度">
+                <el-select v-model="search.searchTaskLevel" placeholder="按紧急程度查询">
+                    <el-option v-for="item in levelList" :key="item.value" :label="item.label" :value="item.value" />
+                </el-select>
+            </el-form-item>
+        </el-form>
         <el-button type="danger" class="ml-10" plain @click="searchTask">
             <el-icon>
                 <Search />
@@ -295,7 +355,9 @@ const receiveTask = function (row: Task) {
             <span>创建任务</span>
         </el-button>
     </div>
-    <el-table :data="taskList" style="width: 100%" class="mt-20">
+
+    <el-table :data="taskList" style="width: 100%" row-key="id" lazy :load="load"
+        :tree-props="{ children: 'children', hasChildren: 'hasChildren' }" class="mt-20">
         <el-table-column label="ID" align="center">
             <template #default="scope" align="center">
                 <div>{{ scope.row.id }}</div>
@@ -318,10 +380,9 @@ const receiveTask = function (row: Task) {
                         <div v-else class="noDesc">暂无描述…</div>
                     </template>
                 </el-popover>
-
             </template>
         </el-table-column>
-        <el-table-column label="等级" align="center">
+        <el-table-column label="紧急程度" align="center">
             <template #default="scope" align="center">
                 <div v-if="scope.row.level == 1" class="red">{{ taskLevelName(scope.row.level) }}</div>
                 <div v-else>{{ taskLevelName(scope.row.level) }}</div>
@@ -335,7 +396,8 @@ const receiveTask = function (row: Task) {
         <el-table-column label="操作" align="center" width="200">
             <template #default="scope" align="center">
                 <span class="flex-row">
-                    <el-link type="success" @click="receiveTask(scope.row)" v-if="scope.row.userId != userStore.userId">
+                    <el-link type="success" @click="receivableTask(scope.row)" v-if="(scope.row.userId != userStore.userId && scope.row.receivable
+                    == 1)">
                         领取任务</el-link>
                     <el-link type="primary" @click="clickPublishTask(scope.row)"
                         v-if="scope.row.userId == userStore.userId">发布任务</el-link>
@@ -368,7 +430,6 @@ const receiveTask = function (row: Task) {
                         <QuestionFilled />
                     </el-icon>
                 </el-tooltip>
-
                 <el-radio-group v-model="form.level">
                     <el-radio :label="0">普通</el-radio>
                     <el-radio :label="1">紧急</el-radio>
@@ -377,14 +438,14 @@ const receiveTask = function (row: Task) {
             <el-form-item label="是否可领取" :label-width="formLabelWidth">
                 <el-tooltip placement="top">
                     <template #content>如果选择可领取，则组员可以自己领取该任务。<br>
-                         否则组员不能自己领取该任务 </template>
+                        否则组员不能自己领取该任务 </template>
                     <el-icon class="mr-5">
                         <QuestionFilled />
                     </el-icon>
                 </el-tooltip>
-                <el-radio-group v-model="form.receive">
-                    <el-radio :label="0">可领取</el-radio>
-                    <el-radio :label="1">不可领</el-radio>
+                <el-radio-group v-model="form.receivable">
+                    <el-radio :label="0">不可领</el-radio>
+                    <el-radio :label="1">可领取</el-radio>
                 </el-radio-group>
             </el-form-item>
 
@@ -430,7 +491,8 @@ const receiveTask = function (row: Task) {
     display: flex;
 }
 
-.el-input {
+.el-input,
+.el-select {
     width: 200px;
 }
 
@@ -438,11 +500,8 @@ const receiveTask = function (row: Task) {
     margin-right: 15px;
 }
 
-.el-select {
-    width: 300px;
-}
-
-.el-input {
+.el-input,
+.el-input__wrapper {
     width: 200px;
 }
 
