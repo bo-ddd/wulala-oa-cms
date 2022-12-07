@@ -7,7 +7,11 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    Activity: typeof import('./src/components/Activity.vue')['default']
+    ActivityCard: typeof import('./src/components/ActivityCard.vue')['default']
+    ActivityCart: typeof import('./src/components/ActivityCart.vue')['default']
     AffixTip: typeof import('./src/components/AffixTip.vue')['default']
+    Card: typeof import('./src/components/Card.vue')['default']
     ElAffix: typeof import('element-plus/es')['ElAffix']
     ElAside: typeof import('element-plus/es')['ElAside']
     ElAvatar: typeof import('element-plus/es')['ElAvatar']
@@ -48,6 +52,7 @@ declare module '@vue/runtime-core' {
     ElRow: typeof import('element-plus/es')['ElRow']
     ElScrollbar: typeof import('element-plus/es')['ElScrollbar']
     ElSelect: typeof import('element-plus/es')['ElSelect']
+    ElSelectV2: typeof import('element-plus/es')['ElSelectV2']
     ElSpace: typeof import('element-plus/es')['ElSpace']
     ElSubMenu: typeof import('element-plus/es')['ElSubMenu']
     ElTable: typeof import('element-plus/es')['ElTable']
@@ -61,6 +66,7 @@ declare module '@vue/runtime-core' {
     MyEditor: typeof import('./src/components/MyEditor.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    TextBorder: typeof import('./src/components/TextBorder.vue')['default']
     Tree: typeof import('./src/components/Tree.vue')['default']
   }
 }

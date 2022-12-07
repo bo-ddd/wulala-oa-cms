@@ -9,7 +9,8 @@ const ruleForm = reactive({
     name: '',
     count: '',
     type: '',
-    duration: '',
+    activityDuration: '',
+    applicationDuration: '',
     desc: '',
     posterUrl: ''
 })
@@ -41,7 +42,15 @@ const rules = ({
             trigger: 'change',
         },
     ],
-    duration: [
+    activityDuration: [
+        {
+            type: 'array',
+            required: true,
+            message: '请选择一个时间',
+            trigger: 'change'
+        }
+    ],
+    applicationDuration: [
         {
             type: 'array',
             required: true,
@@ -116,8 +125,12 @@ const options = Array.from({ length: 10000 }).map((_, idx) => ({
             <el-form-item label="活动人数" prop="count">
                 <el-select-v2 v-model="ruleForm.count" :options="options" />
             </el-form-item>
-            <el-form-item label="活动时间" required prop="duration">
-                <el-date-picker v-model="ruleForm.duration" type="daterange" range-separator="至"
+            <el-form-item label="活动时间" required prop="activityDuration">
+                <el-date-picker v-model="ruleForm.activityDuration" type="daterange" range-separator="至"
+                    start-placeholder="开始时间" end-placeholder="结束日期" />
+            </el-form-item>
+            <el-form-item label="报名时间" required prop="applicationDuration">
+                <el-date-picker v-model="ruleForm.applicationDuration" type="daterange" range-separator="至"
                     start-placeholder="开始时间" end-placeholder="结束日期" />
             </el-form-item>
             <el-form-item label="活动类型" prop="type">

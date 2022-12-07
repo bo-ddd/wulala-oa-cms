@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { RouterView, useRouter, useRoute } from "vue-router";
-import { onMounted } from "vue";
+import { onMounted, computed } from "vue";
 import { ArrowRight } from '@element-plus/icons-vue';
 import { updateUserInfoApi } from '../assets/api/api';
 import { ref } from 'vue';
@@ -11,9 +11,10 @@ import { ElMessage } from 'element-plus';
 import { useUserStore } from '@/stores/userInfo';
 import { usePageSizeOptionsStore } from "@/stores/tools";
 import { storeToRefs } from "pinia";
+import { useThemeStore } from '@/stores/themeColors';
 const userStore = useUserStore();
 const { userInfo: userInfos } = storeToRefs(userStore)
-
+const action = import.meta.env.MODE == 'production' ? 'http://8.131.89.181:8080/upload/avatar' : '/api/upload/avatar';
 onMounted(async () => {
     await userStore.getUserInfo()
     // 初始化页面数据
@@ -98,15 +99,22 @@ function getMinePageName(path: string) {
 
 //解决页面刷新后面包屑导航名称与侧边栏名称会重置的情况;
 const activeItem = ref('/')
-let themeColor: string
 
 onMounted(() => {
     getPageName(route.path);
     getMinePageName(route.path);
     activeItem.value = route.path
 })
-themeColor = localStorage.getItem('color') as string
-console.log(themeColor);
+
+// 一键换肤
+let themeColor = ref('')
+let useThemeColor = useThemeStore();
+
+if (useThemeColor.getThemeColor()) {
+    themeColor = computed(() => useThemeColor.getThemeColor())
+    console.log(themeColor.value)
+}
+
 
 //右上角个人中心路由跳转;
 function to(path: string) {
@@ -271,7 +279,7 @@ const resetUpload = () => {
     </div>
     <el-dialog v-model="dialogAvatarVisible" title="更换头像">
         <div class="flex-center">
-            <el-upload ref="upload" class="avatar-uploader" action="/api/upload/enclosure"
+            <el-upload ref="upload" class="avatar-uploader" :action="action"
                 :before-upload="beforeAvatarUpload" :on-success="handleSuccessUpload" :show-file-list="false">
                 <img v-if="uploadUrl" :src="uploadUrl" class="avatar" />
                 <el-icon v-else class="avataruploader-icon">
@@ -300,12 +308,7 @@ const resetUpload = () => {
     height: 100vh;
 }
 
-.gradient {
-    background: linear-gradient(to bottom,
-            #f47599,
-            #f7c6cd);
-    overflow-y: hidden;
-}
+
 
 :deep(.el-menu) {
     /* 侧边导航栏列表 */
@@ -449,6 +452,11 @@ const resetUpload = () => {
 }
 </style>
 <style>
+.gradient {
+    background: var(--gradient-bg-color-default);
+    overflow-y: hidden;
+}
+
 .avatar-uploader .el-upload {
     border: 1px dashed var(--el-border-color);
     border-radius: 6px;

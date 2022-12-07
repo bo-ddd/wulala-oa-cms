@@ -140,6 +140,33 @@ const router = createRouter({
             requiresAuth: false
           }
         },
+        {//活动详情页面;
+          path: "/activityDetail",
+          name: "activityDetail",
+          component: () => import("../views/ActivityDetail.vue"),
+          meta: {
+            label: "活动详情",
+            requiresAuth: false
+          }
+        },
+        {//创建会议页面;
+          path: "/createMeeting",
+          name: "createMeeting",
+          component: () => import("../views/CreateMeeting.vue"),
+          meta: {
+            label: "创建会议",
+            requiresAuth: false
+          }
+        },
+        {//会议列表页面;
+          path: "/meetingList",
+          name: "meetingList",
+          component: () => import("../views/MeetingList.vue"),
+          meta: {
+            label: "会议列表",
+            requiresAuth: false
+          }
+        },
       ]
     },
   ],
@@ -281,7 +308,16 @@ let dynamicRoutes = [
       label: "请假详情",
       requiresAuth: true
     }
-  }
+  },
+  {//活动列表页面;
+    path: "/activityList",
+    name: "activityList",
+    component: () => import("../views/ActivityList.vue"),
+    meta: {
+      label: "活动列表",
+      requiresAuth: true
+    }
+  },
 ];
 
 router.beforeEach(async (to) => {
