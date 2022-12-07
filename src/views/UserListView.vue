@@ -21,7 +21,7 @@
                 <el-tag>{{ scope.row.avatarName }}</el-tag>
             </template>
         </el-table-column>
-        <el-table-column label="性别" align="center">
+        <el-table-column label="性别" align="center" width="100px">
             <template #default="scope">
                 <el-tag type="success">{{ showSex(scope.row.sex) }}</el-tag>
             </template>
@@ -388,7 +388,7 @@ a {
     --el-button-hover-bg-color: var(--el-button-hover-color);
     --el-button-hover-border-color: var(--el-button-hover-bd-color);
     --el-button-text-color: var(--el-button-txt-color);
-    --el-button-hover-text-color: var(--el-button-h-text-color)
+    --el-button-hover-text-color: var(--el-button-h-txt-color)
 }
  
 :deep(.el-form-item__content > .el-input) {

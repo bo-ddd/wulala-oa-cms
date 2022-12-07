@@ -1,4 +1,10 @@
 :root{
   --text-color: black;
-  --gradient-bg-color: #fd70a1; 
+  --gradient-bg-color: #fd70a1;
+  --el-button-color: #fd70a1;
+  --el-button-bd-color: #fd70af;
+  --el-button-hover-color: #f0a0bd;
+  --el-button-hover-bd-color: #f19cbb;
+  --el-button-txt-color: var(--el-color-white);
+  --el-button-h-txt-color: var(--el-color-white);
 }
