@@ -41,9 +41,15 @@ let requiresAuthList = [
         requiresAuth: true
     },
     {
-        id: 501,
+        id: 502,
         name: '任务平台',
         targetPath: '/taskList',
+        requiresAuth: true
+    },
+    {
+        id: 503,
+        name: '任务模块',
+        targetPath: '/taskModule',
         requiresAuth: true
     },
     {
