@@ -149,6 +149,24 @@ const router = createRouter({
             requiresAuth: false
           }
         },
+        {//创建会议页面;
+          path: "/createMeeting",
+          name: "createMeeting",
+          component: () => import("../views/CreateMeeting.vue"),
+          meta: {
+            label: "创建会议",
+            requiresAuth: false
+          }
+        },
+        {//会议列表页面;
+          path: "/meetingList",
+          name: "meetingList",
+          component: () => import("../views/MeetingList.vue"),
+          meta: {
+            label: "会议列表",
+            requiresAuth: false
+          }
+        },
       ]
     },
   ],

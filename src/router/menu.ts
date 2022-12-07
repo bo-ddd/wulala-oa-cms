@@ -81,7 +81,19 @@ let requiresAuthList = [
         name: '活动列表',
         targetPath: '/activityList',
         requiresAuth: true
-    }
+    },
+    {
+        id: 901,
+        name: '创建会议',
+        targetPath: '/createMeeting',
+        requiresAuth: true
+    },
+    {
+        id: 902,
+        name: '会议列表',
+        targetPath: '/meetingList',
+        requiresAuth: true
+    },
 ]
 
 
@@ -192,6 +204,14 @@ let sidebarList: Parent[] = [
     },
     {
         id: 9,
+        icon: 'Handbag',
+        name: '会议管理',
+        targetPath: '',
+        childrenList: [],
+        requiresAuth: false
+    },
+    {
+        id: 10,
         icon: 'Tools',
         name: '设置',
         targetPath: '',
