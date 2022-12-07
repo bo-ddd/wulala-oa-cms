@@ -2,10 +2,11 @@
 import { reactive, ref } from 'vue'
 import type { Dept, DeptMember } from "../types/Dept";
 import { ElMessageBox } from 'element-plus'
-import type { Task } from "../types/Task";
+import type { Task, TaskVO } from "../types/Task";
 import { useStore } from "@/stores/nav";
 import { usePageSizeOptionsStore } from '@/stores/tools'
 import { storeToRefs } from "pinia";
+import type{ User } from "@/types/User";
 import {
     getTaskListApi, queryUserMembersApi, getUserDeptListApi, createMessageApi,
     sendMessageApi, deleteTaskApi, publishTaskApi, createTaskApi, updateTaskApi
@@ -28,7 +29,7 @@ const pageNum = ref(1)
 const pageSize = ref(10)
 const disabled = ref(false)
 const total = ref<number>()
-const taskList = reactive<Task[]>([])
+let taskList =reactive<Task[]>([])
 const search = reactive({
     searchTaskName: '',
     searchTaskLevel: ''
@@ -92,13 +93,24 @@ async function getTaskList() {
         pageNum: pageNum.value,
         pageSize: pageSize.value,
     })
-    let data = res.data.list;
+    taskList.length=0
+    Object.assign(taskList,formatData(res.data.list))
     total.value = res.data.total;
     pageSize.value = res.data.pageSize;
     pageNum.value = res.data.pageNum;
-    taskList.length = 0;
-    taskList.push(...data)
-
+}
+//处理数据 pid  id
+const formatData = function (data: Task[]) {
+    let res: TaskVO[] = JSON.parse(JSON.stringify(data))
+    res.forEach(item => {
+        if (!item.children) item.children = []
+        if (item.pid != 0) {
+            let pItem = res.find(pItem => pItem.id == item.pid);
+            if (pItem && !pItem.children) pItem.children = []
+            pItem?.children.push(item)
+        }
+    })
+    return res
 }
 //封装获取组中所有用户
 const queryUserMembers = async function () {
@@ -156,7 +168,6 @@ const publishTask = function () {
                         })
                         )
                         Promise.all(messageUserArr).then(async res => {
-                            console.log(res);
                             initFormData()
                             dialogTaskVisible.value = false;
                         }
@@ -236,7 +247,7 @@ const submitTaskWithCreate = async function () {
         taskName: form.taskName,
         level: form.level,
         description: form.description,
-        receivable:form.receivable
+        receivable: form.receivable
     })
     if (res.status == 1) {
         initFormData();
@@ -251,7 +262,7 @@ const submitTaskWithEdit = async function () {
         taskName: form.taskName,
         description: form.description,
         level: form.level,
-      
+
     })
     getTaskList()
     dialogFormVisible.value = false;
@@ -294,14 +305,7 @@ const receivableTask = function (row: Task) {
         taskId: row.id
     })
 }
-interface User {
-    id: number
-    date: string
-    name: string
-    address: string
-    hasChildren?: boolean
-    children?: User[]
-}
+
 
 const load = (
     row: User,
@@ -333,23 +337,23 @@ const load = (
                 <el-input v-model="search.searchTaskName" placeholder="输入名称搜索" />
             </el-form-item>
             <el-form-item label="紧急程度">
-            <el-select v-model="search.searchTaskLevel" placeholder="按紧急程度查询">
-                <el-option v-for="item in levelList" :key="item.value" :label="item.label" :value="item.value" />
-            </el-select>
-        </el-form-item>
+                <el-select v-model="search.searchTaskLevel" placeholder="按紧急程度查询">
+                    <el-option v-for="item in levelList" :key="item.value" :label="item.label" :value="item.value" />
+                </el-select>
+            </el-form-item>
         </el-form>
-            <el-button type="danger" class="ml-10" plain @click="searchTask">
-                <el-icon>
-                    <Search />
-                </el-icon>
-                <span>搜索</span>
-            </el-button>
-            <el-button type="danger" @click="creatTask">
-                <el-icon>
-                    <Plus />
-                </el-icon>
-                <span>创建任务</span>
-            </el-button>
+        <el-button type="danger" class="ml-10" plain @click="searchTask">
+            <el-icon>
+                <Search />
+            </el-icon>
+            <span>搜索</span>
+        </el-button>
+        <el-button type="danger" @click="creatTask">
+            <el-icon>
+                <Plus />
+            </el-icon>
+            <span>创建任务</span>
+        </el-button>
     </div>
 
     <el-table :data="taskList" style="width: 100%" row-key="id" lazy :load="load"
@@ -392,8 +396,8 @@ const load = (
         <el-table-column label="操作" align="center" width="200">
             <template #default="scope" align="center">
                 <span class="flex-row">
-                    <el-link type="success" @click="receivableTask(scope.row)" v-if="(scope.row.userId != userStore.userId &&scope.row.receivable
-==1)">
+                    <el-link type="success" @click="receivableTask(scope.row)" v-if="(scope.row.userId != userStore.userId && scope.row.receivable
+                    == 1)">
                         领取任务</el-link>
                     <el-link type="primary" @click="clickPublishTask(scope.row)"
                         v-if="scope.row.userId == userStore.userId">发布任务</el-link>
@@ -487,7 +491,8 @@ const load = (
     display: flex;
 }
 
-.el-input,.el-select {
+.el-input,
+.el-select {
     width: 200px;
 }
 
@@ -495,7 +500,8 @@ const load = (
     margin-right: 15px;
 }
 
-.el-input,.el-input__wrapper {
+.el-input,
+.el-input__wrapper {
     width: 200px;
 }
 

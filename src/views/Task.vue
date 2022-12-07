@@ -4,6 +4,7 @@ import type { Task, QueryTask } from "../types/Task";
 import { useStore } from "../stores/nav";
 import { usePageSizeOptionsStore } from '@/stores/tools'
 import { storeToRefs } from "pinia";
+import { ElMessageBox } from 'element-plus'
 import {  getUserTaskListApi,getUserListApi,setUserTaskStatusApi} from "@/assets/api/api";
 let userStore = useStore()
 const labelPosition = ref('right')
@@ -14,6 +15,7 @@ const { defaultValue } = storeToRefs(pageSizeOptionsStore)
 
 let dialogFormVisible = ref(false)
 let dialogDetailsVisible = ref(false)
+let drawer = ref(false)
 let userTaskList = reactive<Task[]>([])
 let taskStatus = ref(0)
 let taskId = ref(0)
@@ -27,6 +29,7 @@ const disabled = ref(false)
 const Details: any = reactive({
     taskName: '',
     taskDesc: '',
+    level:0
 })
 const searchForm: any = reactive({
     userId: '',
@@ -184,10 +187,10 @@ const viewDetails = (row: Task) => {
     console.log(row);
     Details.taskName = row.taskName;
     Details.taskDesc = row.description;
-    dialogDetailsVisible.value = true;
+    Details.level = taskLevelName(row.level)
+    drawer.value = true
 
 }
-
 </script>
 <template>
     <el-form :inline="true">
@@ -287,7 +290,28 @@ const viewDetails = (row: Task) => {
         </template>
     </el-dialog>
     <!-- //查看详情弹层 -->
-    <el-dialog v-model="dialogDetailsVisible" title="查看当前详情">
+
+    <el-drawer
+    v-model="drawer"
+    title="查看详情"
+  >
+  <el-form :label-position="labelPosition" label-width="100px" :model="Details" style="max-width: 460px">
+            <el-form-item label="任务名称:">
+                <span>{{ Details.taskName }}</span>
+            </el-form-item>
+            <el-form-item label="紧急程度:">
+                <span>{{ Details.level }}</span>
+            </el-form-item>
+            <el-form-item label="任务描述:">
+                <span v-if="Details.taskDesc">{{ Details.taskDesc }}</span>
+                <span v-else class="noDesc">暂无描述…</span>
+            </el-form-item>
+           
+        </el-form>
+  </el-drawer>
+
+
+    <!-- <el-dialog v-model="dialogDetailsVisible" title="查看当前详情">
         <el-form :label-position="labelPosition" label-width="100px" :model="Details" style="max-width: 460px">
             <el-form-item label="任务名称:">
                 <span>{{ Details.taskName }}</span>
@@ -301,10 +325,9 @@ const viewDetails = (row: Task) => {
         <template #footer>
             <span class="dialog-footer">
                 <el-button @click="dialogDetailsVisible = false">取消</el-button>
-               
-            </span>
+             </span>
         </template>
-    </el-dialog>
+    </el-dialog> -->
 
 </template>
 <style scoped>

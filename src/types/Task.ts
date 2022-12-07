@@ -7,6 +7,7 @@ export interface CreatedTask{
    receivable?:number
 }
 export interface Task {
+length: number
     pageNum: number,
     pageSize: number,
     avatarName: string
@@ -19,6 +20,10 @@ export interface Task {
     userId: number,
     senderAvatarName?:string,
     status:number,
+    pid:number
+}
+export interface TaskVO extends Task {
+    children: Task[]
 }
 export interface QueryTask{
     pageNum: number,
