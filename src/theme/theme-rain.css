@@ -5,6 +5,6 @@
   --el-button-bd-color: var(--el-color-info-light-3);
   --el-button-hover-color: var(--el-color-info-light-5);
   --el-button-hover-bd-color: var(--el-color-info-light-7);
-  --el-button-text-color: var(--el-color-white);
-  --el-button-h-text-color: var(--el-color-white);
+  --el-button-txt-color: var(--el-color-white);
+  --el-button-h-txt-color: var(--el-color-white);
 }
