@@ -77,9 +77,9 @@ let requiresAuthList = [
         requiresAuth: true
     },
     {
-        id: 801,
-        name:'创建活动',
-        targetPath: '/createActivity',
+        id: 802,
+        name: '活动列表',
+        targetPath: '/activityList',
         requiresAuth: true
     }
 ]
@@ -183,7 +183,7 @@ let sidebarList: Parent[] = [
         childrenList: [
             {
                 id: 802,
-                name:'活动专区',
+                name: '活动专区',
                 targetPath: '/activityArea',
                 requiresAuth: false
             }
