@@ -28,6 +28,10 @@ import TextBorder from '@/components/TextBorder.vue'
                 <template #text>
                 </template>
             </TextBorder>
+            <audio src="">
+
+            </audio>
+           
 
         </div>
     </div>
@@ -37,7 +41,7 @@ import TextBorder from '@/components/TextBorder.vue'
 
 <style scoped>
 .main {
-    width: 1500px;
+    width: 1200px;
     margin: 0 auto;
     background-color: black;
     color: white;
@@ -55,28 +59,6 @@ import TextBorder from '@/components/TextBorder.vue'
     text-align: center;
     font-size: 20px;
 }
-
-/* .title{
-    text-align: start;
-    padding:20px 0;
-    font-size:26px;
-    font-weight: bold;
-}
-.text {
-    line-height: 50px;
-    text-align: justify;
-
-}
-
-.border {
-    height: 500px;
-    background: url('@/assets/images/bg-border.png') no-repeat center;
-    background-size: cover;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0 80px;
-} */
 
 :deep(.el-button--large) {
     font-size: 24px;

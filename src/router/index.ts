@@ -122,15 +122,7 @@ const router = createRouter({
             requiresAuth: false
           }
         },
-        {//创建活动页面;
-          path: "/createActivity",
-          name: "createActivity",
-          component: () => import("../views/CreateActivity.vue"),
-          meta: {
-            label: "创建活动",
-            requiresAuth: true
-          }
-        },
+        
         {//活动专区页面;
           path: "/activityArea",
           name: "activityArea",
@@ -146,24 +138,6 @@ const router = createRouter({
           component: () => import("../views/ActivityDetail.vue"),
           meta: {
             label: "活动详情",
-            requiresAuth: false
-          }
-        },
-        {//创建会议页面;
-          path: "/createMeeting",
-          name: "createMeeting",
-          component: () => import("../views/CreateMeeting.vue"),
-          meta: {
-            label: "创建会议",
-            requiresAuth: false
-          }
-        },
-        {//会议列表页面;
-          path: "/meetingList",
-          name: "meetingList",
-          component: () => import("../views/MeetingList.vue"),
-          meta: {
-            label: "会议列表",
             requiresAuth: false
           }
         },
@@ -309,12 +283,48 @@ let dynamicRoutes = [
       requiresAuth: true
     }
   },
+  {//创建活动页面;
+    path: "/createActivity",
+    name: "createActivity",
+    component: () => import("../views/CreateActivity.vue"),
+    meta: {
+      label: "创建活动",
+      requiresAuth: true
+    }
+  },
   {//活动列表页面;
     path: "/activityList",
     name: "activityList",
     component: () => import("../views/ActivityList.vue"),
     meta: {
       label: "活动列表",
+      requiresAuth: true
+    }
+  },
+  {//创建会议页面;
+    path: "/createMeeting",
+    name: "createMeeting",
+    component: () => import("../views/CreateMeeting.vue"),
+    meta: {
+      label: "创建会议",
+      requiresAuth: true
+    }
+  },
+  {//会议列表页面;
+    path: "/meetingList",
+    name: "meetingList",
+    component: () => import("../views/MeetingList.vue"),
+    meta: {
+      label: "会议列表",
+      requiresAuth: true
+    }
+  },
+  {//任务模块页面;
+    path: "/taskModule",
+    name: "taskModule",
+    component: () => import("../views/TaskModule.vue"),
+    meta: {
+      label: "任务模块",
       requiresAuth: true
     }
   },
