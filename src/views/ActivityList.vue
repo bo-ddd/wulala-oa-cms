@@ -124,7 +124,7 @@ function handleCurrentChange(val: number) {
                 start-placeholder="开始时间" end-placeholder="结束时间" />
         </el-form-item>
         <el-form-item>
-            <el-button type="danger" plain @click="router.push('createActivity')">
+            <el-button type="danger" @click="router.push('createActivity')">
                 <el-icon>
                     <Plus />
                 </el-icon>

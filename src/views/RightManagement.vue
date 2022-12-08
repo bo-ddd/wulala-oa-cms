@@ -192,6 +192,7 @@ const formLabelWidth = '140px'
             </el-form-item>
         </div>
         <div class="search">
+            <el-form-item label="查询权限">
             <el-input v-model="searchValue" placeholder="请输入要查询的权限名称" clearable>
                 <template #prefix>
                     <el-icon class="el-input__icon">
@@ -199,6 +200,7 @@ const formLabelWidth = '140px'
                     </el-icon>
                 </template>
             </el-input>
+        </el-form-item>
         </div>
     </div>
     <div class="tree mt-20">

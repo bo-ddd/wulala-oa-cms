@@ -334,7 +334,7 @@ const load = (
                 </el-select>
             </el-form-item>
         </el-form>
-        <el-button type="danger" class="ml-10" plain @click="getTaskList">
+        <el-button type="danger" class="ml-10" @click="getTaskList">
             <el-icon>
                 <Search />
             </el-icon>

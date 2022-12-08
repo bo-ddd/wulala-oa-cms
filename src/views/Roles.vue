@@ -122,7 +122,7 @@ const to = function (id: number) {
             <el-select v-model="selectValue" filterable placeholder="请输入角色名称" @change="handleChange">
                 <el-option v-for="item in resData" :key="item.id" :label="item.roleName" :value="item.id" />
             </el-select>
-            <el-button type="danger" class="float ml-10" @click="searchRole" plain>搜索</el-button>
+            <el-button type="danger" class="float ml-10" @click="searchRole">搜索</el-button>
 
         </div>
         <el-button type="danger" class="float" @click="router.push('createRoles')">创建角色</el-button>
