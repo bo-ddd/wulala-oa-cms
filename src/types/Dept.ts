@@ -17,5 +17,6 @@ export interface DeptMember{
 }
 export interface DepartmentData {
   id: number,
-  name: string
+  name: string,
+  icon?:string
 }
