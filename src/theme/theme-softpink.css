@@ -1,4 +1,9 @@
 :root{
   --text-color: black;
   --gradient-bg-color: #d8b2ad;
+  --el-color-danger: #d8b2ad;
+  --el-color-danger-light-3: #d0c2c0;
+  --el-color-danger-dark-2: #cf9991;
+  --el-button-text-color: white;
+  --el-button-hover-text-color: white;
 }

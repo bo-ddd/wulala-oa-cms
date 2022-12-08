@@ -3,7 +3,6 @@ import { ref, reactive, watch, type Ref } from 'vue'
 import { getPermissionListApi, deletePermissionApi, addPermissionApi, updatePermissionApi } from '@/assets/api/api'
 import { ElMessage, ElMessageBox, ElTree } from 'element-plus'
 import type { Tree, Permission } from '@/types/Permission'
-
 let treeRef = ref<InstanceType<typeof ElTree>>()
 let newPermissionName = ref();
 let permissionNameAdd = ref();
@@ -292,4 +291,5 @@ const formLabelWidth = '140px'
 :deep(.el-tree-node) {
     padding: 5px 0;
 }
+
 </style>

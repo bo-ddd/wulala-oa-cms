@@ -382,16 +382,10 @@ a {
     float: right;
 }
 
-:deep(.el-button) {
-    --el-button-bg-color: var(--el-button-color);
-    --el-button-border-color: var(--el-button-bd-color);
-    --el-button-hover-bg-color: var(--el-button-hover-color);
-    --el-button-hover-border-color: var(--el-button-hover-bd-color);
-    --el-button-text-color: var(--el-button-txt-color);
-    --el-button-hover-text-color: var(--el-button-h-txt-color)
-}
+
  
 :deep(.el-form-item__content > .el-input) {
     width: 215px;
 }
+
 </style>

@@ -278,6 +278,7 @@ const changeColor = (value: Colors) => {
 
         </el-tab-pane>
     </el-tabs>
+
 </template>
 
 <style scoped>
