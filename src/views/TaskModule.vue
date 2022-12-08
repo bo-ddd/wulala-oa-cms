@@ -2,8 +2,8 @@
 
 </script>
 <template>
-    <div>
-      我是任务模块;
+    <div class="box">
+       
     </div>
 </template>
 <style scoped>
