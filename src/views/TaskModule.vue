@@ -2,6 +2,8 @@
 import { getDeptListApi } from "@/assets/api/api";
 import { reactive, ref } from "vue";
 import type { DepartmentData } from "@/types/Dept";
+import { useRouter } from "vue-router";
+let router=useRouter()
 
 let deptList = reactive<DepartmentData[]>([])
 let flag = ref(true)
@@ -18,7 +20,6 @@ async function getDeptList() {
     flag.value = true
   }
 }
-
 const formateDeptList = function (deptList: DepartmentData[]) {
   let List = JSON.parse(JSON.stringify(deptList))
   const iconArr = ['Position', 'Food', 'Memo']
@@ -33,7 +34,7 @@ const formateDeptList = function (deptList: DepartmentData[]) {
 <template>
   <div class="max-box">
     <div class="mt-20" :class="flag == true ? 'task' : 'task-4'">
-      <div class="module" v-for="item in deptList" key="item.id" >
+      <div class="module" v-for="item in deptList" key="item.id" @click="router.push('/taskList')">
         <div class="oa">
           <el-icon>
             <component :is="item.icon" ></component>

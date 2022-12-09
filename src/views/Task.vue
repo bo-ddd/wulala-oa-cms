@@ -4,7 +4,6 @@ import type { Task, QueryTask } from "../types/Task";
 import { useStore } from "../stores/nav";
 import { usePageSizeOptionsStore } from '@/stores/tools'
 import { storeToRefs } from "pinia";
-import { ElMessageBox } from 'element-plus'
 import {  getUserTaskListApi,getUserListApi,setUserTaskStatusApi} from "@/assets/api/api";
 let userStore = useStore()
 const labelPosition = ref('right')
@@ -91,10 +90,12 @@ if (defaultValue.value) {
     pageSize.value = defaultValue.value
 }
 getUserList()
+
 //刚进页面调用户任务列表接口
 getUserTaskList({
     pageNum: pageNum.value,
     pageSize: pageSize.value,
+    userId:userStore.userId
 })
 
 
@@ -143,6 +144,8 @@ const submitTaskStatus = async function () {
         getUserTaskList({
             pageNum: pageNum.value,
             pageSize: pageSize.value,
+    userId:userStore.userId
+
         })
     }
 }
@@ -159,7 +162,8 @@ const handleSizeChange = (val: number) => {
         pageSize: pageSize.value,
         status: searchForm.status,
         level: searchForm.level == 1 ? 0 : searchForm.level == 2 ? 1 : null,
-        userId: searchForm.userId
+        userId:userStore.userId
+
     })
 }
 const handleCurrentChange = (val: number) => {
@@ -170,7 +174,8 @@ const handleCurrentChange = (val: number) => {
         pageSize: pageSize.value,
         status: searchForm.status,
         level: searchForm.level == 1 ? 0 : searchForm.level == 2 ? 1 : null,
-        userId: searchForm.userId
+        userId:userStore.userId
+
     })
 }
 //搜索

@@ -454,11 +454,33 @@ export function uploadEnclosureApi(payload = {}) {
 export function uploadAvatarApi(payload = {}) {
     return axios.post('/upload/avatar', payload)
 }
+
+/**
+* @description 增加活动接口
+* @param payload
+* @param payload.activityName  string  
+* @param payload.poster  string  
+* @param payload.type  number
+* @param payload.activityDesc  string  
+**/
+export function addActivityApi(payload = {}) {
+    return axios.post('/activity/add', payload)
+}
+/**
+* @description 查询活动列表接口
+* @param payload 
+**/
+export function activityListApi(payload = {}) {
+    return axios.post('/activity/list', payload)
+}
+
+
 export function getSongSheet (server: string, type:String, id: String){
      //调接口获取歌曲;
       return axios.get(`https://api.i-meto.com/meting/api?server=${server}&type=${type}&id=${id}&r=${Math.random()}`);
    
  }
+
 
 export const apiArr = ['/user/leave/create', '/user/update', '/permission/add', '/permission/update', '/permission/delete', '/user/leave/examine',
     '/user/addRole', '/user/deleteRole', '/role/create', '/role/delete', '/role/addPermission', '/role/deletePermission', '/article/create', '/dept/create', '/dept/delete',
