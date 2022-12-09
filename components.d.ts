@@ -7,9 +7,6 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
-    Activity: typeof import('./src/components/Activity.vue')['default']
-    ActivityCard: typeof import('./src/components/ActivityCard.vue')['default']
-    ActivityCart: typeof import('./src/components/ActivityCart.vue')['default']
     AffixTip: typeof import('./src/components/AffixTip.vue')['default']
     Card: typeof import('./src/components/Card.vue')['default']
     ElAffix: typeof import('element-plus/es')['ElAffix']
@@ -55,6 +52,7 @@ declare module '@vue/runtime-core' {
     ElSelectV2: typeof import('element-plus/es')['ElSelectV2']
     ElSpace: typeof import('element-plus/es')['ElSpace']
     ElSubMenu: typeof import('element-plus/es')['ElSubMenu']
+    ElSwitch: typeof import('element-plus/es')['ElSwitch']
     ElTable: typeof import('element-plus/es')['ElTable']
     ElTableColumn: typeof import('element-plus/es')['ElTableColumn']
     ElTabPane: typeof import('element-plus/es')['ElTabPane']
@@ -63,6 +61,7 @@ declare module '@vue/runtime-core' {
     ElTooltip: typeof import('element-plus/es')['ElTooltip']
     ElUpload: typeof import('element-plus/es')['ElUpload']
     Laoding: typeof import('./src/components/laoding/index.vue')['default']
+    MusicPlayer: typeof import('./src/components/MusicPlayer.vue')['default']
     MyEditor: typeof import('./src/components/MyEditor.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

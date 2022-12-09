@@ -138,7 +138,8 @@ const router = createRouter({
           component: () => import("../views/ActivityDetail.vue"),
           meta: {
             label: "活动详情",
-            requiresAuth: false
+            requiresAuth: false,
+            keepAlive: true
           }
         },
       ]
