@@ -56,6 +56,7 @@ declare module '@vue/runtime-core' {
     ElTooltip: typeof import('element-plus/es')['ElTooltip']
     ElUpload: typeof import('element-plus/es')['ElUpload']
     Laoding: typeof import('./src/components/laoding/index.vue')['default']
+    MusicPlayer: typeof import('./src/components/MusicPlayer.vue')['default']
     MyEditor: typeof import('./src/components/MyEditor.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

@@ -1,5 +1,5 @@
 <template>
-    <el-affix position="bottom" :offset="5" v-if="tipStatus">
+    <el-affix position="bottom" :offset="5" v-if="tipStatus" class="">
         <div class="tip">   
             <p class="text-tip">
                 <el-icon>
@@ -15,13 +15,19 @@
 </template>
 
 <script setup lang="ts">
+import {useRoute} from 'vue-router';
 import { WarningFilled } from '@element-plus/icons-vue';
 import { useTipStore } from '@/stores/tip';
 import { storeToRefs } from "pinia";
+import { watch } from 'vue';
+const route=useRoute()
 const tipStore = useTipStore();
 const { tipStatus, tipFrequency } = storeToRefs(tipStore);
 tipStore.getTipStatus();
 tipStore.getClickFrequency();
+setTimeout(() => {
+    tipStatus.value=false
+}, 5000);
 
 const closeTip = () => {
     tipStatus.value = false;
@@ -59,5 +65,5 @@ const closeTip = () => {
     display: flex;
     gap: 10px;
     align-items: center;
-}
+}   
 </style>

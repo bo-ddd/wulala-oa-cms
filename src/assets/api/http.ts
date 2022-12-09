@@ -34,13 +34,16 @@ $http.interceptors.response.use(function (response) {
   //作用2: 根据不同的状态码，提示不同的信息
   //作用3：改变接口的返回数据类型
   const { msg } = response.data;
-  if (response.data.status == 1) {
+   if (response.data.status == 1) {
     if(apiArr.includes(<string>(response.config.url))){
       ElMessage.success(msg);
     }
   } else if (response.data.status == 401) {
     router.push('/')
   } else {
+    if(response.config.url?.indexOf('https://api.i-meto.com/meting/api') != -1){
+      return Promise.resolve(response);
+    }
     ElMessage.warning(msg);
     return Promise.reject(msg)
   }
