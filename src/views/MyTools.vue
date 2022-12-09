@@ -143,7 +143,7 @@ const appearanceList = [
     {
         id: 1,
         appearanceUrl: '',
-        title: '默认值',
+        title: '少女心',
         color: 'default',
         bgColor: 'linear-gradient(to bottom, #f47599, #f7c6cd)'
     },
@@ -278,6 +278,7 @@ const changeColor = (value: Colors) => {
 
         </el-tab-pane>
     </el-tabs>
+
 </template>
 
 <style scoped>

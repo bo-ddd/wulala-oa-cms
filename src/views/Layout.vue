@@ -109,6 +109,9 @@ onMounted(() => {
 
 // 一键换肤
 let color = ref('')
+if (localStorage.getItem("color") == null) {
+    localStorage.setItem('color', 'default')
+}
 let useThemeColor = useThemeStore();
 let { themeColors } = useThemeColor
 watchEffect(async () => {

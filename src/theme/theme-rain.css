@@ -1,10 +1,10 @@
 :root {
   --gradient-bg-color: #38393c;
   --text-color: white;
-  --el-button-color: var(--el-color-info);
-  --el-button-bd-color: var(--el-color-info-light-3);
-  --el-button-hover-color: var(--el-color-info-light-5);
-  --el-button-hover-bd-color: var(--el-color-info-light-7);
-  --el-button-text-color: var(--el-color-white);
-  --el-button-h-text-color: var(--el-color-white);
+  --el-color-danger: #38393c;
+  --el-color-danger-light-3: #4a4b4f;
+  --el-color-danger-dark-2: #292b30;
+  --el-button-text-color: white;
+  --el-button-hover-text-color: white;
+
 }

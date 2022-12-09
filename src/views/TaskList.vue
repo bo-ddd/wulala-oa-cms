@@ -6,7 +6,7 @@ import type { Task, TaskVO } from "../types/Task";
 import { useStore } from "@/stores/nav";
 import { usePageSizeOptionsStore } from '@/stores/tools'
 import { storeToRefs } from "pinia";
-import type{ User } from "@/types/User";
+import type { User } from "@/types/User";
 import {
     getTaskListApi, queryUserMembersApi, getUserDeptListApi, createMessageApi,
     sendMessageApi, deleteTaskApi, publishTaskApi, createTaskApi, updateTaskApi
@@ -29,7 +29,7 @@ const pageNum = ref(1)
 const pageSize = ref(10)
 const disabled = ref(false)
 const total = ref<number>()
-let taskList =reactive<Task[]>([])
+let taskList = reactive<Task[]>([])
 const search = reactive({
     searchTaskName: '',
     searchTaskLevel: ''
@@ -76,25 +76,17 @@ const handleCurrentChange = (val: number) => {
     pageNum.value = val
     getTaskList()
 }
-//搜索
-const searchTask = async function () {
-    let res = await getTaskListApi({
-        taskName: search.searchTaskName,
-        level: search.searchTaskLevel
-    })
-    let data = res.data.list;
-    console.log(data);
-    taskList.length = 0;
-    taskList.push(...data)
-}
-//封装列表接口
+
+//封装列表接口/ 搜索任务
 async function getTaskList() {
     let res = await getTaskListApi({
         pageNum: pageNum.value,
         pageSize: pageSize.value,
+        taskName: search.searchTaskName,
+        level: search.searchTaskLevel
     })
-    taskList.length=0
-    Object.assign(taskList,formatData(res.data.list))
+    taskList.length = 0
+    Object.assign(taskList, formatData(res.data.list))
     total.value = res.data.total;
     pageSize.value = res.data.pageSize;
     pageNum.value = res.data.pageNum;
@@ -342,7 +334,7 @@ const load = (
                 </el-select>
             </el-form-item>
         </el-form>
-        <el-button type="danger" class="ml-10" plain @click="searchTask">
+        <el-button type="danger" class="ml-10" @click="getTaskList">
             <el-icon>
                 <Search />
             </el-icon>

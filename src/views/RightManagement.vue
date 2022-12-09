@@ -3,7 +3,6 @@ import { ref, reactive, watch, type Ref } from 'vue'
 import { getPermissionListApi, deletePermissionApi, addPermissionApi, updatePermissionApi } from '@/assets/api/api'
 import { ElMessage, ElMessageBox, ElTree } from 'element-plus'
 import type { Tree, Permission } from '@/types/Permission'
-
 let treeRef = ref<InstanceType<typeof ElTree>>()
 let newPermissionName = ref();
 let permissionNameAdd = ref();
@@ -193,6 +192,7 @@ const formLabelWidth = '140px'
             </el-form-item>
         </div>
         <div class="search">
+            <el-form-item label="查询权限">
             <el-input v-model="searchValue" placeholder="请输入要查询的权限名称" clearable>
                 <template #prefix>
                     <el-icon class="el-input__icon">
@@ -200,6 +200,7 @@ const formLabelWidth = '140px'
                     </el-icon>
                 </template>
             </el-input>
+        </el-form-item>
         </div>
     </div>
     <div class="tree mt-20">
@@ -292,4 +293,5 @@ const formLabelWidth = '140px'
 :deep(.el-tree-node) {
     padding: 5px 0;
 }
+
 </style>

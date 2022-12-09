@@ -247,11 +247,8 @@ export function updateDeptApi(payload = {}) {
 /**
 * @description 获取部门列表
 * @param payload
-* @param payload.id  number  邮件接收人
-* @param payload.name  string 标题
-* @param payload.context  string  内容
 **/
-export function getDeptList(payload = {}) {
+export function getDeptListApi(payload = {}) {
     return axios.post('/dept/list', payload)
 }
 /**

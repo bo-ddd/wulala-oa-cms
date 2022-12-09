@@ -131,15 +131,6 @@ const removeDepartment = async (departmentId: number) => {
 }
 const dialogFormVisibleDelete = ref(false)
 
-
-
-
-
-
-
-
-
-
 </script>
 <template>
     <div class="ipt-add">
@@ -238,4 +229,6 @@ a {
 :deep(.el-tree-node) {
     padding: 5px 0;
 }
+
+
 </style>
