@@ -1,12 +1,12 @@
 <template>
     <div class="border">
         <div>
-            <p class="title">
+            <div class="title">
                 <slot name="title"></slot>
-            </p>
-            <P class="text">
+            </div>
+            <div class="text">
                 <slot name="text"></slot>
-            </P>
+            </div>
         </div>
     </div>
 </template>
