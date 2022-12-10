@@ -451,9 +451,9 @@ export function uploadEnclosureApi(payload = {}) {
 * @param payload
 * @param payload.file  string  
 **/
-export function uploadAvatarApi(payload = {}) {
-    return axios.post('/upload/avatar', payload)
-}
+// export function uploadAvatarApi(payload = {}) {
+//     return axios.post('/upload/avatar', payload)
+// }
 
 /**
 * @description 增加活动接口
@@ -480,6 +480,8 @@ export function getSongSheet (server: string, type:String, id: String){
       return axios.get(`https://api.i-meto.com/meting/api?server=${server}&type=${type}&id=${id}&r=${Math.random()}`);
    
  }
+ const BASE_URL=import.meta.env.MODE == 'production' ? 'http://8.131.89.181:8080' : '/api';
+ export const uploadAvatarApi = `${BASE_URL}/upload/avatar`;
 
 
 export const apiArr = ['/user/leave/create', '/user/update', '/permission/add', '/permission/update', '/permission/delete', '/user/leave/examine',
