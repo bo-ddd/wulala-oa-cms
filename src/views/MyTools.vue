@@ -7,6 +7,7 @@ import { usePageSizeOptionsStore } from "@/stores/tools";
 import { storeToRefs } from "pinia";
 import type { Colors } from "@/types/ThemeColors"
 import { useThemeStore } from '@/stores/themeColors';
+import { isNumber, toNumber } from 'lodash';
 const pageSizeOptionsStore = usePageSizeOptionsStore();
 const { SwitchStatus, defaultValue } = storeToRefs(pageSizeOptionsStore);
 
@@ -213,9 +214,7 @@ const appearanceList = [
 ]
 //选中色块的点击事件;
 let useThemeColor = useThemeStore();
-const { themeColors } = useThemeColor
-const appearanceRadio = ref(themeColors.id);
-
+let appearanceRadio = ref<number>(Number(useThemeColor.getThemeId()));
 const changeColor = (value: Colors) => {
     useThemeColor.setThemeColor(value)
 }
@@ -270,7 +269,8 @@ const changeColor = (value: Colors) => {
                 <el-radio-group v-model="appearanceRadio" class="mt-20 pd-20 grid">
                     <el-radio :label="item.id" class="appearance" v-for="item in appearanceList"
                         :class="{ 'active-appearance': item.id == appearanceRadio }" @change="changeColor(item)">
-                        <div class="color-block" style="background-color:v-bind(item.bgColor)"></div>
+                        <div class="color-block"
+                            style="width: 100%; height: 60px; background:v-bind(item.bgColor)"></div>
                         <div class="title">{{ item.title }}</div>
                     </el-radio>
                 </el-radio-group>
@@ -372,11 +372,10 @@ const changeColor = (value: Colors) => {
     border-width: 2px;
 }
 
-.color-block {
+/* .color-block {
     width: 100%;
     height: 60px;
-    /* background-color: cyan; */
-}
+} */
 
 .title {
     display: inline-block;
