@@ -1,27 +1,14 @@
 <script setup lang="ts">
 import TextBorder from '@/components/TextBorder.vue';
 import MusicPlayer from '@/components/MusicPlayer.vue';
-import { ref,onMounted } from 'vue';
+import { ref } from 'vue';
 const isPlay = ref(true) //音乐播放器开关状态;
 
 //音乐播放器切换开关;
 function toggleMusicStatus() {
     isPlay.value = isPlay.value ? false : true
 }
-// onMounted(()=>{
-//     isPlay.value=false;
-//     // setTimeout(()=>{
-//     //     isPlay.value=true;
-//     // },1000)
-// })
-onMounted(()=>{
-    toggleMusicStatus()
-    console.log('第一次')
-    console.log(isPlay.value)
-    toggleMusicStatus()
-    console.log('第二次')
-    console.log(isPlay.value)
-})
+
 </script>
 
 <template>

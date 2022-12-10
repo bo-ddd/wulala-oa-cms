@@ -29,7 +29,6 @@ const isOver: Ref = ref(false); //切换头像时鼠标移入的状态;
 const dialogAvatarVisible = ref(false); //更换头像的弹出框;
 const uploadUrl = ref(''); //头像的Url;
 const upload = ref<UploadInstance>()
-const action = import.meta.env.MODE == 'production' ? 'http://8.131.89.181:8080/upload/avatar' : '/api/upload/avatar';
 
 
 onMounted(async () => {
@@ -113,16 +112,7 @@ function handleUserBirthday() {
 const handleSuccessUpload: UploadProps['onSuccess'] = (response) => {
     uploadUrl.value = response.data.url
 }
-//获取上传图像的url;
-// const handleSuccessUpload = async (file: any) => {
-//     const formData = new FormData();
-//     formData.append('file', file)
-//     const { data } = await uploadAvatarApi(
-//         formData
-//     )
-//     console.log(data)
-//     uploadUrl.value = data.url
-// }
+
 //校验上传图片大小;
 const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
     if (rawFile.size / 1024 / 1024 > 1) {
@@ -223,7 +213,7 @@ function resetUpload() {
     <!-- 上传图像弹出框 -->
     <el-dialog v-model="dialogAvatarVisible" title="更换头像">
         <div class="flex-center">
-            <el-upload ref="upload" class="avatar-uploader" :action="action" :on-success="handleSuccessUpload"
+            <el-upload ref="upload" class="avatar-uploader" :action="uploadAvatarApi" :on-success="handleSuccessUpload"
                 :before-upload="beforeAvatarUpload" :show-file-list="false">
                 <img v-if="uploadUrl" :src="uploadUrl" class="avatar" />
                 <el-icon v-else class="avataruploader-icon">

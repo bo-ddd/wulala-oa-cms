@@ -2,7 +2,7 @@
 import { RouterView, useRouter, useRoute } from "vue-router";
 import { onMounted, watchEffect } from "vue";
 import { ArrowRight } from '@element-plus/icons-vue';
-import { updateUserInfoApi } from '../assets/api/api';
+import { updateUserInfoApi,uploadAvatarApi } from '../assets/api/api';
 import { ref } from 'vue';
 import { ArrowDown } from '@element-plus/icons-vue';
 import sidebarList from '../router/menu';
@@ -12,10 +12,9 @@ import { useUserStore } from '@/stores/userInfo';
 import { usePageSizeOptionsStore } from "@/stores/tools";
 import { storeToRefs } from "pinia";
 import { useThemeStore } from '@/stores/themeColors';
-
 const userStore = useUserStore();
 const { userInfo: userInfos } = storeToRefs(userStore)
-const action = import.meta.env.MODE == 'production' ? 'http://8.131.89.181:8080/upload/avatar' : '/api/upload/avatar';
+
 onMounted(async () => {
     await userStore.getUserInfo()
     // 初始化页面数据
@@ -109,18 +108,21 @@ onMounted(() => {
 
 // 一键换肤
 let color = ref('')
-if (localStorage.getItem("color") == null) {
+if (localStorage.getItem("color") == null && localStorage.getItem("id") == null) {
     localStorage.setItem('color', 'default')
+    localStorage.setItem('id', '1')
 }
+
 let useThemeColor = useThemeStore();
 let { themeColors } = useThemeColor
 watchEffect(async () => {
     color.value = themeColors.color
+    const url = import.meta.env.MODE == 'production' ? `dist/theme/theme-${color.value}.css` : `../src/theme/theme-${color.value}.css`
     let link = document.createElement('link');
     link.type = 'text/css';
     link.id = "theme";
     link.rel = 'stylesheet';
-    link.href = `../src/theme/theme-${color.value}.css`;
+    link.href = url;
     document.getElementsByTagName("head")[0].appendChild(link);
 })
 
@@ -287,7 +289,7 @@ const resetUpload = () => {
     </div>
     <el-dialog v-model="dialogAvatarVisible" title="更换头像">
         <div class="flex-center">
-            <el-upload ref="upload" class="avatar-uploader" :action="action" :before-upload="beforeAvatarUpload"
+            <el-upload ref="upload" class="avatar-uploader" :action="uploadAvatarApi" :before-upload="beforeAvatarUpload"
                 :on-success="handleSuccessUpload" :show-file-list="false">
                 <img v-if="uploadUrl" :src="uploadUrl" class="avatar" />
                 <el-icon v-else class="avataruploader-icon">
@@ -458,16 +460,16 @@ const resetUpload = () => {
     width: 200px;
     height: 200px;
 }
-</style>
-<style>
+svg {
+    color: var(--text-color)
+}
 .gradient {
     background: var(--gradient-bg-color);
     overflow-y: hidden;
 }
+</style>
+<style>
 
-svg {
-    color: var(--text-color)
-}
 
 .avatar-uploader .el-upload {
     border: 1px dashed var(--el-border-color);
