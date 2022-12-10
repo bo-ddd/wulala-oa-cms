@@ -140,7 +140,7 @@
 import { ref, reactive } from 'vue'
 import {
     getUserListApi, getRoleListApi, addUserRoleApi, queryUserInfoApi, deleteUserRoleApi, getUserDeptListApi,
-    queryUserMembersApi, getDeptList, addUserDeptApi, deleteUserDeptApi
+    queryUserMembersApi, getDeptListApi, addUserDeptApi, deleteUserDeptApi
 } from '@/assets/api/api'
 import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router';
@@ -326,7 +326,7 @@ const queryDeptUser = async (id: number | null) => {
 }
 // 给用户添加部门
 async function getDepartmentId() {
-    await getDeptList({}).then(res => {
+    await getDeptListApi({}).then(res => {
         if (res.status == 1) {
             form.deptId = res.data.id
             form.searchDepId = res.data.id
