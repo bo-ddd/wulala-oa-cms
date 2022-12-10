@@ -1,60 +1,59 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue';
-import {useRouter} from 'vue-router';
-import { getUserListApi } from '@/assets/api/api'
+import { useRouter } from 'vue-router';
+import { getUserListApi, activityListApi, queryUserInfoApi } from '@/assets/api/api'
 interface TableData {
     id: number,
+    userId: number,
     avatarName: string,
     activityName: string;
+    activityDesc: string,
     status: number,
-    startTime: string,
-    endTime: string,
-    count: number
+    startTime:Date|string,
+    endTime: Date|string,
+    type: number
 }
-const router=useRouter()
+
+const router = useRouter()
 const pageSize = ref(10)
 const currentPage = ref(1)
-const total = ref(3)
-const tableData = reactive<TableData[]>([
-    {
-        id: 1,
-        avatarName: '熊大',
-        activityName: '狼人杀',
-        status: 0,
-        startTime: '2022-12-06',
-        endTime: '2022-12-13',
-        count: 8
-    },
-    {
-        id: 2,
-        avatarName: '熊二',
-        activityName: '三国杀',
-        status: 1,
-        startTime: '2022-12-06',
-        endTime: '2022-12-13',
-        count: 5
-    },
-    {
-        id: 3,
-        avatarName: '张三',
-        activityName: '剧本杀',
-        status: 2,
-        startTime: '2022-12-06',
-        endTime: '2022-12-13',
-        count: 7
-    }
-])
+const total = ref(0)
+const tableData = reactive<TableData[]>([])
 
 interface QueryParams {
-    activityName: string,
-    avatarName: string,
-    status: string,
-    StartDuration: string[],
-    endDuration: string[]
+    avatarName?: string,
+    activityName?: string,
+    status?: number,
+    type?: number,
+    StartDuration?: string[],
+    endDuration?: string[],
+    pageSize: number,
+    pageNum: number,
 }
 const queryOption = reactive({} as QueryParams)
 const userAvatarNameList = reactive<string[]>([]) //用户昵称列表;
-const StateCodeArr = ['全部', '未开始', '进行中', '已截止']
+const StateCodeArr = [
+    {
+        id: 1,
+        status: '全部',
+        value: null
+    },
+    {
+        id: 2,
+        status: '未开始',
+        value: 0
+    },
+    {
+        id: 3,
+        status: '进行中',
+        value: 1
+    },
+    {
+        id: 4,
+        status: '已截止',
+        value: 2
+    }
+]
 enum StateCode {//报名状态;
     '未开始',
     '进行中',
@@ -66,12 +65,40 @@ enum tagType { //审核状态的b背景颜色;
     warning,
 }
 
-
-queryOption.status = StateCodeArr[0];//按报名状态查询时的默认显示值;
 getUserAvatarNameList() //获取用户昵称查询列表;
 
+//初始化活动列表;
+getActivityList({
+    pageSize: pageSize.value,
+    pageNum: currentPage.value,
+})
 
+//初始化活动列表;
+async function getActivityList(queryParams: QueryParams) {
+    const { data } = await activityListApi(queryParams)
+    tableData.length = 0;
+    Object.assign(tableData, data.list)
+    total.value = data.total;
+    tableData.forEach(async (item) => {
+        item.avatarName = await getUserAvatarName(item.userId)
+        item.startTime = formatDate(item.startTime)
+        item.endTime=formatDate(item.endTime)
+    })
+}
 
+async function getUserAvatarName(id: number) {
+    const { data } = await queryUserInfoApi({ id })
+    return data.avatarName
+}
+//处理时间戳=>YY-MM-DD;
+function formatDate(time: Date | string) {
+    let year = new Date(time).getFullYear();
+    let month = new Date(time).getMonth() + 1;
+    let date = new Date(time).getDate();
+    let months = month >= 10 ? month : '0' + month;
+    let dates = date >= 10 ? date : '0' + date;
+    return year + '-' + months + '-' + dates;
+}
 //获取-用户昵称-查询列表;
 async function getUserAvatarNameList() {
     const res = await getUserListApi({
@@ -84,6 +111,13 @@ async function getUserAvatarNameList() {
 }
 //调用查询接口;
 function queryActivityInfo() {
+    getActivityList({
+        avatarName: queryOption.avatarName,
+        status: queryOption.status,
+        type: queryOption.type,
+        pageSize: pageSize.value,
+        pageNum: currentPage.value,
+    })
 }
 function handleEdit(index: number, row: TableData) {
     console.log(index, row)
@@ -91,10 +125,13 @@ function handleEdit(index: number, row: TableData) {
 //一页显示条数改变时的回调;
 function handleSizeChange(val: number) {
     pageSize.value = val
+    queryActivityInfo()
+
 }
 //当前所在页码改变时的回调;
 function handleCurrentChange(val: number) {
     currentPage.value = val
+    queryActivityInfo()
 }
 </script>
 
@@ -105,14 +142,14 @@ function handleCurrentChange(val: number) {
                 <el-option v-for="item in StateCodeArr" :key="item" :label="item" :value="item" />
             </el-select>
         </el-form-item>
-        <el-form-item label="发起人">
+        <el-form-item label="发起人">   
             <el-select v-model="queryOption.avatarName" placeholder="请输入姓名" filterable>
                 <el-option v-for="item in userAvatarNameList" :key="item" :label="item" :value="item" />
             </el-select>
         </el-form-item>
         <el-form-item label="报名状态">
             <el-select v-model="queryOption.status" placeholder="请输入报名状态">
-                <el-option v-for="item in StateCodeArr" :key="item" :label="item" :value="item" />
+                <el-option v-for="item in StateCodeArr" :key="item.id" :label="item.status" :value="item.value" />
             </el-select>
         </el-form-item>
         <el-form-item label="开始报名时间">
@@ -130,13 +167,13 @@ function handleCurrentChange(val: number) {
                 </el-icon>
                 <span>创建活动</span>
             </el-button>
-            <el-button type="danger"  @click="queryActivityInfo">
+            <el-button type="danger" @click="queryActivityInfo">
                 <el-icon>
                     <Search />
                 </el-icon>
                 <span>查询</span>
             </el-button>
-            
+
         </el-form-item>
     </div>
     <el-table :data="tableData" style="width: 100%" class="mt-20">
@@ -149,20 +186,22 @@ function handleCurrentChange(val: number) {
         <el-table-column label="发起人" prop="avatarName" align="center">
         </el-table-column>
         <el-table-column label="报名人数" prop="count" align="center" />
-        <el-table-column label="报名状态" prop="status" align="center">
+        <el-table-column label="报名状态" align="center">
             <template #default="scope">
-                <el-tag :type="tagType[scope.row.status]">{{ StateCode[scope.row.status] }}
+                <el-tag :type="tagType[scope.row.type]">{{ StateCode[scope.row.type] }}
                 </el-tag>
             </template>
         </el-table-column>
         <el-table-column label="开始报名日期" sortable prop="startTime" align="center" />
         <el-table-column label="截止报名日期" sortable prop="endTime" align="center" />
-
+        <el-table-column label="活动描述"  prop="activityDesc" align="center" />
         <el-table-column label="操作" align="center">
             <template #default="scope">
-                <el-link type="primary" @click="handleEdit(scope.$index, scope.row)">管理</el-link>
-                <el-link type="warning" @click="handleEdit(scope.$index, scope.row)" class="ml-10">报名名单</el-link>
-                <el-link type="success" @click="handleEdit(scope.$index, scope.row)" class="ml-10">二维码</el-link>
+                <div class="flex-col">
+                    <el-link type="primary" @click="handleEdit(scope.$index, scope.row)">管理</el-link>
+                    <el-link type="success" @click="handleEdit(scope.$index, scope.row)" class="ml-10">二维码</el-link>
+                    <el-link type="warning" @click="handleEdit(scope.$index, scope.row)" class="ml-10">报名名单</el-link>
+                </div>
             </template>
         </el-table-column>
     </el-table>
@@ -178,10 +217,18 @@ function handleCurrentChange(val: number) {
 .flex-options {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
-    gap: 0 20px;    
+    gap: 0 20px;
 }
 
 :deep(.el-input__wrapper) {
     flex-grow: 0;
+}
+
+.flex-col {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
 }
 </style>

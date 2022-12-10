@@ -3,12 +3,16 @@ import { ref, reactive } from 'vue'
 import type { FormInstance } from 'element-plus'
 import { ElMessage } from 'element-plus'
 import type { UploadProps } from 'element-plus'
+import { ElMessageBox } from 'element-plus'
+import { addActivityApi } from '@/assets/api/api'
+import { useRouter } from 'vue-router';
 
+const router = useRouter()
 const ruleFormRef = ref<FormInstance>()
 const ruleForm = reactive({
     name: '',
     count: '',
-    type: '',
+    type: 0,
     activityDuration: '',
     applicationDuration: '',
     desc: '',
@@ -29,6 +33,12 @@ const activityType = [
         name: '限时活动'
     }
 ]
+enum activityTypeEnum{
+    '一次性活动',
+    '长期活动',
+    '限时活动'
+
+}
 
 const rules = ({
     name: [
@@ -73,10 +83,9 @@ const rules = ({
 
 
 const handlePosterSuccess: UploadProps['onSuccess'] = (
-    response,
-    uploadFile
+    response
 ) => {
-    ruleForm.posterUrl = URL.createObjectURL(uploadFile.raw!)
+    ruleForm.posterUrl = response.data.url
 }
 
 const beforePosterUpload: UploadProps['beforeUpload'] = (rawFile) => {
@@ -94,9 +103,45 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     if (!formEl) return
     await formEl.validate((valid, fields) => {
         if (valid) {
-            console.log('submit!')
+            //确认消息弹出框
+            ElMessageBox.confirm(
+                '您确定提交离职申请吗？',
+                '提示',
+                {
+                    confirmButtonText: '确认',
+                    cancelButtonText: '取消',
+                    type: 'warning',
+                }
+            )
+                .then(async () => {
+                    //调用提交接口;
+                    const activityType=activityTypeEnum[ruleForm.type];
+                    await addActivityApi({
+                        activityName: ruleForm.name,
+                        type: activityType,
+                        activityDesc: ruleForm.desc,
+                        poster: ruleForm.posterUrl,
+                        startTime:ruleForm.activityDuration[0],
+                        endTime:ruleForm.activityDuration[1]
+                    }).then(res => {
+                        ElMessage({
+                            type: 'success',
+                            message: '创建成功',
+                        })
+                    }, error => {
+                        ElMessage.error('创建失败')
+                    })
+                    //跳转到离职列表页面;
+                    router.push('activityList')
+                })
+                .catch(() => {
+                    ElMessage({
+                        type: 'info',
+                        message: '已取消创建',
+                    })
+                })
         } else {
-            console.log('error submit!', fields)
+            ElMessage.error('创建失败')
         }
     })
 }
@@ -110,7 +155,6 @@ const options = Array.from({ length: 10000 }).map((_, idx) => ({
     value: `${idx + 1}`,
     label: `${idx + 1}`,
 }))
-
 </script>
 
 
@@ -134,8 +178,8 @@ const options = Array.from({ length: 10000 }).map((_, idx) => ({
                     start-placeholder="开始时间" end-placeholder="结束日期" />
             </el-form-item>
             <el-form-item label="活动类型" prop="type">
-                <el-radio-group v-model="ruleForm.type">
-                    <el-radio v-for="item in activityType" :key="item.id" :label="item.name" />
+                <el-radio-group v-model="ruleForm.type" >
+                    <el-radio v-for="item in activityType" :key="item.id" :label="item.name"/>
                 </el-radio-group>
             </el-form-item>
             <el-form-item label="活动海报">
