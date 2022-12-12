@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
-import { getDeptList, createDeptApi, updateDeptApi, deleteDeptApi } from '@/assets/api/api'
+import { getDeptListApi, createDeptApi, updateDeptApi, deleteDeptApi } from '@/assets/api/api'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import type { DepartmentData } from '@/types/Dept'
 let departmentList = ref();
@@ -46,7 +46,7 @@ const upError = () => {
 
 
 const getDepartmentList = async () => {
-    await getDeptList({}).then(res => {
+    await getDeptListApi({}).then(res => {
         if (res.status == 1) {
             departmentList.value = res.data
         }

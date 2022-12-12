@@ -101,7 +101,7 @@
 <script lang="ts" setup>
 import { reactive, ref, } from 'vue'
 import type { DeptMember } from "../types/Dept";
-import { getDeptList,queryUserMembersApi,sendMessageApi,queryMessageListApi,updateMessageApi } from '@/assets/api/api'
+import { getDeptListApi,queryUserMembersApi,sendMessageApi,queryMessageListApi,updateMessageApi } from '@/assets/api/api'
 import { usePageSizeOptionsStore } from '@/stores/tools'
 import { storeToRefs } from "pinia";
 import MyEditor from '@/components/MyEditor.vue';
@@ -152,7 +152,7 @@ function updateTime(time: Date) {
 }
 //获取用户所在哪个组
 async function getUserDeptList() {
-  let res = await getDeptList({})
+  let res = await getDeptListApi({})
   if (res.status == 1) {
     res.data.forEach((dept: any) => {
       deptId.value = dept.deptId
