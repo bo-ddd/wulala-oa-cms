@@ -4,8 +4,8 @@
             <div class="title">
                 <slot name="title"></slot>
             </div>
-            <div class="text">
-                <slot name="text"></slot>
+            <div class="content">
+                <slot name="content"></slot>
             </div>
         </div>
     </div>
@@ -31,7 +31,7 @@
     font-size:26px;
     font-weight: bold;
 }
-.text {
+.content {
     line-height: 50px;
     text-align: justify;
 
