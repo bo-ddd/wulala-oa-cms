@@ -142,6 +142,15 @@ const router = createRouter({
             keepAlive: true
           }
         },
+        {//测试页面;
+          path: "/maTable",
+          name: "maTable",
+          component: () => import("../views/MaTable.vue"),
+          meta: {
+            label: "活动专区",
+            requiresAuth: false
+          }
+        },
       ]
     },
   ],

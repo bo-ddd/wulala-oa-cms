@@ -15,12 +15,10 @@
 </template>
 
 <script setup lang="ts">
-import {useRoute} from 'vue-router';
 import { WarningFilled } from '@element-plus/icons-vue';
 import { useTipStore } from '@/stores/tip';
 import { storeToRefs } from "pinia";
-import { watch } from 'vue';
-const route=useRoute()
+
 const tipStore = useTipStore();
 const { tipStatus, tipFrequency } = storeToRefs(tipStore);
 tipStore.getTipStatus();

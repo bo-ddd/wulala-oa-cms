@@ -7,6 +7,7 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    Activity: typeof import('./src/components/Activity.vue')['default']
     AffixTip: typeof import('./src/components/AffixTip.vue')['default']
     Card: typeof import('./src/components/Card.vue')['default']
     ElAffix: typeof import('element-plus/es')['ElAffix']
@@ -59,12 +60,16 @@ declare module '@vue/runtime-core' {
     ElTag: typeof import('element-plus/es')['ElTag']
     ElTooltip: typeof import('element-plus/es')['ElTooltip']
     ElUpload: typeof import('element-plus/es')['ElUpload']
+    IconBtn: typeof import('./src/components/IconBtn.vue')['default']
     Laoding: typeof import('./src/components/laoding/index.vue')['default']
     MusicPlayer: typeof import('./src/components/MusicPlayer.vue')['default']
     MyEditor: typeof import('./src/components/MyEditor.vue')['default']
+    ResetBtn: typeof import('./src/components/ResetBtn.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    Table: typeof import('./src/components/Table.vue')['default']
     TextBorder: typeof import('./src/components/TextBorder.vue')['default']
+    TextCard: typeof import('./src/components/TextCard.vue')['default']
     Tree: typeof import('./src/components/Tree.vue')['default']
   }
 }

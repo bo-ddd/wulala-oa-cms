@@ -9,9 +9,12 @@ interface TableData {
     activityName: string;
     activityDesc: string,
     status: number,
-    startTime:Date|string,
-    endTime: Date|string,
-    type: number
+    type: number,
+    startTime: string,
+    endTime: string,
+    beginAt: string,
+    endAt: string,
+    count: number
 }
 
 const router = useRouter()
@@ -23,7 +26,7 @@ const tableData = reactive<TableData[]>([])
 interface QueryParams {
     avatarName?: string,
     activityName?: string,
-    status?: number,
+    status?: number | string,
     type?: number,
     StartDuration?: string[],
     endDuration?: string[],
@@ -31,8 +34,10 @@ interface QueryParams {
     pageNum: number,
 }
 const queryOption = reactive({} as QueryParams)
+queryOption.status = '全部'
 const userAvatarNameList = reactive<string[]>([]) //用户昵称列表;
-const StateCodeArr = [
+const activityNamelist = reactive<string[]>([]) //活动名称列表;
+const stateCodeArr = [
     {
         id: 1,
         status: '全部',
@@ -54,7 +59,13 @@ const StateCodeArr = [
         value: 2
     }
 ]
-enum StateCode {//报名状态;
+enum activityType {
+    '一次性活动',
+    '长期活动',
+    '显示活动'
+
+}
+enum stateCode {//报名状态;
     '未开始',
     '进行中',
     '已截止'
@@ -66,7 +77,7 @@ enum tagType { //审核状态的b背景颜色;
 }
 
 getUserAvatarNameList() //获取用户昵称查询列表;
-
+getActivityNameList()
 //初始化活动列表;
 getActivityList({
     pageSize: pageSize.value,
@@ -76,13 +87,15 @@ getActivityList({
 //初始化活动列表;
 async function getActivityList(queryParams: QueryParams) {
     const { data } = await activityListApi(queryParams)
+    console.log(data)
     tableData.length = 0;
     Object.assign(tableData, data.list)
     total.value = data.total;
     tableData.forEach(async (item) => {
         item.avatarName = await getUserAvatarName(item.userId)
         item.startTime = formatDate(item.startTime)
-        item.endTime=formatDate(item.endTime)
+        item.endTime = formatDate(item.endTime)
+        item.count = 0
     })
 }
 
@@ -133,23 +146,34 @@ function handleCurrentChange(val: number) {
     currentPage.value = val
     queryActivityInfo()
 }
+async function getActivityNameList() {
+    const { data } = await activityListApi({
+        pageSize: 2147483647
+    })
+    activityNamelist.length = 0;
+    data.list.forEach((item: { activityName: string }) => {
+        activityNamelist.push(item.activityName)
+    })
+}
+
+
 </script>
 
 <template>
     <div class="flex-options">
         <el-form-item label="活动名称">
             <el-select v-model="queryOption.activityName" placeholder="请输入活动名称" filterable>
-                <el-option v-for="item in StateCodeArr" :key="item" :label="item" :value="item" />
+                <el-option v-for="item in activityNamelist" :key="item" :label="item" :value="item" />
             </el-select>
         </el-form-item>
-        <el-form-item label="发起人">   
+        <el-form-item label="发起人">
             <el-select v-model="queryOption.avatarName" placeholder="请输入姓名" filterable>
                 <el-option v-for="item in userAvatarNameList" :key="item" :label="item" :value="item" />
             </el-select>
         </el-form-item>
         <el-form-item label="报名状态">
             <el-select v-model="queryOption.status" placeholder="请输入报名状态">
-                <el-option v-for="item in StateCodeArr" :key="item.id" :label="item.status" :value="item.value" />
+                <el-option v-for="item in stateCodeArr" :key="item.id" :label="item.status" :value="item.value" />
             </el-select>
         </el-form-item>
         <el-form-item label="开始报名时间">
@@ -183,18 +207,31 @@ function handleCurrentChange(val: number) {
                 <el-tag>{{ scope.row.activityName }}</el-tag>
             </template>
         </el-table-column>
+        <el-table-column label="活动类型" align="center">
+            <template #default="scope">
+                {{ activityType[scope.row.type] }}
+            </template>
+        </el-table-column>
         <el-table-column label="发起人" prop="avatarName" align="center">
         </el-table-column>
         <el-table-column label="报名人数" prop="count" align="center" />
         <el-table-column label="报名状态" align="center">
             <template #default="scope">
-                <el-tag :type="tagType[scope.row.type]">{{ StateCode[scope.row.type] }}
+                <el-tag :type="tagType[scope.row.type]">{{ stateCode[scope.row.type] }}
                 </el-tag>
             </template>
         </el-table-column>
-        <el-table-column label="开始报名日期" sortable prop="startTime" align="center" />
-        <el-table-column label="截止报名日期" sortable prop="endTime" align="center" />
-        <el-table-column label="活动描述"  prop="activityDesc" align="center" />
+        <el-table-column label="报名起止日期" sortable align="center">
+            <template #default="scope">
+                <div>{{ scope.row.startTime }}</div>至 <div>{{ scope.row.endTime }}</div>
+            </template>
+        </el-table-column>
+        <el-table-column label="活动起止日期" sortable align="center">
+            <template #default="scope">
+                <div>{{ scope.row.beginAt }}</div>至 <div>{{ scope.row.endAt }}</div>
+            </template>
+        </el-table-column>
+        <el-table-column label="活动描述" prop="activityDesc" align="center" />
         <el-table-column label="操作" align="center">
             <template #default="scope">
                 <div class="flex-col">

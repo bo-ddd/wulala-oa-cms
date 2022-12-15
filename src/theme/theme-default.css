@@ -1,7 +1,7 @@
 :root {
   --text-color: black;
-  --gradient-bg-color: linear-gradient(to bottom, #f47599, #f7c6cd);
-  --el-color-danger: #f56c6c;
+  --gradient-bg-color: #eb90ab;
+  --el-color-danger: #eb90ab;
   --el-color-danger-light-3: #f89898;
   --el-color-danger-dark-2: #ee5656;
   --el-button-text-color: white;

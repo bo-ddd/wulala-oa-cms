@@ -122,7 +122,9 @@ const submitForm = async (formEl: FormInstance | undefined) => {
                         activityDesc: ruleForm.desc,
                         poster: ruleForm.posterUrl,
                         startTime:ruleForm.activityDuration[0],
-                        endTime:ruleForm.activityDuration[1]
+                        endTime:ruleForm.activityDuration[1],
+                        beginAt:ruleForm.applicationDuration[0],
+                        endAt:ruleForm.applicationDuration[1]
                     }).then(res => {
                         ElMessage({
                             type: 'success',

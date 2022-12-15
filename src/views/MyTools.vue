@@ -7,7 +7,6 @@ import { usePageSizeOptionsStore } from "@/stores/tools";
 import { storeToRefs } from "pinia";
 import type { Colors } from "@/types/ThemeColors"
 import { useThemeStore } from '@/stores/themeColors';
-import { isNumber, toNumber } from 'lodash';
 const pageSizeOptionsStore = usePageSizeOptionsStore();
 const { SwitchStatus, defaultValue } = storeToRefs(pageSizeOptionsStore);
 
@@ -143,70 +142,70 @@ const handlePageSizeDefaultValue = () => {
 const appearanceList = [
     {
         id: 1,
-        appearanceUrl: '',
+        appearanceUrl: '../src/assets/images/default.png',
         title: '少女心',
         color: 'default',
         bgColor: 'linear-gradient(to bottom, #f47599, #f7c6cd)'
     },
     {
         id: 2,
-        appearanceUrl: '',
+        appearanceUrl: '../src/assets/images/grey.png',
         title: '晨雾',
         color: 'grey',
         bgColor: '#aab0b6'
     },
     {
         id: 3,
-        appearanceUrl: '',
+        appearanceUrl: '../src/assets/images/mint.png',
         title: '冰凉薄荷',
         color: 'mint',
         bgColor: '#7db6bf'
     },
     {
         id: 4,
-        appearanceUrl: '',
+        appearanceUrl: '../src/assets/images/island.png',
         title: '海岛度假',
         color: 'island',
         bgColor: '#2fa5a7'
     },
     {
         id: 5,
-        appearanceUrl: '',
+        appearanceUrl: '../src/assets/images/chillybreeze.png',
         title: '凉风',
         color: 'chillybreeze',
         bgColor: '#609dbf'
     },
     {
         id: 6,
-        appearanceUrl: '',
+        appearanceUrl: '../src/assets/images/softpink.png',
         title: '柔和粉色',
         color: 'softpink',
         bgColor: '#d8b2ad'
     },
     {
         id: 7,
-        appearanceUrl: '',
+        appearanceUrl: '../src/assets/images/bubble.png',
         title: '泡泡糖',
         color: 'bubble',
         bgColor: '#fd70a1'
     },
     {
         id: 8,
-        appearanceUrl: '',
+        appearanceUrl: '../src/assets/images/sunny.png',
         title: '晴天',
         color: 'sunny',
         bgColor: '#d6af46'
     },
     {
         id: 9,
-        appearanceUrl: '',
+        appearanceUrl: '../src/assets/images/mango.png',
         title: '芒果天堂',
         color: 'mango',
         bgColor: '#eb8f3b'
     },
     {
         id: 10,
-        appearanceUrl: '',
+        appearanceUrl: '../src/assets/images/rain.png',
         title: '雨夜',
         color: 'rain',
         bgColor: '#38393c'
@@ -269,8 +268,9 @@ const changeColor = (value: Colors) => {
                 <el-radio-group v-model="appearanceRadio" class="mt-20 pd-20 grid">
                     <el-radio :label="item.id" class="appearance" v-for="item in appearanceList"
                         :class="{ 'active-appearance': item.id == appearanceRadio }" @change="changeColor(item)">
-                        <div class="color-block"
-                            style="width: 100%; height: 60px; background:v-bind(item.bgColor)"></div>
+                        <div class="color-block">
+                            <img class="color-card" :src='item.appearanceUrl'>
+                        </div>
                         <div class="title">{{ item.title }}</div>
                     </el-radio>
                 </el-radio-group>
@@ -372,11 +372,14 @@ const changeColor = (value: Colors) => {
     border-width: 2px;
 }
 
-/* .color-block {
+.color-block {
     width: 100%;
     height: 60px;
-} */
-
+}
+.color-card{
+    width: 100%;
+    height: 60px;
+}
 .title {
     display: inline-block;
     font-size: 10px;
