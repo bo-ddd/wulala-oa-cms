@@ -7,6 +7,7 @@ import { usePageSizeOptionsStore } from '@/stores/tools'
 import { storeToRefs } from "pinia";
 import AffixTip from '@/components/AffixTip.vue';
 import type { TableData, UserQuitListParam, ApprovalForm } from '@/types/Dimission';
+import ResetBtn from '@/components/ResetBtn.vue'
 
 //pinia模块，动态改变一页显示最佳条数;
 const pageSizeOptionsStore = usePageSizeOptionsStore()
@@ -227,6 +228,7 @@ function getEnclosureUrl(imgUrl: string) {
     dialogFormVisibleEnclosure.value = true;
     enclosureUrl.value = imgUrl
 }
+
 </script>
 
 <template>
@@ -285,7 +287,7 @@ function getEnclosureUrl(imgUrl: string) {
     <el-pagination v-model:currentPage="currentPage" v-model:page-size="pageSize" :page-sizes="[5, 10, 15, 20, 25, 30]"
         layout="total, sizes, prev, pager, next, jumper" :total="total" @size-change="handleSizeChange"
         @current-change="handleCurrentChange" class="mt-20" />
-    <!-- 审核弹框 -->
+    <!-- 审核弹框 -->   
     <el-dialog v-model="dialogFormVisible" title="审核处理">
         <el-form ref="approvalFormRef" :model="approvalForm" hide-required-asterisk label-width="120px" :rule="rules">
             <el-form-item label="审核操作" prop="operation">
@@ -300,7 +302,8 @@ function getEnclosureUrl(imgUrl: string) {
         </el-form>
         <template #footer>
             <span class="dialog-footer">
-                <el-button @click="resetForm(approvalFormRef)">重置</el-button>
+                <!-- <el-button @click="resetForm(approvalFormRef)">重置</el-button> -->
+                <ResetBtn :form-el="approvalFormRef"></ResetBtn>
                 <el-button type="danger" @click="submitForm(approvalFormRef)">
                     确认
                 </el-button>
@@ -323,6 +326,8 @@ function getEnclosureUrl(imgUrl: string) {
     </el-dialog>
     <!-- 底部提示框 -->
     <AffixTip class="mt-20"></AffixTip>
+
+    
 
 </template>
 

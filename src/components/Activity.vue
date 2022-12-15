@@ -1,7 +1,7 @@
 <template>
     <!-- 活动时间 报名时间 游戏背景 游戏目的 游戏规则 游戏流程 奖品 背景颜色 背景图  背景音乐ID-->
     <div class="main">
-        <img class="bg-main" :src="activityBgUrl" alt="">
+            <img class="bg-main" :src="activityBgUrl" alt="">
         <div class="wrapper">
             <p class="mt-20">
                 活动时间：{{ activityTime }}
@@ -26,12 +26,13 @@
 <script setup lang="ts">
 import MusicPlayer from '@/components/MusicPlayer.vue';
 import { ref, reactive } from 'vue';
-import { defineProps } from 'vue';
 const props = defineProps<{
     activityId: number,
     activityBgUrl: string,
     activityTime: string,
-    appointmentTime: string
+    appointmentTime: string,
+    bgColor:string,
+    fontColor:string
 }>()
 const { activityTime, appointmentTime, activityBgUrl, activityId } = props
 const isPlay = ref(true) //音乐播放器开关状态;
@@ -45,8 +46,6 @@ function handleSubmit(activityId: number) {
     //调接口，将活动Id传递给后端;
     //成功之后的操作;
     disabled.value=true;
-
-
 }
 </script>
 
@@ -56,12 +55,11 @@ function handleSubmit(activityId: number) {
 .main {
     width: 1200px;
     margin: 0 auto;
-    background-color: black;
-    color: white;
+    background-color: v-bind(bgColor);
+    color: v-bind(fontColor);
     padding-bottom: 50px;
     position: relative;
 }
-
 .bg-main {
     width: 100%;
     text-align: center;
@@ -81,18 +79,6 @@ function handleSubmit(activityId: number) {
 
 .mt-50 {
     margin-top: 50px;
-}
-
-.audio {
-    width: 200px;
-    height: 200px;
-    background-color: white;
-}
-
-.box {
-    width: 200px;
-    height: 100px;
-    background-color: white;
 }
 
 @keyframes rotate {
