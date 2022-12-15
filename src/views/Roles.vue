@@ -5,7 +5,8 @@ import { useRouter } from "vue-router";
 import type { Role } from "../types/Role";
 import { usePageSizeOptionsStore } from '@/stores/tools'
 import { storeToRefs } from "pinia";
-import { getRoleListApi,queryRolePermissionListApi,deleteRoleApi} from "@/assets/api/api";
+import Pagination from "@/components/Pagination.vue";
+import { getRoleListApi, queryRolePermissionListApi, deleteRoleApi } from "@/assets/api/api";
 
 
 const pageSizeOptionsStore = usePageSizeOptionsStore()
@@ -64,8 +65,6 @@ const searchRole = function () {
     let user = resData.filter(item => item.id == Number(RoleId.value));
     list.length = 0;   // list = []重新定义list会让他没双向绑定 所以只能list.length =0;
     list.push(...user);
-
-
 }
 const queryPermissionList = async function (row: any) {
     let res = await queryRolePermissionListApi({
@@ -88,7 +87,6 @@ const queryPermissionList = async function (row: any) {
 //删除角色权限
 const handleDelete = async (index: number, row: Role) => {
     selectId.value = row.id
-    // console.log(index, row)
     console.log(selectId.value);
 
 }
@@ -152,11 +150,8 @@ const to = function (id: number) {
                 </template>
             </el-table-column>
         </el-table>
-        <div class="demo-pagination-block mt-20">
-            <el-pagination v-model:currentPage="pageNum" v-model:page-size="pageSize" :page-sizes="[5, 10, 15, 20]"
-                layout="total, sizes, prev, pager, next, jumper" :total="total" @size-change="handleSizeChange"
-                @current-change="handleCurrentChange" />
-        </div>
+        <Pagination :pageSize='pageSize' :pageNum='pageNum' :total='total' @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"></Pagination>
     </div>
     <!-- //删除角色弹层 -->
     <el-dialog v-model="centerDialogVisible" title="删除角色" width="30%" align-center>
