@@ -87,7 +87,7 @@ getActivityList({
 //初始化活动列表;
 async function getActivityList(queryParams: QueryParams) {
     const { data } = await activityListApi(queryParams)
-    console.log(data)
+     console.log(data)
     tableData.length = 0;
     Object.assign(tableData, data.list)
     total.value = data.total;
@@ -95,6 +95,8 @@ async function getActivityList(queryParams: QueryParams) {
         item.avatarName = await getUserAvatarName(item.userId)
         item.startTime = formatDate(item.startTime)
         item.endTime = formatDate(item.endTime)
+        item.beginAt = formatDate(item.beginAt)
+        item.endAt = formatDate(item.endAt)
         item.count = 0
     })
 }
@@ -197,7 +199,6 @@ async function getActivityNameList() {
                 </el-icon>
                 <span>查询</span>
             </el-button>
-
         </el-form-item>
     </div>
     <el-table :data="tableData" style="width: 100%" class="mt-20">
@@ -217,18 +218,25 @@ async function getActivityNameList() {
         <el-table-column label="报名人数" prop="count" align="center" />
         <el-table-column label="报名状态" align="center">
             <template #default="scope">
-                <el-tag :type="tagType[scope.row.type]">{{ stateCode[scope.row.type] }}
+                <el-tag :type="tagType[scope.row.registrationStatus]">{{ stateCode[scope.row.registrationStatus] }}
                 </el-tag>
             </template>
         </el-table-column>
-        <el-table-column label="报名起止日期" sortable align="center">
+        <el-table-column label="活动状态" align="center">
             <template #default="scope">
-                <div>{{ scope.row.startTime }}</div>至 <div>{{ scope.row.endTime }}</div>
+                <el-tag :type="tagType[scope.row.activityStatus]">{{ stateCode[scope.row.activityStatus] }}
+                </el-tag>
             </template>
         </el-table-column>
-        <el-table-column label="活动起止日期" sortable align="center">
+        <el-table-column label="报名起止日期"  align="center">
             <template #default="scope">
                 <div>{{ scope.row.beginAt }}</div>至 <div>{{ scope.row.endAt }}</div>
+            </template>
+        </el-table-column>
+
+        <el-table-column label="活动起止日期"  align="center">
+            <template #default="scope">
+                <div>{{ scope.row.startTime }}</div>至 <div>{{ scope.row.endTime }}</div>
             </template>
         </el-table-column>
         <el-table-column label="活动描述" prop="activityDesc" align="center" />

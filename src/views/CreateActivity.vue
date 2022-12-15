@@ -105,7 +105,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
         if (valid) {
             //确认消息弹出框
             ElMessageBox.confirm(
-                '您确定提交离职申请吗？',
+                '您确定创建活动吗？',
                 '提示',
                 {
                     confirmButtonText: '确认',
