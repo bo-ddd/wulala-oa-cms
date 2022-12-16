@@ -473,6 +473,14 @@ export function addActivityApi(payload = {}) {
 export function activityListApi(payload = {}) {
     return axios.post('/activity/list', payload)
 }
+/**
+* @description 活动报名接口
+* @param payload 
+* @param payload.activityId: number
+**/
+export function activitySignApi(payload = {}) {
+    return axios.post('/activity/sign', payload)
+}
 
 
 export function getSongSheet (server: string, type:String, id: String){
