@@ -38,6 +38,8 @@
                 <el-link type="info" @click="getUserId(scope.row); dialogFormVisibleDelete = true">删除角色</el-link>
                 <el-link type="danger" @click="getUserId(scope.row); dialogFormisiblGeroup = true">添加部门</el-link>
                 <el-link type="info" @click="getUserId(scope.row); dialogFormisiblDelete = true">删除部门</el-link>
+                <el-link type="info" @click="getUserId(scope.row); dialogFormVisible = true">lll</el-link>
+
             </template>
         </el-table-column>
     </el-table>
@@ -56,7 +58,7 @@
         <template #footer>
             <span class="dialog-footer">
                 <el-button @click="dialogFormVisibleAdd = false">取消</el-button>
-                <el-button type="danger" @click="dialogFormVisibleAdd = false; addUserRole(form.userId)">
+                <el-button type="danger" @click="dialogFormVisibleAdd = false; addUserRole()">
                     确认添加
                 </el-button>
             </span>
@@ -134,9 +136,12 @@
             @current-change="handleCurrentChange" />
     </div>
     <AffixTip class="mt-20"></AffixTip>
+    <Dialog v-model="dialogFormVisible" :model="form" title-content="测试" lable-user-name="测试" options-lable="测试"
+        :data="roleList" placeholder="测试" @confirm="addUserRole()"></Dialog>
 </template>
 
 <script setup lang="ts">
+import Dialog from "@/components/Dialog.vue";
 import { ref, reactive } from 'vue'
 import {
     getUserListApi, getRoleListApi, addUserRoleApi, queryUserInfoApi, deleteUserRoleApi, getUserDeptListApi,
@@ -148,7 +153,6 @@ import { usePageSizeOptionsStore } from '@/stores/tools'
 import { storeToRefs } from "pinia";
 import type { Form, UserRolesInfo, DepartmentList, UserDepartmentList, UserInfo, RoleList } from '@/types/User'
 import AffixTip from '@/components/AffixTip.vue';
-
 const pageSizeOptionsStore = usePageSizeOptionsStore()
 pageSizeOptionsStore.getStorageStatus()
 const { defaultValue } = storeToRefs(pageSizeOptionsStore)
@@ -156,6 +160,10 @@ const { defaultValue } = storeToRefs(pageSizeOptionsStore)
 const small = ref(false)
 const background = ref(false)
 const disabled = ref(false)
+
+const dialogFormVisible = ref(false);
+
+
 const dialogFormVisibleAdd = ref(false);
 const dialogFormVisibleDelete = ref(false);
 const dialogFormisiblGeroup = ref(false);
@@ -264,9 +272,9 @@ const showSex = function (sex: any) {
     return sex ? '男' : '女'
 }
 // 添加用户角色
-const addUserRole = async (addUserId: number) => {
+const addUserRole = async () => {
     let res = await addUserRoleApi({
-        userId: addUserId,
+        userId: form.userId,
         roleId: form.rolesId
     })
     if (res.status == 1) {
@@ -383,9 +391,8 @@ a {
 }
 
 
- 
+
 :deep(.el-form-item__content > .el-input) {
     width: 215px;
 }
-
 </style>
